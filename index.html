@@ -436,8 +436,78 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .tctl{display:flex;align-items:center;gap:8px}.tctl .tn{font-family:var(--display);font-size:22px;min-width:28px;text-align:center}.tctl .btn{padding:6px 12px;font-size:16px}
 .groan{margin-top:12px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
 .groan b{font-family:var(--display);font-stretch:87.5%;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
-.oracle{font-family:var(--display);font-size:18px;line-height:1.35;font-style:italic;margin:4px 0 10px}
-.coinr{font-size:15px;min-height:28px;display:flex;align-items:center}.coinr .spin{display:inline-block;font-size:28px;animation:spin .9s ease-in-out}
+/* side games: each one its own object */
+.sg>summary{align-items:center;gap:10px;padding:11px 14px}
+.sg>summary .sg-i{font-size:22px;line-height:1;width:30px;text-align:center;flex:none}
+.sg>summary .sg-t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.sg>summary .sg-t small{font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg>summary .pill{flex:none}
+/* the souk exchange: price tags */
+.sg.souk{background:linear-gradient(180deg,#f7ead0,#f0dfc0);border-color:#d9c39a;color:#2b2420}
+.sg.souk>summary .sg-t small,.sg.souk .muted{color:#7a6448}.sg.souk>summary::after{color:#7a6448}
+.sg.souk .hform input{background:#fffaf0;border-color:#d9c39a;color:#2b2420}
+.tags{display:flex;flex-wrap:wrap;gap:10px 8px;margin-top:6px}
+.tag{position:relative;background:#fffdf7;color:#2b2420;border:1px solid #cdb891;border-radius:4px 14px 14px 4px;padding:8px 30px 8px 22px;min-width:120px;box-shadow:0 3px 8px -4px rgba(0,0,0,.35);transform:rotate(var(--r,0deg));font-size:12.5px}
+.tag .hole{position:absolute;left:8px;top:50%;width:8px;height:8px;border-radius:50%;background:#e8dcc0;box-shadow:inset 0 0 0 1.5px #cdb891;transform:translateY(-50%)}
+.tag b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:13px}
+.tag small{display:block;color:#7a6448;font-size:10.5px}
+.tag .px{display:flex;align-items:baseline;gap:8px;margin-top:3px;font-family:var(--mono)}
+.tag .px s{color:#9a8468;font-size:12px}.tag .px em{font-style:normal;font-family:"Caveat",cursive;font-size:22px;line-height:1;color:#b5322b;font-weight:600}
+.tag .off{display:inline-block;margin-top:3px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#7a6448}
+.tag.fg .off{color:#2f7d4e;font-weight:700}
+.tag.fg::after{content:"🏈";position:absolute;right:8px;bottom:6px;font-size:14px}
+.tag .x{position:absolute;right:4px;top:4px;background:none;border:0;color:#9a8468;font-size:11px;cursor:pointer;padding:2px 4px}
+/* the playbook: chalkboard */
+.sg.playbook{background:radial-gradient(120% 100% at 50% 0%,#2a4a3a,#1b3328);border-color:#2f4f40;color:#f1f1e6}
+.sg.playbook>summary .sg-t small,.sg.playbook .muted,.sg.playbook>summary::after{color:rgba(241,241,230,.6)}
+.sg.playbook .clist li{border-top-color:rgba(255,255,255,.14)}
+.sg.playbook .clist span{font-family:"Caveat",cursive;font-size:18px;line-height:1.1;color:#f1f1e6}
+.sg.playbook .clist b{font-family:var(--mono);font-size:11px;color:rgba(241,241,230,.7)}
+.sg.playbook .clist li.done span{color:rgba(241,241,230,.45)}.sg.playbook .clist li.solo b{color:#e58a5e}
+.sg.playbook .btn.mini{background:transparent;color:#f1f1e6;border-color:rgba(255,255,255,.4)}
+/* flags: the referee */
+.sg.flags>summary{background:repeating-linear-gradient(90deg,#111 0 14px,#f4f1ea 14px 28px);color:#111;border-radius:var(--r) var(--r) 0 0}
+.sg.flags>summary .sg-t{background:#f4f1ea;padding:4px 10px;border-radius:8px}
+.sg.flags>summary .sg-t small{color:#555}.sg.flags>summary::after{color:#111;background:#f4f1ea;border-radius:6px;padding:0 6px}
+.sg.flags>summary .pill{background:#f5d90a;color:#111;border-color:transparent}
+.sg.flags:not([open])>summary{border-radius:var(--r)}
+.ledger{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;font-size:12.5px;color:var(--muted)}
+.ledger b{color:var(--fg);font-family:var(--mono);font-size:12.5px;text-align:right}
+/* the camel market */
+.sg.camel{background:linear-gradient(180deg,#f3e3c3,#e9d3a6);border-color:#cfb27a;color:#2b2420}
+.sg.camel>summary .sg-t small,.sg.camel .muted,.sg.camel>summary::after{color:#7a6448}
+.sg.camel .hform input,.sg.camel .hform select{background:#fff9ec;border-color:#cfb27a;color:#2b2420}
+.valu{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}
+.valu div{background:rgba(255,250,236,.7);border:1px solid #cfb27a;border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.valu small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7a6448}
+.valu b{font-family:var(--display);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.valu i{font-style:normal;font-size:13px;letter-spacing:-3px;overflow:hidden;white-space:nowrap}
+.bids{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px}
+.bids li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:13px;padding:6px 0;border-top:1px dashed #cfb27a}
+.bids b{font-family:var(--mono);font-size:14px}.bids .btn.mini{background:transparent;border-color:#cfb27a;color:#2b2420}
+/* the oracle: carved in sandstone */
+.sg.oracle-sg{background:linear-gradient(180deg,#e2cfa6,#d4bc8c);border-color:#b99c66;color:#3b2c16}
+.sg.oracle-sg>summary .sg-t small,.sg.oracle-sg .muted,.sg.oracle-sg>summary::after{color:#7a6238}
+.sg.oracle-sg>summary .sg-i{font-size:24px;color:#3b2c16}
+.sg.oracle-sg .oracle{font-family:Georgia,serif;font-size:19px;line-height:1.35;font-style:italic;color:#3b2c16;text-shadow:0 1px 0 rgba(255,255,255,.45),0 -1px 0 rgba(0,0,0,.18);margin:4px 0 10px;padding:10px 12px;border:2px solid rgba(59,44,22,.35);border-radius:12px;background:rgba(255,255,255,.12)}
+.sg.oracle-sg .btn{background:#3b2c16;color:#e2cfa6;border-color:transparent}
+/* the toss */
+.sg.toss{background:radial-gradient(120% 100% at 50% 0%,#20483a,#132c23);border-color:#2f5a48;color:#f1f1e6}
+.sg.toss>summary .sg-t small,.sg.toss .muted,.sg.toss>summary::after{color:rgba(241,241,230,.6)}
+.tossbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px;perspective:700px}
+.coinr{min-height:96px;display:flex;align-items:center;justify-content:center}
+.coin{width:88px;height:88px;position:relative;transform-style:preserve-3d;transform:rotateY(0)}
+.coin .face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.06em;backface-visibility:hidden;box-shadow:inset 0 0 0 4px rgba(255,255,255,.25),inset 0 0 0 7px rgba(0,0,0,.25),0 8px 18px -8px rgba(0,0,0,.8)}
+.coin .f1{background:radial-gradient(circle at 35% 30%,#1f2a3a,#101820 70%);color:#ffb612}
+.coin .f2{background:radial-gradient(circle at 35% 30%,#ff8a4f,#fb4f14 70%);color:#000;transform:rotateY(180deg)}
+.coin.pit{animation:cointoss 1.4s cubic-bezier(.2,.8,.3,1) forwards;--end:1800deg}
+.coin.cin{animation:cointoss 1.4s cubic-bezier(.2,.8,.3,1) forwards;--end:1980deg}
+@keyframes cointoss{0%{transform:rotateY(0) translateY(0)}45%{transform:rotateY(calc(var(--end) * .5)) translateY(-46px)}100%{transform:rotateY(var(--end)) translateY(0)}}
+.coin.idle{animation:coinidle 6s ease-in-out infinite}
+@keyframes coinidle{0%,100%{transform:rotateY(-18deg)}50%{transform:rotateY(18deg)}}
+.tossr{font-size:14px;text-align:center;min-height:20px;color:rgba(241,241,230,.85)}
+.sg.toss .btn.primary{background:#ffb612;color:#111;border-color:transparent}
+@media (prefers-reduced-motion:reduce){ .coin.idle,.coin.pit,.coin.cin{animation:none} .coin.cin{transform:rotateY(180deg)} }
 @keyframes spin{from{transform:rotateY(0)}to{transform:rotateY(1080deg)}}
 .flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .flist li{display:grid;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
@@ -951,7 +1021,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   </section>
 
   <section id="game">
-    <h2 class="sec">The game</h2>
+    <h2 class="sec">The Nile Bowl</h2>
     <div id="live"></div>
     <div id="gameBody"></div>
   </section>
@@ -966,7 +1036,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <a href="#guide" data-go="guide"><span class="i">🧭</span>Guide</a>
   <button type="button" class="plus" id="qcBtn" aria-label="Quick capture">+</button>
   <a href="#map" data-go="map"><span class="i">🗺️</span>Map</a>
-  <a href="#game" data-go="game"><span class="i">🏈</span>Game</a>
+  <a href="#game" data-go="game"><span class="i">🏈</span>Games</a>
 </div></nav>
 <div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"><div class="bd" id="shBd"></div><div class="pn"><div class="hd"><h3 id="shTitle"></h3><button class="x" id="shX" aria-label="Close">×</button></div><div class="bodyx" id="shBody"></div></div></div>
@@ -1429,7 +1499,7 @@ function renderStrip(){
   let html = "";
   order.forEach((i,pos)=>{ const past = ti>0 && i<ti; if(past && pos===DAYS.length-ti) html += `<span class="gap" aria-hidden="true"></span>`; if(!past && pos>0 && DAYS[i].who==="brad" && DAYS[order[pos-1]].who!=="brad") html += `<span class="gap solo" aria-hidden="true"></span>`; html += chip(i,past); });
   $("#dayStrip").innerHTML = html;
-  const on = $("#dayStrip .chip.on"); if(on) on.scrollIntoView({inline: ti>0 && sel===ti ? "start" : "center", block:"nearest", behavior:"auto"});
+  const on = $("#dayStrip .chip.on"); if(on){ const st=$("#dayStrip"); const want = (ti>0 && sel===ti) ? on.offsetLeft - 12 : on.offsetLeft - (st.clientWidth - on.offsetWidth)/2; st.scrollLeft = Math.max(0, want); }
 }
 
 function renderDay(){
@@ -1659,9 +1729,8 @@ document.addEventListener("click",e=>{
 });
 function goDay(i, scroll){
   if(i<0||i>=DAYS.length) return; sel=i; const c=$("#dayCard"); c.classList.add("swap");
-  setTimeout(()=>{ renderStrip(); renderDay(); renderGuideFront(); c.classList.remove("swap"); },120);
+  setTimeout(()=>{ renderStrip(); renderDay(); renderGuideFront(); c.classList.remove("swap"); if(scroll) requestAnimationFrame(()=>scrollToEl(document.querySelector("#today"))); },120);
   try{ history.replaceState(null,"","#"+DAYS[sel].id); }catch(e){}
-  if(scroll) scrollToEl(document.querySelector("#today"));
 }
 (function swipe(){ let x0=0,y0=0,t0=0; const el=document.querySelector("#today");
   el.addEventListener("touchstart",e=>{ const t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now(); },{passive:true});
@@ -1691,7 +1760,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v44)";
+const BUILD = "Oct 8, 2026 (v45)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1894,24 +1963,25 @@ function renderGame(){
     <div class="row"><button type="button" class="btn" id="scoreShare">Share the board</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
   </div>
 
-  <details class="fold" open><summary>Egypt Bingo <span class="pill">${s.bingo}/24</span></summary><div class="in">
+  <h2 class="sec" style="margin-top:18px">Side games</h2>
+  <details class="fold sg bingo-sg" open><summary><span class="sg-i">🎯</span><span class="sg-t">Egypt Bingo<small>ten yards a square · blackout is a touchdown</small></span><span class="pill">${s.bingo}/24</span></summary><div class="in">
     <p class="muted">Tap when it happens. Ten yards a square, a line is bragging rights, and the last square of a blackout is a touchdown — it turns your colors when you get there.</p>
     <div class="bingo ${bset.size>=25?"blackout":""}">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""} ${!bset.has(i)&&bset.size===24?"td":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
   </div></details>
 
-  <details class="fold" open><summary>Haggle Scoreboard <span class="pill">${hg.length}</span></summary><div class="in">
-    <p class="muted">Log every buy: what, asking price, what you paid. Forty percent off or more is a field goal — three points, once a day. The button turns your colors when the numbers add up. ${king?`<b>Best so far: ${esc(king.w)}, ${Math.round((1-king.p/king.a)*100)}% off.</b>`:""}</p>
+  <details class="fold sg souk" open><summary><span class="sg-i">🏷️</span><span class="sg-t">The Souk Exchange<small>${s.n?`${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`:"every buy, asked vs paid"}</small></span><span class="pill">${hg.length}</span></summary><div class="in">
+    <p class="muted">Log every buy: what, asking price, what you paid. <b>Forty percent off or more is a field goal</b> — three points, once a day. The button turns your colors when the numbers add up.</p>
     <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>
-    ${hg.length?``:`<p class="muted">No haggles yet. The touts are winning.</p>`}${hg.length?`<table class="htab"><thead><tr><th>What</th><th>Asked</th><th>Paid</th><th>Off</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:""}
+    ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button></div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
   </div></details>
 
-  <details class="fold"><summary>Daily challenges <span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
-    <p class="muted">One a day, on each day's card. Through Sunday the 18th each one is a touchdown; Brad's week after is overtime, no score.</p>
+  <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t">The Playbook<small>one play a day · each one a touchdown through Sunday</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
+    <p class="muted">Drawn up on each day's card. Through Sunday the 18th every completed play is six; Brad's week after is overtime, no score.</p>
     <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini ${!ch[d.id]&&QUARTER[d.id]?"pts-me":""}" data-chal="${d.id}" aria-label="${ch[d.id]?"Undo":"Done"}">${ch[d.id]?"✓":QUARTER[d.id]?"+6":"○"}</button></li>`).join("")}</ul>
   </div></details>
 
   ${safe(()=>funBox())}
-  <h2 class="sec" style="margin-top:18px">The Nile Bowl</h2>
+  <h2 class="sec" style="margin-top:18px">After the whistle</h2>
   <details class="fold"><summary>The Nile Bowl — final</summary><div class="in">
     <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
     <div class="row"><button type="button" class="btn primary" data-review="together">Trip in review${(()=>{ try{ const n=cairoNow(); return n.date>"2026-10-18"?"":" · so far"; }catch(e){ return ""; } })()}</button><button type="button" class="btn" data-review="solo">Brad's week</button><button type="button" class="btn" id="awardsBtn">The awards</button></div>
@@ -2173,30 +2243,32 @@ function funBox(){
   const ff=GS.get("forfeit",{}); const owed=w=>FORFEITS.reduce((s,f,i)=>s+((ff[i]||{})[w]||0),0);
   const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0);
   const bw=owed("Brad"), dw=owed("Duane"); const verdict = bw===dw?"All square.":(bw>dw?`Brad owes ${bw-dw} tea${bw-dw>1?"s":""}.`:`Duane owes ${dw-bw} tea${dw-bw>1?"s":""}.`);
+  const bb=best("Brad"), db=best("Duane"); const camelBar=n=>{ const k=Math.min(12,Math.max(0,Math.round(n/500))); return "🐪".repeat(k)||"—"; };
   return `
-  <details class="fold"><summary>House rules &amp; forfeits <span class="pill">${verdict}</span></summary><div class="in">
-    <p class="muted">Tap the name of the guilty party. A penalty is a safety: two points to the other man — the button wears the colors of whoever collects. Tea ones are just tea.</p>
+  <details class="fold sg flags"><summary><span class="sg-i">🚩</span><span class="sg-t">Flags<small>penalties &amp; forfeits · a penalty is a safety</small></span><span class="pill">${verdict}</span></summary><div class="in">
+    <p class="muted">Tap the guilty party. The button wears the colors of whoever collects the two points. Long-press a name to take one back.</p>
     <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>ffBtn(i,w,ff)).join("")}</div></li>`).join("")}</ul>
-    <p class="muted" style="margin-top:8px">Long-press a name to take one back. “My friend” total for the trip so far: <b>${tout}</b>.</p>
+    <div class="ledger"><span>Tea ledger</span><b>${verdict}</b><span>“My friend”, trip total</span><b>${tout}</b></div>
   </div></details>
-    <details class="fold"><summary>Camel offers <span class="pill">${camels.length}</span></summary><div class="in">
-    <p class="muted">Every trip to Egypt has the “I give you a thousand camels for your friend” moment. Log the offers. Market value: <b>Brad ${best("Brad").toLocaleString()}</b> · <b>Duane ${best("Duane").toLocaleString()}</b> camels.</p>
-    <form class="hform" id="cform"><input id="cn" inputmode="numeric" placeholder="How many camels" required><select id="cw"><option>Duane</option><option>Brad</option></select><input id="cd" placeholder="Where (Khan, Edfu carriage…)"><button class="btn primary" type="submit">Log the offer</button></form>
-    ${camels.length?`<ul class="clist">${camels.map((c,i)=>`<li><b>${c.n.toLocaleString()}</b><span>for ${esc(c.who)}${c.d?" · "+esc(c.d):""}</span><button type="button" class="btn mini" data-cdel="${i}">✕</button></li>`).join("")}</ul>`:""}
+  <details class="fold sg camel"><summary><span class="sg-i">🐪</span><span class="sg-t">The Camel Market<small>what Egypt thinks you're worth</small></span><span class="pill">${camels.length}</span></summary><div class="in">
+    <p class="muted">Every trip to Egypt has the “I give you a thousand camels for your friend” moment. Log the bids. The market sets the price.</p>
+    <div class="valu"><div><small>Brad</small><b>${bb.toLocaleString()}</b><i>${camelBar(bb)}</i></div><div><small>Duane</small><b>${db.toLocaleString()}</b><i>${camelBar(db)}</i></div></div>
+    <form class="hform" id="cform"><input id="cn" inputmode="numeric" placeholder="How many camels" required><select id="cw"><option>${OTHER()||"Duane"}</option><option>${me()||"Brad"}</option></select><input id="cd" placeholder="Where (Khan, Edfu carriage…)"><button class="btn primary" type="submit">Log the bid</button></form>
+    ${camels.length?`<ul class="bids">${camels.map((c,i)=>`<li><b>${c.n.toLocaleString()}</b><span>for ${esc(c.who)}${c.d?" · "+esc(c.d):""}</span><button type="button" class="btn mini" data-cdel="${i}">✕</button></li>`).join("")}</ul>`:""}
   </div></details>
-    <details class="fold" open><summary>The Oracle of Amun</summary><div class="in">
+  <details class="fold sg oracle-sg" open><summary><span class="sg-i">🔮</span><span class="sg-t">The Oracle of Amun<small>one prophecy a day</small></span></summary><div class="in">
     <div class="oracle">“${esc(o)}”</div>
-    <div class="row"><button type="button" class="btn" id="oracleRoll">Ask again</button><span class="muted">One a day. Re-asking is permitted; the Oracle notices.</span></div>
+    <div class="row"><button type="button" class="btn" id="oracleRoll">Consult again</button><span class="muted">Re-asking is permitted; the Oracle notices.</span></div>
   </div></details>
-    <details class="fold"><summary>Who pays?</summary><div class="in">
-    <div class="row"><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="coinr" id="coinr"></div></div>
+  <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · the coin of Ra decides</small></span></summary><div class="in">
+    <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1">PIT</div><div class="face f2">CIN</div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Tails never fails. Heads is also fine.</div></div>
   </div></details>`;
 }
 function funWire(){
   document.addEventListener("click", e=>{
     const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>${TEAMS[other].team} win the toss. ${who} pays.</b>`; },900); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1">PIT</div><div class="face f2">CIN</div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays.`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); if(isPen) jumbo("Safety", w==="Brad"?"Duane":"Brad", `+2 · ${w} flagged: ${FORFEITS[i][0]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
