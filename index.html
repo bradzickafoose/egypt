@@ -499,10 +499,20 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .sg.toss>summary .sg-t small,.sg.toss .muted,.sg.toss>summary::after{color:rgba(241,241,230,.6)}
 .tossbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px;perspective:700px}
 .coinr{min-height:96px;display:flex;align-items:center;justify-content:center}
-.coin{width:88px;height:88px;position:relative;transform-style:preserve-3d;transform:rotateY(0)}
-.coin .face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.06em;backface-visibility:hidden;box-shadow:inset 0 0 0 4px rgba(255,255,255,.25),inset 0 0 0 7px rgba(0,0,0,.25),0 8px 18px -8px rgba(0,0,0,.8)}
-.coin .f1{background:radial-gradient(circle at 35% 30%,#1f2a3a,#101820 70%);color:#ffb612}
-.coin .f2{background:radial-gradient(circle at 35% 30%,#ff8a4f,#fb4f14 70%);color:#000;transform:rotateY(180deg)}
+.coin{width:96px;height:96px;position:relative;transform-style:preserve-3d;transform:rotateY(0)}
+.coin .face{position:absolute;inset:0;border-radius:49% 51% 50% 50% / 52% 48% 52% 48%;display:flex;align-items:center;justify-content:center;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:26px;letter-spacing:.12em;text-indent:.12em;backface-visibility:hidden;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 30%,rgba(0,0,0,.18) 31% 33%,transparent 34%),
+    repeating-conic-gradient(from 0deg,rgba(0,0,0,.14) 0 3deg,transparent 3deg 9deg),
+    radial-gradient(circle at 38% 32%,#e6c36a 0,#b8923a 38%,#7d5c1c 72%,#4f3810 100%);
+  box-shadow:inset 0 0 0 3px rgba(60,40,10,.45),inset 0 0 0 6px rgba(230,195,106,.35),inset 0 0 14px rgba(0,0,0,.45),0 10px 16px -6px rgba(0,0,0,.6);
+  color:#3a2a0c;text-shadow:0 1px 0 rgba(255,235,170,.55),0 -1px 0 rgba(0,0,0,.5)}
+.coin .face::before{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,rgba(255,235,170,.35) 0 18%,transparent 19%),repeating-conic-gradient(from 7deg,rgba(255,235,170,.28) 0 2deg,transparent 2deg 15deg);mask:radial-gradient(circle,transparent 0 18%,#000 19% 58%,transparent 60%);-webkit-mask:radial-gradient(circle,transparent 0 18%,#000 19% 58%,transparent 60%);pointer-events:none}
+.coin .face::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 75%,rgba(45,90,70,.35) 0 12%,transparent 30%),radial-gradient(circle at 20% 70%,rgba(45,90,70,.25) 0 8%,transparent 22%),radial-gradient(circle at 60% 20%,rgba(0,0,0,.18) 0 6%,transparent 18%);mix-blend-mode:multiply;pointer-events:none}
+.coin .f1{transform:rotate(-7deg)}
+.coin .f2{transform:rotateY(180deg) rotate(6deg);filter:hue-rotate(-12deg) saturate(1.15)}
+.coin .f2::after{background:radial-gradient(circle at 30% 70%,rgba(45,110,80,.45) 0 14%,transparent 32%),radial-gradient(circle at 75% 30%,rgba(45,110,80,.3) 0 9%,transparent 24%)}
+.coin .face span{position:relative;display:block;padding:0 4px;transform:translateY(1px)}
 .coin.pit{animation:cointoss 1.4s cubic-bezier(.2,.8,.3,1) forwards;--end:1800deg}
 .coin.cin{animation:cointoss 1.4s cubic-bezier(.2,.8,.3,1) forwards;--end:1980deg}
 @keyframes cointoss{0%{transform:rotateY(0) translateY(0)}45%{transform:rotateY(calc(var(--end) * .5)) translateY(-46px)}100%{transform:rotateY(var(--end)) translateY(0)}}
@@ -698,7 +708,11 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .kv b{font-family:var(--mono);font-weight:600;font-size:13px}
 .phr{display:grid;gap:4px}
 .phr div{display:flex;gap:10px;align-items:baseline}
-.phr i{font-style:normal;font-weight:600;min-width:92px}
+.say{font:600 inherit;font-family:inherit;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--fg);cursor:pointer;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+.say .spk,.say{font-size:13px}
+.say.talking{background:var(--nile);color:#fff;border-color:transparent}
+.phr .say{min-width:120px;justify-content:space-between}
+.brief .say{font-size:12.5px;padding:2px 8px}
 .sos{display:grid;gap:8px}
 .sos div{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 .sos .num{font-family:var(--mono);font-weight:600;font-size:16px;user-select:all}
@@ -828,12 +842,15 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <div class="kv"><b>10</b><span>bathroom attendant</span><b>50</b><span>porter, carriage driver</span><b>100</b><span>felucca captain</span><b>200/day</b><span>driver</span><b>$20/day</b><span>guide</span><b>$60 each</b><span>boat crew envelope, last night</span></div>
       <h4>Five words</h4>
       <div class="phr">
-        <div><i>shukran</i><span>thanks</span></div>
-        <div><i>la, shukran</i><span>no thanks — smile, keep walking</span></div>
-        <div><i>bikam?</i><span>how much?</span></div>
-        <div><i>khalas</i><span>done, enough</span></div>
-        <div><i>yalla</i><span>let's go</span></div>
+        <div><button type="button" class="say" data-say="شكراً" data-latin="shukran">shukran <span class="spk">🔊</span></button><span>thanks</span></div>
+        <div><button type="button" class="say" data-say="لا، شكراً" data-latin="la, shukran">la, shukran <span class="spk">🔊</span></button><span>no thanks — smile, keep walking</span></div>
+        <div><button type="button" class="say" data-say="بكام؟" data-latin="bikam?">bikam? <span class="spk">🔊</span></button><span>how much?</span></div>
+        <div><button type="button" class="say" data-say="خلاص" data-latin="khalas">khalas <span class="spk">🔊</span></button><span>done, enough</span></div>
+        <div><button type="button" class="say" data-say="يلا" data-latin="yalla">yalla <span class="spk">🔊</span></button><span>let's go</span></div>
+        <div><button type="button" class="say" data-say="لو سمحت" data-latin="law samaht">law samaht <span class="spk">🔊</span></button><span>excuse me / please</span></div>
+        <div><button type="button" class="say" data-say="الحساب لو سمحت" data-latin="el-hisab law samaht">el-hisab, law samaht <span class="spk">🔊</span></button><span>the bill, please</span></div>
       </div>
+      <p class="muted" style="font-size:12px;margin-top:6px">Tap a word to hear it. Uses the phone's Arabic voice — the first tap may take a second while it loads.</p>
       <h4>Getting around</h4>
       <p>Uber and Careem in Cairo and Luxor. In Aswan the boat arranges cars. Agree every street-taxi price before getting in. Egypt is 7 hours ahead of the East Coast (Norfolk, Orlando) and 1 hour ahead of Cape Town, through Oct 29 when its clocks fall back.</p>
     </div></details>
@@ -1644,7 +1661,7 @@ function cityBrief(){
     <div class="br" data-nav="eat"><b>Buy</b><div>${shop}${buy?`<br>${buy}`:""}</div></div>
     <div class="br" data-nav="around"><b>Around</b><div>${esc(AROUND[key]||AROUND.cairo)}</div></div>
     <div class="br" data-nav="money"><b>Tips</b><div><em>10</em> bathroom · <em>50</em> porter, carriage · <em>100</em> felucca captain · <em>200/day</em> driver · <em>$20/day</em> guide</div></div>
-    <div class="br" data-nav="phrases"><b>Say</b><div><em>la, shukran</em> <i>· no thanks, keep walking</i> · <em>bikam?</em> <i>· how much</i> · <em>khalas</em> <i>· done</i></div></div>
+    <div class="br"><b>Say</b><div><button type="button" class="say" data-say="لا، شكراً" data-latin="la, shukran">la, shukran 🔊</button> <i>· no thanks, keep walking</i> · <button type="button" class="say" data-say="بكام؟" data-latin="bikam?">bikam? 🔊</button> <i>· how much</i> · <button type="button" class="say" data-say="خلاص" data-latin="khalas">khalas 🔊</button> <i>· done</i> · <button type="button" class="say" data-say="شكراً" data-latin="shukran">shukran 🔊</button> <i>· thanks</i></div></div>
   </div>`;
 }
 function renderWhere(){
@@ -1763,7 +1780,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v46)";
+const BUILD = "Oct 8, 2026 (v47)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2051,6 +2068,14 @@ function stampBox(d){
   return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"pts-me":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button>${s?` <button type="button" class="btn send" data-sendstamp="${d.id}">Send the stamp ${SEND_ICON}</button>`:""}</div></div>`;
 }
 
+// ---------- say it: the phone's Arabic voice ----------
+function arabicVoice(){ try{ const vs=speechSynthesis.getVoices(); return vs.find(v=>/^ar[-_]EG/i.test(v.lang)) || vs.find(v=>/^ar/i.test(v.lang)) || null; }catch(e){ return null; } }
+function sayIt(btn){ const ar=btn.dataset.say, latin=btn.dataset.latin||""; if(!("speechSynthesis" in window)){ toast(`“${latin}” — no voice on this phone; say it like it's spelled.`); return; }
+  const go=()=>{ const v=arabicVoice(); if(!v){ toast(`“${latin}” — this phone has no Arabic voice installed (Settings → Accessibility → Spoken Content → Voices → Arabic).`); return; } try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(ar); u.voice=v; u.lang=v.lang; u.rate=.82; u.pitch=1; document.querySelectorAll(".say.talking").forEach(x=>x.classList.remove("talking")); btn.classList.add("talking"); u.onend=u.onerror=()=>btn.classList.remove("talking"); speechSynthesis.speak(u); }catch(e){ btn.classList.remove("talking"); } };
+  if(speechSynthesis.getVoices().length) go(); else { let done=false; speechSynthesis.onvoiceschanged=()=>{ if(!done){ done=true; go(); } }; setTimeout(()=>{ if(!done){ done=true; go(); } }, 700); } }
+document.addEventListener("click", e=>{ const b=e.target.closest(".say[data-say]"); if(b){ e.preventDefault(); e.stopPropagation(); sayIt(b); } }, true);
+try{ if("speechSynthesis" in window) speechSynthesis.getVoices(); }catch(e){}
+
 // ---------- iMessage: anything worth gloating about has a Send button ----------
 function shareText(text, title){ if(!text) return; if(navigator.share){ navigator.share({text, title:title||"Egypt"}).catch(()=>{}); return; } (navigator.clipboard?.writeText(text)||Promise.reject()).then(()=>toast("Copied — paste it into Messages")).catch(()=>toast("Couldn't copy here")); }
 function shareCanvas(c, name, title){ c.toBlob(async blob=>{ const f=new File([blob], name, {type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:title||"Egypt"}); }catch(e){} return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); }, "image/png"); }
@@ -2285,15 +2310,15 @@ function funBox(){
     <div class="oracle">“${esc(o)}”</div>
     <div class="row"><button type="button" class="btn" id="oracleRoll">Consult again</button>${sendBtn(`🔮 The Oracle of Amun says: “${o}”`, "Send "+SEND_ICON, "")}<span class="muted">Re-asking is permitted; the Oracle notices.</span></div>
   </div></details>
-  <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · the coin of Ra decides</small></span></summary><div class="in">
-    <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1">PIT</div><div class="face f2">CIN</div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Tails never fails. Heads is also fine.</div></div>
+  <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · a bronze from the reign of Ra, struck twice</small></span></summary><div class="in">
+    <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Sun side, scarab side. Tails never fails.</div></div>
   </div></details>`;
 }
 function funWire(){
   document.addEventListener("click", e=>{
     const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1">PIT</div><div class="face f2">CIN</div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); if(isPen) jumbo("Safety", w==="Brad"?"Duane":"Brad", `+2 · ${w} flagged: ${FORFEITS[i][0]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
