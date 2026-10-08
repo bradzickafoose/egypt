@@ -39,7 +39,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:87.5%;letter-spacing:-.01em;tex
 @media (max-width:400px){ .brand{font-size:1.1765rem;gap:6px} .brand .pill{font-size:0.6765rem;padding:3px 7px} }
 .pill.aa{cursor:pointer;font-family:var(--body);font-weight:700;letter-spacing:0}
 .pill.aa[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-html.big{font-size:112%}
+
 html.big body{font-size:1rem}
 html.big .agenda .note{font-size:0.9118rem}
 html.big .agenda .ttl{font-size:0.9706rem}
@@ -1180,10 +1180,52 @@ html.bigtext .book dl dd{margin:0 0 6px}
 .lst-b{display:flex;flex-direction:column}
 .lst-b span.lst-go{display:inline-block;align-self:flex-start;margin-top:8px;padding:4px 10px;border-radius:999px;border:1px solid currentColor;line-height:1.2;font:700 0.7059rem var(--mono);letter-spacing:.04em}
 .lstl.sm .lst-b span.lst-go{display:inline-block;margin-top:6px}
+
+.btn.been{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.btn.been.on{background:#e3f1e6;border:1px solid #9cc9a6;color:#1f6b33}
+.btn.been.big{padding:8px 14px;font-size:0.8235rem;font-weight:700}
+.vis-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.vis-note{font-size:0.7647rem;color:var(--muted);flex:1 1 10em}
+.pidx-h{display:flex;align-items:center;gap:10px}
+.pidx-h b{font-size:0.7647rem;font-weight:700;white-space:nowrap}
+.pidx-bar{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.pidx-bar i{display:block;height:100%;background:#3f9a57;border-radius:99px}
+.pidx .grp b em{font-style:normal;color:#1f6b33;letter-spacing:0;text-transform:none;margin-left:4px}
+.pidx button.done{background:#e3f1e6;border-color:#9cc9a6;color:#1f4f2b}
+.pidx button .ck{margin-right:5px;color:#1f6b33}
+.pidx button small{font-size:0.65rem;opacity:.7}
+.where .wr.vis .wn{color:#1f6b33}
+.vis-day{margin:6px 0 4px}
+.vis-all{font-size:0.7647rem;font-weight:700;color:#1f6b33}
+
+.onepage b{display:block;font-family:var(--display);font-size:1rem;margin-bottom:4px}
+.onepage span{display:block;font-size:0.8235rem;color:var(--muted);margin-bottom:10px}
+.pd{font-size:0.8235rem;line-height:1.4}
+.pd h1{font-family:var(--display);font-size:1.6rem;margin:0}
+.pd .pd-h p{margin:2px 0;color:var(--muted)}
+.pd .pd-s{font-size:0.7rem}
+.pd h2{font-family:var(--display);font-stretch:87.5%;font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.pd-t{width:100%;border-collapse:collapse}
+.pd-t td{vertical-align:top;padding:5px 6px 5px 0;border-bottom:1px dotted var(--line)}
+.pd-t small,.pd small{color:var(--muted)}
+.pd-day{padding:6px 0;border-bottom:1px dotted var(--line);break-inside:avoid}
+.pd-dp{color:var(--muted);font-size:0.95em}
+.pd-day ul{margin:4px 0 0;padding:0;list-style:none}
+.pd-day li span{font-family:var(--mono);font-size:0.9em;color:var(--muted);display:inline-block;min-width:3.2em}
+.pd-act{margin:0 0 12px}
+#printPlan{display:none}
+@media print{
+ html.printing body>*:not(#printPlan){display:none!important}
+ html.printing #printPlan{display:block;color:#000}
+ html.printing{font-size:11px!important;background:#fff}
+ html.printing body{background:#fff}
+ .pd h2{color:#000;border-color:#000}
+ @page{margin:14mm}
+}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
-(function(){ function fs(){ try{ let px=17; if(window.CSS&&CSS.supports("font","-apple-system-body")){ const p=document.createElement("div"); p.style.cssText="font:-apple-system-body;position:absolute;visibility:hidden;pointer-events:none"; p.textContent="x"; document.documentElement.appendChild(p); px=parseFloat(getComputedStyle(p).fontSize)||17; p.remove(); } px=Math.max(15,Math.min(28,px)); document.documentElement.style.fontSize=px+"px"; document.documentElement.classList.toggle("bigtext",px>=21); document.documentElement.classList.toggle("hugetext",px>=25); }catch(e){} } fs(); window.__fs=fs; document.addEventListener("visibilitychange",()=>{ if(!document.hidden) fs(); }); })();
+(function(){ function fs(){ try{ let px=17; if(window.CSS&&CSS.supports("font","-apple-system-body")){ const p=document.createElement("div"); p.style.cssText="font:-apple-system-body;position:absolute;visibility:hidden;pointer-events:none"; p.textContent="x"; document.documentElement.appendChild(p); px=parseFloat(getComputedStyle(p).fontSize)||17; p.remove(); } let big=false; try{ big=localStorage.getItem("egypt.big")==="1"; }catch(e){} if(big) px=px*1.18; px=Math.max(15,Math.min(28,Math.round(px*10)/10)); document.documentElement.style.fontSize=px+"px"; document.documentElement.classList.toggle("bigtext",px>=21); document.documentElement.classList.toggle("hugetext",px>=25); }catch(e){} } fs(); window.__fs=fs; document.addEventListener("visibilitychange",()=>{ if(!document.hidden) fs(); }); })();
 </script>
 
 <header class="top" id="top"><div class="in">
@@ -1310,6 +1352,7 @@ html.bigtext .book dl dd{margin:0 0 6px}
     <div class="card flights" id="flights"></div>
 
     <h2 class="sec" id="reference" style="margin-top:18px">Reference</h2>
+    <div class="card onepage"><b>The whole trip on one page</b><span>Every day, every bed with its phone number, every flight, the emergency numbers. Print it for the bag, save it as a PDF, or send it to family so they know where you are each night. Built from this app, so it's always current; booking codes stay off it.</span><div class="row"><button type="button" class="btn primary" data-plandoc="view">Open it</button><button type="button" class="btn" data-plandoc="send">Send to family ↗</button></div></div>
     <details class="fold"><summary>The boat, explained</summary><div class="in">
       <ul>
         <li><b>A dahabiya is a sailing boat, not a cruise ship.</b> 5–8 cabins, 10–16 guests, a crew of about ten, two lateen sails and a tug when the wind drops. Big cruise boats have 60 cabins, a buffet, a pool and a timetable. A dahabiya has a deck, a cook and time. It stops at islands, quarries and villages the big boats can't reach.</li>
@@ -1835,7 +1878,20 @@ let sel = 0; let preMode = false; const PRE_TRIP = ()=> cairoNow().date < DAYS[0
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const safe = f => { try{ return f()||""; }catch(e){ console.warn("skipped", e); return ""; } };
-function mapBtns(q, pkey, long, extra){ extra = extra||""; const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about && !extra) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}${extra}</div>`; }
+// ---------- visited places: kept outside the game namespace so "Start over" never wipes them; shared with the other phone via the live room
+function visitedMine(){ try{ return JSON.parse(localStorage.getItem("egypt.visited")||"{}")||{}; }catch(e){ return {}; } }
+function visitedTheirs(){ try{ const o=(typeof OTHER==="function")?OTHER():""; const L=(GS.get("live",{})||{})[o]; return (L&&L.visited)||{}; }catch(e){ return {}; } }
+function visitInfo(k){ const m=visitedMine()[k], t=visitedTheirs()[k]; return {mine:m||null, theirs:t||null, any:!!(m||t)}; }
+function visitDayLabel(v){ if(!v) return ""; const d=v.day&&DAYS.find(x=>x.id===v.day); return d?`${d.dow} ${d.num}`:""; }
+function canVisit(k){ if(!canVisit.s) canVisit.s=new Set(PLACE_INDEX.filter(([g])=>g!=="Sleeping").flatMap(([g,ks])=>ks)); return canVisit.s.has(k)&&!!PLACES[k]; }
+function visitBtn(k, big){ if(!canVisit(k)) return ""; const v=visitInfo(k); return `<button type="button" class="btn been ${v.mine?"on":""} ${big?"big":""}" data-visit="${esc(k)}" aria-pressed="${!!v.mine}">${v.mine?"✓ Visited":"Visited?"}</button>`; }
+function setVisited(k, on){ const all=visitedMine(); if(on){ const n=cairoNow(); const di=dayIndexFor(n.date); all[k]={at:new Date().toISOString(), day:di>=0?DAYS[di].id:""}; } else delete all[k]; try{ localStorage.setItem("egypt.visited", JSON.stringify(all)); }catch(e){} refreshVisit(); safe(()=>livePush()); }
+function refreshVisit(){ document.querySelectorAll("[data-visit]").forEach(b=>{ const v=visitInfo(b.dataset.visit); b.classList.toggle("on", !!v.mine); b.setAttribute("aria-pressed", !!v.mine); b.textContent=v.mine?(b.classList.contains("big")?`✓ Visited${visitDayLabel(v.mine)?" · "+visitDayLabel(v.mine):""}`:"✓ Visited"):"Visited?"; }); document.querySelectorAll(".vis-note[data-vk]").forEach(n=>{ n.innerHTML=visitNote(n.dataset.vk); }); safe(()=>renderPidx()); safe(()=>renderWhere()); }
+function visitNote(k){ const v=visitInfo(k); const o=(typeof OTHER==="function")?OTHER():""; if(v.theirs&&!v.mine) return `${esc(o)} marked it${visitDayLabel(v.theirs)?" on "+visitDayLabel(v.theirs):""}. Tap if you were there too.`; if(v.mine&&v.theirs) return `Both of you ✓`; if(v.mine) return `Tap again to unmark.`; return `Tap once you've been — it ticks off in the Places list.`; }
+document.addEventListener("click", e=>{ const all=e.target.closest("[data-visitall]"); if(all){ const d=DAYS.find(x=>x.id===all.dataset.visitall); if(!d) return; const ks=[...new Set((d.agenda||[]).map(a=>a.p||a.map).filter(k=>k&&canVisit(k)))]; const before=visitedMine(); const add=ks.filter(k=>!before[k]); add.forEach(k=>{ before[k]={at:new Date().toISOString(), day:d.id}; }); try{ localStorage.setItem("egypt.visited", JSON.stringify(before)); }catch(x){} refreshVisit(); safe(()=>livePush()); toast(`✓ ${add.length} place${add.length===1?"":"s"} marked visited`, {undo:()=>{ const v=visitedMine(); add.forEach(k=>delete v[k]); try{ localStorage.setItem("egypt.visited", JSON.stringify(v)); }catch(x){} refreshVisit(); safe(()=>livePush()); }}); return; }
+  const b=e.target.closest("[data-visit]"); if(!b) return; e.preventDefault(); e.stopPropagation(); const k=b.dataset.visit; const on=!visitedMine()[k]; setVisited(k,on); const n=(PLACES[k]&&PLACES[k].n)||k;
+  if(on){ safe(()=>sfx("stamp")); toast(`✓ ${n} — visited`, {undo:()=>setVisited(k,false)}); } else toast(`${n} unmarked`, {undo:()=>setVisited(k,true)}); }, true);
+function mapBtns(q, pkey, long, extra){ extra = extra||""; const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>${visitBtn(k)}` : ""; if(!q && !about && !extra) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}${extra}</div>`; }
 
 // ---------- add to calendar (Apple / Google) ----------
 const IOS = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
@@ -2092,8 +2148,9 @@ function indyMap(){
 function renderWhere(){
   const el=$("#whereami"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const seen=new Set(); const h=hotelFor(d); const hq=d.sleepq||(h&&h.q)||""; const bed=String(d.sleep||"").toLowerCase().split(" (")[0];
   const stops=(d.agenda||[]).filter(a=>a.map && !seen.has(a.map) && seen.add(a.map) && a.map!==hq && !(bed && a.map.toLowerCase().startsWith(bed)));
-  el.innerHTML=`${safe(indyMap)||""}<div class="card where"><div class="navh"><b>${d.dow} ${d.num} · ${esc(d.title)}</b><span>${esc(d.place||"")}</span></div>
-    ${stops.length?stops.map(a=>`<div class="wr"><span class="t">${esc(a.t||"")}</span><div><div class="wn">${esc(a.map)}</div>${mapBtns(a.map,null,false)}</div></div>`).join(""):`<p class="muted">No pinned stops on this day.</p>`}
+  const vks=[...new Set((d.agenda||[]).map(a=>a.p||a.map).filter(k=>k&&canVisit(k)))]; const vleft=vks.filter(k=>!visitedMine()[k]).length; const past=d.date<=cairoNow().date;
+  el.innerHTML=`${safe(indyMap)||""}<div class="card where"><div class="navh"><b>${d.dow} ${d.num} · ${esc(d.title)}</b><span>${esc(d.place||"")}</span></div>${vks.length?`<div class="vis-day">${vleft?(past?`<button type="button" class="btn mini" data-visitall="${d.id}">✓ Mark today's ${vleft} as visited</button>`:`<span class="muted">${vks.length} places with an About page — tick them off as you go.</span>`):`<span class="vis-all">✓ All ${vks.length} visited</span>`}</div>`:""}
+    ${stops.length?stops.map(a=>`<div class="wr ${visitInfo(a.p||a.map).any?"vis":""}"><span class="t">${esc(a.t||"")}</span><div><div class="wn">${visitInfo(a.p||a.map).any?"✓ ":""}${esc(a.map)}</div>${mapBtns(a.map,a.p,false)}</div></div>`).join(""):`<p class="muted">No pinned stops on this day.</p>`}
     ${hq?`<div class="wr"><span class="t">night</span><div><div class="wn">${esc(d.sleep)}</div>${mapBtns(hq,null,false)}</div></div>`:""}
     <p class="muted" style="margin:8px 0 0;font-size:0.7941rem">Directions open from wherever you're standing. Tap a date up top and this follows.</p></div>`;
 }
@@ -2361,11 +2418,32 @@ function bottomNav(){
 function mapLinks(){
   const el=$("#mapLinks"); let h="";
   if(MY_MAPS_URL) h+=`<a class="btn nav" target="_blank" rel="noopener" href="${MY_MAPS_URL}">Every place on Google My Maps</a>`;
-  h+=`<a class="btn" target="_blank" rel="noopener" href="https://gist.github.com/bradzickafoose/d98eea24910b64932f2faf40d54c24dc">The plan as a document</a>`;
+
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v84)";
+const BUILD = "Oct 9, 2026 (v85)";
+// ---------- the trip on one page: built from DAYS / HOTELS / flights, so it can't go stale; no booking codes
+function planDocData(){ const days=DAYS.map(d=>({d, items:(d.agenda||[]).filter(a=>a.t&&a.title).slice(0,9)})); const fl=allFlights().filter(f=>f.status!=="tbd"&&f.from&&f.from.ap).sort((a,b)=>(a.date+(a.from.t||"")).localeCompare(b.date+(b.from.t||""))); return {days, fl}; }
+const PD_SOS=[["Tourist police","126"],["Ambulance","123"],["Police","122"],["US Embassy Cairo","+20 2 2797 3300"]];
+function planDocHTML(){ const {days,fl}=planDocData(); const cut=(s,n)=>{ s=String(s||""); return s.length>n?s.slice(0,n).replace(/\s+\S*$/,"")+"…":s; };
+  return `<div class="pd"><div class="pd-h"><h1>Egypt</h1><p>Oct 10–19 Brad + Duane · Oct 19–25 Brad solo (Sinai, the desert)</p><p class="pd-s">Printed from the trip app · ${esc(BUILD)}</p></div>
+  <h2>Where we sleep</h2><table class="pd-t">${HOTELS.map(h=>`<tr><td><b>${esc(h.n)}</b><br><small>${esc(String(h.d||"").replace(/[✅⬜☐]/gu,"").replace(/\s*·\s*≈?\$[^·]*/g,"").replace(/[\s·]+$/,"").trim())}</small></td><td>${h.telD?esc(h.telD):""}${h.addr?`<br><small>${esc(h.addr)}</small>`:""}</td></tr>`).join("")}</table>
+  <h2>Day by day</h2>${days.map(({d,items})=>`<div class="pd-day ${d.who==="brad"?"solo":""}"><div class="pd-dh"><b>${d.dow} ${d.num} Oct</b> · ${esc(d.title)}${d.who==="brad"?" <small>(Brad)</small>":""}</div><div class="pd-dp">${esc(d.place||"")}${d.sleep?` · sleep: ${esc(d.sleep)}`:""}</div>${items.length?`<ul>${items.map(a=>`<li><span>${esc(a.t)}</span> ${esc(cut(a.title,70))}</li>`).join("")}</ul>`:""}</div>`).join("")}
+  <h2>Flights</h2><table class="pd-t">${fl.map(f=>{ const d=DAYS.find(x=>x.date===f.date); return `<tr><td>${d?d.dow+" "+d.num:esc(f.date.slice(5))}</td><td><b>${esc(f.no||f.op||"")}</b> ${esc(f.who)}</td><td>${esc(f.from.ap)} ${esc(f.from.t||"")} → ${esc(f.to.ap||f.to.city||"")} ${esc(f.to.t||"")}</td></tr>`; }).join("")}</table>
+  <h2>If something goes wrong</h2><p>${PD_SOS.map(([n,v])=>`${n} <b>${v}</b>`).join(" · ")}</p></div>`; }
+function planDocText(){ const {days,fl}=planDocData(); const L=["EGYPT · Brad + Duane, Oct 10–19 (Brad on to Sinai and the desert until Oct 25)",""];
+  L.push("WHERE WE ARE EACH NIGHT"); days.forEach(({d})=>L.push(`${d.dow} ${d.num} Oct — ${d.place||""}${d.sleep?` · ${d.sleep}`:""}${d.who==="brad"?" (Brad)":""}`));
+  L.push("","HOTEL PHONES"); HOTELS.forEach(h=>{ if(h.telD) L.push(`${h.n}: ${h.telD}`); });
+  L.push("","FLIGHTS"); fl.forEach(f=>{ const d=DAYS.find(x=>x.date===f.date); L.push(`${d?d.dow+" "+d.num:f.date} ${f.no||f.op||""} (${f.who}) ${f.from.ap} ${f.from.t||""} → ${f.to.ap||f.to.city||""} ${f.to.t||""}`); });
+  L.push("","Egypt emergency: tourist police 126 · ambulance 123 · US Embassy Cairo +20 2 2797 3300"); return L.join("\n"); }
+function planDocPrint(){ let p=document.getElementById("printPlan"); if(!p){ p=document.createElement("div"); p.id="printPlan"; document.body.appendChild(p); } p.innerHTML=planDocHTML(); document.documentElement.classList.add("printing"); const done=()=>{ document.documentElement.classList.remove("printing"); removeEventListener("afterprint",done); }; addEventListener("afterprint",done); setTimeout(()=>{ try{ window.print(); }catch(e){ done(); toast("Printing isn't available here — use Send instead."); } setTimeout(done, 60000); }, 50); }
+async function planDocSend(){ const text=planDocText(); try{ if(navigator.share){ await navigator.share({title:"Egypt — the plan", text}); return; } }catch(e){ if(e&&e.name==="AbortError") return; } try{ await navigator.clipboard.writeText(text); toast("Copied — paste it into a message."); }catch(e){ toast("Couldn't share from here."); } }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-plandoc]"); if(!b) return; const m=b.dataset.plandoc;
+  if(m==="view") openSheet("sheetQC", `<div class="qh"><h3>The trip on one page</h3><button type="button" class="x" data-pd-close="1" aria-label="Close">✕</button></div><div class="row pd-act"><button type="button" class="btn primary" data-plandoc="print">Print / save PDF</button><button type="button" class="btn" data-plandoc="send">Send to family ↗</button></div>${planDocHTML()}`);
+  else if(m==="print") planDocPrint(); else if(m==="send") planDocSend(); });
+document.addEventListener("click", e=>{ if(e.target.closest("[data-pd-close]")) closeSheet("sheetQC"); });
+
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2404,7 +2482,7 @@ function alarmsStrip(){
   $("#alarms").innerHTML = DAYS.filter(d=>d.alarm && d.alarm!=="none").map((d,i)=>`<span data-id="${d.id}" class="${d.date===now.date?"today":""}">${d.dow} ${d.num} <b>${esc(d.alarm.replace(/\s*\(.*\)$/,""))}</b></span>`).join("");
   $("#alarms").addEventListener("click",e=>{ const el=e.target.closest("[data-id]"); if(!el) return; goDay(DAYS.findIndex(d=>d.id===el.dataset.id), true); });
   const aa=$("#aa"); let big=false; try{ big = localStorage.getItem("egypt.big")==="1"; }catch(e){}
-  const apply=()=>{ document.documentElement.classList.toggle("big",big); aa.setAttribute("aria-pressed", big?"true":"false"); };
+  const apply=()=>{ document.documentElement.classList.toggle("big",big); aa.setAttribute("aria-pressed", big?"true":"false"); try{ localStorage.setItem("egypt.big", big?"1":"0"); }catch(e){} window.__fs&&window.__fs(); };
   aa.addEventListener("click",()=>{ big=!big; apply(); try{ localStorage.setItem("egypt.big", big?"1":"0"); }catch(e){} }); apply();
 }
 const WIKI = {"Great Pyramid of Giza":["Giza pyramid complex","Giza"],"Grand Egyptian Museum":["Grand Egyptian Museum","Giza"],"Red Pyramid Dahshur":["Red Pyramid","Saqqara"],"Step Pyramid of Djoser Saqqara":["Pyramid of Djoser","Saqqara"],"Citadel of Saladin Cairo":["Cairo Citadel","Cairo"],"Sultan Hassan Mosque Cairo":["Mosque-Madrasa of Sultan Hassan","Cairo"],"Khan el-Khalili Cairo":["Khan el-Khalili","Cairo"],"Al-Muizz Street Cairo":["Al-Muizz Street","Cairo"],"Naguib Mahfouz Cafe Khan el Khalili":["Naguib Mahfouz","Cairo"],"Khufu's Restaurant Giza":["","Giza"],"Felfela Restaurant Downtown Cairo":["Egyptian cuisine","Cairo"],"Abou Tarek Cairo":["Koshary","Cairo"],"Zooba Zamalek":["Zamalek","Cairo"],"Philae Temple Aswan":["Philae","Aswan"],"Sofitel Legend Old Cataract Aswan":["Old Cataract Hotel","Aswan"],"Gharb Soheil Nubian Village Aswan":["Nubians","Aswan"],"Kato Dool Nubian Village Aswan":["Nubian cuisine","Aswan"],"Abu Simbel Temples":["Abu Simbel","Abu Simbel"],"Temple of Kom Ombo":["Temple of Kom Ombo","Kom Ombo"],"Gebel el-Silsila":["Gebel el-Silsila","Edfu"],"Temple of Edfu":["Temple of Edfu","Edfu"],"Luxor Museum":["Luxor Museum","Luxor"],"Luxor Temple":["Luxor Temple","Luxor"],"Sofra Restaurant Luxor":["","Luxor"],"Valley of the Kings":["Valley of the Kings","Luxor"],"Temple of Hatshepsut":["Mortuary Temple of Hatshepsut","Luxor"],"Colossi of Memnon":["Colossi of Memnon","Luxor"],"Sofitel Winter Palace Luxor":["Winter Palace Hotel","Luxor"],"Karnak Temple":["Karnak","Luxor"],"Al-Sahaby Lane Restaurant Luxor":["","Luxor"],"Hilton Cairo Grand Nile":["Garden City, Cairo","Cairo"],"Hilton Luxor Resort & Spa":["","Luxor"],"Waldorf Astoria Cairo Heliopolis":["Heliopolis, Cairo","Cairo"],"Cairo International Airport":["Cairo International Airport","Cairo"],"Cairo International Airport Terminal 3":["Cairo International Airport","Cairo"],"Aswan International Airport":["Aswan International Airport","Aswan"],"Luxor International Airport":["Luxor International Airport","Luxor"],"Dahab":["Dahab","Dahab"],"Masbat Bay Dahab":["Dahab","Dahab"],"Blue Hole Dahab":["Blue Hole (Red Sea)","Dahab"],"Lighthouse Reef Dahab":["Dahab","Dahab"],"Ali Baba Restaurant Dahab":["","Dahab"],"Saint Catherine Egypt":["Saint Catherine, Egypt","Saint Catherine"],"Mount Sinai":["Mount Sinai","Saint Catherine"],"Saint Catherine's Monastery":["Saint Catherine's Monastery","Saint Catherine"],"Ras Abu Galum":["Ras Abu Galum Protected Area","Dahab"],"Sharm El Sheikh International Airport":["Sharm El Sheikh International Airport","Sharm el-Sheikh"],"Le Meridien Cairo Airport":["Cairo International Airport","Cairo"],"Bahariya Oasis":["Bahariya Oasis","Bahariya Oasis"],"Black Desert Egypt":["Black Desert (Egypt)","Bahariya Oasis"],"Crystal Mountain Egypt":["","Bahariya Oasis"],"White Desert National Park":["White Desert National Park","Farafra"],"Wikala al-Ghuri Cairo":["Wikala of al-Ghuri","Cairo"],"Cairo Opera House":["Cairo Opera House","Cairo"]};
@@ -3192,7 +3270,7 @@ const liveOK = ()=> DB_URL.startsWith("https://") && room().length>=24 && !!me()
 function livePayload(){
   const f=footballScore(); const s=gameScore(); const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
   const camels=GS.get("camel",[]); const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0); const ff=GS.get("forfeit",{});
-  return { who:me(), team:team().team, at:new Date().toISOString(), own:nileOwn(), pen:nilePen(), flags:GS.get("flags",[]), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:GS.get("events",[]).slice(0,30), xflights:(typeof xFlights==="function"?xFlights():[]).map(f=>({id:f.id,no:f.no,op:f.op,date:f.date,from:f.from,to:f.to})) };
+  return { who:me(), team:team().team, at:new Date().toISOString(), own:nileOwn(), pen:nilePen(), flags:GS.get("flags",[]), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:GS.get("events",[]).slice(0,30), visited:(typeof visitedMine==="function"?visitedMine():{}), xflights:(typeof xFlights==="function"?xFlights():[]).map(f=>({id:f.id,no:f.no,op:f.op,date:f.date,from:f.from,to:f.to})) };
 }
 // a take-back: drop the original play from the feed, announce the reversal so the other board follows
 function overturn(re, label){ try{ const ev=GS.get("events",[]); const i=ev.findIndex(e=>e.who===me()&&re.test(String(e.text||""))); if(i>=0) ev.splice(i,1); ev.unshift({at:new Date().toISOString(), who:me(), text:`↩︎ overturned — ${label}`}); GS.set("events", ev.slice(0,40)); }catch(e){} livePush(true); safe(()=>sfx("whistle")); }
@@ -3205,7 +3283,7 @@ function renderSyncState(){ const el=document.querySelector("#live .lk .sync"); 
 function boardFooter(){ const s=gameScore(); return `${safe(colorKey)}
     <div class="sbl" style="text-align:left;margin:6px 0 8px"><b>Your line:</b> ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
     <div class="row"><button type="button" class="btn dark" id="tauntBtn">🗣 Trash talk</button><button type="button" class="btn" id="scoreShare">Share the board</button><button type="button" class="btn mini" id="soundBtn" aria-pressed="${soundOn()}">${soundOn()?"🔊 booth on":"🔇 booth off"}</button><button type="button" class="btn mini" data-voice-pick="1">🎤 voice</button></div>`; }
-function renderLive(){
+function renderLive(){ safe(()=>{ const k=JSON.stringify(visitedTheirs()); if(k!==renderLive.vk){ const first=renderLive.vk===undefined; renderLive.vk=k; if(!first) refreshVisit(); } });
   const el=$("#live"); if(!el) return; setTimeout(()=>safe(()=>nbAnimate(el)),30);
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone (the name chip at the top) and the board links itself.</p>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
   const d=GS.get("live",{})||{}; const mine=d[me()], theirs=d[OTHER()]; const t=team(), o=TEAMS[OTHER()];
@@ -3225,7 +3303,7 @@ function renderLive(){
 // ---------- start over: wipe the Nile Bowl on both phones ----------
 const KEEP_GAME = ["me","sound","resetSeen"]; // everything else under egypt.game.* goes
 function wipeLocalBowl(){
-  try{ const ks=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k) continue; if(k.startsWith("egypt.game.")&&!KEEP_GAME.includes(k.slice(11))) ks.push(k); else if(k.startsWith("egypt.journal.")||k.startsWith("egypt.photo.")||k==="egypt.rate"||k==="egypt.big") ks.push(k); } ks.forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  try{ const ks=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k) continue; if(k.startsWith("egypt.game.")&&!KEEP_GAME.includes(k.slice(11))) ks.push(k); else if(k.startsWith("egypt.journal.")||k.startsWith("egypt.photo.")||k==="egypt.rate") ks.push(k); } ks.forEach(k=>localStorage.removeItem(k)); }catch(e){}
   lastPushed=""; seenOther=new Date().toISOString(); GS.set("seenOther", seenOther);
 }
 function rerenderAll(){ safe(renderGame); safe(renderLive); safe(renderPassport); safe(renderStrip); safe(renderDay); safe(renderNow); safe(renderGuideFront); }
@@ -4129,7 +4207,7 @@ function openPlace(k){
   const P = PLACES[k]; if(!P) return;
   $("#shTitle").textContent = P.n;
   const paras = t => t.split(/\n\s*\n/).map(x=>`<p>${esc(x.trim())}</p>`).join("");
-  let h = `<p>${esc(P.what)}</p>`;
+  let h = `${canVisit(k)?`<div class="vis-row">${visitBtn(k,true)}<span class="vis-note" data-vk="${esc(k)}">${visitNote(k)}</span></div>`:""}<p>${esc(P.what)}</p>`;
   if(P.know&&P.know.length) h += `<h4>Know before you go</h4><ul>${P.know.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
   if(P.ask&&P.ask.length) h += `<h4>Ask the guide to show you</h4><ul class="ask">${P.ask.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
   if(P.pop&&P.pop.length) h += `<h4>Threads you'll recognise</h4><ul class="pop">${P.pop.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
@@ -4137,13 +4215,15 @@ function openPlace(k){
   const q = /Gebel/.test(k) ? "" : k;
   if(q) h += `<div class="maps"><a class="btn nav" target="_blank" rel="noopener" href="${A(q)}">Apple Maps</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}">Google Maps</a><button type="button" class="btn send" data-sendtext="${esc("📍 "+P.n+" — "+G(q)).replace(/"/g,"&quot;")}">Send ↗</button></div>`;
   const w = WIKI[k]; if(w && (w[0]||w[1])){ h += `<h4>Read further</h4><div class="maps">${w[0]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/${encodeURIComponent(w[0].replace(/ /g,"_"))}">Wikipedia: ${esc(w[0])}</a>`:""}${w[1]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikivoyage.org/wiki/${encodeURIComponent(w[1].replace(/ /g,"_"))}">Wikivoyage: ${esc(w[1])}</a>`:""}</div>`; }
-  $("#shBody").innerHTML = h; $("#shBody").scrollTop = 0;
+  $("#shBody").innerHTML = h; $("#shBody").scrollTop = 0; refreshVisit();
   openPlace.last = document.activeElement;
   $("#sheet").classList.add("show"); document.body.style.overflow="hidden"; setTimeout(()=>$("#shX").focus(),50);
 }
 function closePlace(){ if(!$("#sheet").classList.contains("show")) return; $("#sheet").classList.remove("show"); document.body.style.overflow=""; try{ openPlace.last && openPlace.last.focus(); }catch(e){} }
+function renderPidx(){ const el=$("#pidx"); if(!el) return; const all=[...new Set(PLACE_INDEX.flatMap(([g,ks])=>ks.filter(k=>canVisit(k))))]; const done=all.filter(k=>visitInfo(k).any).length;
+  el.innerHTML = `<div class="pidx-h"><b>${done} of ${all.length} visited</b><span class="pidx-bar"><i style="width:${all.length?Math.round(done/all.length*100):0}%"></i></span></div>` + PLACE_INDEX.map(([g,ks])=>{ const kk=ks.filter(k=>PLACES[k]); const vis=g!=="Sleeping"; const n=vis?kk.filter(k=>visitInfo(k).any).length:0; return `<div class="grp"><b>${g}${n?` <em>${n}/${kk.length} ✓</em>`:""}</b><div>${kk.map(k=>{ const v=vis?visitInfo(k):{}; const only=v.theirs&&!v.mine; return `<button type="button" data-place="${esc(k)}" class="${v.any?"done":""}" ${v.any?`aria-label="${esc(PLACES[k].n)}, visited"`:""}>${v.any?`<span class="ck">✓</span>`:""}${esc(PLACES[k].n)}${only?` <small>${esc(OTHER().slice(0,1))}</small>`:""}</button>`; }).join("")}</div></div>`; }).join(""); }
 function placesUI(){
-  $("#pidx").innerHTML = PLACE_INDEX.map(([g,ks])=>`<div class="grp"><b>${g}</b><div>${ks.filter(k=>PLACES[k]).map(k=>`<button type="button" data-place="${esc(k)}">${esc(PLACES[k].n)}</button>`).join("")}</div></div>`).join("");
+  renderPidx();
   document.addEventListener("click",e=>{ const b=e.target.closest("[data-place]"); if(b){ openPlace(b.dataset.place); } });
   $("#shX").addEventListener("click",closePlace); $("#shBd").addEventListener("click",closePlace);
   (function(){ let y0=0,t0=0; const hd=document.querySelector("#sheet .hd");
