@@ -671,7 +671,7 @@ p.muted{margin:0 0 8px}
 .bingo button.free{background:var(--dusk-soft);color:var(--dusk);border-style:dashed}
 .hform{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 .hform input{font:14px var(--body);padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);min-width:0}
-.hform #hw,.hform #qhw,.hform #tauntIn,.hform #qline{grid-column:1/-1}.hform .btn{grid-column:1/-1;justify-content:center}
+.hform #hw,.hform #hd,.hform #qhw,.hform #tauntIn,.hform #qline{grid-column:1/-1}.hform .btn{grid-column:1/-1;justify-content:center}
 .htab{width:100%;border-collapse:collapse;font-size:13px}.htab th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 4px 4px 0}
 .htab td{padding:6px 4px 6px 0;border-top:1px solid var(--line);vertical-align:top}.htab td small{display:block;color:var(--muted)}
 .htab .pct{font-weight:700}.htab .pct.win{color:var(--nile)}
@@ -834,6 +834,7 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .check label{flex:1;min-width:0;font-size:14px;line-height:1.35}
 .check label small{display:block;color:var(--muted);font-size:12.5px}
 .check li.done label{text-decoration:line-through;color:var(--muted)}
+.check li.his{opacity:.62}.check li.his .who{border-style:dashed}
 .who{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:2px 7px;color:var(--muted);flex:0 0 auto;margin-top:2px}
 .who.both{color:var(--nile-ink);border-color:var(--nile)}
 .conv{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
@@ -1956,7 +1957,7 @@ function preNow(now, days){
   if(mine.length){
     const first=mine[0], arrive=last(mine); const dep=flightDep(first)-nowUTC(); const left=cdLong(dep);
     const chain=mine.map((f,i)=>`${i?"":`${esc(f.from.ap)} ${esc(f.from.t)} → `}${esc(f.to.ap)}${i===mine.length-1||!f.to.t?"":""}`).join(" → ");
-    const landTxt=`${esc(arrive.to.t)}${arrive.to.date&&arrive.to.date!==first.date?" Sun":""}`;
+    const landTxt=`${esc(arrive.to.t)}${arrive.to.date&&arrive.to.date!==first.date?"&nbsp;Sun":""}`;
     const connecting = w==="Duane" && first.from.ap==="LHR"; // no Norfolk leg added yet
     const band = connecting
       ? `<div class="fband"><span class="fb-ic">🔁</span><div><b>Connecting at Heathrow · boards ≈${mmhh(hm(first.from.t)-40)}</b><span>BA, T5 unless the app says 3 · purple Flight Connections signs</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div><div class="fband theirs"><span class="fb-ic">➕</span><div><b>Add your Norfolk → London flight</b><span>then this counts down from home, not Heathrow</span></div><button type="button" class="btn mini primary" data-nav="flights">Add it</button></div>`
@@ -2014,7 +2015,8 @@ function renderList(name, items){
   document.querySelectorAll(`[data-list="${name}"]`).forEach(ul=>renderListInto(ul, name, items));
 }
 function renderListInto(ul, name, items){
-  ul.innerHTML = items.map(it=>`<li class="${checks[it.k]?"done":""}"><input type="checkbox" id="c-${name}-${ul.dataset.n||(ul.dataset.n=Math.random().toString(36).slice(2,6))}-${it.k}" data-k="${it.k}" ${checks[it.k]?"checked":""}><label for="c-${name}-${ul.dataset.n}-${it.k}">${it.h||esc(it.t)}${it.s?`<small>${esc(it.s)}</small>`:""}</label>${it.who?`<span class="who ${it.who==="Both"?"both":""}">${it.who}</span>`:""}</li>`).join("");
+  const w=(typeof me==="function"&&me())||""; if(w && items.some(it=>it.who)){ const rank=it=>!it.who||it.who===w?0:(it.who==="Both"||it.who==="Either")?1:2; items=[...items].sort((a,b)=>rank(a)-rank(b)); }
+  ul.innerHTML = items.map(it=>`<li class="${checks[it.k]?"done":""} ${w&&it.who&&it.who!=="Both"&&it.who!=="Either"&&it.who!==w?"his":""}"><input type="checkbox" id="c-${name}-${ul.dataset.n||(ul.dataset.n=Math.random().toString(36).slice(2,6))}-${it.k}" data-k="${it.k}" ${checks[it.k]?"checked":""}><label for="c-${name}-${ul.dataset.n}-${it.k}">${it.h||esc(it.t)}${it.s?`<small>${esc(it.s)}</small>`:""}</label>${it.who?`<span class="who ${it.who==="Both"?"both":""}">${it.who}</span>`:""}</li>`).join("");
   const count=()=>{ document.querySelectorAll(`[data-count="${name}"]`).forEach(el=>{ const n=items.filter(it=>checks[it.k]).length; el.textContent=`${n}/${items.length}`; }); };
   ul.querySelectorAll("input").forEach(inp=>inp.addEventListener("change",e=>{ checks[e.target.dataset.k]=e.target.checked; saveChecks(); e.target.closest("li").classList.toggle("done",e.target.checked); count(); document.querySelectorAll(`[data-list="${name}"] input[data-k="${e.target.dataset.k}"]`).forEach(o=>{ if(o!==e.target){ o.checked=e.target.checked; o.closest("li").classList.toggle("done",e.target.checked); } }); }));
   count();
@@ -2086,7 +2088,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v63)";
+const BUILD = "Oct 8, 2026 (v64)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2313,7 +2315,7 @@ function renderGame(){
     ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button>${sendBtn(`🏷️ ${h.w}${h.d?" at "+h.d:""}: asked ${h.a.toLocaleString()}, paid ${h.p.toLocaleString()} — ${pct}% off.${pct>=40?" Field goal.":""}`, SEND_ICON, "mini tagsend")}</div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
   </div></details>
 
-  <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t">The Playbook<small>one play a day · each one a touchdown through Sunday</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
+  <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t">The Playbook<small>one play a day · each one a touchdown through Sunday</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).filter(k=>me()!=="Duane"||(DAYS.find(d=>d.id===k)||{}).who!=="brad").length}</span></summary><div class="in">
     <p class="muted">Drawn up on each day's card. Through Sunday the 18th every completed play is six; Brad's week after is overtime, no score.</p>
     <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini ${!ch[d.id]&&QUARTER[d.id]?"pts-me":""}" data-chal="${d.id}" aria-label="${ch[d.id]?"Undo":"Done"}">${ch[d.id]?"✓":QUARTER[d.id]?"+6":"○"}</button></li>`).join("")}</ul>
   </div></details>
