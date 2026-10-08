@@ -183,6 +183,72 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+.lived{margin:8px 0 2px;padding:8px 10px;border-left:3px solid #b5322b;background:var(--bg);border-radius:0 10px 10px 0}
+.lived .lvb{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:var(--muted)}
+.lived .lq{margin-top:4px;font-family:var(--display);font-size:15px;line-height:1.35;font-style:italic}
+.dayhead.stamped h2{padding-right:120px}
+
+/* game + passport */
+.dayhead{position:relative}
+.stamp{--ink:#b5322b;position:absolute;right:8px;top:6px;width:118px;height:118px;border:3px double var(--ink);border-radius:50%;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em;transform:rotate(var(--rot,-8deg));opacity:.82;mix-blend-mode:multiply;pointer-events:none;padding:8px;box-sizing:border-box}
+@media (prefers-color-scheme:dark){ .stamp{--ink:#ff8a7a;mix-blend-mode:screen} }
+.stamp .r1{font-size:9px}.stamp .r2{font-size:10.5px;margin:3px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:2px 0;width:100%}.stamp .r3{font-size:8px}
+.stamp.small{position:static;width:96px;height:96px;transform:rotate(var(--rot,-8deg)) scale(.92)}
+.stamp.ghost{position:static;border-style:dashed;opacity:.35;pointer-events:auto}
+.stampbox{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.stampbox .stamp{position:static;width:96px;height:96px}
+.stampbox .btn{margin-top:6px}
+.chip .sm{position:absolute;right:4px;top:4px;width:8px;height:8px;border-radius:50%;background:#b5322b;border:1.5px solid var(--card)}
+.chip{position:relative}
+.chal{margin-top:10px;background:var(--dusk-soft);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.chal b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dusk)}
+.chal .ct{font-size:14px;line-height:1.4}
+.chal.done{background:var(--nile-soft)}.chal.done b{color:var(--nile)}
+.chal .btn{justify-self:start}.chal .btn.primary{background:var(--dusk);color:#fff;border-color:transparent}
+.rateday{margin-top:12px;display:grid;gap:4px}
+.rateday b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rrow{display:flex;justify-content:space-between;align-items:center;font-size:13.5px}
+.stars button{background:none;border:0;font-size:22px;color:var(--line);cursor:pointer;padding:0 2px;line-height:1}
+.stars button.on{color:#e0a100}
+.who{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:var(--card);padding:7px 14px;font:600 13px var(--body);color:var(--fg);cursor:pointer}
+.seg button.on{background:var(--nile);color:#fff}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 10px}
+.score div{background:var(--bg);border-radius:10px;padding:8px 6px;text-align:center}
+.score b{display:block;font-family:var(--display);font-size:22px;line-height:1}.score b small{font-size:12px;color:var(--muted)}
+.score span{font-size:10.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:12.5px}
+p.muted{margin:0 0 8px}
+.btn.primary{background:var(--nile);color:#fff;border-color:transparent}
+.bingo{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.bingo button{aspect-ratio:1;border:1px solid var(--line);background:var(--bg);border-radius:8px;font:600 9.5px/1.15 var(--body);color:var(--fg);padding:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.bingo button.on{background:var(--nile);color:#fff;border-color:transparent}
+.bingo button.free{background:var(--dusk-soft);color:var(--dusk);border-style:dashed}
+.hform{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.hform input{font:14px var(--body);padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);min-width:0}
+.hform #hw{grid-column:1/-1}.hform .btn{grid-column:1/-1;justify-content:center}
+.htab{width:100%;border-collapse:collapse;font-size:13px}.htab th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 4px 4px 0}
+.htab td{padding:6px 4px 6px 0;border-top:1px solid var(--line);vertical-align:top}.htab td small{display:block;color:var(--muted)}
+.htab .pct{font-weight:700}.htab .pct.win{color:var(--nile)}
+.clist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.clist li{display:grid;grid-template-columns:48px 1fr auto;gap:8px;align-items:center;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.clist li.done span{text-decoration:line-through;color:var(--muted)}.clist li.solo b{color:var(--dusk)}
+.acard{margin-top:10px;border:2px solid var(--fg);border-radius:14px;padding:14px}
+.acard .ah{font-family:var(--display);font-size:22px;letter-spacing:.02em}.acard .as{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+.acard .ai{display:grid;grid-template-columns:140px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
+.acard .am{margin-top:10px;font-size:13px}.acard .am b{display:block;margin-bottom:4px}.acard .am i{color:var(--muted);font-style:normal;margin-right:4px}
+.pp .pphead{border-bottom:2px solid var(--fg);padding-bottom:8px;margin-bottom:10px}
+.pp .ppt{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.3em;font-size:18px}.pp .pps{color:var(--muted);font-size:12.5px}
+.ppgrid{display:grid;gap:10px}
+.ppd{display:grid;grid-template-columns:100px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px dashed var(--line)}
+.ppd .ppi{font-size:13px}.ppd .ppi b{display:block}.ppd .ppi p{margin:4px 0 0;color:var(--fg);white-space:pre-wrap}
+.ppd .ppr,.ppd .ppc{display:inline-block;margin:3px 6px 0 0;font-size:12px;color:var(--muted)}
+.ppd:not(.on) .ppi{opacity:.6}
+h3.arch{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nile);margin:18px 0 6px}
+.pp.arch{margin-top:8px}
+
 /* city guides */
 .gtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 8px}
 .gtabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font:600 13px var(--body);color:var(--fg);cursor:pointer}
@@ -201,7 +267,9 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .guide .g .maps{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
 .guide table{width:100%;border-collapse:collapse;font-size:13px}
 .guide td{padding:6px 6px 6px 0;vertical-align:top;border-top:1px solid var(--line)}
-.guide td:first-child{font-weight:600;white-space:nowrap;padding-right:10px}
+.guide table{table-layout:fixed}
+.guide td:first-child{font-weight:600;width:38%;padding-right:10px;overflow-wrap:anywhere}
+.guide td{overflow-wrap:anywhere}
 .guide td small{display:block;color:var(--muted);margin-top:2px}
 
 .fold.howto{margin-top:10px}
@@ -250,8 +318,8 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tblwrap{overflow-x:auto}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
-.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.02em;padding:6px 1px;border-radius:10px;white-space:nowrap}
+.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:9.5px;font-weight:600;letter-spacing:0;padding:6px 0;border-radius:10px;white-space:nowrap}
 .bottom a span.i{font-size:18px;line-height:1}
 .bottom a.on{color:var(--nile-ink);background:var(--nile-soft)}
 .toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -425,6 +493,13 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <div id="guideBody"></div>
   </section>
 
+  <section id="game">
+    <h2 class="sec">The game</h2>
+    <div id="gameBody"></div>
+    <h2 class="sec" style="margin-top:18px">Passport</h2>
+    <div class="card" id="passport"></div>
+  </section>
+
   <section id="more">
     <h2 class="sec">Flights</h2>
     <div class="card flights">
@@ -541,9 +616,10 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <a href="#notes" data-go="notes"><span class="i">📝</span>Notes</a>
   <a href="#tools" data-go="tools"><span class="i">💵</span>Money</a>
   <a href="#map" data-go="map"><span class="i">🏛️</span>Places</a>
-  <a href="#guides" data-go="guides"><span class="i">🍢</span>Eat&amp;shop</a>
+  <a href="#guides" data-go="guides"><span class="i">🍢</span>Eat</a>
+  <a href="#game" data-go="game"><span class="i">🛂</span>Game</a>
 </div></nav>
-<div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
+<div class="lvb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"><div class="bd" id="shBd"></div><div class="pn"><div class="hd"><h3 id="shTitle"></h3><button class="x" id="shX" aria-label="Close">×</button></div><div class="bodyx" id="shBody"></div></div></div>
 <div class="toast" id="toast">Copied</div>
 <div class="upd" id="upd"><span>A newer plan is ready</span><button id="updBtn">Reload</button></div>
@@ -1000,7 +1076,7 @@ function renderStrip(){
   // newspaper order: today first, then the days ahead, then (dimmed, after a gap) the days already done
   let order = DAYS.map((d,i)=>i);
   if(ti>0) order = order.slice(ti).concat(order.slice(0,ti));
-  const chip = (i,past)=>{ const d=DAYS[i]; return `<button class="chip ${i===sel?"on":""} ${i===ti?"today":""} ${d.who==="brad"?"solo":""} ${past?"past":""}" data-i="${i}" aria-pressed="${i===sel}"><small>${d.dow}</small>${d.num}</button>`; };
+  const stp=stamps(); const chip = (i,past)=>{ const d=DAYS[i]; return `<button class="chip ${i===sel?"on":""} ${i===ti?"today":""} ${d.who==="brad"?"solo":""} ${past?"past":""} ${stp[d.id]?"stamped":""}" data-i="${i}" aria-pressed="${i===sel}"><small>${d.dow}</small>${d.num}${stp[d.id]?`<i class="sm" aria-label="stamped"></i>`:""}</button>`; };
   let html = "";
   order.forEach((i,pos)=>{ const past = ti>0 && i<ti; if(past && pos===DAYS.length-ti) html += `<span class="gap" aria-hidden="true"></span>`; if(!past && pos>0 && DAYS[i].who==="brad" && DAYS[order[pos-1]].who!=="brad") html += `<span class="gap solo" aria-hidden="true"></span>`; html += chip(i,past); });
   $("#dayStrip").innerHTML = html;
@@ -1009,7 +1085,7 @@ function renderStrip(){
 
 function renderDay(){
   const d = DAYS[sel]; const now = cairoNow(); const isToday = now.date===d.date;
-  const askOpen = !!(document.querySelector("#dayCard .askday") && document.querySelector("#dayCard .askday").open);
+  const openCls = [...document.querySelectorAll("#dayCard details[open]")].map(x=>x.className);
   let nextIdx = -1;
   if(isToday){ nextIdx = d.agenda.findIndex(a=>toMins(a.t)>=now.mins); }
   const items = d.agenda.map((a,i)=>{
@@ -1020,7 +1096,8 @@ function renderDay(){
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
     ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> Duane flew home this morning. Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
-    <div class="dayhead"><div class="k">${d.dow} Oct ${d.num} · ${d.emoji} · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
+    <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · ${d.emoji} · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
+    ${safe(()=>livedLine(d, now))}
     <div class="status">
       <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}</span></div>
       <div class="s"><b>Carry</b><span>${esc(d.bag)}</span></div>
@@ -1028,6 +1105,7 @@ function renderDay(){
       <div class="s"><b>Wear</b><span>${esc(d.dress)}</span></div>
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
+    ${safe(()=>challengeBox(d))}
     <ul class="agenda">${items}</ul>
     ${safe(()=>calDay(d))}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
@@ -1035,9 +1113,9 @@ function renderDay(){
     ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
     ${shotList(d)}
     ${askToday(d)}
-    <details class="askday journal"><summary>Journal <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="…"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div></div></details>
+    <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="…"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
-  if(askOpen){ const a=document.querySelector("#dayCard .askday"); if(a) a.open=true; }
+  openCls.forEach(c=>{ const a=[...document.querySelectorAll("#dayCard details")].find(x=>x.className===c); if(a) a.open=true; });
   journalWire(d);
 }
 function journalWire(d){
@@ -1067,7 +1145,7 @@ function renderNow(){
     const minsLeft = (24*60 - now.mins) + (days-1)*24*60 + toMins("17:20");
     html = `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>`;
   } else if(now.date > last){
-    html = `<div class="eyebrow">After</div><div class="big">The Egypt leg is done.</div><div class="sub">Brad is in Sinai through Thursday, the White Desert Friday night, home Sunday the 25th.</div>`;
+    html = safe(()=>lookingBack()) || `<div class="eyebrow">After</div><div class="big">Egypt, October 2026.</div>`;
   } else {
     const di = dayIndexFor(now.date); const d = DAYS[di];
     const ni = d.agenda.findIndex(a=>toMins(a.t)>now.mins);
@@ -1193,7 +1271,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v16)";
+const BUILD = "Oct 8, 2026 (v17)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1327,6 +1405,193 @@ const GUIDES = [
   ]}
 ];
 
+// The game: bingo, haggle scoreboard, daily challenges, rate the day, the Brothers' Awards.
+const CHALLENGES = {
+ sat10:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone.",
+ sun11:"Haggle one thing in the Khan and log it on the scoreboard. First to beat 40% off takes the day.",
+ mon12:"Order koshary — or anything — entirely in Arabic: “wahed koshary, min fadlak… shukran.”",
+ tue13:"Learn every crew member's name by dinner, and use them.",
+ wed14:"Abu Simbel at dawn: phones stay in pockets for the first ten minutes. Then shoot.",
+ thu15:"Name three gods on the Kom Ombo or Edfu walls before the guide does. Horus, Sobek and Hathor all count.",
+ fri16:"Find the oldest graffiti in a tomb — Greeks and Romans wrote on these walls too. Ask the guide to show you.",
+ sat17:"From the balloon: spot the Ramesseum, Hatshepsut's temple and the Colossi before anyone points.",
+ sun18:"Last night together: each name the moment of the trip, out loud, then write it in the journal.",
+ mon19:"Brad: in the sea before lunch. Duane: a photo from the layover.",
+ tue20:"Blue Hole: say hello to one stranger and find out where they're from.",
+ wed21:"Write one line on the summit, not afterwards.",
+ thu22:"Dinner where locals eat, no phone on the table.",
+ fri23:"Count shooting stars. Loser of the trip buys the first dinner at home.",
+ sat24:"Buy the dates.",
+ sun25:"The whole trip in ten lines, on the plane."
+};
+const BINGO = [
+ "Called “my friend” 10 times before noon","Haggled below 40% of the ask","Karkadeh at El Fishawy","A cat on a temple wall","Said “khalas” and it worked",
+ "Tut's gold mask","Stuffed pigeon, eaten","Camel photo, nothing paid","The felucca captain sang","A sunrise you were awake for",
+ "Koshary at Abou Tarek","Ta'ameya from a cart","FREE","Got lost in the Khan","A crocodile mummy",
+ "Call to prayer, up close","Brothers photo at a pyramid","A hieroglyph you can read","Shisha, one puff minimum","Beat the guide to a fact",
+ "Tipped right, first try","Nile swim (crew permitting)","Dervish spinning, 15 min","Balloon over the West Bank","Said no to a tout, smiling"
+];
+const GS = {
+ get(k,d){ try{ const v=localStorage.getItem("egypt.game."+k); return v==null?d:JSON.parse(v); }catch(e){ return d; } },
+ set(k,v){ try{ localStorage.setItem("egypt.game."+k, JSON.stringify(v)); }catch(e){} }
+};
+const me = ()=>GS.get("me","");
+function bingoLines(set){ const L=[]; for(let r=0;r<5;r++) L.push([0,1,2,3,4].map(c=>r*5+c)); for(let c=0;c<5;c++) L.push([0,1,2,3,4].map(r=>r*5+c)); L.push([0,6,12,18,24]); L.push([4,8,12,16,20]); return L.filter(l=>l.every(i=>set.has(i))).length; }
+function gameScore(){
+  const b=new Set(GS.get("bingo",[12])); const ch=GS.get("chal",{}); const hg=GS.get("haggle",[]);
+  const chal=Object.values(ch).filter(Boolean).length;
+  const best=hg.reduce((m,h)=>Math.max(m,h.a>0?Math.round((1-h.p/h.a)*100):0),0);
+  const saved=hg.reduce((s,h)=>s+Math.max(0,h.a-h.p),0);
+  return {bingo:b.size-1, lines:bingoLines(b), chal, best, saved, n:hg.length};
+}
+function scoreText(){ const s=gameScore(); const who=me()||"This phone"; return `${who} · Egypt score: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
+
+function challengeBox(d){
+  const c=CHALLENGES[d.id]; if(!c) return "";
+  const done=!!GS.get("chal",{})[d.id];
+  return `<div class="chal ${done?"done":""}"><b>Today's challenge · 1 pt</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":"primary"}" data-chal="${d.id}">${done?"Done ✓ — undo":"Done ✓"}</button></div>`;
+}
+function rateBox(d){
+  const r=GS.get("rate",{})[d.id]||{};
+  const row=(k,label)=>`<div class="rrow"><span>${label}</span><span class="stars" data-rate="${d.id}" data-k="${k}">${[1,2,3,4,5].map(n=>`<button type="button" class="${(r[k]||0)>=n?"on":""}" data-n="${n}" aria-label="${n} of 5">★</button>`).join("")}</span></div>`;
+  return `<div class="rateday"><b>Rate the day</b>${row("food","Food")}${row("sight","Sights")}${row("sleep","Sleep")}</div>`;
+}
+
+function renderGame(){
+  const el=$("#gameBody"); if(!el) return;
+  const who=me(); const s=gameScore(); const bset=new Set(GS.get("bingo",[12])); const hg=GS.get("haggle",[]); const ch=GS.get("chal",{});
+  const rows=hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<tr><td>${esc(h.w)}<small>${esc(h.d||"")}</small></td><td>${h.a.toLocaleString()}</td><td>${h.p.toLocaleString()}</td><td class="pct ${pct>=40?"win":""}">${pct}%</td><td><button type="button" class="btn mini" data-hdel="${i}" aria-label="Remove">✕</button></td></tr>`; }).join("");
+  const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
+  el.innerHTML = `
+  <div class="card">
+    <div class="who"><span>This phone is</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    <div class="score"><div><b>${s.bingo}<small>/24</small></b><span>bingo · ${s.lines} line${s.lines===1?"":"s"}</span></div><div><b>${s.chal}</b><span>challenges</span></div><div><b>${s.best}%</b><span>best haggle</span></div><div><b>${s.saved.toLocaleString()}</b><span>EGP saved</span></div></div>
+    <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare on WhatsApp — that's the fun part.</span></div>
+  </div>
+
+  <details class="fold" open><summary>Egypt Bingo <span class="pill">${s.bingo}/24</span></summary><div class="in">
+    <p class="muted">Tap when it happens. A line is bragging rights; blackout is legendary.</p>
+    <div class="bingo">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
+  </div></details>
+
+  <details class="fold" open><summary>Haggle Scoreboard <span class="pill">${hg.length}</span></summary><div class="in">
+    <p class="muted">Log every buy: what, asking price, what you paid. Below 40% of the ask is a win. ${king?`<b>Best so far: ${esc(king.w)}, ${Math.round((1-king.p/king.a)*100)}% off.</b>`:""}</p>
+    <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" type="submit">Log it</button></form>
+    ${hg.length?`<table class="htab"><thead><tr><th>What</th><th>Asked</th><th>Paid</th><th>Off</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:""}
+  </div></details>
+
+  <details class="fold"><summary>Daily challenges <span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
+    <p class="muted">One a day, on each day's card. The day's loser buys the evening's tea.</p>
+    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc(CHALLENGES[d.id])}</span><button type="button" class="btn mini" data-chal="${d.id}">${ch[d.id]?"✓":"○"}</button></li>`).join("")}</ul>
+  </div></details>
+
+  <details class="fold"><summary>The Brothers' Awards</summary><div class="in">
+    <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
+    <button type="button" class="btn primary" id="awardsBtn">Make the awards</button>
+    <div id="awards"></div>
+  </div></details>`;
+}
+
+function makeAwards(){
+  const rate=GS.get("rate",{}); const hg=GS.get("haggle",[]); const s=gameScore(); const who=me()||"This phone";
+  const days=DAYS.filter(d=>rate[d.id]);
+  const top=(k,hi=true)=>{ const c=days.filter(d=>rate[d.id][k]); if(!c.length) return null; return c.reduce((a,b)=> hi ? ((rate[b.id][k]>rate[a.id][k])?b:a) : ((rate[b.id][k]<rate[a.id][k])?b:a)); };
+  const j=id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim().split("\n")[0]; }catch(e){ return ""; } };
+  const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
+  const items=[
+   ["🍽️ Best meal", top("food") && `${top("food").dow} ${top("food").num} — ${top("food").title}`],
+   ["🏛️ Best sight", top("sight") && `${top("sight").dow} ${top("sight").num} — ${top("sight").title}`],
+   ["😴 Worst night", top("sleep",false) && `${top("sleep",false).dow} ${top("sleep",false).num} — ${top("sleep",false).sleep||top("sleep",false).title}`],
+   ["🤝 Haggle of the trip", king && `${king.w}: asked ${king.a.toLocaleString()}, paid ${king.p.toLocaleString()} (${Math.round((1-king.p/king.a)*100)}% off)`],
+   ["🎯 Bingo", `${s.bingo}/24, ${s.lines} line${s.lines===1?"":"s"}`],
+   ["🏅 Challenges", `${s.chal} done`],
+  ].filter(x=>x[1]);
+  const moments=DAYS.map(d=>[d,j(d.id)]).filter(x=>x[1]).slice(0,16);
+  const text=`THE BROTHERS' AWARDS — Egypt 2026 (${who})\n`+items.map(x=>`${x[0]}: ${x[1]}`).join("\n")+(moments.length?`\n\nMoments:\n`+moments.map(([d,m])=>`${d.dow} ${d.num}: ${m}`).join("\n"):"");
+  $("#awards").innerHTML=`<div class="acard"><div class="ah">The Brothers' Awards</div><div class="as">Egypt, October 2026 · ${esc(who)}</div>${items.map(x=>`<div class="ai"><b>${x[0]}</b><span>${esc(x[1])}</span></div>`).join("")}${moments.length?`<div class="am"><b>Moments</b>${moments.map(([d,m])=>`<div><i>${d.dow} ${d.num}</i> ${esc(m)}</div>`).join("")}</div>`:""}<div class="row" style="margin-top:10px"><button type="button" class="btn" data-sharetext="${esc(text).replace(/"/g,"&quot;")}">Share</button><button type="button" class="btn" data-copy="${esc(text).replace(/"/g,"&quot;")}">Copy</button></div></div>`;
+  if(!days.length && !hg.length) toast("Rate a few days first");
+}
+
+function gameWire(){
+  document.addEventListener("click", e=>{
+    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); return; }
+    const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before) toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); return; }
+    const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]) toast("Point to "+(me()||"you")); return; }
+    const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
+    const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); return; }
+    if(e.target.id==="scoreShare"||e.target.id==="scoreCopy"){ const t=scoreText(); if(e.target.id==="scoreShare"&&navigator.share){ navigator.share({text:t}).catch(()=>{}); } else { (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it to WhatsApp")).catch(()=>toast("Couldn't copy here")); } return; }
+    const sh=e.target.closest("[data-sharetext]"); if(sh){ const t=sh.dataset.sharetext; if(navigator.share) navigator.share({text:t}).catch(()=>{}); else (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied")).catch(()=>{}); return; }
+    if(e.target.id==="awardsBtn"){ makeAwards(); return; }
+  });
+  document.addEventListener("submit", e=>{
+    if(e.target.id!=="hform") return; e.preventDefault();
+    const num=s=>+String(s).replace(/[^\d.]/g,"")||0;
+    const h={w:$("#hw").value.trim(), d:$("#hd").value.trim(), a:num($("#ha").value), p:num($("#hp").value), day:(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id};
+    if(!h.w||!h.a){ toast("Need the item and the asking price"); return; }
+    const hg=GS.get("haggle",[]); hg.unshift(h); GS.set("haggle",hg); renderGame();
+    const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off — that's a win`:`${pct}% off. Logged.`);
+  });
+}
+
+// ---------- passport: stamps, export, archive ----------
+const CITY_OF = d => { const p=(d.place||"").toLowerCase(); if(/dahab|sinai|sharm|blue hole/.test(p)) return "DAHAB · SINAI"; if(/desert|bahariya/.test(p)) return "WHITE DESERT"; if(/abu simbel/.test(p)) return "ABU SIMBEL"; if(/aswan/.test(p)) return "ASWAN"; if(/edfu|kom ombo|esna|nile|river|sail/.test(p)) return "ON THE NILE"; if(/luxor|karnak|thebes/.test(p)) return "LUXOR"; if(/giza|saqqara|dahshur/.test(p)) return "GIZA"; if(/home|flight|airport/.test(p)&&d.id==="sun25") return "HOME"; return "CAIRO"; };
+const stamps = ()=>GS.get("stamp",{});
+function stampHTML(d, s, small){ if(!s) return ""; const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0"); return `<div class="stamp ${small?"small":""}" style="--rot:${(parseInt(d.id.replace(/\D/g,""))%7-3)*4}deg"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num} OCT 2026</div><div class="r3">${esc((s.who||"").toUpperCase()||"ENTERED")} · ${hh}</div></div>`; }
+function stampBox(d){
+  const s=stamps()[d.id];
+  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":"primary"}" data-stamp="${d.id}">${s?"Un-stamp":"🛂 Stamp it"}</button></div></div>`;
+}
+function renderPassport(){
+  const el=$("#passport"); if(!el) return; const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
+  const j=id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim(); }catch(e){ return ""; } };
+  const n=Object.keys(st).length;
+  el.innerHTML=`<div class="pp"><div class="pphead"><div class="ppt">PASSPORT</div><div class="pps">Egypt · October 2026 · ${esc(me()||"traveller")} · ${n}/${DAYS.length} stamps</div></div>
+  <div class="ppgrid">${DAYS.map(d=>`<div class="ppd ${st[d.id]?"on":""} ${d.who==="brad"?"solo":""}">${st[d.id]?stampHTML(d,st[d.id],true):`<div class="stamp ghost small"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num}</div></div>`}<div class="ppi"><b>${d.dow} ${d.num} · ${esc(d.title)}</b>${rate[d.id]?`<span class="ppr">${["food","sight","sleep"].map(k=>rate[d.id][k]?`${k==="food"?"🍽️":k==="sight"?"🏛️":"😴"}${"★".repeat(rate[d.id][k])}`:"").filter(Boolean).join(" ")}</span>`:""}${ch[d.id]?`<span class="ppc">🏅 challenge done</span>`:""}${j(d.id)?`<p>${esc(j(d.id))}</p>`:""}</div></div>`).join("")}</div>
+  <div class="row" style="margin-top:12px"><button type="button" class="btn primary" id="ppSave">Save my passport file</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
+  <p class="muted" style="margin-top:8px">The file holds everything on this phone: stamps, journal, ratings, bingo, haggles, notes. After the trip, send it to Brad; it goes into the site's repo as your archived passport and the page shows both of yours, on any device, for good.</p>
+  <div id="archive"></div></div>`;
+}
+function passportData(){ const out={v:1, who:me(), saved:new Date().toISOString(), data:{}}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith("egypt.")&&!k.startsWith("egypt.wx")) out.data[k]=localStorage.getItem(k); } }catch(e){} return out; }
+function passportText(){ const st=stamps(); const rate=GS.get("rate",{}); const j=id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim(); }catch(e){ return ""; } }; return `EGYPT PASSPORT — ${me()||"traveller"} — October 2026\n\n`+DAYS.map(d=>`${d.dow} Oct ${d.num} · ${d.title}${st[d.id]?"  [STAMPED "+CITY_OF(d)+"]":""}${rate[d.id]?"  food "+(rate[d.id].food||"-")+" sight "+(rate[d.id].sight||"-")+" sleep "+(rate[d.id].sleep||"-"):""}${j(d.id)?"\n"+j(d.id):""}`).join("\n\n")+"\n\n"+scoreText(); }
+async function loadArchive(){
+  const el=$("#archive"); if(!el) return; const found=[];
+  for(const who of ["brad","duane"]){ try{ const r=await fetch(`passport-${who}.json`,{cache:"no-store"}); if(r.ok){ const p=await r.json(); if(p&&p.data) found.push(p); } }catch(e){} }
+  if(!found.length) return;
+  const j=(p,id)=>(p.data["egypt.journal."+id]||"").trim(); const st=p=>{ try{ return JSON.parse(p.data["egypt.game.stamp"]||"{}"); }catch(e){ return {}; } };
+  el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>{ const s=st(p); return `<div class="pp arch"><div class="pphead"><div class="ppt">${esc((p.who||"").toUpperCase()||"PASSPORT")}</div><div class="pps">archived ${new Date(p.saved).toLocaleDateString()} · ${Object.keys(s).length} stamps</div></div><div class="ppgrid">${DAYS.map(d=>`<div class="ppd ${s[d.id]?"on":""}">${s[d.id]?stampHTML(d,s[d.id],true):`<div class="stamp ghost small"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num}</div></div>`}<div class="ppi"><b>${d.dow} ${d.num} · ${esc(d.title)}</b>${j(p,d.id)?`<p>${esc(j(p,d.id))}</p>`:""}</div></div>`).join("")}</div></div>`; }).join("");
+}
+function passportWire(){
+  document.addEventListener("click", e=>{
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); if(st[id]) toast("Stamped · "+CITY_OF(DAYS.find(d=>d.id===id))); return; }
+    if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
+    if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
+  });
+  document.addEventListener("change", e=>{
+    if(e.target.id!=="ppFile") return; const f=e.target.files[0]; if(!f) return;
+    f.text().then(txt=>{ const p=JSON.parse(txt); if(!p||!p.data) throw 0; let n=0; for(const k in p.data){ if(k.startsWith("egypt.")){ localStorage.setItem(k,p.data[k]); n++; } } toast(`Restored ${n} items`); renderGame(); renderPassport(); renderDay(); renderStrip(); }).catch(()=>toast("That didn't look like a passport file"));
+  });
+}
+
+// ---------- lived-in: the ledger line on used days, looking back after the trip ----------
+function livedLine(d, now){
+  const s=stamps()[d.id], r=GS.get("rate",{})[d.id], ch=!!GS.get("chal",{})[d.id];
+  const hg=GS.get("haggle",[]).filter(h=>h.day===d.id);
+  let j=""; try{ j=(localStorage.getItem("egypt.journal."+d.id)||"").trim().split("\n")[0]; }catch(e){}
+  if(!s && !r && !ch && !hg.length && !j) return "";
+  const bits=[];
+  if(s){ const t=new Date(s.at); bits.push(`🛂 stamped ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}`); }
+  if(r){ const st=k=>r[k]?"★".repeat(r[k]):""; const x=[st("food")&&"🍽️"+st("food"), st("sight")&&"🏛️"+st("sight"), st("sleep")&&"😴"+st("sleep")].filter(Boolean); if(x.length) bits.push(x.join(" ")); }
+  if(ch) bits.push("🏅 challenge");
+  if(hg.length) bits.push(`🤝 ${hg.length} haggle${hg.length>1?"s":""}`);
+  return `<div class="lived"><div class="lvb">${bits.map(b=>`<span>${b}</span>`).join("")}</div>${j?`<div class="lq">“${esc(j)}”</div>`:""}</div>`;
+}
+function lookingBack(){
+  const st=stamps(); const n=Object.keys(st).length; const s=gameScore();
+  const lines=[]; DAYS.forEach(d=>{ try{ const v=(localStorage.getItem("egypt.journal."+d.id)||"").trim(); if(v) lines.push([d, v.split("\n")[0]]); }catch(e){} });
+  const pick=lines.length?lines[Math.floor(Math.random()*lines.length)]:null;
+  return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row"><a class="btn" href="#game">Open the passport</a><a class="btn" href="#today">Re-read a day</a></div>`;
+}
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -1410,7 +1675,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); loadArchive(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
