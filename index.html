@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Egypt · Brad + Duane</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"></head><body><title>Egypt · Brad + Duane</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
@@ -158,6 +158,12 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 .toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 .foot{color:var(--muted);font-size:12px;margin-top:22px;text-align:center}
+.hint{display:none;background:var(--nile-soft);color:var(--nile-ink);border-radius:var(--r);padding:10px 14px;margin-top:14px;font-size:13.5px;align-items:center;gap:10px;justify-content:space-between}
+.hint.show{display:flex}
+.hint button{background:transparent;border:0;color:inherit;font-weight:700;cursor:pointer;padding:4px 6px}
+.upd{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--nile);color:#fff;padding:9px 14px;border-radius:999px;font-size:13px;font-weight:600;display:none;gap:10px;align-items:center;z-index:40;box-shadow:0 6px 20px -8px rgba(0,0,0,.5)}
+.upd.show{display:flex}
+.upd button{background:#fff;color:var(--nile-ink);border:0;border-radius:999px;padding:5px 10px;font-weight:700;cursor:pointer}
 .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;border:1px solid var(--line);border-radius:999px;padding:3px 8px;color:var(--muted);background:var(--card)}
 .pill.off{color:var(--dusk);border-color:var(--dusk)}
 .sun{display:flex;gap:14px;color:var(--muted);font-size:12.5px;font-family:var(--mono);font-variant-numeric:tabular-nums;margin-top:2px}
@@ -185,6 +191,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 
 <div class="wrap">
   <section id="now" class="now" aria-live="polite"><div class="eyebrow">Egypt</div><div class="big">Loading today…</div></section>
+  <div class="hint" id="hint"><span id="hintText">Add this to your home screen and it opens like an app, signal or not.</span><button id="hintX" aria-label="Dismiss">✕</button></div>
   <section id="today"><div class="card" id="dayCard"></div></section>
 
   <section id="pinned">
@@ -341,6 +348,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </ul>
     </div></details>
     <p class="foot">Plan B if no boat will overnight in Aswan on Tuesday: board Wednesday instead, Old Cataract Tuesday night, Hilton Luxor Saturday only. Same trip, one fewer Luxor night, one more Aswan night.</p>
+    <p class="foot" id="build"></p>
   </section>
 </div>
 
@@ -353,6 +361,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 </div></nav>
 <div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
 <div class="toast" id="toast">Copied</div>
+<div class="upd" id="upd"><span>A newer plan is ready</span><button id="updBtn">Reload</button></div>
 
 <script>
 // ---------- data ----------
@@ -710,11 +719,32 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
+const BUILD = "Oct 8, 2026";
+function appShell(){
+  $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
+  // home-screen hint: phones, browser tab (not already installed), not dismissed
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const mobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  let dismissed = false; try{ dismissed = localStorage.getItem("egypt.hint")==="1"; }catch(e){}
+  if(mobile && !standalone && !dismissed && location.protocol.startsWith("http")){
+    const ios = /iPhone|iPad/i.test(navigator.userAgent);
+    $("#hintText").textContent = ios ? "Add to Home Screen (share button → Add to Home Screen) and this opens like an app, signal or not." : "Add to Home screen (browser menu → Add to Home screen) and this opens like an app, signal or not.";
+    $("#hint").classList.add("show");
+    $("#hintX").addEventListener("click",()=>{ $("#hint").classList.remove("show"); try{ localStorage.setItem("egypt.hint","1"); }catch(e){} });
+  }
+  // offline cache + update prompt (only on real hosting; harmless elsewhere)
+  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+    navigator.serviceWorker.register("sw.js").then(reg=>{
+      reg.addEventListener("updatefound",()=>{ const w=reg.installing; if(!w) return; w.addEventListener("statechange",()=>{ if(w.state==="installed" && navigator.serviceWorker.controller){ $("#upd").classList.add("show"); } }); });
+    }).catch(()=>{});
+    $("#updBtn").addEventListener("click",()=>location.reload());
+  }
+}
 function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
