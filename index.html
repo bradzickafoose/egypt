@@ -892,36 +892,68 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .btn.danger{background:#b3261e;color:#fff;border-color:#b3261e}.fold.reset summary{color:var(--muted)}
 
 /* prepared: look-for lines, eras, who's who, the briefing */
-.look{margin:6px 0 2px;padding:7px 10px 7px 30px;position:relative;font-size:13px;line-height:1.4;color:var(--fg);background:rgba(27,51,40,.07);border-radius:10px}
-.look i{position:absolute;left:9px;top:7px;font-style:normal;font-size:14px}
-:root:not([data-theme="light"]) .look{background:rgba(255,255,255,.06)}
-.dh-acts{margin-top:8px;gap:6px}
-.erachip{font:600 11px var(--mono);letter-spacing:.04em;padding:5px 9px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted)}
+.look{margin:7px 0 2px;padding:8px 10px 8px 36px;position:relative;font-size:13px;line-height:1.45;color:var(--fg);background:linear-gradient(90deg,rgba(194,144,63,.14),rgba(194,144,63,.05));border-left:3px solid #c2903f;border-radius:0 10px 10px 0}
+.look i{position:absolute;left:9px;top:8px;width:19px;height:19px;border-radius:50%;background:#c2903f;color:#fff;font-style:normal;font-size:11px;display:flex;align-items:center;justify-content:center}
+:root:not([data-theme="light"]) .look{background:linear-gradient(90deg,rgba(194,144,63,.22),rgba(194,144,63,.06))}
+.dh-acts{margin-top:10px;gap:6px;align-items:center}
+.btn.brief{background:var(--fg);color:var(--bg);border-color:var(--fg)}.btn.brief.read{background:transparent;color:var(--muted);border-style:dashed}
+.erachip{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--mono);letter-spacing:.04em;padding:5px 10px 5px 7px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+.erachip i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .erachip small{font-size:10px;opacity:.8}
+.erabar{display:flex;gap:3px;height:6px;margin:0 0 10px}.erabar i{flex:1;border-radius:3px;opacity:.35}.erabar i.on{opacity:1;flex:2;box-shadow:0 0 0 2px var(--card),0 0 0 3px currentColor}
+.erabar.sm{height:4px;margin:0 0 8px}
 .erastrip{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 6px;margin:0 -4px;scrollbar-width:none}
-.era{flex:0 0 78%;scroll-snap-align:start;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
-.era.on{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.era{flex:0 0 78%;scroll-snap-align:start;border:1px solid var(--line);border-top:4px solid var(--ec,#999);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.era.on{border-color:var(--ec);box-shadow:0 6px 18px -10px var(--ec)}
 .era-when{font:600 11px var(--mono);letter-spacing:.06em;color:var(--muted)}
-.era-n{font-family:var(--display);font-weight:800;font-size:20px;margin:2px 0}
+.era-n{font-family:var(--display);font-weight:800;font-size:20px;margin:2px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.era-here{font:700 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--ec);color:#fff}
 .era-tag{font-size:12px;color:var(--muted);margin-bottom:6px}
 .era-stops{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
 .era-stops span{font-size:11.5px;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.06)}
 :root:not([data-theme="light"]) .era-stops span{background:rgba(255,255,255,.1)}
 .era p{margin:0;font-size:13px;line-height:1.4}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.pcard{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--bg);display:flex;flex-direction:column;gap:3px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--bg);display:flex;flex-direction:column;gap:3px;transition:box-shadow .3s}
+.pcard.lit{box-shadow:0 0 0 3px var(--nile)}
+.pc-top{display:flex;align-items:center;gap:7px}.pc-g{width:26px;height:26px;border-radius:8px;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+:root:not([data-theme="light"]) .pc-g{background:rgba(255,255,255,.1)}
 .pcard b{font-size:15px}.pcard em{font-style:normal;font:600 11px var(--mono);color:var(--nile);line-height:1.3}.pcard span{font-size:12.5px;line-height:1.35;color:var(--fg)}
+.brief{margin:-16px -16px 0;padding:0 16px 8px}
+.br-top{display:flex;align-items:center;gap:12px;margin:0 -16px 12px;padding:14px 16px 16px;background:var(--fg);color:var(--bg)}
+.br-emoji{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none}
+.br-top .br-k{color:rgba(255,255,255,.65)}
+.br-top h3{color:var(--bg);margin:2px 0 0}
 .brief .br-k{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .brief h3{font-family:var(--display);font-size:24px;margin:2px 0 8px;line-height:1.1}
-.brief .br-era{font-size:12.5px;color:var(--muted);padding:8px 10px;border-left:3px solid var(--line);margin-bottom:8px}
-.brief .br-h{font:700 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
-.br-stops{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
-.br-stops li b{display:block;font-size:15px}.br-stops li span{display:block;font-size:13.5px;line-height:1.4}.br-stops li i{display:block;font-style:normal;font-size:12.5px;line-height:1.4;margin-top:3px;color:var(--fg);opacity:.85}
+.br-tools{margin:0 0 12px}
+.brief .br-era{font-size:12.5px;color:var(--fg);padding:10px 12px;border-left:3px solid var(--ec,var(--line));background:rgba(0,0,0,.04);border-radius:0 10px 10px 0;margin-bottom:8px}
+:root:not([data-theme="light"]) .brief .br-era{background:rgba(255,255,255,.06)}
+.brief .br-h{font:700 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.brief .br-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.br-stops{margin:0;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:10px}
+.br-stops li{position:relative;padding-left:34px}
+.br-stops li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);font:800 12px var(--display);display:flex;align-items:center;justify-content:center}
+.br-stops li b{display:block;font-size:15px;line-height:24px}.br-stops li b small{color:var(--nile);font-weight:600}
+.br-stops li span{display:block;font-size:13.5px;line-height:1.45;margin-top:2px}
+.br-stops li i{display:block;font-style:normal;font-size:12.5px;line-height:1.45;margin-top:6px;padding:7px 10px;border-left:3px solid #c2903f;background:rgba(194,144,63,.1);border-radius:0 8px 8px 0}
 .br-story,.br-ask,.br-play,.br-shot{margin:0;font-size:14px;line-height:1.45}
-.br-story{font-family:Georgia,serif;font-style:italic;font-size:15px}
+.br-story{font-family:Georgia,serif;font-style:italic;font-size:15.5px;line-height:1.5;padding-left:14px;border-left:2px solid var(--line)}
+.br-ask{font-family:Georgia,serif;font-style:italic}
+.br-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipbtn{font:600 12.5px var(--body);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.br-know{margin:0;padding-left:18px;font-size:13.5px;line-height:1.45;display:flex;flex-direction:column;gap:4px}
 .br-words{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .br-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.br-grid div{background:rgba(0,0,0,.05);border-radius:10px;padding:8px 10px;font-size:13px}.br-grid small{display:block;font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
 :root:not([data-theme="light"]) .br-grid div{background:rgba(255,255,255,.07)}
+.quiz{display:flex;flex-direction:column;gap:12px}
+.qq b{display:block;font-size:14.5px;line-height:1.35;margin-bottom:6px}
+.qa{display:flex;flex-direction:column;gap:5px}
+.qa button{text-align:left;font:500 13.5px var(--body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.qa button.ok{background:#2a7a5a;color:#fff;border-color:#2a7a5a}.qa button.no{border-color:#b3261e;color:#b3261e}.qa button:disabled:not(.ok):not(.no){opacity:.5}
+.qwhy{margin:6px 0 0;font-size:13px;line-height:1.4;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.05)}
+.qq.right .qwhy{background:rgba(42,122,90,.12)}.qq.wrong .qwhy{background:rgba(179,38,30,.1)}
+:root:not([data-theme="light"]) .qwhy{background:rgba(255,255,255,.07)}
 .card.ask{padding:12px 14px;border-color:var(--dusk)}.card.ask b{display:block;margin-bottom:4px}.card.ask p{margin:0 0 8px;font-size:13.5px}
 .fband{display:flex;align-items:center;gap:10px;margin:-2px 0 12px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.1);font-size:13px}
 .now:not(.solo) .fband{background:rgba(255,255,255,.1)}
@@ -1727,7 +1759,7 @@ function renderDay(){
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
     ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> ${safe(me)==="Duane"?"You're home. Follow along, heckle from the couch.":"Duane flew home this morning."} Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
-    <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · <button type="button" class="glyph ${safe(()=>GS.get("relics",{})[d.id])?"dug":""}" data-dig="${d.id}" aria-label="Dig here">${d.emoji}</button> · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":d.id==="sat10"?"Duane lands first":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div><div class="row dh-acts"><button type="button" class="btn mini brief" data-brief="${d.id}">📖 Read before you go</button>${safe(()=>eraChip(d))||""}</div></div>
+    <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · <button type="button" class="glyph ${safe(()=>GS.get("relics",{})[d.id])?"dug":""}" data-dig="${d.id}" aria-label="Dig here">${d.emoji}</button> · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":d.id==="sat10"?"Duane lands first":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div><div class="row dh-acts"><button type="button" class="btn mini brief ${safe(()=>GS.get("briefed",{})[d.id])?"read":""}" data-brief="${d.id}">${safe(()=>GS.get("briefed",{})[d.id])?"📖 Briefing · read ✓":"📖 Read before you go"}</button>${safe(()=>eraChip(d))||""}</div></div>
     ${safe(()=>livedLine(d, now))}
     <div class="status">
       <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}${safe(()=>alarmTaunt(d))}</span></div>
@@ -1789,7 +1821,7 @@ function renderNow(){
     const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
-    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
+    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
     if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
@@ -2154,7 +2186,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v75)";
+const BUILD = "Oct 8, 2026 (v76)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -3033,7 +3065,7 @@ function liveWire(){
   document.addEventListener("click", e=>{ const fb=e.target.closest("[data-flag]"); if(fb){ const f=GS.get("flags",[]); const i=f.indexOf(fb.dataset.flag); if(i>=0) f.splice(i,1); else f.push(fb.dataset.flag); GS.set("flags",f); renderLive(); livePush(); toast(i>=0?"Flag picked up":"Flag thrown. Under review."); return; }
     if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
   // push whenever game state changes
-  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti","seenOther","half","mummies","mumseen","digHint","sound","resetSeen","liveFail"].includes(k)) livePush(); };
+  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti","seenOther","half","mummies","mumseen","digHint","sound","resetSeen","liveFail","briefed","quiz"].includes(k)) livePush(); };
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ livePull(); livePush(); } });
   setInterval(()=>{ if(!document.hidden) livePull(); }, 20000); setInterval(()=>safe(renderSyncState), 60000);
   livePull(); livePush();
@@ -3451,6 +3483,7 @@ const LOOK = {
 function lookLine(d, a){ const k=LOOK[d.id+"|"+a.t]; return k?`<div class="look"><i>👁</i>${esc(k)}</div>`:""; }
 
 // the eras: where each stop sits in 4,600 years
+const ERA_COLOR = {old:"#c2903f", middle:"#a0a890", new:"#b3261e", ptol:"#1f6f8b", rome:"#6b5b95", islam:"#2a7a5a", now:"#444"};
 const ERAS = [
  {k:"old", n:"Old Kingdom", when:"2686–2181 BC", age:"4,600 years", tag:"the pyramid age", stops:["Saqqara","Dahshur","Giza"], says:"One king, one god-king, one tomb to end all tombs. Everything after is commentary."},
  {k:"middle", n:"Middle Kingdom", when:"2055–1650 BC", age:"3,900 years", tag:"the quiet one", stops:["Karnak's first stones"], says:"Egypt reunited after a civil war. You'll mostly see it in museum cases."},
@@ -3461,9 +3494,9 @@ const ERAS = [
  {k:"now", n:"Now", when:"1869 →", age:"", tag:"the rescue", stops:["the High Dam, 1970","Abu Simbel moved, 1968","Philae moved, 1980","the GEM, 2025"], says:"The Nile gets a dam, the temples get moved, and Tutankhamun gets a building the size of an airport."},
 ];
 const DAY_ERA = { sun11:["old","islam"], mon12:["old","new"], tue13:["ptol","rome"], wed14:["new"], thu15:["ptol"], fri16:["ptol","new"], sat17:["new"], sun18:["new"], wed21:["rome"], fri23:[], sat24:[] };
-function eraChip(d){ const ks=DAY_ERA[d.id]||[]; if(!ks.length) return ""; const e=ERAS.find(x=>x.k===ks[0]); return `<button type="button" class="erachip" data-nav="eras" title="Where today sits in time">${esc(e.n)}${e.age?` · ${esc(e.age)} old`:""}${ks[1]?` <small>+ ${esc(ERAS.find(x=>x.k===ks[1]).n)}</small>`:""}</button>`; }
+function eraChip(d){ const ks=DAY_ERA[d.id]||[]; if(!ks.length) return ""; const e=ERAS.find(x=>x.k===ks[0]); return `<button type="button" class="erachip" data-nav="eras" title="Where today sits in time"><i style="background:${ERA_COLOR[e.k]}"></i>${esc(e.n)}${e.age?` · ${esc(e.age)} old`:""}${ks[1]?` <small>+ ${esc(ERAS.find(x=>x.k===ks[1]).n)}</small>`:""}</button>`; }
 function renderEras(){ const el=$("#eras"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const today=new Set(DAY_ERA[d.id]||[]);
-  el.innerHTML=`<div class="erastrip">${ERAS.map(e=>`<div class="era ${today.has(e.k)?"on":""}"><div class="era-when">${esc(e.when)}</div><div class="era-n">${esc(e.n)}</div><div class="era-tag">${esc(e.tag)}${e.age?` · ${esc(e.age)} old`:""}</div><div class="era-stops">${e.stops.map(s=>`<span>${esc(s)}</span>`).join("")}</div><p>${esc(e.says)}</p></div>`).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:12.5px">The highlighted era is the one the selected day lives in. Rule of thumb: pyramids are 4,600, Luxor is 3,300, the "Greek" temples are 2,000, the Khan is 500.</p>`; const on=el.querySelector('.era.on'); if(on){ const strip=el.querySelector('.erastrip'); strip.scrollLeft=Math.max(0,on.offsetLeft-8); } }
+  el.innerHTML=`<div class="erabar">${ERAS.map(e=>`<i style="background:${ERA_COLOR[e.k]}" class="${today.has(e.k)?"on":""}" title="${esc(e.n)}"></i>`).join("")}</div><div class="erastrip">${ERAS.map(e=>`<div class="era ${today.has(e.k)?"on":""}" style="--ec:${ERA_COLOR[e.k]}"><div class="era-when">${esc(e.when)}</div><div class="era-n">${esc(e.n)}${today.has(e.k)?`<span class="era-here">you are here</span>`:""}</div><div class="era-tag">${esc(e.tag)}${e.age?` · ${esc(e.age)} old`:""}</div><div class="era-stops">${e.stops.map(s=>`<span>${esc(s)}</span>`).join("")}</div><p>${esc(e.says)}</p></div>`).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:12.5px">The highlighted era is the one the selected day lives in. Rule of thumb: pyramids are 4,600, Luxor is 3,300, the "Greek" temples are 2,000, the Khan is 500.</p>`; const on=el.querySelector('.era.on'); if(on){ const strip=el.querySelector('.erastrip'); strip.scrollLeft=Math.max(0,on.offsetLeft-8); } }
 
 // who's who: gods and kings you'll hear a hundred times, with the one cue to recognise them
 const WHO = [
@@ -3510,9 +3543,10 @@ const WHO = [
   ["Winged scarab","beetle with wings, often pushing a disc","The sun being rolled across the sky like a dung ball. Rebirth. The giant one at Karnak gets walked around seven times."],
  ]],
 ];
+const WHO_GLYPH = {"Ra":"☀️","Amun":"🪶","Osiris":"🟢","Isis":"🪑","Horus":"🦅","Hathor":"🐄","Anubis":"🐺","Thoth":"🪶","Sobek":"🐊","Khnum":"🐏","Ptah":"🧱","Sekhmet":"🦁","Nut":"🌌","Ma'at":"⚖️","Djoser":"🔺","Sneferu":"🔻","Khufu & Khafre":"🔺","Hatshepsut":"👑","Thutmose III":"⚔️","Amenhotep III":"🏛️","Akhenaten":"🌞","Tutankhamun":"🎭","Ramses II":"🗿","The Ptolemies & Cleopatra":"🏺","Saladin":"🏰","Muhammad Ali":"🕌","Cartouche":"🪢","Ankh":"☥","Was & djed":"🪄","The smiting scene":"✊","The offering scene":"🤲","The crowns":"👑","Size = importance":"📏","The winged sun":"☀️","Counting":"🔢","Winged scarab":"🪲"};
 let whosel=0;
 function renderWho(){ const el=$("#who"); if(!el) return; const [h,items]=WHO[whosel];
-  el.innerHTML=`<div class="wtabs" role="tablist">${WHO.map((w,i)=>`<button type="button" class="wtab ${i===whosel?"on":""}" data-who="${i}" role="tab" aria-selected="${i===whosel}">${esc(w[0])}</button>`).join("")}</div><div class="pgrid">${items.map(([n,cue,txt])=>`<div class="pcard"><b>${esc(n)}</b><em>${esc(cue)}</em><span>${esc(txt)}</span></div>`).join("")}</div>`; }
+  el.innerHTML=`<div class="wtabs" role="tablist">${WHO.map((w,i)=>`<button type="button" class="wtab ${i===whosel?"on":""}" data-who="${i}" role="tab" aria-selected="${i===whosel}">${esc(w[0])}</button>`).join("")}</div><div class="pgrid">${items.map(([n,cue,txt])=>`<div class="pcard"><div class="pc-top"><span class="pc-g">${WHO_GLYPH[n]||"𓂀"}</span><b>${esc(n)}</b></div><em>${esc(cue)}</em><span>${esc(txt)}</span></div>`).join("")}</div>`; }
 document.addEventListener("click", e=>{ const b=e.target.closest("[data-who]"); if(b){ whosel=+b.dataset.who; renderWho(); } });
 
 // the briefing: tomorrow (or today) in two minutes
@@ -3545,6 +3579,94 @@ document.addEventListener("click", e=>{
   const b=e.target.closest("[data-brief]"); if(b){ openBriefing(b.dataset.brief); return; }
   if(e.target.closest("[data-brief-close]")){ closeSheet("sheetQC"); return; }
   if(e.target.closest("[data-brief-who]")){ closeSheet("sheetQC"); navGo("who"); return; }
+});
+
+// ---------- v76: the briefing as something you do ----------
+const QUIZ = {
+ sun11:[["Why is the Bent Pyramid bent?",["The architect changed his mind halfway for style","It started cracking at 54° and they eased the angle","It was never finished"],1,"The lower half is 54°, the upper 43°. Sneferu then built the Red Pyramid next door at 43° from the ground up — the first true pyramid."],
+       ["What's the Step Pyramid built to look like?",["A mountain","A royal palace in reed and wood, done in stone","A giant staircase to the sun"],1,"Djoser's whole enclosure imitates a palace of matting and timber — false doors, bundled-reed columns — the first time anyone built big in stone."],
+       ["The clock in the Muhammad Ali Mosque courtyard…",["Chimes the call to prayer","Was a gift from France that has never run","Was looted from Napoleon's ship"],1,"Louis-Philippe sent it in 1845 in exchange for the Luxor obelisk now in Paris. Egypt got the worse end; it has never worked."]],
+ mon12:[["How tall was the Great Pyramid when finished?",["97 m","146 m","210 m"],1,"146 m with its polished casing; 138 m now. Tallest building on earth for 3,800 years."],
+       ["Whose face is on the Sphinx, almost certainly?",["Khufu","Khafre","Ramses II"],1,"It sits beside Khafre's causeway and shares his features. Khufu's son."],
+       ["Where did the 11-metre Ramses II at the GEM stand until 2006?",["In Memphis, lying down","In a Cairo train-station square","In the Nile"],1,"Ramses Square, outside the main station, in traffic fumes, for half a century."]],
+ tue13:[["Why was Philae moved?",["An earthquake","The Aswan dams drowned it half of every year","To be nearer the airport"],1,"UNESCO cut it into 40,000 blocks and rebuilt it on Agilkia island, 1972–80."],
+       ["The last hieroglyphic inscription ever carved is at Philae. Which year?",["30 BC","AD 394","AD 641"],1,"Then the writing was forgotten for 1,400 years until Champollion in 1822."],
+       ["Who wrote Death on the Nile on the Old Cataract's terrace?",["Agatha Christie","Evelyn Waugh","Graham Greene"],0,"1937. The terrace table nearest the river, by tradition."]],
+ wed14:[["How did Abu Simbel get to where it is?",["It's where Ramses built it","Sawn into 1,036 blocks and moved 65 m uphill in 1968","Floated on barges"],1,"To save it from Lake Nasser. The hill behind the temples is hollow concrete."],
+       ["On two days a year the sun reaches the gods at the back. Which god stays dark?",["Amun","Ra","Ptah"],2,"Ptah is a god of the underworld; the alignment leaves him in shadow on purpose. The days are Feb 22 and Oct 22."],
+       ["What's unusual about Nefertari in her small temple?",["She has no crown","She's carved the same height as Ramses","She faces away from him"],1,"Queens are normally knee-height. Equal size was a declaration."]],
+ thu15:[["Kom Ombo is a double temple. Who shares it?",["Horus and Sobek","Isis and Osiris","Amun and Ra"],0,"Two axes, two sanctuaries, two of everything. Crocodile on the left, falcon on the right."],
+       ["What's carved on the wall behind the sanctuary?",["A calendar of floods","Surgical instruments","A map of the Nile"],1,"Scalpels, forceps, scales, a birthing chair — 2,000 years old."],
+       ["Where did the sandstone for Karnak come from?",["Aswan","Gebel el-Silsila","Sinai"],1,"Quarried at Silsila and floated north at the flood. The marks are still on the cliffs."]],
+ fri16:[["Who built Edfu, the most 'Egyptian' temple in Egypt?",["Ramses II","The Ptolemies — Greek pharaohs","The Romans"],1,"237–57 BC. A Greek dynasty building a textbook Egyptian temple to prove it belonged."],
+       ["Why is Edfu so well preserved?",["It was buried in sand up to the roof until the 1860s","It was carved from a single rock","The Romans restored it"],0,"Villagers lived on top of it; the soot on the ceiling is theirs."],
+       ["What sits on top of Luxor Temple?",["A Roman fort","A 13th-century mosque, still in use","Nothing"],1,"Abu el-Haggag's mosque, built when the sand was four metres deep over the temple floor."]],
+ sat17:[["Hatshepsut's name was chiselled out. By whom?",["Ramses II","Her stepson Thutmose III","The priests of Amun"],1,"Twenty years after her death. He'd waited two decades to be king while she ruled."],
+       ["What's on the ceiling of Ramses VI's tomb?",["A star map","Nut, the sky, swallowing the sun","A procession of gods"],1,"She swallows it at dusk and gives birth to it at dawn — the whole point of a royal tomb in one picture."],
+       ["Why did the northern Colossus 'sing'?",["A priest hidden inside","An earthquake crack warmed by the dawn","Wind through the crown"],1,"27 BC. Greeks and Romans came to hear it; Septimius Severus fixed it and silenced it."]],
+ sun18:[["How many columns in Karnak's Hypostyle Hall?",["42","134","365"],1,"Each one wider than a car. The paint is still under the capitals."],
+       ["Hatshepsut's obelisk at Karnak survived with its colour because…",["It was buried","Thutmose III walled it in to hide it","It was carved from harder stone"],1,"The wall meant to erase her is what preserved her."],
+       ["Walk around the giant scarab how many times for luck?",["Three","Seven","Once, backwards"],1,"The guides will insist. It's Amenhotep III's."]],
+ wed21:[["How many Steps of Repentance?",["750","3,750","12,000"],1,"Laid by one monk. The camel path is the way up; the steps are the way down."],
+       ["St Catherine's library is the oldest continuously running one after…",["The Vatican's","Oxford's","Alexandria's"],0,"And the apse mosaic is the oldest surviving Transfiguration anywhere, 6th century."],
+       ["The Burning Bush in the courtyard is…",["A painting","A living bramble","A bronze"],1,"By tradition the one. It's a rubus — a blackberry relative — and it's thriving."]],
+};
+const DAY_WHO = { sun11:["Djoser","Sneferu","Saladin","Muhammad Ali"], mon12:["Khufu & Khafre","Tutankhamun","Ramses II"], tue13:["Isis","Osiris","The Ptolemies & Cleopatra"], wed14:["Ramses II","Hathor","Ptah","Ra"], thu15:["Sobek","Horus","Thoth"], fri16:["Horus","Hathor","Akhenaten","Amenhotep III","Amun"], sat17:["Hatshepsut","Thutmose III","Nut","Anubis","Ma'at"], sun18:["Amun","Hatshepsut","Thutmose III","Winged scarab"], wed21:[] };
+const briefed = ()=>GS.get("briefed",{});
+function briefingText(d){
+  const stops=d.agenda.filter(a=>a.map && PLACES[a.map] && !SKIP_PLACE.test(a.map)).slice(0,4);
+  const ks=DAY_ERA[d.id]||[]; const era=ks.length?ERAS.find(x=>x.k===ks[0]):null;
+  const lines=[`${d.dow} ${d.num} — ${d.title}.`];
+  if(era) lines.push(`${era.n}, ${era.when}. ${era.says}`);
+  stops.forEach(a=>{ const P=PLACES[a.map]; lines.push(`${P.n}. ${firstSentences(P.what,2)}`); const look=LOOK[d.id+"|"+a.t]; if(look) lines.push(`Look for: ${look}`); });
+  const lead=stops[0]?PLACES[stops[0].map]:null; if(lead&&lead.story) lines.push(`The story. ${firstSentences(lead.story,3)}`);
+  if(d.know&&d.know.length) lines.push(`Know: ${d.know.join(". ")}.`);
+  lines.push(`Alarm ${d.alarm}. Carry: ${d.bag}. Cash: ${d.cash}. Wear: ${d.dress}.`);
+  const play=CHALLENGES[d.id]?((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]):""; if(play) lines.push(`The play: ${play}`);
+  return lines.join("\n\n");
+}
+let speakQ=[]; let speaking=false;
+function speakLong(text){ if(!("speechSynthesis" in window)) { toast("No voice on this phone."); return; } if(speaking){ speechSynthesis.cancel(); speaking=false; speakQ=[]; document.querySelectorAll("[data-brief-listen]").forEach(b=>b.textContent="🔈 Listen"); return; }
+  const chunks=String(text).replace(/\n+/g," ").split(/(?<=[.!?])\s+/).reduce((acc,s)=>{ const last=acc[acc.length-1]; if(last && (last+" "+s).length<220) acc[acc.length-1]=last+" "+s; else acc.push(s); return acc; },[]);
+  const v=boothVoice(); speaking=true; document.querySelectorAll("[data-brief-listen]").forEach(b=>b.textContent="⏹ Stop");
+  speechSynthesis.cancel(); chunks.forEach((c,i)=>{ const u=new SpeechSynthesisUtterance(c); if(v){ u.voice=v; u.lang=v.lang; } u.rate=.97; if(i===chunks.length-1) u.onend=()=>{ speaking=false; document.querySelectorAll("[data-brief-listen]").forEach(b=>b.textContent="🔈 Listen"); }; speechSynthesis.speak(u); }); }
+function quizHTML(d){ const qs=QUIZ[d.id]; if(!qs) return ""; const ans=(GS.get("quiz",{})[d.id])||{};
+  return `<div class="quizwrap"><div class="br-h">Test yourself</div><p class="muted" style="margin:-4px 0 8px;font-size:12.5px">Three questions, no points, pure bragging. Three of three goes on the feed.</p><div class="quiz" data-quiz="${d.id}">${qs.map((q,i)=>{ const picked=ans[i]; return `<div class="qq ${picked!=null?(picked===q[2]?"right":"wrong"):""}"><b>${i+1}. ${esc(q[0])}</b><div class="qa">${q[1].map((o,j)=>`<button type="button" class="${picked!=null?(j===q[2]?"ok":(j===picked?"no":"")):""}" data-q="${i}" data-o="${j}" ${picked!=null?"disabled":""}>${esc(o)}</button>`).join("")}</div>${picked!=null?`<p class="qwhy">${picked===q[2]?"✓":"✗"} ${esc(q[3])}</p>`:""}</div>`; }).join("")}</div></div>`; }
+function whoChips(d){ const names=DAY_WHO[d.id]||[]; if(!names.length) return ""; return `<div class="br-h">You'll meet</div><div class="br-chips">${names.map(n=>`<button type="button" class="chipbtn" data-who-focus="${esc(n)}">${esc(n)}</button>`).join("")}</div>`; }
+function whoFocus(name){ const ti=WHO.findIndex(([h,items])=>items.some(x=>x[0]===name)); if(ti<0) return; whosel=ti; renderWho(); navGo("who"); setTimeout(()=>{ const card=[...document.querySelectorAll("#who .pcard")].find(c=>c.querySelector("b").textContent===name); if(card){ card.classList.add("lit"); card.scrollIntoView({block:"center",behavior:"smooth"}); setTimeout(()=>card.classList.remove("lit"),2000); } },500); }
+function briefNudge(d, now){ try{ if(now.h>=13) return ""; if(briefed()[d.id]) return ""; const stops=d.agenda.filter(a=>a.map && PLACES[a.map] && !SKIP_PLACE.test(a.map)); if(!stops.length) return ""; return `<div class="fband"><span class="fb-ic">📖</span><div><b>Two minutes before you go in</b><span class="prose">${esc(stops.slice(0,3).map(a=>PLACES[a.map].n).join(" · "))}</span></div><button type="button" class="btn mini primary" data-brief="${d.id}">Briefing</button></div>`; }catch(e){ return ""; } }
+// override the v75 builder with the fuller one
+briefingHTML = function(d){
+  const stops=d.agenda.filter(a=>a.map && PLACES[a.map] && !SKIP_PLACE.test(a.map)).slice(0,4);
+  const lead=stops[0]?PLACES[stops[0].map]:null;
+  const ks=DAY_ERA[d.id]||[]; const era=ks.length?ERAS.find(x=>x.k===ks[0]):null;
+  const play=CHALLENGES[d.id]?((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]):"";
+  const shot=(d.agenda.find(a=>a.photo)||{}).photo||"";
+  const words=(()=>{ const souk=/Khan|souk|Muizz|Nubian|Dahab/i.test(JSON.stringify(d.agenda)); const want=souk?["la, shukran","bikam"]:["sabah el-kheir","shukran"]; const out=[]; WORDS.forEach(([h,ws])=>ws.forEach(w=>{ if(want.some(x=>w[0].startsWith(x))) out.push(w); })); return out.slice(0,2); })();
+  const read=!!briefed()[d.id];
+  return `<div class="brief">
+    <div class="br-top"><span class="br-emoji">${d.emoji||"📖"}</span><div><div class="br-k">${esc(d.dow)} ${d.num} · read before you go${read?" · ✓ read":""}</div><h3>${esc(d.title)}</h3></div></div>
+    <div class="row br-tools"><button type="button" class="btn mini" data-brief-listen="${d.id}">🔈 Listen</button>${sendBtn(briefingText(d), "Send ↗", "mini")}<button type="button" class="btn mini" data-brief-who="1">Who's who</button></div>
+    ${era?`<div class="br-era" style="--ec:${ERA_COLOR[era.k]}"><div class="erabar sm">${ERAS.map(x=>`<i style="background:${ERA_COLOR[x.k]}" class="${x.k===era.k?"on":""}"></i>`).join("")}</div><b>${esc(era.n)}</b> · ${esc(era.when)}${era.age?` · ${esc(era.age)} old`:""}<br>${esc(era.says)}</div>`:""}
+    ${stops.length?`<div class="br-h">You'll see</div><ol class="br-stops">${stops.map(a=>{ const P=PLACES[a.map]; const look=LOOK[d.id+"|"+a.t]; return `<li><b data-place="${esc(a.map)}" role="button">${esc(P.n)} <small>›</small></b><span>${esc(firstSentences(P.what,2))}</span>${look?`<i>👁 ${esc(firstSentences(look,2))}</i>`:""}</li>`; }).join("")}</ol>`:""}
+    ${lead&&lead.story?`<div class="br-h">The story to carry in</div><p class="br-story">${esc(firstSentences(lead.story,3))}</p>`:""}
+    ${lead&&lead.ask&&lead.ask.length?`<div class="br-h">Ask the guide</div><p class="br-ask">“${esc(lead.ask[0])}”</p>`:""}
+    ${safe(()=>whoChips(d))||""}
+    ${words.length?`<div class="br-h">Say</div><div class="br-words">${words.map(w=>`<button type="button" class="wcard say" data-say="${esc(w[1])}" data-latin="${esc(w[0])}"><b>${esc(w[0])}</b><span>${esc(w[2].split(" · ")[0])}</span></button>`).join("")}</div>`:""}
+    ${d.know&&d.know.length?`<div class="br-h">Know</div><ul class="br-know">${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul>`:""}
+    <div class="br-h">The day</div>
+    <div class="br-grid"><div><small>Alarm</small>${esc(d.alarm)}</div><div><small>Carry</small>${esc(d.bag)}</div><div><small>Cash</small>${esc(d.cash)}</div><div><small>Wear</small>${esc(d.dress)}</div></div>
+    ${play?`<div class="br-h">The play</div><p class="br-play">🏈 ${esc(play)}</p>`:""}
+    ${shot?`<div class="br-h">The shot</div><p class="br-shot">📸 ${esc(shot)}</p>`:""}
+    ${safe(()=>quizHTML(d))||""}
+    <div class="row" style="margin-top:14px"><button type="button" class="btn primary" data-brief-done="${d.id}">${read?"Read it again ✓":"Got it ✓"}</button><span class="muted">${read?"Marked read.":"Marks today as read."}</span></div>
+  </div>`;
+};
+document.addEventListener("click", e=>{
+  const l=e.target.closest("[data-brief-listen]"); if(l){ const d=DAYS.find(x=>x.id===l.dataset.briefListen); if(d) speakLong(briefingText(d)); return; }
+  const dn=e.target.closest("[data-brief-done]"); if(dn){ const b=briefed(); b[dn.dataset.briefDone]=new Date().toISOString(); GS.set("briefed",b); closeSheet("sheetQC"); safe(renderDay); safe(renderNow); toast("Read. You'll know what you're looking at."); return; }
+  const w=e.target.closest("[data-who-focus]"); if(w){ closeSheet("sheetQC"); whoFocus(w.dataset.whoFocus); return; }
+  const q=e.target.closest(".quiz [data-q]"); if(q){ const day=q.closest(".quiz").dataset.quiz; const i=+q.dataset.q, o=+q.dataset.o; const all=GS.get("quiz",{}); all[day]=all[day]||{}; if(all[day][i]!=null) return; all[day][i]=o; GS.set("quiz",all); const qs=QUIZ[day]; const right=qs[i][2]===o; safe(()=>sfx(right?"xp":"taunt")); const box=q.closest(".quizwrap"); const d=DAYS.find(x=>x.id===day); box.outerHTML=quizHTML(d); const n=Object.keys(all[day]).length; if(n===qs.length){ const score=qs.filter((qq,k)=>all[day][k]===qq[2]).length; toast(score===3?"3 of 3. Beat the guide.":`${score} of 3.`); if(score===3) safe(()=>logEvent(`aced the briefing — ${dayLabel(day)}, 3 of 3. Knows things now.`)); } return; }
 });
 
 const WHATSON = {
