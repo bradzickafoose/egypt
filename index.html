@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"></head><body><title>Egypt · Brad + Duane</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><meta name="description" content="Day by day plan for the Egypt trip, Oct 10–19 2026: today's card, directions, places, lists, money."><meta property="og:title" content="Egypt · Brad + Duane"><meta property="og:description" content="Day by day, Oct 10–19. Opens on today, counts down to the next stop, every place explained."><meta property="og:image" content="https://bradzickafoose.github.io/egypt/icon-512.png"><meta property="og:url" content="https://bradzickafoose.github.io/egypt/"><meta property="og:type" content="website"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"></head><body><title>Egypt · Brad + Duane</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
@@ -710,6 +710,7 @@ function renderStrip(){
 
 function renderDay(){
   const d = DAYS[sel]; const now = cairoNow(); const isToday = now.date===d.date;
+  const askOpen = !!(document.querySelector("#dayCard .askday") && document.querySelector("#dayCard .askday").open);
   let nextIdx = -1;
   if(isToday){ nextIdx = d.agenda.findIndex(a=>toMins(a.t)>=now.mins); }
   const items = d.agenda.map((a,i)=>{
@@ -731,6 +732,7 @@ function renderDay(){
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
     ${askToday(d)}
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
+  if(askOpen){ const a=document.querySelector("#dayCard .askday"); if(a) a.open=true; }
 }
 
 function askToday(d){
@@ -851,7 +853,7 @@ function bottomNav(){
   const links=[...document.querySelectorAll(".bottom a")]; const secs=links.map(l=>document.getElementById(l.dataset.go));
   const mark=()=>{ const h=topH(); let best=null,bd=1e9; secs.forEach((s,i)=>{ const r=s.getBoundingClientRect(); const d=Math.abs(r.top-h-10); if(r.bottom>h+10&&d<bd){bd=d;best=i;} }); links.forEach((l,i)=>l.classList.toggle("on",i===best)); };
   window.addEventListener("scroll",mark,{passive:true}); mark();
-  links.forEach(l=>l.addEventListener("click",e=>{ e.preventDefault(); const s=document.getElementById(l.dataset.go); window.scrollTo({top:s.offsetTop-topH(),behavior:"smooth"}); }));
+  links.forEach(l=>l.addEventListener("click",e=>{ e.preventDefault(); if(l.dataset.go==="today"){ const n=cairoNow(); const ti=dayIndexFor(n.date); const want = ti>=0?ti:(n.date<DAYS[0].date?0:DAYS.length-1); if(want!==sel){ goDay(want,true); return; } } const s=document.getElementById(l.dataset.go); window.scrollTo({top:s.offsetTop-topH(),behavior:"smooth"}); }));
 }
 function mapLinks(){
   const el=$("#mapLinks"); let h="";
@@ -860,7 +862,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v10)";
+const BUILD = "Oct 8, 2026 (v11)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
