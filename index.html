@@ -193,7 +193,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 #review .rv-prog i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.25)}
 #review .rv-prog i.done{background:#fff}#review .rv-prog i.cur{background:var(--rv2,#fff)}
 #review .rv-x{background:none;border:0;color:#fff;font-size:30px;line-height:1;cursor:pointer;padding:2px 6px;opacity:.8}
-#review .rv-card{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px calc(48px + env(safe-area-inset-bottom,0px));max-width:620px;margin:0 auto;width:100%;box-sizing:border-box;opacity:0;transform:translateY(14px)}
+#review .rv-card{flex:1;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;padding:24px 28px calc(48px + env(safe-area-inset-bottom,0px));max-width:620px;margin:0 auto;width:100%;box-sizing:border-box;opacity:0;transform:translateY(14px)}
 #review .rv-card.in{animation:rvin .45s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes rvin{to{opacity:1;transform:none}}
 #review .rv-eyebrow{font-family:var(--display);font-stretch:87.5%;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--rv2,#ffb612);margin-bottom:14px}
@@ -209,6 +209,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 #review .rv-box span{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;min-width:54px}
 #review .rv-box i{font-style:normal;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:2px}
 #review .rv-lines p{margin:0 0 10px;font-size:16px;line-height:1.4}
+#review .rv-more{color:rgba(255,255,255,.55);font-size:14px}
 #review .rv-lines i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--rv2,#ffb612);margin-right:6px}
 #review .rv-final{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 #review .rv-final span{background:rgba(255,255,255,.1);border-radius:999px;padding:7px 12px;font-size:14px}
@@ -1452,7 +1453,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v36)";
+const BUILD = "Oct 8, 2026 (v37)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2186,6 +2187,7 @@ const REVIEW_FACTS = {
    oldest:"St Catherine's, the oldest continuously working monastery on earth — since 565 AD.", newest:"The chalk of the White Desert, cut by the wind and still being cut.",
    sunrises:["The summit of Mount Sinai, Wed 21, after a night on the mountain","The White Desert, Sat 24, with a fox"], people:"Brad", who:["Brad"] }
 };
+const trunc=(s,n)=>{ s=String(s||""); return s.length>n? s.slice(0,n-1).replace(/\s+\S*$/,"")+"…" : s; };
 const alarmMins = s => { const m=String(s||"").match(/(\d{1,2}):(\d{2})/); return m? (+m[1])*60+(+m[2]) : null; };
 function reviewData(kind){
   const F=REVIEW_FACTS[kind]; const w=me(); const days=F.days.map(id=>DAYS.find(d=>d.id===id)).filter(Boolean);
@@ -2217,7 +2219,7 @@ function reviewCards(kind){
   if(R.early.length) card("Alarms before five", String(R.early.length), `Earliest: ${R.earliest[0].alarm.replace(/\s*·.*$/,"")} on ${dl(R.earliest[0])} — ${R.earliest[0].title}.`, `<div class="rv-small">You chose this. Nobody made you.</div>`);
   card("Sunrises you were awake for", String(F.sunrises.length), F.sunrises.join(" · "), "");
   card("Days stamped", `${R.stamped.length} of ${R.days.length}`, R.stamped.length===R.days.length?"Every one. Frame it.":R.stamped.length?"The ones you closed properly are the ones you'll remember.":"The passport is still blank. There's time.", `<div class="rv-stamps">${R.days.map(d=>`<span class="${R.st[d.id]?"on":""}">${d.num}</span>`).join("")}</div>`);
-  if(R.best) card("Your best day", dl(R.best), R.best.title, R.j(R.best.id)?`<div class="rv-quote">“${esc(R.j(R.best.id).split("\n")[0])}”</div>`:"");
+  if(R.best) card("Your best day", dl(R.best), R.best.title, R.j(R.best.id)?`<div class="rv-quote">“${esc(trunc(R.j(R.best.id).split("\n")[0],150))}”</div>`:"");
   if(R.bestMeal||R.worstNight) card("Table and bed", R.bestMeal?`${dl(R.bestMeal)}`:"—", R.bestMeal?`Best meal: ${R.bestMeal.title} — ${"★".repeat(R.rate[R.bestMeal.id].food)}`:"", R.worstNight?`<div class="rv-small">Worst night: ${dl(R.worstNight)}, ${R.worstNight.sleep||R.worstNight.title} — ${"★".repeat(R.rate[R.worstNight.id].sleep)}. Rest is for the mummified.</div>`:"");
   if(R.toutTotal) card("“My friend”", n(R.toutTotal), `Peak: ${R.toutPeak[1]} on ${dl(DAYS.find(d=>d.id===R.toutPeak[0]))}.`, R.other&&R.other.tout!==undefined?`<div class="rv-small">${OTHER()}: ${n(R.other.tout)}. ${R.toutTotal>R.other.tout?"You have the friendlier face, or the easier one.":R.toutTotal<R.other.tout?"He has the friendlier face, or the easier one.":"A tie. Suspicious."}</div>`:"");
   if(R.hg.length) card("The souk", `${n(R.saved)} EGP saved`, `${R.hg.length} haggle${R.hg.length>1?"s":""}. Best: ${R.bestH.w}, ${Math.round((1-R.bestH.p/R.bestH.a)*100)}% off${R.bestH.d?" at "+R.bestH.d:""}.`, R.worstH?`<div class="rv-small">The one that got away: ${R.worstH.w}, paid the asking price. They talk about you still.</div>`:`<div class="rv-small">≈ $${Math.round(R.saved/50)} — a dinner, or two balloon tips.</div>`);
@@ -2226,7 +2228,7 @@ function reviewCards(kind){
   if(kind==="together"&&R.A){ const bp=R.B?R.B.pts:null; const win=bp===null?null:(R.A.pts>bp?w:R.A.pts<bp?OTHER():"tie"); card("The Nile Bowl", `${t.short} ${R.A.pts} · ${TEAMS[OTHER()].short} ${bp===null?"?":bp}`, win===null?"Waiting on the other phone.":win==="tie"?"A tie. Dinner is split, and the argument is forever.":`${TEAMS[win].team} win. ${win===w?OTHER():w} bought Sunday's dinner.`, `<div class="rv-box">${[1,2,3,4].map(q=>`<span><i>Q${q}</i>${R.A.q[q]}${R.B?` · ${R.B.q[q]}`:""}</span>`).join("")}</div>`); }
   if(kind==="together"){ const got=R.bset.size-1; card("Bingo", `${got} of 24`, got>=24?"Blackout. Legendary.":R.missed.length?`The square you never got: “${R.missed[hash(F.dates)%R.missed.length][0]}”`:"", got?`<div class="rv-small">${got*YDS_PER_SQUARE} yards. Next time, the swim.</div>`:""); }
   card("Titles held", String(R.titles.length), R.titles.slice(0,6).join(" · ")+(R.titles.length>6?" …":""), `<div class="rv-small">${w}, ${R.titles[R.titles.length-1]}.</div>`);
-  if(R.lines.length) card("In your own words", `${R.lines.length} ${R.lines.length===1?"entry":"entries"}`, "", `<div class="rv-lines">${R.lines.slice(0,5).map(([d,l])=>`<p><i>${dl(d)}</i> ${esc(l.split("\n")[0])}</p>`).join("")}</div>`);
+  if(R.lines.length) card("In your own words", `${R.lines.length} ${R.lines.length===1?"entry":"entries"}`, "", `<div class="rv-lines">${R.lines.slice(0,4).map(([d,l])=>`<p><i>${dl(d)}</i> ${esc(trunc(l.split("\n")[0],140))}</p>`).join("")}${R.lines.length>4?`<p class="rv-more">…and ${R.lines.length-4} more in the passport.</p>`:""}</div>`);
   card("The last card", F.title, `${F.dates} · ${w}`, `<div class="rv-final">${[R.stamped.length+" stamps", R.toutTotal?n(R.toutTotal)+" “my friends”":"", R.saved?n(R.saved)+" EGP saved":"", R.camelBest?n(R.camelBest.n)+" camels":"", R.A?`${t.team} ${R.A.pts}${R.B?" · "+TEAMS[OTHER()].team+" "+R.B.pts:""}`:"", R.best?"best day "+dl(R.best):""].filter(Boolean).map(x=>`<span>${x}</span>`).join("")}</div><div class="row" style="margin-top:14px;justify-content:center"><button type="button" class="btn rv-share" data-rvshare="${kind}">Share the card</button><button type="button" class="btn rv-again" data-review="${kind}">Watch again</button></div>`);
   return C;
 }
