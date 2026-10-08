@@ -707,11 +707,13 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
 .kv b{font-family:var(--mono);font-weight:600;font-size:13px}
 .phr{display:grid;gap:4px}
-.phr div{display:flex;gap:10px;align-items:baseline}
+.phr div{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
 .say{font:600 inherit;font-family:inherit;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--fg);cursor:pointer;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
 .say .spk,.say{font-size:13px}
 .say.talking{background:var(--nile);color:#fff;border-color:transparent}
-.phr .say{min-width:120px;justify-content:space-between}
+.phr .say{min-width:120px;max-width:200px;justify-content:space-between;white-space:normal;text-align:left;line-height:1.2}
+.phr h5{margin:10px 0 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.phr .ar{font-size:12px;color:var(--muted);margin-left:auto;direction:rtl}
 .brief .say{font-size:12.5px;padding:2px 8px}
 .sos{display:grid;gap:8px}
 .sos div{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
@@ -836,20 +838,13 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Early alarms, the whole trip</div>
       <div class="alarms" id="alarms"></div>
     </div>
-    <details class="fold" id="cashFold" open><summary>Cash, tips, five words</summary><div class="in">
+    <details class="fold" id="cashFold" open><summary>Cash, tips, the words</summary><div class="in">
       <p><b>≈50 EGP = $1.</b> Pull 3,000–5,000 EGP per ATM run (airport, hotels). Keep 10s, 20s, 50s loose in a pocket for tips. Carry $150+ in small clean USD bills for the visa, the boat crew and guides.</p>
       <h4>Tips</h4>
       <div class="kv"><b>10</b><span>bathroom attendant</span><b>50</b><span>porter, carriage driver</span><b>100</b><span>felucca captain</span><b>200/day</b><span>driver</span><b>$20/day</b><span>guide</span><b>$60 each</b><span>boat crew envelope, last night</span></div>
-      <h4>Five words</h4>
-      <div class="phr">
-        <div><button type="button" class="say" data-say="شكراً" data-latin="shukran">shukran <span class="spk">🔊</span></button><span>thanks</span></div>
-        <div><button type="button" class="say" data-say="لا، شكراً" data-latin="la, shukran">la, shukran <span class="spk">🔊</span></button><span>no thanks — smile, keep walking</span></div>
-        <div><button type="button" class="say" data-say="بكام؟" data-latin="bikam?">bikam? <span class="spk">🔊</span></button><span>how much?</span></div>
-        <div><button type="button" class="say" data-say="خلاص" data-latin="khalas">khalas <span class="spk">🔊</span></button><span>done, enough</span></div>
-        <div><button type="button" class="say" data-say="يلا" data-latin="yalla">yalla <span class="spk">🔊</span></button><span>let's go</span></div>
-        <div><button type="button" class="say" data-say="لو سمحت" data-latin="law samaht">law samaht <span class="spk">🔊</span></button><span>excuse me / please</span></div>
-        <div><button type="button" class="say" data-say="الحساب لو سمحت" data-latin="el-hisab law samaht">el-hisab, law samaht <span class="spk">🔊</span></button><span>the bill, please</span></div>
-      </div>
+      <h4>Words that open doors</h4>
+      <p class="muted" style="font-size:12.5px">Egyptian Arabic, not the textbook kind. A greeting before any question changes the whole conversation; the rest is for the souk, the table and Monday's challenge.</p>
+      <div id="words"></div>
       <p class="muted" style="font-size:12px;margin-top:6px">Tap a word to hear it. Uses the phone's Arabic voice — the first tap may take a second while it loads.</p>
       <h4>Getting around</h4>
       <p>Uber and Careem in Cairo and Luxor. In Aswan the boat arranges cars. Agree every street-taxi price before getting in. Egypt is 7 hours ahead of the East Coast (Norfolk, Orlando) and 1 hour ahead of Cape Town, through Oct 29 when its clocks fall back.</p>
@@ -1637,7 +1632,7 @@ function renderNavigator(){
     ["hotel","🏨","Hotel desk", h?h.n.replace(/ \(.*\)/,""):"tonight's bed"],
     ["eat","🍽️","Eat & shop", g.city],
     ["money","💵","Money", `1 USD = ${rate} EGP · tips`],
-    ["phrases","🗣️","Phrases", "five words + the tout phrasebook"],
+    ["phrases","🗣️","Words", "tap to hear · greetings, souk, table"],
     ["sos","🆘","SOS", "126 tourist police · 123 ambulance"],
     ["flights","✈️","Flights", nextFlightLine()],
     ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
@@ -1780,7 +1775,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v47)";
+const BUILD = "Oct 8, 2026 (v48)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1961,7 +1956,7 @@ function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const t
 function challengeBox(d){
   const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
   const done=!!GS.get("chal",{})[d.id];
-  return `<div class="chal ${done?"done":""} ${done&&QUARTER[d.id]?"scored":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":QUARTER[d.id]?"pts-me":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":QUARTER[d.id]?"Done ✓ · +6":"Done ✓"}</button></div>`;
+  return `<div class="chal ${done?"done":""} ${done&&QUARTER[d.id]?"scored":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div>${/arabic|min fadlak|shukran/i.test(c)?`<button type="button" class="btn mini" data-nav="phrases" style="margin:0 0 8px">Hear the words 🔊</button><br>`:""}<button type="button" class="btn ${done?"":QUARTER[d.id]?"pts-me":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":QUARTER[d.id]?"Done ✓ · +6":"Done ✓"}</button></div>`;
 }
 function rateBox(d){
   const r=GS.get("rate",{})[d.id]||{};
@@ -2068,6 +2063,51 @@ function stampBox(d){
   return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"pts-me":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button>${s?` <button type="button" class="btn send" data-sendstamp="${d.id}">Send the stamp ${SEND_ICON}</button>`:""}</div></div>`;
 }
 
+// ---------- the words: Egyptian Arabic that actually lands ----------
+const WORDS = [
+ ["Hello & thanks", [
+  ["as-salamu alaykum","السلام عليكم","hello (the proper one) · reply: wa alaykum as-salam"],
+  ["sabah el-kheir","صباح الخير","good morning · reply: sabah el-nour"],
+  ["masa' el-kheir","مساء الخير","good evening · reply: masa' el-nour"],
+  ["izzayak?","إزيك؟","how are you? (to a man) · reply: kwayyis, el-hamdulillah"],
+  ["ahlan","أهلاً","hi / welcome · reply to ahlan wa sahlan: ahlan bik"],
+  ["shukran","شكراً","thanks · shukran gazilan = thanks a lot"],
+  ["afwan","عفواً","you're welcome · also: excuse me"],
+  ["ma'a salama","مع السلامة","goodbye"],
+  ["insha'allah","إن شاء الله","God willing — said about anything in the future, including the bus"],
+ ]],
+ ["At the table — Monday's challenge", [
+  ["wahed koshary, min fadlak","واحد كشري من فضلك","one koshary, please"],
+  ["itnein shai, min fadlak","اتنين شاي من فضلك","two teas, please"],
+  ["mayya","مية","water · mayya ma'daniyya = bottled"],
+  ["ahwa","قهوة","coffee · ahwa mazboot = medium sugar"],
+  ["lazeez!","لذيذ","delicious — say it to the cook, watch what happens"],
+  ["el-hisab, law samaht","الحساب لو سمحت","the bill, please"],
+ ]],
+ ["In the souk", [
+  ["bikam da?","بكام ده؟","how much is this?"],
+  ["ghali awi","غالي أوي","too expensive (smile)"],
+  ["akher kalam?","آخر كلام؟","final price?"],
+  ["la, shukran","لا، شكراً","no thanks — keep walking"],
+  ["mish ayez","مش عايز","I don't want it"],
+  ["khalas","خلاص","done, enough, we're finished"],
+  ["bass ba-tfarrag","بس بتفرج","just looking"],
+ ]],
+ ["Getting by", [
+  ["law samaht","لو سمحت","excuse me / please (to a man)"],
+  ["fein el-hammam?","فين الحمام؟","where's the bathroom?"],
+  ["mumkin sura, min fadlak?","ممكن صورة من فضلك؟","can I take a photo, please? — the two-point play"],
+  ["ana min Amreeka","أنا من أمريكا","I'm from America (you'll be asked forty times)"],
+  ["ismi …","اسمي","my name is … (then your name)"],
+  ["arabi shwaya","عربي شوية","a little Arabic — gets a laugh and a better price"],
+  ["mafeesh mushkila","مفيش مشكلة","no problem"],
+  ["yalla","يلا","let's go"],
+ ]],
+ ["Numbers", [
+  ["wahed","واحد","1"],["itnein","اتنين","2"],["talata","تلاتة","3"],["arba'a","أربعة","4"],["khamsa","خمسة","5"],["sitta","ستة","6"],["sab'a","سبعة","7"],["tamanya","تمانية","8"],["tis'a","تسعة","9"],["'ashara","عشرة","10"],["miyya","مية","100"],
+ ]],
+];
+function renderWords(){ const el=$("#words"); if(!el) return; el.innerHTML=WORDS.map(([h,ws])=>`<h5>${esc(h)}</h5><div class="phr">${ws.map(([lat,ar,en])=>`<div><button type="button" class="say" data-say="${esc(ar)}" data-latin="${esc(lat)}">${esc(lat)} <span class="spk">🔊</span></button><span>${esc(en)}</span></div>`).join("")}</div>`).join(""); }
 // ---------- say it: the phone's Arabic voice ----------
 function arabicVoice(){ try{ const vs=speechSynthesis.getVoices(); return vs.find(v=>/^ar[-_]EG/i.test(v.lang)) || vs.find(v=>/^ar/i.test(v.lang)) || null; }catch(e){ return null; } }
 function sayIt(btn){ const ar=btn.dataset.say, latin=btn.dataset.latin||""; if(!("speechSynthesis" in window)){ toast(`“${latin}” — no voice on this phone; say it like it's spelled.`); return; }
@@ -2882,7 +2922,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); setTimeout(renderGuideFront,0); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); setTimeout(renderGuideFront,0); safe(renderWords); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
