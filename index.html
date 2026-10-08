@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><meta name="description" content="Day by day plan for the Egypt trip, Oct 10–19 2026: today's card, directions, places, lists, money."><meta property="og:title" content="Egypt · Brad + Duane"><meta property="og:description" content="Day by day, Oct 10–19. Opens on today, counts down to the next stop, every place explained."><meta property="og:image" content="https://bradzickafoose.github.io/egypt/icon-512.png"><meta property="og:url" content="https://bradzickafoose.github.io/egypt/"><meta property="og:type" content="website"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"></head><body><title>Egypt · Brad + Duane</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;600&display=swap">
 <style>
 /* Layout: one phone-width column. Sticky header with Cairo time; a scrolling day strip; a "right now" card that
    picks itself; one day card at a time; everything else folded below; a fixed bottom bar to jump between them. */
@@ -232,7 +232,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .sbug .sbn{padding:7px 10px;font-size:15px;font-weight:700;display:flex;align-items:center;background:rgba(255,255,255,.08)}
 .sbug .sbq{padding:7px 8px;font-size:9.5px;letter-spacing:.12em;color:#5ee37a;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* jumbotron */
-#jumbo{position:fixed;left:0;right:0;top:38%;z-index:70;pointer-events:none;display:flex;justify-content:center;padding:0 16px}
+#jumbo{position:fixed;left:0;right:0;top:38%;z-index:70;cursor:pointer;display:flex;justify-content:center;padding:0 16px}
 #jumbo .jb{background:var(--tc1);color:var(--tc2);border-radius:14px;padding:14px 22px;text-align:center;box-shadow:0 20px 50px -10px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.25);animation:jbin 2.3s cubic-bezier(.2,.9,.2,1) forwards;max-width:92vw}
 #jumbo small{display:block;font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
 #jumbo b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(26px,9vw,44px);line-height:1;letter-spacing:.02em;text-transform:uppercase;margin:4px 0 2px}
@@ -344,8 +344,8 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 /* AFC North */
 /* team colors appear only where points are won or lost */
 /* the one rule of color: .score = your team scores, .give = his team scores, anything else = no points */
-html.team .btn.score{background:var(--t1);color:var(--t2);border-color:transparent}
-html.team .btn.give{background:var(--o1);color:var(--o2);border-color:transparent}
+html.team .btn.pts-me{background:var(--t1);color:var(--t2);border-color:transparent}
+html.team .btn.pts-him{background:var(--o1);color:var(--o2);border-color:transparent}
 .fbtn .btn.on{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px currentColor;font-weight:800}
 html.team .chal.scored{background:var(--t1);color:var(--t2)}html.team .chal.scored b,html.team .chal.scored .ct{color:inherit}
 .ckey{display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;margin:8px 0 6px;font-size:11.5px;color:var(--muted)}
@@ -432,7 +432,10 @@ html.big .bingo button{font-size:11px}
 .stamp{--ink:#b5322b;position:absolute;right:8px;top:6px;width:118px;height:118px;border:3px double var(--ink);border-radius:50%;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em;transform:rotate(var(--rot,-8deg));opacity:.82;mix-blend-mode:multiply;pointer-events:none;padding:8px;box-sizing:border-box}
 @media (prefers-color-scheme:dark){ .stamp{--ink:#ff8a7a;mix-blend-mode:screen} }
 .stamp .r1{font-size:9px}.stamp .r2{font-size:10.5px;margin:3px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:2px 0;width:100%}.stamp .r3{font-size:8px}
+.stamp.rect{border-radius:12px;width:130px;height:92px}.stamp.oval{width:136px;height:96px;border-radius:50%}
 .stamp.small{position:static;width:96px;height:96px;transform:rotate(var(--rot,-8deg)) scale(.92)}
+.stamp.small.rect{width:112px;height:78px}.stamp.small.oval{width:116px;height:82px}
+.stamp.rect .r2,.stamp.oval .r2{width:88%}
 .stamp.ghost{position:static;border-style:dashed;opacity:.35;pointer-events:auto}
 .stampbox{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
 .stampbox .stamp{position:static;width:96px;height:96px}
@@ -478,14 +481,87 @@ p.muted{margin:0 0 8px}
 .acard .ah{font-family:var(--display);font-size:22px;letter-spacing:.02em}.acard .as{color:var(--muted);font-size:12.5px;margin-bottom:10px}
 .acard .ai{display:grid;grid-template-columns:140px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
 .acard .am{margin-top:10px;font-size:13px}.acard .am b{display:block;margin-bottom:4px}.acard .am i{color:var(--muted);font-style:normal;margin-right:4px}
-.pp .pphead{border-bottom:2px solid var(--fg);padding-bottom:8px;margin-bottom:10px}
-.pp .ppt{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.3em;font-size:18px}.pp .pps{color:var(--muted);font-size:12.5px}
-.ppgrid{display:grid;gap:10px}
-.ppd{display:grid;grid-template-columns:100px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px dashed var(--line)}
-.ppd .ppi{font-size:13px}.ppd .ppi b{display:block}.ppd .ppi p{margin:4px 0 0;color:var(--fg);white-space:pre-wrap}
-.ppd .ppr,.ppd .ppc{display:inline-block;margin:3px 6px 0 0;font-size:12px;color:var(--muted)}
-.ppd:not(.on) .ppi{opacity:.6}
-h3.arch{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nile);margin:18px 0 6px}
+/* PASSPORT — a booklet. paper, ink, rubber. stays paper in dark mode: it's an object, not a screen */
+.book{--paper:#f4ecd8;--paper2:#ebe1c8;--rule:rgba(60,40,20,.14);--inkk:#2b2420;--hand:"Caveat","Bradley Hand","Segoe Script",cursive;color:var(--inkk);margin:0 -4px}
+.book .cover{position:relative;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;border-radius:10px 18px 18px 10px;padding:30px 22px 26px;min-height:200px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 10px 0 18px -14px rgba(0,0,0,.8),0 16px 30px -18px rgba(0,0,0,.7);overflow:hidden;text-align:center}
+.book .cover::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 2px,transparent 2px 5px),repeating-linear-gradient(45deg,rgba(0,0,0,.08) 0 1px,transparent 1px 4px);pointer-events:none}
+.book .cover::after{content:"";position:absolute;inset:10px;border:1px solid rgba(216,178,90,.35);border-radius:6px 12px 12px 6px;pointer-events:none}
+.book .emb{width:74px;height:74px;margin:0 auto 10px;color:#d8b25a;filter:drop-shadow(0 1px 0 rgba(0,0,0,.6)) drop-shadow(0 -1px 0 rgba(255,235,180,.25))}
+.book .emb svg{width:100%;height:100%}
+.book .cv-t{font-family:Georgia,"Times New Roman",serif;font-size:26px;letter-spacing:.42em;text-transform:uppercase;text-indent:.42em;text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,235,180,.2)}
+.book .cv-s{font-family:Georgia,serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;text-indent:.3em;opacity:.8;margin-top:6px}
+.book .cv-n{margin-top:22px;font-family:Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;text-indent:.24em;opacity:.9}
+.book .cv-a{margin-top:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.65}
+.book .dogear{position:absolute;right:0;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 26px 26px;border-color:transparent transparent #f4ecd8 transparent;filter:drop-shadow(-2px -2px 2px rgba(0,0,0,.35))}
+.book .page,.page.back{position:relative;background:var(--paper);color:var(--inkk);margin-top:-6px;padding:14px 16px 26px;border-radius:4px 10px 10px 4px;box-shadow:inset 8px 0 12px -10px rgba(0,0,0,.35),0 1px 0 #d9ccae,0 3px 0 var(--paper2),0 4px 0 #d9ccae,0 10px 18px -12px rgba(0,0,0,.45);overflow:hidden}
+.book .page::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 50% 120%,rgba(90,60,30,.045) 0 1px,transparent 1px 9px),repeating-radial-gradient(circle at 50% -20%,rgba(90,60,30,.04) 0 1px,transparent 1px 11px);pointer-events:none}
+.book .page.coffee::after{content:"";position:absolute;right:-26px;top:38%;width:120px;height:120px;border-radius:50%;border:9px solid rgba(120,80,30,.14);box-shadow:inset 0 0 0 2px rgba(120,80,30,.05);pointer-events:none;transform:rotate(-12deg) scaleX(1.05);-webkit-mask-image:linear-gradient(120deg,#000 55%,transparent 75%,#000 95%);mask-image:linear-gradient(120deg,#000 55%,transparent 75%,#000 95%)}
+.book .page.fold::after{content:"";position:absolute;left:-10%;right:-10%;top:52%;height:1px;background:rgba(60,40,20,.2);transform:rotate(-1.5deg);box-shadow:0 1px 0 rgba(255,255,255,.5);pointer-events:none}
+.book .pgh,.page.back .pgh{display:flex;justify-content:space-between;gap:10px;font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(43,36,32,.55);border-bottom:1px solid var(--rule);padding-bottom:6px;margin-bottom:8px;position:relative}
+.book .pgn{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:Georgia,serif;font-size:10px;letter-spacing:.2em;color:rgba(43,36,32,.45)}
+.book .bio-grid{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:start;position:relative}
+.book .photo{aspect-ratio:3.3/4;border:1px solid var(--rule);background:linear-gradient(180deg,#e9dfc6,#d9ccae);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Georgia,serif;color:rgba(43,36,32,.6);box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--rule)}
+.book .photo span{font-size:38px;line-height:1}.book .photo small{font-size:9px;letter-spacing:.2em;margin-top:4px}
+.book dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px}
+.book dt{font-family:Georgia,serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(43,36,32,.5);padding-top:2px}
+.book dd{margin:0;font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;overflow-wrap:anywhere}
+.book .mrz{margin:14px -16px -26px;padding:10px 16px 12px;background:var(--paper2);font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;line-height:1.5;color:rgba(43,36,32,.8);white-space:nowrap;overflow:hidden;position:relative}
+.book .ent{display:grid;grid-template-columns:104px 1fr;gap:10px;align-items:center;padding:10px 0 12px;border-bottom:1px dotted var(--rule);position:relative}
+.book .ent:last-of-type{border-bottom:0}
+.book .vs{display:flex;align-items:center;justify-content:center;min-height:96px}
+.book .ent .stamp{mix-blend-mode:multiply;opacity:.86}
+.book .ent:nth-child(odd) .stamp{transform:rotate(calc(var(--rot,-8deg) - 5deg)) scale(.9)}
+.book .ent:nth-child(even) .stamp{transform:rotate(calc(var(--rot,-8deg) + 7deg)) scale(.9) translateX(4px)}
+.book .visa-ghost{width:92px;height:92px;border:1.5px dashed color-mix(in srgb,var(--ink,#b5322b) 45%,transparent);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--mono);color:color-mix(in srgb,var(--ink,#b5322b) 50%,transparent);transform:rotate(-4deg)}
+.book .visa-ghost span{font-size:8px;letter-spacing:.3em}.book .visa-ghost b{font-size:9.5px;letter-spacing:.06em;margin:4px 0}.book .visa-ghost small{font-size:8px;letter-spacing:.1em}
+.book .et{font-size:13px;min-width:0}
+.book .et b{display:block;font-family:Georgia,serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(43,36,32,.75)}
+.book .et span{display:block;font-family:Georgia,serif;font-style:italic;font-size:13.5px;line-height:1.25;margin-top:1px}
+.book .marks{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.book .marks i{font-style:normal;opacity:.8}
+.book .et .td{display:inline-block;margin-top:5px;font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--ink);border:1.5px solid var(--ink);border-radius:3px;padding:1px 5px;transform:rotate(-3deg);opacity:.75}
+.book .hand{margin:6px 0 0;font-family:var(--hand);font-size:17px;line-height:1.15;color:#1f3a6e;white-space:pre-wrap;transform:rotate(-.6deg)}
+.book .ent:not(.on) .et{opacity:.5}
+.book .ent.solo .et b::after{content:" · solo";font-weight:400;letter-spacing:.04em;text-transform:none;opacity:.7}
+.page.back{margin-top:-6px;padding-top:14px}
+.page.back .btn{background:transparent;border-color:rgba(43,36,32,.35);color:var(--inkk)}.page.back .btn.primary{background:var(--inkk);color:var(--paper);border-color:transparent}
+.page.back .muted{color:rgba(43,36,32,.6)}
+.page.back #archive{margin-top:16px}
+.page.back .print img{display:block;width:100%;aspect-ratio:3/4;background:var(--paper2);border:1px solid var(--rule);box-shadow:0 10px 24px -14px rgba(0,0,0,.6);opacity:0;transition:opacity .4s}.page.back .print img.ready{opacity:1}
+.book.archived{margin-top:14px}
+.ppwrap{margin:0 auto;max-width:520px}
+/* the passport lives in your pocket: a tab peeking in from the right edge */
+.pptab{position:fixed;right:-5px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;width:44px;height:66px;border:0;padding:0;border-radius:7px 3px 3px 7px;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-4px 6px 14px -6px rgba(0,0,0,.6);transform:rotate(-6deg);transform-origin:right bottom;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .2s}
+.pptab::before{content:"";position:absolute;inset:5px;border:1px solid rgba(216,178,90,.4);border-radius:4px 2px 2px 4px;pointer-events:none}
+.pptab::after{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 5px);pointer-events:none}
+.pptab .ppt-s{writing-mode:vertical-rl;transform:rotate(180deg);font-family:Georgia,"Times New Roman",serif;font-size:9px;letter-spacing:.32em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.6)}
+.pptab .ppt-n{position:absolute;left:-7px;top:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#b5322b;color:#fff;font:700 10px/20px var(--mono);text-align:center;border:2px solid var(--bg);box-sizing:border-box;font-style:normal}
+.pptab:active{transform:rotate(-2deg) scale(.96)}
+.pptab.bump{animation:ppbump .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes ppbump{0%{transform:rotate(-6deg)}30%{transform:rotate(3deg) translate(-6px,-10px) scale(1.08)}60%{transform:rotate(-10deg)}100%{transform:rotate(-6deg)}}
+html:has(.qs.on) .pptab,html:has(#review.on) .pptab,html:has(#whoSheet.on) .pptab,html.pp-open .pptab,html:has(.lb[style*="block"]) .pptab{opacity:0;pointer-events:none}
+.ppov{position:fixed;inset:0;z-index:75;background:radial-gradient(120% 70% at 50% -10%,#3a2e22,#17120e 60%,#0e0b08);opacity:0;pointer-events:none;transition:opacity .25s}
+.ppov.on{opacity:1;pointer-events:auto}
+html.pp-open body{overflow:hidden}
+.ppov-top{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 8px 16px;background:linear-gradient(180deg,rgba(14,11,8,.9),rgba(14,11,8,0))}
+.ppov-h{font-family:Georgia,serif;font-size:11px;letter-spacing:.06em;color:rgba(244,236,216,.55);font-style:italic}
+.ppov-x{background:#f4ecd8;color:#2b2420;border:0;border-radius:999px;width:38px;height:38px;font-size:22px;line-height:1;cursor:pointer;flex:none;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.ppov-scroll{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(64px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px));box-sizing:border-box;perspective:1200px}
+.ppov .book{margin:0}
+/* the cover lies exactly over the data page, same size, and swings open on its left edge */
+.ppov .book:not(.archived) .spread{position:relative}
+.ppov .book:not(.archived) .cover{position:absolute;inset:0;z-index:2;min-height:0;padding:16px 22px;display:flex;flex-direction:column;justify-content:center;transform-origin:left center;transition:transform .8s cubic-bezier(.55,0,.2,1),opacity .35s .45s,visibility 0s .8s;transform:perspective(1100px) rotateY(0);cursor:pointer;backface-visibility:hidden;border-radius:4px 10px 10px 4px}
+.ppov .book:not(.archived) .cover .emb{width:72px;height:72px;margin-bottom:6px}
+.ppov .book:not(.archived) .cover .cv-n{margin-top:14px}
+.ppov .book:not(.archived) .cover.flip{transform:perspective(1100px) rotateY(-105deg);opacity:0;visibility:hidden}
+.ppov .book:not(.archived) .spread .page.bio{margin-top:0}
+.ppov .book .page:not(.bio),.ppov .page.back{opacity:0;transform:translateY(26px);transition:opacity .45s,transform .55s cubic-bezier(.2,.8,.2,1)}
+.ppov.open .book .page,.ppov.open .page.back{opacity:1;transform:none}
+.ppov.open .book .page:nth-child(2){transition-delay:.02s}.ppov.open .book .page:nth-child(3){transition-delay:.08s}.ppov.open .book .page:nth-child(4){transition-delay:.14s}.ppov.open .book .page:nth-child(5){transition-delay:.2s}
+.ppov .ppov-hint{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));text-align:center;font-family:Georgia,serif;font-style:italic;font-size:12px;color:rgba(244,236,216,.5);pointer-events:none;transition:opacity .3s}
+.ppov.open .ppov-hint{opacity:0}
+@media (prefers-reduced-motion:reduce){ .ppov .book .cover,.ppov .book .page,.ppov .page.back{transition:none} .pptab.bump{animation:none} }
+h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(43,36,32,.55);margin:18px 0 0}
 .pp.arch{margin-top:8px}
 
 /* city guides */
@@ -852,11 +928,11 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <h2 class="sec">The game</h2>
     <div id="live"></div>
     <div id="gameBody"></div>
-    <h2 class="sec" style="margin-top:18px">Passport</h2>
-    <div class="card" id="passport"></div>
   </section>
 
   <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p></section>
+<button type="button" id="ppTab" class="pptab" aria-label="Open the passport"><span class="ppt-s">Passport</span><i class="ppt-n" hidden></i></button>
+<div id="ppOverlay" class="ppov" aria-hidden="true"><div class="ppov-top"><span class="ppov-h">Tap the cover to open · tap a stamp day to jump to it</span><button type="button" class="ppov-x" aria-label="Close the passport">×</button></div><div class="ppov-scroll"><div id="passport" class="ppwrap"></div></div></div>
 </div>
 
 <nav class="bottom" aria-label="Sections"><div class="in">
@@ -1524,7 +1600,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v40)";
+const BUILD = "Oct 8, 2026 (v42)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1698,12 +1774,14 @@ function gameScore(){
   const saved=hg.reduce((s,h)=>s+Math.max(0,h.a-h.p),0);
   return {bingo:b.size-1, lines:bingoLines(b), chal, best, saved, n:hg.length};
 }
-function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const f=safe(footballScore)||{pts:0}; const tm=safe(team); return `${tm?tm.team.toUpperCase()+" "+f.pts+" · ":""}${who} · Nile Bowl: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
+function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const tm=safe(team); const A=safe(()=>nileTotal(who)), B=safe(()=>nileTotal(OTHER())); const stt=safe(bowlStatus)||{t:""};
+  if(tm&&A){ const o=TEAMS[OTHER()]; const q=k=>`${A.q[k]}${B?"-"+B.q[k]:""}`; return `THE NILE BOWL · ${stt.t}\n${tm.team.toUpperCase()} ${A.pts} — ${o.team.toUpperCase()} ${B?B.pts:"?"}\nQ1 ${q(1)} · Q2 ${q(2)} · Q3 ${q(3)} · Q4 ${q(4)}\n${who}: ${A.own.td} TD · ${A.own.xp} XP · ${A.own.two} 2PT · ${A.own.fg} FG · ${A.saf} SAF · ${A.own.yds} yds\nbradzickafoose.github.io/egypt`; }
+  return `${who} · Nile Bowl: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
 
 function challengeBox(d){
   const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
   const done=!!GS.get("chal",{})[d.id];
-  return `<div class="chal ${done?"done":""} ${done&&QUARTER[d.id]?"scored":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":QUARTER[d.id]?"score":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":QUARTER[d.id]?"Done ✓ · +6":"Done ✓"}</button></div>`;
+  return `<div class="chal ${done?"done":""} ${done&&QUARTER[d.id]?"scored":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":QUARTER[d.id]?"pts-me":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":QUARTER[d.id]?"Done ✓ · +6":"Done ✓"}</button></div>`;
 }
 function rateBox(d){
   const r=GS.get("rate",{})[d.id]||{};
@@ -1718,11 +1796,11 @@ function renderGame(){
   const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
   el.innerHTML = `
   <div class="card">
-    <div class="whome"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    ${who?"":`<div class="whome"><span>This phone is <span class="nudge">← tap yours</span></span><div class="seg"><button type="button" data-me="Brad">Brad</button><button type="button" data-me="Duane">Duane</button></div></div>`}
     ${safe(colorKey)}
     ${safe(scoreboard)}
-    <div class="sbl" style="text-align:left;margin:6px 0 8px">${s.bingo*YDS_PER_SQUARE} yds · ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
-    <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare over iMessage — that's the fun part.</span></div>
+    <div class="sbl" style="text-align:left;margin:6px 0 8px"><b>Your line:</b> ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
+    <div class="row"><button type="button" class="btn" id="scoreShare">Share the board</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Not linked yet, so this phone keeps its own score. Link the room above and the boards merge."}</span></div>
   </div>
 
   <details class="fold" open><summary>Egypt Bingo <span class="pill">${s.bingo}/24</span></summary><div class="in">
@@ -1737,8 +1815,8 @@ function renderGame(){
   </div></details>
 
   <details class="fold"><summary>Daily challenges <span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
-    <p class="muted">One a day, on each day's card. Each one is a touchdown.</p>
-    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini" data-chal="${d.id}">${ch[d.id]?"✓":"○"}</button></li>`).join("")}</ul>
+    <p class="muted">One a day, on each day's card. Through Sunday the 18th each one is a touchdown; Brad's week after is overtime, no score.</p>
+    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini ${!ch[d.id]&&QUARTER[d.id]?"pts-me":""}" data-chal="${d.id}" aria-label="${ch[d.id]?"Undo":"Done"}">${ch[d.id]?"✓":QUARTER[d.id]?"+6":"○"}</button></li>`).join("")}</ul>
   </div></details>
 
   ${safe(()=>funBox())}
@@ -1801,18 +1879,136 @@ function gameWire(){
 // ---------- passport: stamps, export, archive ----------
 const CITY_OF = d => { const p=(d.place||"").toLowerCase(); if(/dahab|sinai|sharm|blue hole/.test(p)) return "DAHAB · SINAI"; if(/desert|bahariya/.test(p)) return "WHITE DESERT"; if(/abu simbel/.test(p)) return "ABU SIMBEL"; if(/aswan/.test(p)) return "ASWAN"; if(/edfu|kom ombo|esna|nile|river|sail/.test(p)) return "ON THE NILE"; if(/luxor|karnak|thebes/.test(p)) return "LUXOR"; if(/giza|saqqara|dahshur/.test(p)) return "GIZA"; if(/home|flight|airport/.test(p)&&d.id==="sun25") return "HOME"; return "CAIRO"; };
 const stamps = ()=>GS.get("stamp",{});
-function stampHTML(d, s, small){ if(!s) return ""; const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0"); return `<div class="stamp ${small?"small":""}" style="--rot:${(parseInt(d.id.replace(/\D/g,""))%7-3)*4}deg"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num} OCT 2026</div><div class="r3">${esc((s.who||"").toUpperCase()||"ENTERED")} · ${hh}</div></div>`; }
+const STAMP_LOOK = { "CAIRO":["#b5322b","round"], "GIZA":["#2a3f8f","rect"], "ASWAN":["#2f7d4e","oval"], "ABU SIMBEL":["#6b3fa0","rect"], "ON THE NILE":["#1f6f8b","round"], "LUXOR":["#8b1e2d","oval"], "DAHAB · SINAI":["#1d5fb0","rect"], "WHITE DESERT":["#8a5a1e","round"], "HOME":["#2b2b2b","rect"] };
+const stampLook = d => STAMP_LOOK[CITY_OF(d)] || ["#b5322b","round"];
+function stampHTML(d, s, small){ if(!s) return ""; const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0"); const L=stampLook(d); return `<div class="stamp ${small?"small":""} ${L[1]}" style="--rot:${(parseInt(d.id.replace(/\D/g,""))%7-3)*4}deg;--ink:${L[0]}"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num} OCT 2026</div><div class="r3">${esc((s.who||"").toUpperCase()||"ENTERED")} · ${hh}</div></div>`; }
 function stampBox(d){
   const s=stamps()[d.id]; const xp = !s && !!QUARTER[d.id] && !!GS.get("chal",{})[d.id] && !GS.get("stupid",{})[d.id];
-  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"score":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button></div></div>`;
+  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"pts-me":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button></div></div>`;
 }
+
+// ---------- THE PRINT: one sheet, worth framing. Paper, an engraved Nile, every stamp where it happened. ----------
+const PRINT_CITY = { "CAIRO":[640,900], "GIZA":[720,1230], "WHITE DESERT":[520,1680], "HOME":[520,2060], "ABU SIMBEL":[840,2400], "DAHAB · SINAI":[2010,1320], "ON THE NILE":[1990,1600], "LUXOR":[2080,1900], "ASWAN":[2060,2260] };
+const PRINT_NODE = { "CAIRO":[1150,840], "GIZA":[1100,980], "WHITE DESERT":[560,1480], "ABU SIMBEL":[1300,2470], "DAHAB · SINAI":[2000,1060], "ON THE NILE":[1480,1650], "LUXOR":[1620,1800], "ASWAN":[1720,2190] };
+const PRINT_SPREAD = { 1:[[0,0]], 2:[[-110,-40],[110,50]], 3:[[-120,-70],[120,-50],[0,95]], 4:[[-120,-75],[120,-75],[-110,95],[130,105]], 5:[[-130,-90],[120,-90],[-110,90],[130,100],[0,0]] };
+function passportPrint(opts){
+  opts=opts||{}; const W=2400,H=3200; const S=opts.scale||1; const c=document.createElement("canvas"); c.width=Math.round(W*S); c.height=Math.round(H*S); const x=c.getContext("2d"); x.scale(S,S);
+  const st=opts.st||stamps(); const who=opts.who||me()||"traveller"; const rate=opts.rate||GS.get("rate",{}); const j=opts.j||(id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim(); }catch(e){ return ""; } });
+  const PAPER="#f4ecd8", PAPER2="#e9dfc6", INK="#2b2420", BLUE="#1f3a6e", GOLD="#9a7a2a";
+  const serif='Georgia,"Times New Roman",serif', mono='"IBM Plex Mono",Menlo,monospace', hand='"Caveat","Bradley Hand",cursive';
+  const rnd=(seed)=>{ let s=hash(String(seed))||1; return ()=>{ s=(s*1664525+1013904223)%4294967296; return s/4294967296; }; };
+  const spaced=(txt,cx,cy,font,color,sp,align)=>{ x.font=font; x.fillStyle=color; x.textBaseline="middle"; const chars=[...String(txt)]; const ws=chars.map(ch=>x.measureText(ch).width); const total=ws.reduce((a,b)=>a+b,0)+sp*(chars.length-1); let px=align==="left"?cx:align==="right"?cx-total:cx-total/2; chars.forEach((ch,i)=>{ x.fillText(ch,px,cy); px+=ws[i]+sp; }); return total; };
+  // paper
+  x.fillStyle=PAPER; x.fillRect(0,0,W,H);
+  const r0=rnd("paper"); x.fillStyle="rgba(90,60,30,.06)"; for(let i=0;i<9000;i++){ x.fillRect(r0()*W, r0()*H, 1.5, 1.5); }
+  const vg=x.createRadialGradient(W/2,H/2,H*.25,W/2,H/2,H*.8); vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(80,50,20,.16)"); x.fillStyle=vg; x.fillRect(0,0,W,H);
+  // frame
+  x.strokeStyle="rgba(43,36,32,.75)"; x.lineWidth=3; x.strokeRect(72,72,W-144,H-144); x.lineWidth=1; x.strokeRect(92,92,W-184,H-184);
+  [[72,72],[W-72,72],[72,H-72],[W-72,H-72]].forEach(([cx,cy])=>{ x.beginPath(); x.arc(cx,cy,14,0,Math.PI*2); x.fillStyle=PAPER; x.fill(); x.lineWidth=2; x.stroke(); x.beginPath(); x.arc(cx,cy,5,0,Math.PI*2); x.fillStyle="rgba(43,36,32,.75)"; x.fill(); });
+  // crest
+  x.save(); x.translate(W/2,250); x.strokeStyle=GOLD; x.lineWidth=4; x.lineJoin="round"; x.lineCap="round"; x.beginPath(); x.arc(0,0,70,0,Math.PI*2); x.stroke(); x.beginPath(); x.moveTo(-52,36); x.lineTo(0,-44); x.lineTo(52,36); x.closePath(); x.stroke(); x.beginPath(); x.moveTo(-24,36); x.lineTo(0,0); x.lineTo(24,36); x.stroke(); x.beginPath(); x.moveTo(-62,50); x.quadraticCurveTo(0,32,62,50); x.stroke(); x.beginPath(); x.arc(0,-62,7,0,Math.PI*2); x.fillStyle=GOLD; x.fill(); x.restore();
+  // title
+  spaced("EGYPT", W/2, 470, `700 230px ${serif}`, INK, 46);
+  spaced("A PASSPORT · OCTOBER MMXXVI", W/2, 600, `400 40px ${serif}`, "rgba(43,36,32,.75)", 12);
+  x.strokeStyle="rgba(43,36,32,.5)"; x.lineWidth=1.5; x.beginPath(); x.moveTo(760,650); x.lineTo(1640,650); x.stroke();
+  // the Nile, engraved
+  const P=[[1150,760],[1150,840],[1100,980],[1230,1250],[1350,1480],[1480,1650],[1620,1800],[1660,1930],[1700,2060],[1720,2190],[1600,2340],[1420,2430],[1300,2470]];
+  const nile=(off,alpha,lw)=>{ x.strokeStyle=`rgba(31,58,110,${alpha})`; x.lineWidth=lw; x.lineJoin="round"; x.beginPath(); P.forEach((p,i)=>{ const q=[p[0]+off,p[1]]; if(!i) x.moveTo(q[0],q[1]); else { const pr=[P[i-1][0]+off,P[i-1][1]]; const mx=(pr[0]+q[0])/2, my=(pr[1]+q[1])/2; x.quadraticCurveTo(pr[0],pr[1],mx,my); } }); x.stroke(); };
+  nile(0,.6,6); nile(14,.22,2); nile(-12,.18,1.5);
+  // delta fan
+  x.strokeStyle="rgba(31,58,110,.35)"; x.lineWidth=2; [[1040,700],[1110,690],[1200,690],[1270,705]].forEach(([dx,dy])=>{ x.beginPath(); x.moveTo(1150,760); x.quadraticCurveTo(1150,730,dx,dy); x.stroke(); });
+  // roads & flights (dotted)
+  x.setLineDash([6,14]); x.strokeStyle="rgba(43,36,32,.45)"; x.lineWidth=2.5;
+  x.beginPath(); x.moveTo(1150,840); x.quadraticCurveTo(1650,780,2000,1060); x.stroke();   // Cairo → Dahab
+  x.beginPath(); x.moveTo(1100,980); x.quadraticCurveTo(900,1200,560,1480); x.stroke();     // Giza → White Desert
+    x.setLineDash([]);
+  // Red Sea hint
+  x.strokeStyle="rgba(31,58,110,.25)"; x.lineWidth=2; x.beginPath(); x.moveTo(2200,900); x.quadraticCurveTo(2120,1300,2250,1700); x.stroke(); spaced("RED SEA", 2240, 1300, `italic 400 22px ${serif}`, "rgba(31,58,110,.45)", 8);
+  // cities on the map
+  const mark=(nm,cx,cy,side)=>{ x.beginPath(); x.arc(cx,cy,7,0,Math.PI*2); x.fillStyle=INK; x.fill(); x.beginPath(); x.arc(cx,cy,13,0,Math.PI*2); x.strokeStyle="rgba(43,36,32,.6)"; x.lineWidth=1.5; x.stroke(); spaced(nm, side==="l"?cx-26:cx+26, cy, `400 26px ${serif}`, INK, 6, side==="l"?"right":"left"); };
+  mark("CAIRO",1150,840,"r"); mark("GIZA",1100,980,"l"); mark("LUXOR",1620,1800,"r"); mark("EDFU",1660,1930,"r"); mark("KOM OMBO",1700,2060,"r"); mark("ASWAN",1720,2190,"r"); mark("ABU SIMBEL",1300,2470,"r"); mark("DAHAB",2000,1060,"l"); mark("WHITE DESERT",560,1480,"r");
+  // stamps where they happened
+  const groups={}; DAYS.forEach(d=>{ const c=CITY_OF(d); (groups[c]=groups[c]||[]).push(d); });
+  x.globalCompositeOperation="multiply";
+  x.setLineDash([3,9]); x.strokeStyle="rgba(43,36,32,.35)"; x.lineWidth=1.5; Object.keys(groups).forEach(city=>{ const base=PRINT_CITY[city], node=PRINT_NODE[city]; if(!base||!node) return; x.beginPath(); x.moveTo(base[0],base[1]); x.lineTo(node[0],node[1]); x.stroke(); }); x.setLineDash([]);
+  Object.keys(groups).forEach(city=>{ const base=PRINT_CITY[city]||[W/2,H/2]; const ds=groups[city]; const r=rnd(city); const left=base[0]<W/2;
+    const sp=PRINT_SPREAD[Math.min(ds.length,5)]||PRINT_SPREAD[5]; ds.forEach((d,i)=>{ const o=sp[i]||[(i-2)*60,(i-2)*60]; const cx=base[0]+o[0]+(r()-.5)*24, cy=base[1]+o[1]+(r()-.5)*24; const rot=((Math.abs(hash(d.id))%29)-14)*Math.PI/180;
+      const s=st[d.id]; const L=stampLook(d); drawStamp(x, cx, cy, rot, L[0], L[1], d, s, serif, mono); }); });
+  x.globalCompositeOperation="source-over";
+  // notes from the road
+  const notes=DAYS.filter(d=>j(d.id)).slice(0,6).map(d=>[d, j(d.id).split("\n")[0]]);
+  let ny=2640; spaced("NOTES FROM THE ROAD", 180, 2600, `400 24px ${serif}`, "rgba(43,36,32,.55)", 8, "left");
+  x.strokeStyle="rgba(43,36,32,.3)"; x.lineWidth=1; x.beginPath(); x.moveTo(180,2618); x.lineTo(2220,2618); x.stroke();
+  const col=[180,1230]; notes.forEach(([d,txt],i)=>{ const cx=col[i%2]; const cy=2640+Math.floor(i/2)*110; x.save(); x.translate(cx,cy); x.rotate(((hash(d.id)%5)-2)*0.004); x.font=`500 26px ${mono}`; x.fillStyle="rgba(43,36,32,.55)"; x.textBaseline="top"; x.fillText(`${d.dow.toUpperCase()} ${d.num}`, 0, 8); x.font=`500 40px ${hand}`; x.fillStyle=BLUE; let line="", ly=0; const words=txt.split(" "); const lines=[]; words.forEach(w=>{ const t=line+w+" "; if(x.measureText(t).width>880){ lines.push(line.trim()); line=w+" "; } else line=t; }); lines.push(line.trim()); lines.slice(0,2).forEach((ln,k)=>{ x.fillText(k===1&&lines.length>2?ln.replace(/\s*$/,"")+" …":ln, 120, 0+k*44); }); x.restore(); });
+  // coffee ring
+  x.save(); x.globalAlpha=.11; x.strokeStyle="#7a4a1a"; x.lineWidth=20; x.beginPath(); x.arc(1980,2380,150,0.4,5.6); x.stroke(); x.lineWidth=5; x.beginPath(); x.arc(1980,2380,172,2.2,4.1); x.stroke(); x.restore();
+  // footer: score + MRZ band
+  const A=safe(()=>nileTotal(who)), B=safe(()=>nileTotal(OTHER())); const T=TEAMS[who]; const scoreLn=A&&T?`THE NILE BOWL · ${T.team.toUpperCase()} ${A.pts}${B?"  —  "+TEAMS[OTHER()].team.toUpperCase()+" "+B.pts:""}`:"THE NILE BOWL";
+  const n=DAYS.filter(d=>st[d.id]).length, places=new Set(DAYS.filter(d=>st[d.id]).map(CITY_OF)).size;
+  spaced(`${who.toUpperCase()}  ·  ${n} STAMPS  ·  ${places} PLACES  ·  ${scoreLn}`, W/2, 2960, `400 26px ${serif}`, "rgba(43,36,32,.8)", 7);
+  x.fillStyle=PAPER2; x.fillRect(93,3010,W-186,H-93-3010);
+  x.font=`500 38px ${mono}`; x.fillStyle="rgba(43,36,32,.8)"; x.textBaseline="middle"; const m1=mrzLine("P<EGY"+who,"NILE<BOWL"), m2=mrzLine("20261010EGY<"+(T?T.short:"TRV"), String(n).padStart(2,"0")+"STAMPS"); spaced(m1, W/2, 3050, `500 38px ${mono}`, "rgba(43,36,32,.8)", 9); spaced(m2, W/2, 3098, `500 38px ${mono}`, "rgba(43,36,32,.8)", 9);
+  return c;
+}
+function drawStamp(x, cx, cy, rot, ink, shape, d, s, serif, mono){
+  x.save(); x.translate(cx,cy); x.rotate(rot); x.globalAlpha=s?.82:.2; x.strokeStyle=ink; x.fillStyle=ink; x.lineCap="round";
+  const w=shape==="round"?300:shape==="oval"?350:340, h=shape==="round"?300:shape==="oval"?250:240;
+  const path=(inset)=>{ x.beginPath(); if(shape==="round") x.arc(0,0,w/2-inset,0,Math.PI*2); else if(shape==="oval") x.ellipse(0,0,w/2-inset,h/2-inset,0,0,Math.PI*2); else { const rr=22; const a=-w/2+inset,b=-h/2+inset,ww=w-2*inset,hh=h-2*inset; x.moveTo(a+rr,b); x.arcTo(a+ww,b,a+ww,b+hh,rr); x.arcTo(a+ww,b+hh,a,b+hh,rr); x.arcTo(a,b+hh,a,b,rr); x.arcTo(a,b,a+ww,b,rr); x.closePath(); } };
+  if(!s){ x.setLineDash([10,12]); x.lineWidth=3; path(0); x.stroke(); x.setLineDash([]); x.font=`700 22px ${mono}`; x.textAlign="center"; x.textBaseline="middle"; x.fillText(CITY_OF(d), 0, -14); x.font=`500 20px ${mono}`; x.fillText(`${d.dow.toUpperCase()} ${d.num} OCT`, 0, 18); x.restore(); return; }
+  // rubber: two rings, slightly uneven ink
+  x.lineWidth=8; path(0); x.stroke(); x.lineWidth=3; path(16); x.stroke();
+  x.globalAlpha=.35; x.lineWidth=2; path(3); x.stroke(); x.globalAlpha=.82;
+  const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0");
+  x.textAlign="center"; x.textBaseline="middle";
+  x.font=`700 24px ${mono}`; x.fillText(CITY_OF(d), 0, -58);
+  const rw=(shape==="round"?w*.62:w*.74); x.lineWidth=2.5; x.beginPath(); x.moveTo(-rw/2,-30); x.lineTo(rw/2,-30); x.stroke(); x.beginPath(); x.moveTo(-rw/2,30); x.lineTo(rw/2,30); x.stroke();
+  x.font=`700 34px ${mono}`; x.fillText(`${d.dow.toUpperCase()} ${d.num} OCT`, 0, 0);
+  x.font=`500 20px ${mono}`; x.fillText(`${(s.who||"").toUpperCase()||"ENTERED"} · ${hh}`, 0, 58);
+  // a few bald patches, like a tired stamp
+  x.globalCompositeOperation="source-over"; x.fillStyle="#f4ecd8"; x.globalAlpha=.5; const r=Math.abs(hash(d.id+"bald")); for(let i=0;i<4;i++){ const a=((r>>>(i*5))%360)*Math.PI/180; const rr=(w/2-10); x.beginPath(); x.arc(Math.cos(a)*rr*.9, Math.sin(a)*rr*.9*(h/w), 10+((r>>>i)%12), 0, Math.PI*2); x.fill(); }
+  x.restore();
+}
+async function ppPrintPreview(){ const img=$("#ppPrint"); if(!img) return; try{ await Promise.all([document.fonts.load(`500 40px Caveat`), document.fonts.load(`500 38px "IBM Plex Mono"`)]); }catch(e){} try{ const c=passportPrint({scale:.3}); img.src=c.toDataURL("image/jpeg",.85); img.classList.add("ready"); }catch(e){} }
+async function ppPrintSave(){ try{ await Promise.all([document.fonts.load(`500 40px Caveat`), document.fonts.load(`500 38px "IBM Plex Mono"`)]); }catch(e){} const c=passportPrint({scale:1}); const w=(me()||"traveller").toLowerCase(); c.toBlob(async blob=>{ const f=new File([blob], `egypt-passport-print-${w}.png`, {type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:"Egypt passport print"}); }catch(e){} } else { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=f.name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); } toast("2400×3200 · prints clean at 12×16"); }, "image/png"); }
+
+// ---------- PASSPORT: a booklet. Paper, ink, rubber stamps. Nothing from the stadium. ----------
+function mrzLine(a,b){ const clean=s=>String(s||"").toUpperCase().replace(/[^A-Z0-9]/g,"<"); let l=(a+"<<"+b).replace(/<+$/,""); l=clean(l); return (l+"<".repeat(44)).slice(0,44); }
+function passportBook(o){
+  // o: {who, st, rate, ch, j(id), saved?, archived?, hon?}
+  const who=(o.who||"traveller"); const st=o.st||{}; const rate=o.rate||{}; const ch=o.ch||{}; const j=o.j||(()=>"");
+  const n=Object.keys(st).filter(id=>DAYS.some(d=>d.id===id)).length; const cities=new Set(DAYS.filter(d=>st[d.id]).map(CITY_OF));
+  const T=TEAMS[who]; const nation=T?`${T.team.toUpperCase()} NATION`:"TRAVELLER"; const first=DAYS.find(d=>st[d.id]); const issued=first?new Date(st[first.id].at):null;
+  const fmt=dt=>dt?`${String(dt.getDate()).padStart(2,"0")} ${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][dt.getMonth()]} ${dt.getFullYear()}`:"—";
+  const hon=o.hon||"";
+  const entry=d=>{ const s=st[d.id]; const r=rate[d.id]; const L=stampLook(d);
+    const marks=r?["food","sight","sleep"].map(k=>r[k]?`<i>${k==="food"?"food":k==="sight"?"sight":"sleep"} ${"|".repeat(r[k])}</i>`:"").filter(Boolean).join(""):"";
+    return `<div class="ent ${s?"on":""} ${d.who==="brad"?"solo":""}" data-day="${d.id}" role="link" tabindex="0"><div class="vs">${s?stampHTML(d,s,true):`<div class="visa-ghost" style="--ink:${L[0]}"><span>VISA</span><b>${CITY_OF(d)}</b><small>${d.dow.toUpperCase()} ${d.num} OCT</small></div>`}</div>
+      <div class="et"><b>${d.dow} ${d.num}</b><span>${esc(d.title)}</span>${marks?`<div class="marks" style="--ink:${L[0]}">${marks}</div>`:""}${ch[d.id]&&QUARTER[d.id]?`<em class="td" style="--ink:${L[0]}">TOUCHDOWN</em>`:""}${j(d.id)?`<p class="hand">${esc(j(d.id))}</p>`:""}</div></div>`; };
+  const pages=[]; for(let i=0;i<DAYS.length;i+=2) pages.push(DAYS.slice(i,i+2));
+  const crest=`<svg viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><circle cx="40" cy="40" r="34" opacity=".55"/><circle cx="40" cy="40" r="29"/><path d="M14 56 L40 18 L66 56 Z"/><path d="M27 56 L40 36 L53 56"/><path d="M8 62 Q40 54 72 62"/><circle cx="40" cy="12" r="3.5" fill="currentColor"/></g></svg>`;
+  return `<div class="book ${o.archived?"archived":""}"><div class="spread">
+    <div class="cover"><div class="emb">${crest}</div><div class="cv-t">Passport</div><div class="cv-s">Egypt · MMXXVI</div><div class="cv-n">${esc(who)}</div>${o.archived?`<div class="cv-a">Archived · ${esc(o.saved||"")}</div>`:""}<i class="dogear"></i></div>
+    <div class="page bio"><div class="pgh"><span>Passport</span><span>Passeport</span><span>جواز سفر</span></div>
+      <div class="bio-grid"><div class="photo"><span>${esc(who.slice(0,1))}</span><small>${esc(T?T.short:"")}</small></div>
+        <dl><dt>Name</dt><dd>${esc(who.toUpperCase())}</dd><dt>Nationality</dt><dd>${nation}</dd>${hon?`<dt>Title</dt><dd>${esc(hon)}</dd>`:""}<dt>Issued</dt><dd>${issued?fmt(issued)+" · "+CITY_OF(first):"ON FIRST STAMP"}</dd><dt>Expires</dt><dd>NEVER</dd><dt>Entries</dt><dd>${n} of ${DAYS.length} · ${cities.size} ${cities.size===1?"place":"places"}</dd></dl></div>
+      <div class="mrz">${esc(mrzLine("P<EGY"+who, "NILE<BOWL"))}<br>${esc(mrzLine("2026"+"10"+"10"+"EGY<"+(T?T.short:"TRV"), String(n).padStart(2,"0")+"STAMPS"))}</div>
+    </div></div>
+    ${pages.map((pp,i)=>`<div class="page ${i===2?"coffee":""} ${i===5?"fold":""}"><div class="pgh"><span>Visas · Entries</span><span>${["Cairo","Cairo","Aswan","The Nile","Luxor","Sinai","Desert","Home"][i]||""}</span></div>${pp.map(entry).join("")}<div class="pgn">${i+2}</div></div>`).join("")}
+  </div>`;
+}
+function openPassport(){ const o=$("#ppOverlay"); if(!o) return; renderPassport(); o.classList.remove("open"); o.classList.add("on"); o.setAttribute("aria-hidden","false"); document.documentElement.classList.add("pp-open"); const sc=o.querySelector(".ppov-scroll"); if(sc) sc.scrollTop=0; let hint=o.querySelector(".ppov-hint"); if(!hint){ hint=document.createElement("div"); hint.className="ppov-hint"; hint.textContent="tap the cover"; o.appendChild(hint); } const c=o.querySelector(".book .cover"); const rm=matchMedia("(prefers-reduced-motion: reduce)").matches; const flip=()=>{ if(!c||c.classList.contains("flip")) return; c.classList.add("flip"); setTimeout(()=>o.classList.add("open"), rm?0:520); }; if(c) c.onclick=flip; clearTimeout(openPassport.t); openPassport.t=setTimeout(flip, rm?0:900); setTimeout(()=>safe(ppPrintPreview), 60); }
+function closePassport(){ const o=$("#ppOverlay"); if(!o) return; clearTimeout(openPassport.t); o.classList.remove("on","open"); o.setAttribute("aria-hidden","true"); document.documentElement.classList.remove("pp-open"); }
+function ppTabRender(){ const el=$("#ppTab"); if(!el) return; const n=Object.keys(stamps()).filter(id=>DAYS.some(d=>d.id===id)).length; const b=el.querySelector(".ppt-n"); if(b){ b.textContent=n; b.hidden=!n; } el.setAttribute("aria-label", n?`Open the passport · ${n} stamp${n===1?"":"s"}`:"Open the passport"); }
+function ppTabBump(){ const el=$("#ppTab"); if(!el) return; el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); ppTabRender(); }
 function renderPassport(){
   const el=$("#passport"); if(!el) return; const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
   const j=id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim(); }catch(e){ return ""; } };
-  const n=Object.keys(st).length;
-  el.innerHTML=`<div class="pp"><div class="pphead"><div class="ppt">PASSPORT</div><div class="pps">Egypt · October 2026 · ${esc(me()||"traveller")} · ${n}/${DAYS.length} stamps</div></div>
-  <div class="ppgrid">${DAYS.map(d=>`<div class="ppd ${st[d.id]?"on":""} ${d.who==="brad"?"solo":""}">${st[d.id]?stampHTML(d,st[d.id],true):`<div class="stamp ghost small"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num}</div></div>`}<div class="ppi"><b>${d.dow} ${d.num} · ${esc(d.title)}</b>${rate[d.id]?`<span class="ppr">${["food","sight","sleep"].map(k=>rate[d.id][k]?`${k==="food"?"🍽️":k==="sight"?"🏛️":"😴"}${"★".repeat(rate[d.id][k])}`:"").filter(Boolean).join(" ")}</span>`:""}${ch[d.id]?`<span class="ppc">🏅 challenge done</span>`:""}${j(d.id)?`<p>${esc(j(d.id))}</p>`:""}</div></div>`).join("")}</div>
-  <div class="row" style="margin-top:12px"><button type="button" class="btn primary" id="ppSave">Save / send my passport</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
+  const hon=(()=>{ try{ const w=me(); return w?pickDaily(HONORIFICS.concat(TEAM_HON[w]||[]), w):""; }catch(e){ return ""; } })();
+  el.innerHTML=`${passportBook({who:me()||"traveller", st, rate, ch, j, hon})}
+  <div class="page back"><div class="pgh"><span>The print</span><span>Worth framing</span></div>
+  <div class="print"><img id="ppPrint" alt="The passport, as one sheet"><div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-print>Save the print</button><span class="muted">2400 × 3200. Every stamp where it happened, on an engraved Nile. Prints clean at 12 × 16 — frame it when you're home.</span></div></div>
+  <div class="pgh" style="margin-top:18px"><span>Consular services</span><span>Back cover</span></div>
+  <div class="row"><button type="button" class="btn primary" id="ppSave">Save / send my passport</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
   <p class="muted" style="margin-top:8px">The file holds everything on this phone: stamps, journal, ratings, bingo, haggles, notes. After the trip, send it to Brad; it goes into the site's repo as your archived passport and the page shows both of yours, on any device, for good.</p>
   <div id="archive"></div></div>`;
 }
@@ -1822,12 +2018,19 @@ async function loadArchive(){
   const el=$("#archive"); if(!el) return; const found=[];
   for(const who of ["brad","duane"]){ try{ const r=await fetch(`passport-${who}.json`,{cache:"no-store"}); if(r.ok){ const p=await r.json(); if(p&&p.data) found.push(p); } }catch(e){} }
   if(!found.length) return;
-  const j=(p,id)=>(p.data["egypt.journal."+id]||"").trim(); const st=p=>{ try{ return JSON.parse(p.data["egypt.game.stamp"]||"{}"); }catch(e){ return {}; } };
-  el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>{ const s=st(p); return `<div class="pp arch"><div class="pphead"><div class="ppt">${esc((p.who||"").toUpperCase()||"PASSPORT")}</div><div class="pps">archived ${new Date(p.saved).toLocaleDateString()} · ${Object.keys(s).length} stamps</div></div><div class="ppgrid">${DAYS.map(d=>`<div class="ppd ${s[d.id]?"on":""}">${s[d.id]?stampHTML(d,s[d.id],true):`<div class="stamp ghost small"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num}</div></div>`}<div class="ppi"><b>${d.dow} ${d.num} · ${esc(d.title)}</b>${j(p,d.id)?`<p>${esc(j(p,d.id))}</p>`:""}</div></div>`).join("")}</div></div>`; }).join("");
+  const J=(p)=>(id)=>(p.data["egypt.journal."+id]||"").trim(); const P=(p,k)=>{ try{ return JSON.parse(p.data["egypt.game."+k]||"{}"); }catch(e){ return {}; } };
+  el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>passportBook({who:p.who||"traveller", st:P(p,"stamp"), rate:P(p,"rate"), ch:P(p,"chal"), j:J(p), archived:true, saved:new Date(p.saved).toLocaleDateString()})).join("");
 }
 function passportWire(){
+  safe(ppTabRender); try{ if(!GS.get("ppHint","") && me()){ setTimeout(()=>{ if(!document.hidden){ GS.set("ppHint",new Date().toISOString()); safe(ppTabBump); toast("Your passport is in your pocket — bottom right."); } }, 4000); } }catch(e){}
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePassport(); });
   document.addEventListener("click", e=>{
-    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd)); if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]) jumbo("Extra point", me(), "+1 · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}${td&&QUARTER[id]?" — extra point":""}`)); } return; }
+    if(e.target.closest("#ppTab")||e.target.closest("[data-pp]")){ openPassport(); return; }
+    if(e.target.closest(".ppov-x")){ closePassport(); return; }
+    if(e.target.closest("[data-print]")){ ppPrintSave(); return; }
+    const pv=e.target.closest("#ppOverlay"); if(pv && !e.target.closest(".book") && !e.target.closest(".page.back") && !e.target.closest(".ppov-top")){ closePassport(); return; }
+    const ent=e.target.closest("#ppOverlay .ent[data-day]"); if(ent){ const i=DAYS.findIndex(d=>d.id===ent.dataset.day); if(i>=0){ closePassport(); goDay(i,false); window.scrollTo({top:0}); } return; }
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]) safe(ppTabBump); else safe(ppTabRender); if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd)); if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]) jumbo("Extra point", me(), "+1 · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}${td&&QUARTER[id]?" — extra point":""}`)); } return; }
     if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const f=new File([blob],name,{type:"application/json"}); if(navigator.canShare && navigator.canShare({files:[f]})){ navigator.share({files:[f], title:name, text:"My Egypt passport file"}).then(()=>toast("Sent. Brad puts it in the repo.")).catch(()=>{}); return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
@@ -1854,7 +2057,7 @@ function lookingBack(){
   const st=stamps(); const n=Object.keys(st).length; const s=gameScore();
   const lines=[]; DAYS.forEach(d=>{ try{ const v=(localStorage.getItem("egypt.journal."+d.id)||"").trim(); if(v) lines.push([d, v.split("\n")[0]]); }catch(e){} });
   const pick=lines.length?lines[hash(new Date().toISOString().slice(0,13))%lines.length]:null;
-  return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row">${safe(reviewButtons)}<a class="btn" href="#game">Open the passport</a></div>`;
+  return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row">${safe(reviewButtons)}<button type="button" class="btn" data-pp>Open the passport</button></div>`;
 }
 
 // ---------- the funny bits ----------
@@ -2067,7 +2270,7 @@ function rivalryCard(){
   return `<details class="fold"><summary>AFC North on the Nile</summary><div class="in">
     <div class="riv"><div><b>Last meeting</b><span>${RIVALRY.last}</span></div><div><b>Rematch</b><span>${RIVALRY.next}</span></div><div><b>Standings</b><span>${RIVALRY.standings}</span></div></div>
     <p class="muted"><b>The Nile Bowl.</b> Four quarters: Q1 Cairo (Sat–Mon), Q2 the Nile (Tue–Thu), Q3 Luxor (Fri–Sat), Q4 Sunday. <b>Final whistle: Sunday 8:00pm Cairo, kickoff of Steelers–Bucs.</b> The loser buys that dinner — the last one together, with the game on. Nothing is owed after the gate; Monday's goodbye and Brad's week are overtime with no score.</p>
-    <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> by landing the day's two-point play in the shot list, a photo that takes nerve or patience — one or the other. <b>Field goal (3)</b> — a haggle under 40% of the ask, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it.</p>
+    <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> by landing the day's two-point play in the shot list, a photo that takes nerve or patience — one or the other. <b>Field goal (3)</b> — a haggle 40% off the ask or better, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it.</p>
     <p class="muted">Game days are on the Sun 11 and Sun 18 cards under “What's on.” ${w?`${t.chant}, ${w}.`:""}</p>
   </div></details>`;
 }
@@ -2108,7 +2311,7 @@ function liveWire(){
     if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
   document.addEventListener("submit", e=>{ if(e.target.id!=="roomForm") return; e.preventDefault(); const v=$("#roomIn").value.trim().toLowerCase(); if(!/^[a-f0-9]{24,}$/.test(v)){ toast("That's not a room code"); return; } localStorage.setItem("egypt.room", v); renderLive(); livePush(); livePull(); toast("Linked"); });
   // push whenever game state changes
-  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival"].includes(k)) livePush(); };
+  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti"].includes(k)) livePush(); };
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ livePull(); livePush(); } });
   setInterval(()=>{ if(!document.hidden) livePull(); }, 60000);
   livePull(); livePush();
@@ -2116,12 +2319,12 @@ function liveWire(){
 
 
 // ---------- the one rule of color: a button in your colors scores for you; in his, for him; plain, nobody ----------
-function ffBtn(i,w,ff){ const n=(ff[i]||{})[w]||0; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); const cls=(!isPen||!me())?"":(w===me()?"give":"score"); return `<button type="button" class="btn ${cls} ${n?"on":""}" data-ff="${i}" data-w="${w}">${w}${n?" · "+n:""}</button>`; }
+function ffBtn(i,w,ff){ const n=(ff[i]||{})[w]||0; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); const cls=(!isPen||!me())?"":(w===me()?"pts-him":"pts-me"); return `<button type="button" class="btn ${cls} ${n?"on":""}" data-ff="${i}" data-w="${w}">${w}${n?" · "+n:""}</button>`; }
 function colorKey(){ const w=me(); if(!w) return ""; const t=TEAMS[w], o=TEAMS[OTHER()]; const sw=T=>`style="--tc1:${T.c1};--tc2:${T.c2.toLowerCase()==="#000000"?"#fff":T.c2}"`; return `<div class="ckey"><span class="k" ${sw(t)}>${t.team}</span><em>you score</em><span class="k" ${sw(o)}>${o.team}</span><em>he scores</em><span class="k no">plain</span><em>no points</em></div>`; }
-function hagglePreview(form){ const b=form.querySelector("[data-hbtn]"); if(!b) return; const num=s=>+String(s).replace(/[^\d.]/g,"")||0; const ai=form.querySelector("[data-ha]"), pi=form.querySelector("[data-hp]"); const a=num(ai&&ai.value), p=num(pi&&pi.value); const d=todayDay()||DAYS[sel]; const fgToday=GS.get("haggle",[]).some(h=>h.day===d.id && h.a>0 && (1-h.p/h.a)>=0.4); const pct=a>0?Math.round((1-p/a)*100):0; const typed=!!(pi&&pi.value!==""); const fg=a>0 && typed && pct>=40 && !!QUARTER[d.id] && !fgToday && !!me(); b.classList.toggle("score",fg); b.textContent = fg?"Log it · field goal, +3" : (a>0&&typed&&pct>0 ? `Log it · ${pct}% off${pct>=40&&fgToday?" (FG already today)":""}` : "Log it"); }
+function hagglePreview(form){ const b=form.querySelector("[data-hbtn]"); if(!b) return; const num=s=>+String(s).replace(/[^\d.]/g,"")||0; const ai=form.querySelector("[data-ha]"), pi=form.querySelector("[data-hp]"); const a=num(ai&&ai.value), p=num(pi&&pi.value); const d=todayDay()||DAYS[sel]; const fgToday=GS.get("haggle",[]).some(h=>h.day===d.id && h.a>0 && (1-h.p/h.a)>=0.4); const pct=a>0?Math.round((1-p/a)*100):0; const typed=!!(pi&&pi.value!==""); const fg=a>0 && typed && pct>=40 && !!QUARTER[d.id] && !fgToday && !!me(); b.classList.toggle("pts-me",fg); b.textContent = fg?"Log it · field goal, +3" : (a>0&&typed&&pct>0 ? `Log it · ${pct}% off${pct>=40&&fgToday?" (FG already today)":""}` : "Log it"); }
 document.addEventListener("input", e=>{ const f=e.target.closest("form.hform"); if(f && f.querySelector("[data-hbtn]")) safe(()=>hagglePreview(f)); });
 // jumbotron: a scoring play gets the stadium treatment
-function jumbo(word, who, sub){ try{ if(!who||!TEAMS[who]) return; if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.innerHTML=`<div class="jb"><small>${esc(T.team)}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2300); }catch(e){} }
+function jumbo(word, who, sub){ try{ if(!who||!TEAMS[who]) return; if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.onclick=()=>el.remove(); el.innerHTML=`<div class="jb"><small>${esc(T.team)}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2300); }catch(e){} }
 function nbTicker(){ const live=GS.get("live",{})||{}; const mine=GS.get("events",[]); const theirs=(live[OTHER()]&&live[OTHER()].events)||[]; const ev=[...mine,...theirs].filter(e=>e&&e.text).sort((a,b)=>b.at<a.at?-1:1).slice(0,8); const items = ev.length ? ev.map(e=>`<span><b>${esc((e.who||"").toUpperCase())}</b> ${esc(e.text)}</span>`) : [`<span>WELCOME TO THE NILE BOWL</span>`,`<span>KICKOFF SAT OCT 10 · GIZA</span>`,`<span>FINAL WHISTLE SUN OCT 18 · 8PM CAIRO</span>`,`<span>LOSER BUYS SUNDAY DINNER</span>`]; const s=items.join(`<i>◆</i>`)+`<i>◆</i>`; return `<div class="nb-ticker" aria-hidden="true"><div class="nb-tick">${s}${s}</div></div>`; }
 function kickoffIn(){ const n=cairoNow(); const ms=Date.UTC(2026,9,10,0,0)-Date.UTC(+n.date.slice(0,4),+n.date.slice(5,7)-1,+n.date.slice(8,10),n.h,n.m||0); if(ms<=0) return ""; const h=Math.floor(ms/36e5); const d=Math.floor(h/24); return d>0?`${d}D ${h%24}H`:`${h}H ${Math.floor((ms%36e5)/6e4)}M`; }
 
@@ -2185,7 +2388,7 @@ function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nil
 function conversionBox(d){
   if(!QUARTER[d.id]) return ""; const ch=GS.get("chal",{}); if(!ch[d.id]) return "";
   const st=!!stamps()[d.id], sp=!!GS.get("stupid",{})[d.id];
-  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — you got the shot. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the two-point play in the shot list (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn score" data-stupid="${d.id}">Go for two 📸 · +2</button>`}</div></div>`;
+  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — you got the shot. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the two-point play in the shot list (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn pts-me" data-stupid="${d.id}">Go for two 📸 · +2</button>`}</div></div>`;
 }
 
 
@@ -2245,7 +2448,7 @@ function qcPanel(kind){
 function closeDaySheet(id){
   const d=DAYS.find(x=>x.id===id); if(!d) return; const nx=DAYS[DAYS.indexOf(d)+1]; const A=nileTotal(me()); let j=""; try{ j=localStorage.getItem("egypt.journal."+d.id)||""; }catch(e){}
   openSheet("sheetCD", `<div class="cd"><div class="qh"><h3>Close the day · ${d.dow} ${d.num}</h3><button type="button" class="x" aria-label="Close">×</button></div>
-    <div class="score1">${safe(nileLine)||""}${A?` · ${A.pts} pts so far`:""}</div>
+    <div class="score1">${safe(nileLine)||(A?`${A.pts} pts so far`:"")}</div>
     ${safe(()=>conversionBox(d))}
     ${safe(()=>rateBox(d))}
     <div class="journ"><b style="font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Three lines</b><textarea id="cdj" placeholder="Best moment. Funniest moment. The thing you'd tell someone who wasn't there.">${esc(j)}</textarea></div>
