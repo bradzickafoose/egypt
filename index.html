@@ -879,6 +879,7 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .xff-g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .xff input{font:13px var(--body);padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);min-width:0;width:100%;box-sizing:border-box}
 .xff-c{display:flex;align-items:center;gap:6px;font-size:12.5px;margin:8px 0}
+.btn.danger{background:#b3261e;color:#fff;border-color:#b3261e}.fold.reset summary{color:var(--muted)}
 .card.ask{padding:12px 14px;border-color:var(--dusk)}.card.ask b{display:block;margin-bottom:4px}.card.ask p{margin:0 0 8px;font-size:13.5px}
 .fband{display:flex;align-items:center;gap:10px;margin:-2px 0 12px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.1);font-size:13px}
 .now:not(.solo) .fband{background:rgba(255,255,255,.1)}
@@ -2311,7 +2312,8 @@ function renderGame(){
     <div class="row"><button type="button" class="btn primary" data-review="together">Trip in review${(()=>{ try{ const n=cairoNow(); return n.date>"2026-10-18"?"":" · so far"; }catch(e){ return ""; } })()}</button><button type="button" class="btn" data-review="solo">Brad's week</button><button type="button" class="btn" id="awardsBtn">The awards</button></div>
     <div id="awards"></div>
   </div></details>
-  ${safe(rivalryCard)}`;
+  ${safe(rivalryCard)}
+  ${safe(resetCard)}`;
 }
 
 function makeAwards(){
@@ -2887,7 +2889,7 @@ function livePayload(){
 function logEvent(text){ const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text}); GS.set("events", ev.slice(0,40)); livePush(); }
 let pushT=null, lastPushed="";
 function livePush(now){ if(!liveOK()) return; clearTimeout(pushT); const go=async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); setTimeout(()=>livePull(), 4000); } }catch(e){} }; if(now) go(); else pushT=setTimeout(go, 1500); }
-async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); safe(()=>noticeTheirPlays(d||{})); safe(()=>{ const f=document.activeElement; if(!(f && f.closest && f.closest("#flights"))) renderFlights(); }); return d; }catch(e){ return null; } }
+async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); if(safe(()=>followReset(d))) return d; GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); safe(()=>noticeTheirPlays(d||{})); safe(()=>{ const f=document.activeElement; if(!(f && f.closest && f.closest("#flights"))) renderFlights(); }); return d; }catch(e){ return null; } }
 function renderLive(){
   const el=$("#live"); if(!el) return; setTimeout(()=>safe(()=>nbAnimate(el)),30);
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone (the name chip at the top) and the board links itself.</p>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
@@ -2903,11 +2905,36 @@ function renderLive(){
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every 20 seconds while the app is open.</span></div>
   </div>`;
 }
+
+// ---------- start over: wipe the Nile Bowl on both phones ----------
+const KEEP_GAME = ["me","sound","resetSeen"]; // everything else under egypt.game.* goes
+function wipeLocalBowl(){
+  try{ const ks=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k) continue; if(k.startsWith("egypt.game.")&&!KEEP_GAME.includes(k.slice(11))) ks.push(k); else if(k.startsWith("egypt.journal.")||k.startsWith("egypt.photo.")||k==="egypt.rate"||k==="egypt.big") ks.push(k); } ks.forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  lastPushed=""; seenOther=new Date().toISOString(); GS.set("seenOther", seenOther);
+}
+function rerenderAll(){ safe(renderGame); safe(renderLive); safe(renderPassport); safe(renderStrip); safe(renderDay); safe(renderNow); safe(renderGuideFront); }
+async function resetBowl(){
+  const at=new Date().toISOString(); wipeLocalBowl(); GS.set("resetSeen", at);
+  if(liveOK()){ try{ await fetch(`${DB_URL}/rooms/${room()}.json`,{method:"PUT",body:JSON.stringify({reset:{at, by:me()}}),headers:{"Content-Type":"application/json"}}); }catch(e){} GS.set("live",{reset:{at,by:me()}}); livePush(true); }
+  rerenderAll(); toast(liveOK()?`Fresh start. ${OTHER()}'s phone resets the next time it syncs.`:"Fresh start on this phone.");
+  safe(()=>jumbo("Kickoff", me(), "0–0. Clean sheet. Everything before this never happened."));
+}
+function resetCard(){ const w=me(); if(!w) return ""; return `<details class="fold reset"><summary>Start over</summary><div class="in">
+  <p class="muted">Wipes the Nile Bowl on <b>both phones</b>: scores, plays, trash talk, coin tosses, bingo, haggles, flags, camel offers, stamps, ratings, journal lines and day photos. Lists, flights, confirmation codes and who's-who stay. Use it once the test run is done, so the real game starts at 0–0.</p>
+  <div class="row"><button type="button" class="btn" id="resetArm">Reset the Nile Bowl…</button><button type="button" class="btn danger" id="resetGo" hidden>Yes — wipe both phones</button><button type="button" class="btn mini" id="resetNo" hidden>Keep it</button></div>
+</div></details>`; }
+document.addEventListener("click", e=>{
+  if(e.target.id==="resetArm"){ e.target.hidden=true; $("#resetGo").hidden=false; $("#resetNo").hidden=false; return; }
+  if(e.target.id==="resetNo"){ $("#resetArm").hidden=false; $("#resetGo").hidden=true; $("#resetNo").hidden=true; return; }
+  if(e.target.id==="resetGo"){ e.target.disabled=true; e.target.textContent="Wiping…"; resetBowl(); return; }
+});
+// the other phone: a reset marker in the room newer than the last one seen wipes this phone too
+function followReset(d){ try{ const r=d&&d.reset; if(!r||!r.at) return false; const seen=GS.get("resetSeen",""); if(r.at<=seen) return false; wipeLocalBowl(); GS.set("resetSeen", r.at); GS.set("live", d); livePush(true); rerenderAll(); toast(`${r.by||"The other phone"} reset the Nile Bowl — fresh start, 0–0.`); return true; }catch(e){ return false; } }
 function liveWire(){
   document.addEventListener("click", e=>{ const fb=e.target.closest("[data-flag]"); if(fb){ const f=GS.get("flags",[]); const i=f.indexOf(fb.dataset.flag); if(i>=0) f.splice(i,1); else f.push(fb.dataset.flag); GS.set("flags",f); renderLive(); livePush(); toast(i>=0?"Flag picked up":"Flag thrown. Under review."); return; }
     if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
   // push whenever game state changes
-  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti","seenOther","half","mummies","mumseen","digHint","sound"].includes(k)) livePush(); };
+  const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti","seenOther","half","mummies","mumseen","digHint","sound","resetSeen"].includes(k)) livePush(); };
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ livePull(); livePush(); } });
   setInterval(()=>{ if(!document.hidden) livePull(); }, 20000);
   livePull(); livePush();
