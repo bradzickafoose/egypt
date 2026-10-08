@@ -940,6 +940,7 @@ function dur(mins){ const h=Math.floor(mins/60), m=mins%60; return h?`${h}h ${St
 let sel = 0;
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const safe = f => { try{ return f()||""; }catch(e){ console.warn("skipped", e); return ""; } };
 function mapBtns(q, pkey, long, extra){ extra = extra||""; const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about && !extra) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}${extra}</div>`; }
 
 // ---------- add to calendar (Apple / Google) ----------
@@ -963,7 +964,7 @@ function vevent(ev){
   const uid=ev.start+"-"+ev.title.replace(/\W+/g,"").slice(0,24)+"@egypt-companion";
   return ["BEGIN:VEVENT","UID:"+uid,"DTSTAMP:"+ev.start+"Z","DTSTART;TZID=Africa/Cairo:"+ev.start,"DTEND;TZID=Africa/Cairo:"+ev.end,"SUMMARY:"+e(ev.title),"LOCATION:"+e(ev.loc),"DESCRIPTION:"+e(ev.desc),"BEGIN:VALARM","TRIGGER:-PT"+ev.lead+"M","ACTION:DISPLAY","DESCRIPTION:"+e(ev.title),"END:VALARM","END:VEVENT"];
 }
-function fold(lines){ return lines.map(l=>{ const out=[]; let s=l; while(s.length>70){ out.push(s.slice(0,70)); s=" "+s.slice(70); } out.push(s); return out.join("\r\n"); }).join("\r\n"); }
+function fold(lines){ return lines.map(l=>{ const cps=Array.from(l); const out=[]; let i=0, first=true; while(i<cps.length){ const n=first?70:69; out.push((first?"":" ")+cps.slice(i,i+n).join("")); i+=n; first=false; } return out.join("\r\n"); }).join("\r\n"); }
 function icsHref(evs){ const ics=fold(["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Egypt companion//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH",...VTZ,...evs.flatMap(vevent),"END:VCALENDAR"]); return "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics); }
 function gcalHref(ev){ return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(ev.title)+"&dates="+ev.start+"/"+ev.end+"&details="+encodeURIComponent(ev.desc)+"&location="+encodeURIComponent(ev.loc)+"&ctz=Africa%2FCairo"; }
 function calBtn(d,i){ return calOK(d.agenda[i]) ? `<button type="button" class="btn cal" data-cal="${i}" aria-label="Add to calendar" title="Add to calendar">📅</button>` : ""; }
@@ -1014,7 +1015,7 @@ function renderDay(){
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
     const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, calBtn(d,i))}${calOpts(d,i)}</div></li>`;
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
   }).join("");
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
@@ -1028,7 +1029,7 @@ function renderDay(){
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
     <ul class="agenda">${items}</ul>
-    ${calDay(d)}
+    ${safe(()=>calDay(d))}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
     ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
@@ -1192,7 +1193,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v15)";
+const BUILD = "Oct 8, 2026 (v16)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
