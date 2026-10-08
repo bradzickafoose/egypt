@@ -1554,10 +1554,10 @@ const HOTEL_HOWTO = [
 ];
 
 const WEEK = [
- {k:"w1",who:"Both",t:"Booking details for the boat and the two EgyptAir flights: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
+ {k:"w1",who:"Both",t:"Booking details for the boat: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
  {k:"w3",who:"Either",t:"Dahabiya: board Tue Oct 13, night 1 moored in Aswan, Abu Simbel Wed dawn, off the boat Fri morning → Luxor West Bank.",s:"Shared cabin ≈$1,000 each; ask for a private quote too. Get the boat's name."},
- {k:"w4",who:"Brad",t:"Flights: CAI→ASW Tue 8:00am ✓ booked (Nile Air NP 81) · LXR→CAI Sun 3:40pm ✓ booked (EgyptAir MS 275)"},
+ {k:"w4",who:"Brad",t:"Domestic flights ✓ booked — NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Tick when the codes are in the app."},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)'},
  {k:"w6",who:"Both",t:"e-Visa, or $25 USD cash on arrival, exact bills",h:'<a href="https://visa2egypt.gov.eg" target="_blank" rel="noopener">e-Visa</a>, or $25 USD cash on arrival, exact bills'},
  {k:"w7",who:"Both",t:"USD small bills, $300+ each. Get them before you fly."},
@@ -1884,7 +1884,7 @@ function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(
 const FLIGHTS = [
  {id:"dua-out0",who:"Duane",date:"2026-10-09",no:"",op:"",from:{ap:"ORF",city:"Norfolk",t:"",tz:-4},to:{ap:"LHR",city:"London Heathrow",t:"",tz:1},status:"tbd",slot:"out",note:"The Norfolk → London leg, probably overnight Friday. Add it and the board counts down from Norfolk, with the Heathrow connection worked out."},
  {id:"dua-out",who:"Duane",date:"2026-10-10",no:"AA 6838",op:"British Airways",from:{ap:"LHR",city:"London Heathrow",t:"10:10",tz:1},to:{ap:"CAI",city:"Cairo",t:"17:20",tz:3},status:"ok",note:"Booked as AA, flown by BA. Manage it in the BA app with the AA record locator — seat, terminal and gate live there. You're connecting at Heathrow: BA long-haul is Terminal 5 unless the app says 3; follow the purple Flight Connections signs, allow 90 min between terminals.",arrive:"Visa counter is before immigration (bank window, $25 cash) or the e-Visa lane. Then Uber from the signed pickup, ≈$15, an hour to the Hilton in evening traffic."},
- {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:05",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"Cape Town",mins:30,before:150}},
+ {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:05",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"home",mins:30,before:150}},
  {id:"brad-out2",who:"Brad",date:"2026-10-10",no:"ET 452",op:"Ethiopian Airlines",from:{ap:"ADD",city:"Addis Ababa",t:"22:05",tz:3,approx:true},to:{ap:"CAI",city:"Cairo",t:"02:05",tz:3,date:"2026-10-11"},status:"ok",note:"A350, about four hours. Lands 2am Sunday — the Hilton has been told; Duane is asleep.",arrive:"Visa counter before immigration (bank window, $25 cash) or the e-Visa lane. Uber from the signed pickup, ≈$15, 45 min at that hour."},
  {id:"asw",who:"Both",date:"2026-10-13",no:"NP 81",op:"Nile Air",from:{ap:"CAI",city:"Cairo",t:"08:00",tz:3},to:{ap:"ASW",city:"Aswan",t:"09:25",tz:3},status:"ok",note:"Domestic, Airbus. Brad is in 10F — right side, the pyramids go past in the first ten minutes. Nile Air does not use Terminal 3 — the terminal is on the ticket; check it the night before. The boat's rep meets this flight: send them NP 81 / 09:25.",leave:{from:"Hilton Cairo Grand Nile",mins:45,before:75}},
  {id:"lxr",who:"Both",date:"2026-10-18",no:"MS 275",op:"EgyptAir",from:{ap:"LXR",city:"Luxor",t:"15:40",tz:3},to:{ap:"CAI",city:"Cairo",t:"16:50",tz:3},status:"ok",note:"Domestic. Luxor airport is tiny — 75 min before is plenty. Three flights behind it the same evening (EgyptAir 16:55 and 21:30, Air Cairo 22:00), so a cancellation is an annoyance, not a crisis for Duane's 07:25.",leave:{from:"Hilton Luxor Resort & Spa",mins:25,before:75}},
@@ -2104,7 +2104,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v71)";
+const BUILD = "Oct 8, 2026 (v72)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
