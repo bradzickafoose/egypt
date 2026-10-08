@@ -1419,7 +1419,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v33)";
+const BUILD = "Oct 8, 2026 (v34)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2074,7 +2074,10 @@ function nbBlock(d, isToday){
 // ---------- evening mode on the Now card ----------
 function eveningCard(d, ni, now){
   if(!d || d.who==="brad" && me()==="Duane") return "";
-  const over = ni===-1 || now.h>=21; if(!over) return "";
+  // Duane's last morning: after the flight, the trip is over for him — no "close the day" nag at 8am
+  if(d.id==="mon19" && me()==="Duane" && ni===-1){ const closed=!!stamps()[d.id]; return `<div class="eyebrow">Mon Oct 19 · home</div><div class="big">${closed?"Stamped. That's the trip.":"Egypt is done. Stamp it from the plane."}</div><div class="sub">Brad's week carries on in the app — the Today tab follows him. The passport is yours to keep.</div>${closed?"":`<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button></div>`}`; }
+  // evening: every stop done (and it's at least afternoon), or it's past nine
+  const over = (ni===-1 && now.h>=15) || now.h>=21; if(!over) return "";
   const closed=!!stamps()[d.id]; const nx=DAYS[dayIndexFor(d.date)+1];
   const hon=safe(honorific); const nl=safe(nileLine);
   if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
