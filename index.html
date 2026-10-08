@@ -183,6 +183,19 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+.fine{margin-top:12px;font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 10px;font-style:italic}
+.fine b{font-style:normal;font-family:var(--display);font-stretch:87.5%;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
+.shots li.stupid{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.shots li.stupid b{color:var(--dusk)}
+.status .taunt{display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px;font-family:var(--body);letter-spacing:0;text-transform:none}
+.phr2{width:100%;border-collapse:collapse;font-size:13.5px;table-layout:fixed}
+.phr2 td{padding:7px 8px 7px 0;border-top:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+.phr2 td:first-child{font-weight:600;width:48%}
+.phr2 td:last-child{color:var(--muted)}
+.scarabs{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.scarabs span{position:absolute;top:-40px;animation:fall 3s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(400deg)}}
+
 .hon{font-family:var(--display);font-style:italic;font-size:15px;opacity:.9;margin-bottom:4px}
 .tout{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;padding:8px 12px;border:1px dashed var(--line);border-radius:12px}
 .tout b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block}
@@ -442,6 +455,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </div>
       <p style="margin-top:10px;color:var(--muted);font-size:12.5px">Tap-to-call may not work from this page. Copy the number into the phone app.</p>
     </div></details>
+    <div id="phrasebook"></div>
   </section>
 
   <section id="lists">
@@ -1116,7 +1130,7 @@ function renderDay(){
     <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · ${d.emoji} · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
     ${safe(()=>livedLine(d, now))}
     <div class="status">
-      <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}</span></div>
+      <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}${safe(()=>alarmTaunt(d))}</span></div>
       <div class="s"><b>Carry</b><span>${esc(d.bag)}</span></div>
       <div class="s cash"><b>Cash</b><span>${esc(d.cash)}</span></div>
       <div class="s"><b>Wear</b><span>${esc(d.dress)}</span></div>
@@ -1128,10 +1142,11 @@ function renderDay(){
     ${safe(()=>calDay(d))}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
+    ${safe(()=>fineprint(d))}
     ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
     ${shotList(d)}
     ${askToday(d)}
-    <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="…"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
+    <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="${["Three lines. Or one honest one.","What would you tell the version of you who booked this?","The bit you'll be telling people about in 2046.","Who said what, and was it Duane.","Best thing eaten. Worst thing said.","The moment. You know the one."][d.num%6]}"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
     ${safe(()=>groanBox(d))}
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
   openCls.forEach(c=>{ const a=[...document.querySelectorAll("#dayCard details")].find(x=>x.className===c); if(a) a.open=true; });
@@ -1145,8 +1160,8 @@ function journalWire(d){
 }
 
 function shotList(d){
-  const shots = d.agenda.filter(a=>a.photo); if(!shots.length) return "";
-  return `<details class="askday shots"><summary>Shot list <span class="pill">${shots.length}</span></summary><div class="in"><ul>${shots.map(a=>`<li><b>${fmt12(a.t)}</b> ${esc(a.photo)}</li>`).join("")}</ul></div></details>`;
+  const shots = d.agenda.filter(a=>a.photo); const st = (typeof STUPID!=="undefined") && STUPID[d.id]; if(!shots.length && !st) return "";
+  return `<details class="askday shots"><summary>Shot list <span class="pill">${shots.length+(st?1:0)}</span></summary><div class="in"><ul>${shots.map(a=>`<li><b>${fmt12(a.t)}</b> ${esc(a.photo)}</li>`).join("")}${st?`<li class="stupid"><b>Mandatory stupid photo</b> ${esc(st)}</li>`:""}</ul></div></details>`;
 }
 function askToday(d){
   const seen = new Set(); const groups = [];
@@ -1290,7 +1305,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v20)";
+const BUILD = "Oct 8, 2026 (v21)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1477,7 +1492,7 @@ function rateBox(d){
 }
 
 function renderGame(){
-  const el=$("#gameBody"); if(!el) return;
+  const el=$("#gameBody"); if(!el) return; safe(checkMilestones);
   const who=me(); const s=gameScore(); const bset=new Set(GS.get("bingo",[12])); const hg=GS.get("haggle",[]); const ch=GS.get("chal",{});
   const rows=hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<tr><td>${esc(h.w)}<small>${esc(h.d||"")}</small></td><td>${h.a.toLocaleString()}</td><td>${h.p.toLocaleString()}</td><td class="pct ${pct>=40?"win":""}">${pct}%</td><td><button type="button" class="btn mini" data-hdel="${i}" aria-label="Remove">✕</button></td></tr>`; }).join("");
   const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
@@ -1496,7 +1511,7 @@ function renderGame(){
   <details class="fold" open><summary>Haggle Scoreboard <span class="pill">${hg.length}</span></summary><div class="in">
     <p class="muted">Log every buy: what, asking price, what you paid. Below 40% of the ask is a win. ${king?`<b>Best so far: ${esc(king.w)}, ${Math.round((1-king.p/king.a)*100)}% off.</b>`:""}</p>
     <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" type="submit">Log it</button></form>
-    ${hg.length?`<table class="htab"><thead><tr><th>What</th><th>Asked</th><th>Paid</th><th>Off</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:""}
+    ${hg.length?``:`<p class="muted">No haggles yet. The touts are winning.</p>`}${hg.length?`<table class="htab"><thead><tr><th>What</th><th>Asked</th><th>Paid</th><th>Off</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:""}
   </div></details>
 
   <details class="fold"><summary>Daily challenges <span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
@@ -1526,6 +1541,9 @@ function makeAwards(){
    ["🤝 Haggle of the trip", king && `${king.w}: asked ${king.a.toLocaleString()}, paid ${king.p.toLocaleString()} (${Math.round((1-king.p/king.a)*100)}% off)`],
    ["🎯 Bingo", `${s.bingo}/24, ${s.lines} line${s.lines===1?"":"s"}`],
    ["🏅 Challenges", `${s.chal} done`],
+   ["🗣️ “My friend” count", (()=>{ const n=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0); return n?`${n} — ${n>=50?"you have more friends in Egypt than at home":"respectable"}`:null; })()],
+   ["🐪 Biggest camel valuation", (()=>{ const c=GS.get("camel",[]); if(!c.length) return null; const b=c.reduce((a,x)=>x.n>a.n?x:a); return `${b.who}, ${b.n.toLocaleString()} camels${b.d?" ("+b.d+")":""}`; })()],
+   ["🍵 Tea debt", (()=>{ const ff=GS.get("forfeit",{}); const o=w=>FORFEITS.reduce((s,f,i)=>s+((ff[i]||{})[w]||0),0); const b=o("Brad"), d=o("Duane"); if(!b&&!d) return null; return b===d?"All square. Suspicious.":(b>d?`Brad owes ${b-d}`:`Duane owes ${d-b}`); })()],
   ].filter(x=>x[1]);
   const moments=DAYS.map(d=>[d,j(d.id)]).filter(x=>x[1]).slice(0,16);
   const text=`THE BROTHERS' AWARDS — Egypt 2026 (${who})\n`+items.map(x=>`${x[0]}: ${x[1]}`).join("\n")+(moments.length?`\n\nMoments:\n`+moments.map(([d,m])=>`${d.dow} ${d.num}: ${m}`).join("\n"):"");
@@ -1539,7 +1557,7 @@ function gameWire(){
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before) toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]) toast("Point to "+(me()||"you")); return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
-    const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); return; }
+    const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); safe(checkMilestones); return; }
     if(e.target.id==="scoreShare"||e.target.id==="scoreCopy"){ const t=scoreText(); if(e.target.id==="scoreShare"&&navigator.share){ navigator.share({text:t}).catch(()=>{}); } else { (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it to WhatsApp")).catch(()=>toast("Couldn't copy here")); } return; }
     const sh=e.target.closest("[data-sharetext]"); if(sh){ const t=sh.dataset.sharetext; if(navigator.share) navigator.share({text:t}).catch(()=>{}); else (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied")).catch(()=>{}); return; }
     if(e.target.id==="awardsBtn"){ makeAwards(); return; }
@@ -1583,7 +1601,7 @@ async function loadArchive(){
 }
 function passportWire(){
   document.addEventListener("click", e=>{
-    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); if(st[id]) toast("Stamped · "+CITY_OF(DAYS.find(d=>d.id===id))); return; }
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]) toast("Stamped · "+CITY_OF(DAYS.find(d=>d.id===id))); return; }
     if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
@@ -1654,15 +1672,100 @@ function funBox(){
 }
 function funWire(){
   document.addEventListener("click", e=>{
-    const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); return; }
+    const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; r.innerHTML=`<span class="spin">𓂀</span>`; setTimeout(()=>{ r.innerHTML=`<b>Ra has spoken: ${who} pays.</b>`; },900); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>Ra has spoken: ${who} pays.</b>`; },900); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); renderGame(); toast(`${w}: ${FORFEITS[i][1]}`); return; }
   });
   let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); renderGame(); toast("Taken back"); } },650); }, {passive:true});
   document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
   document.addEventListener("submit", e=>{ if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); });
+}
+
+// ---------- make them laugh ----------
+const FINEPRINT = {
+ sat10:"Duane lands at 5:20pm and will be asleep by 8. Brad lands at 2am and will be asleep in the taxi. Nobody is winning Saturday.",
+ sun11:"Today you'll see 4,600-year-old pyramids before the famous ones. Act impressed in the right order.",
+ mon12:"The Great Pyramid was the tallest building on earth for 3,800 years. Your hotel has a revolving restaurant. Perspective.",
+ tue13:"4:15. You chose this. Nobody made you. The pharaohs got up early too, but they had people.",
+ wed14:"3:30am for a temple that was moved 65 metres uphill by hand in 1968. The least you can do is be awake for it.",
+ thu15:"The crew will wake you with tea. This is the last time anyone will be this nice to you in the morning.",
+ fri16:"You'll see more tombs today than most people see in a lifetime, then complain about the hotel wifi.",
+ sat17:"Balloon at dawn: 45 minutes of silence from Duane. Document it. It will not recur.",
+ sun18:"Karnak took 2,000 years to build. Your flight boards in 90 minutes. Both are a long time.",
+ mon19:"Duane goes home. Brad goes diving. One of you is making a mistake and it's the one with the lawn.",
+ tue20:"The Blue Hole is 100m deep. You are going to the part that isn't. Then a bus at 11pm to climb a mountain. Sleep is for people without a passport to stamp.",
+ wed21:"Moses did this with no handrail, no flashlight and no Bedouin selling tea at the top. He also did not have to be back for checkout.",
+ thu22:"Last swim, then an airport hotel. The glamour is relentless.",
+ fri23:"You're sleeping on chalk under more stars than you've ever seen, next to a fox who wants your sandwich. Worth every pound.",
+ sat24:"The light wakes you at 5:45. You've done fourteen alarms in fifteen days. You don't even need one anymore. That's the real souvenir.",
+ sun25:"Home. Your phone has 1,400 photos, three of which are good. You'll show people all 1,400."
+};
+const STUPID = {
+ sat10:"Duane: a selfie with the Hilton's revolving restaurant visibly not revolving.",
+ sun11:"Both of you 'holding up' the Bent Pyramid. It's bent. You failed.",
+ mon12:"The pinch-the-Great-Pyramid photo. Mandatory. No exceptions. No dignity.",
+ tue13:"Brad asleep on the boat's sun deck, photographed by Duane, captioned 'day one'.",
+ wed14:"Both of you doing the Ramesses II seated pose in front of Ramesses II. Stone face.",
+ thu15:"Kissing the crocodile mummy case at Kom Ombo (glass permitting).",
+ fri16:"Walk Like an Egyptian in front of an actual Egyptian wall painting of people walking like Egyptians.",
+ sat17:"Duane mummified in a Hilton bathrobe. Toilet-paper optional.",
+ sun18:"The two of you dwarfed by one Karnak column, arms out, pretending it's heavy.",
+ mon19:"Airport goodbye: the fake-crying photo. Then the real one.",
+ tue20:"Brad with a Bedouin cat at the Blue Hole. The cat will not cooperate.",
+ wed21:"Summit selfie with the sun exactly behind your head like a halo. Moses energy.",
+ thu22:"The 'last Red Sea swim' underwater selfie, eyes open, regret visible.",
+ fri23:"Brad on a chalk mushroom pretending to be a Smurf. The guide will understand.",
+ sat24:"The fox. Any fox. Pretend it's the same fox.",
+ sun25:"Both passports' stamp pages side by side, on the plane, with the airline's tiny wine."
+};
+const ALARM_TAUNT = {
+ tue13:"You chose this.", wed14:"The sun isn't up. Neither should you be.", sat17:"Ballooning is for the brave and the under-slept.", mon19:"Last one together. Make it count, then make coffee.", fri23:"The desert does not care that you're tired.", sun25:"Home wins."
+};
+const PHRASEBOOK = [
+ ["“My friend!”","Stranger with money."],
+ ["“Where you from? America! Obama! Trump!”","I have begun."],
+ ["“Special price for you.”","The price."],
+ ["“No charge, just look.”","Charge."],
+ ["“Come, I show you the real Egypt.”","My cousin has a shop."],
+ ["“Very important.”","This is in every tour."],
+ ["“Is possible.”","Is not possible, but is possible."],
+ ["“Camel photo, free.”","Getting off the camel is 200."],
+ ["“Egyptian price, not tourist price.”","Tourist price."],
+ ["“You want to see something? Just you. Not for tourists.”","Closed tomb. Fifty pounds. Worth it, actually."],
+ ["“Welcome to Alaska!”","It's 34°C. They say this every time. Laugh every time."],
+ ["“Lucky man!”","You have a hat."],
+ ["“Hakuna matata!”","Wrong continent. Correct energy."],
+ ["“How many camels for your friend?”","Log it in the Game tab."],
+ ["“Shukran” (you, to anyone)","The single most disarming word you own. Use it 50 times a day."],
+ ["“La, shukran” (with a smile, still walking)","The spell that ends every conversation above. Works 90% of the time."]
+];
+function fineprint(d){ const f=FINEPRINT[d.id]; return f?`<div class="fine"><b>Fine print</b>${esc(f)}</div>`:""; }
+function alarmTaunt(d){ return ALARM_TAUNT[d.id] ? `<small class="taunt">${esc(ALARM_TAUNT[d.id])}</small>` : ""; }
+function phrasebook(){ return `<details class="fold"><summary>Tout phrasebook — what he said, what he meant</summary><div class="in"><table class="phr2">${PHRASEBOOK.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join("")}</table></div></details>`; }
+// milestones: fire once each
+function milestone(key, msg){ const m=GS.get("ms",{}); if(m[key]) return; m[key]=1; GS.set("ms",m); setTimeout(()=>toast(msg),350); }
+function checkMilestones(){
+  const s=gameScore(); const st=Object.keys(stamps()).length; const hg=GS.get("haggle",[]); const camels=GS.get("camel",[]); const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0);
+  if(st===1) milestone("stamp1","First stamp. The passport is officially in use.");
+  if(st===5) milestone("stamp5","Five stamps. Ra is mildly impressed.");
+  if(st===10) milestone("stamp10","Ten stamps. You could get a job at the border.");
+  if(st>=16) milestone("stamp16","Every day stamped. Frame it.");
+  if(hg.length===1) milestone("hag1","First haggle logged. The souq has noticed you.");
+  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Somewhere a shopkeeper is telling his wife about you.");
+  if(s.best>=60) milestone("win60","Sixty percent off. Are you sure you didn't just steal it?");
+  if(s.bingo>=12) milestone("bingo12","Half the bingo card. The other half involves a camel.");
+  if(s.lines>=1) milestone("line1","BINGO. Say it out loud wherever you are.");
+  if(camels.some(c=>c.n>=1000)) milestone("camel1k","A four-figure camel offer. Someone is now worth more than the rental car.");
+  if(camels.some(c=>c.n>=5000)) milestone("camel5k","Five thousand camels. Sell. Sell now.");
+  if(tout>=50) milestone("tout50","Fifty 'my friends'. You have more friends in Egypt than at home.");
+  if(tout>=100) milestone("tout100","One hundred. The touts have a WhatsApp group about you.");
+  const r=GS.get("rate",{}); if(Object.values(r).some(x=>x.sleep===1)) milestone("sleep1","A one-star night. Rest is for the mummified.");
+  if(Object.values(r).some(x=>x.food===5)) milestone("food5","Five-star meal. Write down what it was before the memory becomes 'that thing with the sauce'.");
+}
+function hiddenChamber(){
+  let n=0, t; document.querySelector(".brand").addEventListener("click", ()=>{ n++; clearTimeout(t); t=setTimeout(()=>n=0,1500); if(n===5){ n=0; const w=document.createElement("div"); w.className="scarabs"; w.innerHTML=Array.from({length:24},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*1.2}s;font-size:${18+Math.random()*22}px">${["🪲","🐪","🦅","☥","🏺","🐈"][i%6]}</span>`).join(""); document.body.appendChild(w); toast("You found the hidden chamber. It's empty. Like Khufu's."); setTimeout(()=>w.remove(),4200); } });
 }
 
 const WHATSON = {
@@ -1748,7 +1851,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
