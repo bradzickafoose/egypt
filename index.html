@@ -1508,7 +1508,7 @@ const DAYS = [
   mission:"Get to the most beautiful stretch of the Nile, hand our bags to a crew, then do Aswan properly: Philae, high tea on Agatha Christie's terrace, a motorboat through sunset to a Nubian village for dinner.",
   agenda:[
    {t:"05:30",title:"Up. Check out.",alarm:true},
-   {t:"06:00",title:"Uber to CAI — the terminal on the Nile Air ticket",note:"45 min at this hour. Nile Air doesn't use T3; the ticket says which terminal. At the desk by 6:45.",map:"Cairo International Airport"},
+   {t:"06:00",title:"Uber to CAI — Terminal 2 (check the ticket)",note:"45 min at this hour. Nile Air flies from T2, not T3 — confirm on the ticket before you tell the driver. At the desk by 6:45.",map:"Cairo International Airport"},
    {t:"08:00",title:"Nile Air NP 81 to Aswan (1h25, Airbus)"},
    {t:"09:25",title:"Land. The boat's rep meets us; bags go to the boat, we go to the temple.",map:"Aswan International Airport"},
    {t:"10:15",photo:"Philae from the motorboat on the approach, the whole island with the colonnade; then the two of you under the Hathor columns.",title:"Philae Temple",note:"15 min from the airport; motorboat to the island with the boat's Egyptologist. The Isis temple, moved stone by stone in the '70s. ≈$13. The cruise groups are on the island by now — go straight to the inner courts and let them have the colonnade. Skip the High Dam; it's a wall.",map:"Philae Temple Aswan"},
@@ -1916,7 +1916,7 @@ function renderNow(){
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
     const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
-    if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
+    const fnow = safe(()=>flightNowLine(now)); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
       if(next.note) html += `<div class="sub">${esc(next.note)}</div>`;
@@ -2124,8 +2124,20 @@ function renderFlights(){
 // the Now card: a flight band on the day of (and the evening before)
 function flightBand(now){ try{ const w=me(); if(!w) return ""; const mine=allFlights().filter(f=>(f.who===w||f.who==="Both")&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
   const today=mine.filter(f=>f.date===now.date && (flightDep(f)-nowUTC())>-2*3600000); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
-  const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const cd=flightCountdown(f); const isT=f.date===now.date;
-  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""}${cd&&isT?` · ${esc(cd)}`:""}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
+  const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const isT=f.date===now.date;
+  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(isT?flightStage(f,now,plan):(plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""))}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
+// once you're past the airport time the agenda's "Uber to the airport" is stale; the flight itself says where you are
+function flightNowLine(now){ const w=me(); if(!w) return ""; const f=allFlights().find(x=>(x.who===w||x.who==="Both")&&x.from.t&&x.status!=="tbd"&&x.date===now.date&&(flightDep(x)-nowUTC())>-2*3600000); if(!f) return ""; const plan=flightPlan(f); const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=(dep-n)/60000;
+  if(arr!==null&&n>=arr) return ""; if(left<=0) return `In the air to ${f.to.city||f.to.ap} · lands ${f.to.t||"soon"}`; if(left<=40) return `At the gate · ${f.no||f.op} boarding`; if(plan&&now.mins>=hm(plan.at)) return `At ${f.from.city||f.from.ap} airport · ${f.no||f.op} boards ${plan.board}`; return ""; }
+// on the day itself the line only shows what is still ahead: the steps already done fall away, the next one leads
+function flightStage(f,now,plan){ const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=Math.round((dep-n)/60000);
+  if(arr!==null&&n>=arr) return `landed ${f.to.t} · ${f.to.city||f.to.ap}`;
+  if(left<=0) return `in the air · lands ${f.to.t||"soon"}${arr!==null?` · ${Math.max(1,Math.round((arr-n)/60000))} min`:""}`;
+  if(left<=40) return `boarding now · wheels up ${f.from.t} · ${left} min`;
+  if(!plan) return `in ${Math.floor(left/60)}h ${pad2(left%60)}m`;
+  const cur=now.mins; const steps=[plan.up&&["up",plan.up],["leave",plan.go],["airport",plan.at],["boards",plan.board]].filter(Boolean).filter(([,hhmm])=>hm(hhmm)>cur);
+  if(!steps.length) return `boards ${plan.board} · ${left} min`;
+  const [k,v]=steps[0]; const inm=hm(v)-cur; return `${k} ${v} in ${inm<60?inm+" min":Math.floor(inm/60)+"h "+pad2(inm%60)+"m"}${steps.slice(1).map(([a,b])=>` · ${a} ${b}`).join("")}`; }
 function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHER(); const theirs=allFlights().filter(f=>f.who===o&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
   const f=theirs.find(x=>x.date===now.date && (flightArr(x)||flightDep(x))-nowUTC()>-3*3600000) || (now.h>=15?theirs.find(x=>x.date===tmr):null); if(!f) return "";
   const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); let state; if(n<dep){ const m=Math.round((dep-n)/60000); state=m<60?`boards in ${Math.max(0,m-40)} min`:`departs in ${Math.floor(m/60)}h ${pad2(m%60)}m`; } else if(arr&&n<arr){ const m=Math.round((arr-n)/60000); state=`in the air · lands ${f.to.t} ${f.to.ap} (${Math.floor(m/60)}h ${pad2(m%60)}m)`; } else if(arr){ state=`landed ${f.to.ap} ${f.to.t} local`; } else state="in the air";
@@ -2163,7 +2175,7 @@ function preCard(){
   const now=cairoNow(); const left=dateDiffDays(now.date, DAYS[0].date); const w=(typeof me==="function"&&me())||"";
   const mine=allFlights().filter(f=>f.who===w&&f.status==="ok"&&f.from.t&&f.date<="2026-10-11").sort((a,b)=>flightDep(a)-flightDep(b)); const f=mine[0]; const plan=f?flightPlan(f):null; const cd=f?flightCountdown(f):"";
   const d0=DAYS[0];
-  return `<div class="dayhead"><div class="dh1"><span class="dd">Before we go</span> · <span class="tagpre">${left} day${left===1?"":"s"} to go</span></div><h2>${w?`${esc(w)}, the trip is Saturday.`:"The trip is Saturday."}</h2><div class="sub">Bookings first, bag second, words third. Everything on this card is for this week; the trip itself starts on the Sat 10 chip.</div></div>
+  return `<div class="dayhead"><div class="dh1"><span class="dd">Before we go</span> · <span class="tagpre">${left===1?"tomorrow":left<=0?"today":`${left} days to go`}</span></div><h2>${w?`${esc(w)}, the trip is Saturday.`:"The trip is Saturday."}</h2><div class="sub">Bookings first, bag second, words third. Everything on this card is for this week; the trip itself starts on the Sat 10 chip.</div></div>
   ${f?`<div class="bp mine st-ok" style="margin-top:12px"><div class="bp-top"><span class="bp-who">your flight</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ok">✓</span></div><div class="bp-route"><div><b>${esc(f.from.ap)}</b><small>${esc(f.from.city)}</small><em>${esc(f.from.t)}</em></div><div class="bp-arrow"><i>✈</i><small>${flightDur(f)}</small></div><div><b>${esc(f.to.ap)}</b><small>${esc(f.to.city)}</small><em>${esc(f.to.t)}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div><div class="bp-meta"><span>${f.date==="2026-10-09"?"Fri Oct 9":`${d0.dow} Oct ${d0.num}`}</span><span class="bp-cd">${esc(cd)}</span></div><div class="row bp-acts"><a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>${statusHref(f)?`<a class="btn" target="_blank" rel="noopener" href="${statusHref(f)}">Status</a>`:""}<button type="button" class="btn mini" data-nav="flights">All flights</button></div></div>`:""}
   ${(()=>{ const open=allFlights().filter(x=>x.who===w&&x.status==="tbd"); if(!open.length) return ""; const names=open.map(x=>`${x.from.city.replace(" Heathrow","")} → ${x.to.city.replace(" Heathrow","")} (${x.slot==="out"?"Fri 9":"Mon 19"})`); return `<div class="card ask" style="margin-top:8px"><b>${open.length>1?"Two things":"One thing"} for the app</b><p>${open.length>1?"Your":"Your"} ${names.join(" and ")} ${open.length>1?"legs aren't":"leg isn't"} in here yet. Add ${open.length>1?"them":"it"} under Guide → Flights and ${open.length>1?"they show":"it shows"} on your board with the connection maths, and on Brad's so he can track you.</p><button type="button" class="btn primary" data-nav="flights">Add the flight${open.length>1?"s":""}</button></div>`; })()}
   ${safe(listenPre)||""}
@@ -2284,7 +2296,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v79)";
+const BUILD = "Oct 8, 2026 (v80)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -3851,7 +3863,7 @@ function renderSigns(){ const el=$("#signs"); if(!el) return; const d=DAYS[sel]|
   if(sigsel===3){ body=`<div class="siglist">${SIGNS.map(([k,g,n,m,where])=>`<div class="scard"><span class="sg">${g}</span><div><b>${esc(n)} <em>${esc(m)}</em></b><p>${hieroWrap(esc(where))}</p><div class="row" style="margin-top:6px">${spotBtn("s:"+k)}</div></div></div>`).join("")}</div>`; }
   if(sigsel===4){ body=`<div class="numbers">${NUMBERS.map(([g,v,w])=>`<div class="ncard"><span class="ng">${g}</span><b>${v}</b><small>${esc(w)}</small></div>`).join("")}</div><p class="muted" style="font-size:13px;margin:10px 0 0">Additive, biggest first: 𓆼𓆼𓍢𓎆𓎆𓎆𓏺𓏺 = 2,132. Captives, cattle and incense trees are tallied like this on the walls — count one and you've read an inscription.</p>`; }
   if(sigsel===5){ body=`<ol class="howto"><li><b>Find the faces.</b> Animals and people look toward the <i>start</i> of the line. Read into their faces: if the owl 𓅓 faces left, read left to right.</li><li><b>Top before bottom.</b> Signs stacked in a group read top to bottom before moving on.</li><li><b>Find the ovals.</b> A cartouche 𓍶 stretched long is a royal name. 𓇓𓏏𓆤𓏏 before it = throne name; 𓇳𓅭 before it = birth name.</li><li><b>Ra is read last.</b> 𓇳 is written first in a name out of respect. Men-kheper-<i>Ra</i>, not Ra-men-kheper.</li><li><b>One sign, three jobs.</b> A sign can be a sound, a word, or a silent hint at the end of a word (a determinative) — a seated man 𓀀 means 'this word is a person', a walking legs 𓂻 means 'motion'.</li><li><b>Sunk vs raised.</b> Raised relief (figures stand out) is slow and expensive; sunk relief (cut into the surface) is Ramses II's budget option and shows better in sun. Feel the difference at Karnak.</li><li><b>The blessing at the end.</b> 𓋹𓍑𓋴 after a king's name = life, prosperity, health. Scribes wrote it as a reflex, like 'pbuh'.</li></ol>`; }
-  el.innerHTML=`<div class="wtabs" role="tablist">${SIG_TABS.map((t,i)=>`<button type="button" class="wtab ${i===sigsel?"on":""}" data-sig="${i}" role="tab">${esc(t)}</button>`).join("")}</div>${body}<div class="spotcount">${n?`${n} spotted so far`:"Tap 'spotted?' on a sign when you find it on a wall."}</div>`;
+  el.innerHTML=`<div class="wtabs" role="tablist">${SIG_TABS.map((t,i)=>`<button type="button" class="wtab ${i===sigsel?"on":""}" data-sig="${i}" role="tab">${esc(t)}</button>`).join("")}</div>${body}${n?`<div class="spotcount">${n} spotted so far</div>`:(sigsel===0?"":`<p class="muted" style="font-size:12.5px;margin:10px 0 0">Tap <b>spotted?</b> on a sign when you find it on a wall — they add up here.</p>`)}`;
 }
 // wrap any hieroglyph runs in text with the font
 function hieroWrap(s){ return String(s).replace(/([\u{13000}-\u{1343F}]+)/gu, '<span class="hg">$1</span>'); }
