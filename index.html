@@ -365,7 +365,8 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .qs .qh h3{font-family:var(--display);font-size:20px;margin:0;line-height:1.1}
 .qs .qh .x{background:none;border:0;font-size:26px;line-height:1;color:var(--muted);cursor:pointer;padding:4px 8px}
 .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.qgrid button[data-qc="taunt"]{background:var(--t1,var(--bg));color:var(--t2,var(--fg));border-color:transparent}
+.qgrid button[data-qc="taunt"]{background:var(--fg);color:var(--bg);border-color:transparent}
+.btn.dark{background:var(--fg);color:var(--bg);border-color:transparent}
 .qgrid button[data-qc="taunt"] small{color:inherit;opacity:.8}
 .qgrid button{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:14px 10px;font:600 14px var(--body);color:var(--fg);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:74px}
 .qgrid button .qi{font-size:22px}
@@ -2043,7 +2044,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v54)";
+const BUILD = "Oct 8, 2026 (v55)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2243,7 +2244,7 @@ function renderGame(){
     ${safe(colorKey)}
     ${safe(scoreboard)}
     <div class="sbl" style="text-align:left;margin:6px 0 8px"><b>Your line:</b> ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
-    <div class="row"><button type="button" class="btn pts-me" id="tauntBtn">🗣 Trash talk</button><button type="button" class="btn" id="scoreShare">Share the board</button><button type="button" class="btn mini" id="soundBtn" aria-pressed="${soundOn()}">${soundOn()?"🔊 booth on":"🔇 booth off"}</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
+    <div class="row"><button type="button" class="btn dark" id="tauntBtn">🗣 Trash talk</button><button type="button" class="btn" id="scoreShare">Share the board</button><button type="button" class="btn mini" id="soundBtn" aria-pressed="${soundOn()}">${soundOn()?"🔊 booth on":"🔇 booth off"}</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
   </div>
 
   <h2 class="sec" style="margin-top:18px">Side games</h2>
@@ -2846,7 +2847,7 @@ function livePayload(){
 function logEvent(text){ const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text}); GS.set("events", ev.slice(0,40)); livePush(); }
 let pushT=null, lastPushed="";
 function livePush(){ if(!liveOK()) return; clearTimeout(pushT); pushT=setTimeout(async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); } }catch(e){} }, 1500); }
-async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); safe(()=>noticeTheirPlays(d||{})); safe(()=>renderFlights()); return d; }catch(e){ return null; } }
+async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); safe(()=>noticeTheirPlays(d||{})); safe(()=>{ const f=document.activeElement; if(!(f && f.closest && f.closest("#flights"))) renderFlights(); }); return d; }catch(e){ return null; } }
 function renderLive(){
   const el=$("#live"); if(!el) return; setTimeout(()=>safe(()=>nbAnimate(el)),30);
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone (the name chip at the top) and the board links itself.</p>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
