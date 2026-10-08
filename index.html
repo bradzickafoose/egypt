@@ -499,7 +499,7 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .sg.toss>summary .sg-t small,.sg.toss .muted,.sg.toss>summary::after{color:rgba(241,241,230,.6)}
 .tossbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px;perspective:700px}
 .coinr{min-height:96px;display:flex;align-items:center;justify-content:center}
-.coin{width:96px;height:96px;position:relative;transform-style:preserve-3d;transform:rotateY(0)}
+.coin{width:96px;height:96px;position:relative;transform-style:preserve-3d;transform:rotateY(var(--face,0deg));cursor:pointer;-webkit-tap-highlight-color:transparent}
 .coin .face{position:absolute;inset:0;border-radius:49% 51% 50% 50% / 52% 48% 52% 48%;display:flex;align-items:center;justify-content:center;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:26px;letter-spacing:.12em;text-indent:.12em;backface-visibility:hidden;overflow:hidden;
   background:
     radial-gradient(circle at 50% 50%,transparent 0 30%,rgba(0,0,0,.18) 31% 33%,transparent 34%),
@@ -517,10 +517,13 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .coin.cin{animation:cointoss 1.4s cubic-bezier(.2,.8,.3,1) forwards;--end:1980deg}
 @keyframes cointoss{0%{transform:rotateY(0) translateY(0)}45%{transform:rotateY(calc(var(--end) * .5)) translateY(-46px)}100%{transform:rotateY(var(--end)) translateY(0)}}
 .coin.idle{animation:coinidle 6s ease-in-out infinite}
-@keyframes coinidle{0%,100%{transform:rotateY(-18deg)}50%{transform:rotateY(18deg)}}
+@keyframes coinidle{0%,100%{transform:rotateY(calc(var(--face,0deg) - 18deg))}50%{transform:rotateY(calc(var(--face,0deg) + 18deg))}}
+/* tapped where it lies: a rattle that dies out */
+.coin.rock{animation:coinrock .8s cubic-bezier(.2,.6,.3,1) forwards}
+@keyframes coinrock{0%{transform:rotateY(var(--face,0deg)) rotateX(0) rotateZ(0)}12%{transform:rotateY(var(--face,0deg)) rotateX(22deg) rotateZ(-7deg) translateY(-3px)}28%{transform:rotateY(var(--face,0deg)) rotateX(-16deg) rotateZ(6deg)}44%{transform:rotateY(var(--face,0deg)) rotateX(11deg) rotateZ(-4deg)}60%{transform:rotateY(var(--face,0deg)) rotateX(-7deg) rotateZ(3deg)}76%{transform:rotateY(var(--face,0deg)) rotateX(4deg) rotateZ(-1.5deg)}90%{transform:rotateY(var(--face,0deg)) rotateX(-2deg) rotateZ(.5deg)}100%{transform:rotateY(var(--face,0deg)) rotateX(0) rotateZ(0)}}
 .tossr{font-size:14px;text-align:center;min-height:20px;color:rgba(241,241,230,.85)}
 .sg.toss .btn.primary{background:#ffb612;color:#111;border-color:transparent}
-@media (prefers-reduced-motion:reduce){ .coin.idle,.coin.pit,.coin.cin{animation:none} .coin.cin{transform:rotateY(180deg)} }
+@media (prefers-reduced-motion:reduce){ .coin.idle,.coin.pit,.coin.cin,.coin.rock{animation:none} .coin.cin{transform:rotateY(180deg)} }
 @keyframes spin{from{transform:rotateY(0)}to{transform:rotateY(1080deg)}}
 .flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .flist li{display:grid;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
@@ -712,7 +715,22 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .say .spk,.say{font-size:13px}
 .say.talking{background:var(--nile);color:#fff;border-color:transparent}
 .phr .say{min-width:120px;max-width:200px;justify-content:space-between;white-space:normal;text-align:left;line-height:1.2}
-.phr h5{margin:10px 0 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.wtabs{display:flex;gap:4px;margin:4px 0 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.wtabs button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;padding:6px 11px;font:600 12px var(--body);cursor:pointer;white-space:nowrap}
+.wtabs button.on{background:var(--fg);color:var(--bg);border-color:transparent}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wgrid .wcard.say{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 10px 7px;text-align:left;cursor:pointer;color:var(--fg);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:2px;min-width:0;max-width:none;white-space:normal;overflow:hidden;font-family:var(--body);font-size:13px;position:relative;-webkit-tap-highlight-color:transparent}
+.wgrid .wcard b,.wgrid .wcard small,.wgrid .wcard i{display:block;overflow-wrap:anywhere}
+.wgrid .wcard b{font-size:13.5px;font-weight:700;line-height:1.2;padding-right:14px}
+.wgrid .wcard small{font-size:11.5px;color:var(--muted);line-height:1.25}
+.wgrid .wcard i{font-style:normal;font-size:10.5px;color:var(--muted);opacity:.85;line-height:1.2;margin-top:1px}
+.wgrid .wcard::after{content:"🔊";position:absolute;right:8px;top:7px;font-size:10px;opacity:.55}
+.wgrid .wcard.talking{background:var(--nile);color:#fff;border-color:transparent}.wgrid .wcard.talking small,.wgrid .wcard.talking i{color:rgba(255,255,255,.85)}
+.wgrid.num{grid-template-columns:repeat(4,1fr)}
+.wgrid.num .wcard.say{align-items:center;text-align:center;padding:8px 4px}
+.wgrid.num .wcard b{padding:0;font-size:12.5px}.wgrid.num .wcard small{font-family:var(--mono);font-size:14px;color:var(--fg)}
+.wgrid.num .wcard::after{display:none}
+.wnote{font-size:12px;margin-top:8px}
 .phr .ar{font-size:12px;color:var(--muted);margin-left:auto;direction:rtl}
 .brief .say{font-size:12.5px;padding:2px 8px}
 .sos{display:grid;gap:8px}
@@ -845,7 +863,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <h4>Words that open doors</h4>
       <p class="muted" style="font-size:12.5px">Egyptian Arabic, not the textbook kind. A greeting before any question changes the whole conversation; the rest is for the souk, the table and Monday's challenge.</p>
       <div id="words"></div>
-      <p class="muted" style="font-size:12px;margin-top:6px">Tap a word to hear it. Uses the phone's Arabic voice — the first tap may take a second while it loads.</p>
+      <p class="muted" style="font-size:12px;margin-top:4px">Spoken by the phone's own Arabic voice; the first tap can take a second while it loads.</p>
       <h4>Getting around</h4>
       <p>Uber and Careem in Cairo and Luxor. In Aswan the boat arranges cars. Agree every street-taxi price before getting in. Egypt is 7 hours ahead of the East Coast (Norfolk, Orlando) and 1 hour ahead of Cape Town, through Oct 29 when its clocks fall back.</p>
     </div></details>
@@ -1775,7 +1793,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v48)";
+const BUILD = "Oct 8, 2026 (v49)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2107,7 +2125,15 @@ const WORDS = [
   ["wahed","واحد","1"],["itnein","اتنين","2"],["talata","تلاتة","3"],["arba'a","أربعة","4"],["khamsa","خمسة","5"],["sitta","ستة","6"],["sab'a","سبعة","7"],["tamanya","تمانية","8"],["tis'a","تسعة","9"],["'ashara","عشرة","10"],["miyya","مية","100"],
  ]],
 ];
-function renderWords(){ const el=$("#words"); if(!el) return; el.innerHTML=WORDS.map(([h,ws])=>`<h5>${esc(h)}</h5><div class="phr">${ws.map(([lat,ar,en])=>`<div><button type="button" class="say" data-say="${esc(ar)}" data-latin="${esc(lat)}">${esc(lat)} <span class="spk">🔊</span></button><span>${esc(en)}</span></div>`).join("")}</div>`).join(""); }
+let wsel=0;
+const WTAB = ["Hello","Table","Souk","Getting by","Numbers"];
+function renderWords(){ const el=$("#words"); if(!el) return; const [h,ws]=WORDS[wsel]; const num=wsel===WORDS.length-1;
+  el.innerHTML=`<div class="wtabs" role="tablist">${WORDS.map((w,i)=>`<button type="button" role="tab" class="${i===wsel?"on":""}" data-wtab="${i}" aria-selected="${i===wsel}">${WTAB[i]||w[0]}</button>`).join("")}</div>
+  <div class="wgrid ${num?"num":""}">${ws.map(([lat,ar,en])=>{ const parts=en.split(" · "); return `<button type="button" class="wcard say" data-say="${esc(ar)}" data-latin="${esc(lat)}"><b>${esc(lat)}</b><small>${esc(parts[0])}</small>${parts[1]?`<i>${esc(parts[1])}</i>`:""}</button>`; }).join("")}</div>
+  <p class="muted wnote">${num?"Prices come at you in Arabic numerals too: ٠١٢٣٤٥٦٧٨٩ = 0–9.":"Tap a card to hear it. "+(wsel===0?"Lead with one of these before any question — it changes the whole conversation.":wsel===1?"Monday's challenge: order a whole thing in Arabic. The waiter's smile is the proof.":wsel===2?"Smile, say the number, start walking. Everything is negotiable, nothing is personal.":"The ones you'll reach for twenty times a day.")}</p>`; }
+document.addEventListener("click", e=>{ const w=e.target.closest("[data-wtab]"); if(w){ wsel=+w.dataset.wtab; renderWords(); } });
+// a small bronze clink, synthesised — no file, no network
+let _ac=null; function clink(){ try{ _ac=_ac||new (window.AudioContext||window.webkitAudioContext)(); const ac=_ac; if(ac.state==="suspended") ac.resume(); const t0=ac.currentTime; [[2600,.05],[3900,.025],[5200,.015]].forEach(([f,g0],i)=>{ const o=ac.createOscillator(), gn=ac.createGain(); o.type="sine"; o.frequency.setValueAtTime(f*(1+(Math.random()-.5)*.02), t0); gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(g0, t0+.004); gn.gain.exponentialRampToValueAtTime(.0001, t0+.18+i*.05); o.connect(gn).connect(ac.destination); o.start(t0); o.stop(t0+.3); }); }catch(e){} }
 // ---------- say it: the phone's Arabic voice ----------
 function arabicVoice(){ try{ const vs=speechSynthesis.getVoices(); return vs.find(v=>/^ar[-_]EG/i.test(v.lang)) || vs.find(v=>/^ar/i.test(v.lang)) || null; }catch(e){ return null; } }
 function sayIt(btn){ const ar=btn.dataset.say, latin=btn.dataset.latin||""; if(!("speechSynthesis" in window)){ toast(`“${latin}” — no voice on this phone; say it like it's spelled.`); return; }
@@ -2358,7 +2384,8 @@ function funWire(){
   document.addEventListener("click", e=>{
     const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div>`; out.textContent="…"; e.target.disabled=true; const coin=r.querySelector(".coin"); coin.dataset.busy="1"; setTimeout(()=>{ coin.style.setProperty("--face", win.short==="CIN"?"180deg":"0deg"); coin.className="coin"; delete coin.dataset.busy; out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
+    const coinEl=e.target.closest(".coin"); if(coinEl){ if(coinEl.dataset.busy) return; coinEl.classList.remove("idle","rock"); void coinEl.offsetWidth; coinEl.classList.add("rock"); safe(clink); coinEl.addEventListener("animationend", ()=>{ coinEl.classList.remove("rock"); coinEl.classList.add("idle"); }, {once:true}); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); if(isPen) jumbo("Safety", w==="Brad"?"Duane":"Brad", `+2 · ${w} flagged: ${FORFEITS[i][0]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
