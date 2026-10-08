@@ -113,6 +113,16 @@ section{margin-top:18px}
 .agenda li.isalarm .ttl{color:var(--dusk)}
 .agenda .maps{margin-top:5px}
 .agenda .maps .btn{padding:7px 11px;font-size:12.5px;flex:0 0 auto}
+.agenda .btn.cal{padding:7px 9px}
+.agenda .calopts{display:none;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap}
+.agenda .calopts.open{display:flex}
+.agenda .calopts small{color:var(--muted);font-size:12px;flex-basis:100%}
+.agenda .calopts .btn{padding:7px 11px;font-size:12.5px}
+.agenda .calopts .btn.primary{background:var(--nile);color:#fff;border-color:transparent}
+#dayCard.solo .agenda .calopts .btn.primary{background:var(--dusk)}
+.calday{margin:10px 0 2px;display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.calday .btn{padding:8px 13px}
+.calday small{color:var(--muted);font-size:12px;line-height:1.35}
 .agenda li.next .ttl{color:var(--nile-ink)}
 .agenda li.next{background:linear-gradient(90deg,var(--nile-soft),transparent 70%);margin-inline:-16px;padding-inline:16px;border-radius:0}
 .know,.planb{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px}
@@ -852,7 +862,45 @@ function dur(mins){ const h=Math.floor(mins/60), m=mins%60; return h?`${h}h ${St
 let sel = 0;
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
-function mapBtns(q, pkey, long){ const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}</div>`; }
+function mapBtns(q, pkey, long, extra){ extra = extra||""; const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about && !extra) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}${extra}</div>`; }
+
+// ---------- add to calendar (Apple / Google) ----------
+const IOS = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+const NOCAL = /^(⏰\s*)?(up|wake)\b|✈|\bflight\b|\b(AA|UA|MS)\s?\d{3,4}\b|\blands?\b|\btake-?off\b|\bboarding\b|\bwheels\b/i;
+function calOK(a){ if(a.cal===false) return false; if(a.cal===true) return true; return !NOCAL.test(a.title); }
+const VTZ = ["BEGIN:VTIMEZONE","TZID:Africa/Cairo","BEGIN:DAYLIGHT","TZOFFSETFROM:+0200","TZOFFSETTO:+0300","TZNAME:EEST","DTSTART:20230428T000000","RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=-1FR","END:DAYLIGHT","BEGIN:STANDARD","TZOFFSETFROM:+0300","TZOFFSETTO:+0200","TZNAME:EET","DTSTART:20231027T000000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1FR","END:STANDARD","END:VTIMEZONE"];
+function localStamp(date, t, addMin){ const [y,mo,d]=date.split("-").map(Number); const [h,m]=t.split(":").map(Number); const x=new Date(Date.UTC(y,mo-1,d,h,m+(addMin||0))); const p=n=>String(n).padStart(2,"0"); return `${x.getUTCFullYear()}${p(x.getUTCMonth()+1)}${p(x.getUTCDate())}T${p(x.getUTCHours())}${p(x.getUTCMinutes())}00`; }
+function calEvent(d, i){
+  const a=d.agenda[i], nx=d.agenda[i+1];
+  let len=90; if(nx){ const gap=toMins(nx.t)-toMins(a.t); if(gap>0) len=Math.min(gap,240); }
+  if(a.alarm) len=Math.min(len,30);
+  const title=a.title.replace(/^⏰\s*/,"");
+  const loc=a.map||(a.p&&PLACES[a.p]?PLACES[a.p].n:"")||d.place;
+  const desc=[a.approx?"Time is approximate.":"", a.note, a.photo?"📸 "+a.photo:"", a.map?"Directions: "+G(a.map):"", "Egypt · "+d.dow+" Oct "+d.num+" · "+d.title].filter(Boolean).join("\n");
+  const endT = (()=>{ const m=toMins(a.t)+len; return `${String(Math.floor(m/60)%24).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`; })();
+  return {title, loc, desc, start:localStamp(d.date,a.t), end:localStamp(d.date,a.t,len), t:a.t, endT, lead:a.alarm?0:30};
+}
+function vevent(ev){
+  const e=s=>(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/[,;]/g,m=>"\\"+m);
+  const uid=ev.start+"-"+ev.title.replace(/\W+/g,"").slice(0,24)+"@egypt-companion";
+  return ["BEGIN:VEVENT","UID:"+uid,"DTSTAMP:"+ev.start+"Z","DTSTART;TZID=Africa/Cairo:"+ev.start,"DTEND;TZID=Africa/Cairo:"+ev.end,"SUMMARY:"+e(ev.title),"LOCATION:"+e(ev.loc),"DESCRIPTION:"+e(ev.desc),"BEGIN:VALARM","TRIGGER:-PT"+ev.lead+"M","ACTION:DISPLAY","DESCRIPTION:"+e(ev.title),"END:VALARM","END:VEVENT"];
+}
+function fold(lines){ return lines.map(l=>{ const out=[]; let s=l; while(s.length>70){ out.push(s.slice(0,70)); s=" "+s.slice(70); } out.push(s); return out.join("\r\n"); }).join("\r\n"); }
+function icsHref(evs){ const ics=fold(["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Egypt companion//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH",...VTZ,...evs.flatMap(vevent),"END:VCALENDAR"]); return "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics); }
+function gcalHref(ev){ return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(ev.title)+"&dates="+ev.start+"/"+ev.end+"&details="+encodeURIComponent(ev.desc)+"&location="+encodeURIComponent(ev.loc)+"&ctz=Africa%2FCairo"; }
+function calBtn(d,i){ return calOK(d.agenda[i]) ? `<button type="button" class="btn cal" data-cal="${i}" aria-label="Add to calendar" title="Add to calendar">📅</button>` : ""; }
+function calOpts(d,i){
+  if(!calOK(d.agenda[i])) return ""; const ev=calEvent(d,i); const f=ev.title.replace(/[^\w ]+/g,"").trim().replace(/\s+/g,"-").slice(0,40)||"event";
+  const apple=`<a class="btn ${IOS?"primary":""}" href="${icsHref([ev])}" download="${f}.ics" data-caltoast="Opening in Calendar…">${IOS?"Add to Calendar":"Apple Calendar"}</a>`;
+  const google=`<a class="btn ${IOS?"":"primary"}" target="_blank" rel="noopener" href="${gcalHref(ev)}" data-caltoast="Opening Google Calendar…">${IOS?"Google Calendar":"Add to Google Calendar"}</a>`;
+  return `<div class="calopts" data-calopts="${i}">${IOS?apple+google:google+apple}<small>${fmt12(ev.t)}–${fmt12(ev.endT)} Cairo time · reminder ${ev.lead?ev.lead+" min before":"at the time"} · directions and notes included</small></div>`;
+}
+function calDay(d){
+  const idx=d.agenda.map((a,i)=>i).filter(i=>calOK(d.agenda[i])); if(idx.length<2) return "";
+  const evs=idx.map(i=>calEvent(d,i)); const f=`egypt-${d.dow}-oct-${d.num}.ics`;
+  return `<div class="calday"><a class="btn" href="${icsHref(evs)}" download="${f}" data-caltoast="Adding ${idx.length} events…">📅 Add this whole day <span class="pill">${idx.length}</span></a><small>${IOS?"Opens in Calendar as one import. ":"Downloads a .ics you can import into Google Calendar. "}Flights are left out — those are already in your airline apps.</small></div>`;
+}
+
 
 function renderStrip(){
   const now = cairoNow(); const ti = dayIndexFor(now.date);
@@ -874,8 +922,9 @@ function renderDay(){
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
     const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p)}</div></li>`;
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, calBtn(d,i))}${calOpts(d,i)}</div></li>`;
   }).join("");
+  $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
     ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> Duane flew home this morning. Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
     <div class="dayhead"><div class="k">${d.dow} Oct ${d.num} · ${d.emoji} · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
@@ -887,6 +936,7 @@ function renderDay(){
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
     <ul class="agenda">${items}</ul>
+    ${calDay(d)}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
     ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
@@ -1004,6 +1054,8 @@ function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("sh
 document.addEventListener("click",e=>{
   const c = e.target.closest("[data-copy]"); if(c){ const v=c.dataset.copy; (navigator.clipboard?.writeText(v)||Promise.reject()).then(()=>toast("Copied "+v)).catch(()=>{ const s=c.previousElementSibling; if(s){ const r=document.createRange(); r.selectNodeContents(s); const selx=getSelection(); selx.removeAllRanges(); selx.addRange(r); toast("Selected — long-press to copy"); } }); }
   const chip = e.target.closest(".chip"); if(chip){ goDay(+chip.dataset.i, true); }
+  const ct = e.target.closest("[data-caltoast]"); if(ct){ toast(ct.dataset.caltoast); }
+  const cb = e.target.closest("[data-cal]"); if(cb){ const li=cb.closest("li"); const o=li.querySelector(".calopts"); const open=o.classList.contains("open"); document.querySelectorAll(".calopts.open").forEach(x=>x.classList.remove("open")); if(!open){ o.classList.add("open"); } }
 });
 function goDay(i, scroll){
   if(i<0||i>=DAYS.length) return; sel=i; const c=$("#dayCard"); c.classList.add("swap");
@@ -1037,7 +1089,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v13)";
+const BUILD = "Oct 8, 2026 (v14)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
