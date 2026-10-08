@@ -207,8 +207,7 @@ html.team .now .hon{color:inherit}
 .riv b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
 .whatson li.gameday::marker{content:"🏈 "}
 html.team .bingo button.on{background:var(--t1);color:var(--t2)}
-html.team .stars button.on{color:var(--t2)}
-html.team[style*="--t2:#000000"] .stars button.on{color:#FB4F14}
+html.team .stars button.on{color:var(--star,#e0a100)}
 #whoSheet .wbtn button small{display:block;font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-top:2px}
 
 .brand .pill.me{border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-family:var(--body);font-weight:600;padding:3px 9px}
@@ -1352,7 +1351,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v25)";
+const BUILD = "Oct 8, 2026 (v26)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1877,6 +1876,7 @@ function teamCSS(){
   const w=me(); const t=TEAMS[w]; const o=TEAMS[OTHER()];
   document.documentElement.style.setProperty("--t1", t?t.c1:"var(--nile)"); document.documentElement.style.setProperty("--t2", t?t.c2:"#fff");
   document.documentElement.style.setProperty("--o1", o?o.c1:"var(--dusk)"); document.documentElement.style.setProperty("--o2", o?o.c2:"#fff");
+  document.documentElement.style.setProperty("--star", t ? (t.c2.toLowerCase()==="#000000" ? t.c1 : t.c2) : "#e0a100");
   document.documentElement.classList.toggle("team", !!t);
 }
 // points: bingo square 1 (extra point), line 7 (touchdown), challenge 3 (field goal), haggle win 2 (two-point conversion), stamp 1
