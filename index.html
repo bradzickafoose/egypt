@@ -1177,7 +1177,7 @@ function renderNow(){
   if(now.date < first){
     const days = dateDiffDays(now.date, first);
     const minsLeft = (24*60 - now.mins) + (days-1)*24*60 + toMins("17:20");
-    const hon0 = safe(()=>honorific()); html = (hon0?`<div class="hon">${esc(hon0)} — soon.</div>`:"") + `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>`;
+    const hon0 = safe(()=>honorific()); html = (hon0?`<div class="hon">${esc(hon0)} — soon.</div>`:"") + `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>${hon0?"":`<div class="sub">Then open <b>Game</b> and tell the app who's holding it. It has titles for you.</div>`}`;
   } else if(now.date > last){
     html = safe(()=>lookingBack()) || `<div class="eyebrow">After</div><div class="big">Egypt, October 2026.</div>`;
   } else {
@@ -1305,7 +1305,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v21)";
+const BUILD = "Oct 8, 2026 (v22)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1818,7 +1818,7 @@ function wxIcon(c){ if(c===0) return ["☀️","Clear"]; if(c<=2) return ["🌤�
 function wxLine(d){
   const loc = WX_LOC[d.id]; if(!loc) return "";
   const rec = WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date];
-  if(!rec) return `<span class="pending">${loc[2]} forecast loads when we're online, up to 16 days out.</span>`;
+  if(!rec) return `<span class="pending">${loc[2]} forecast appears within 16 days of the date, when online.</span>`;
   const [ic,word] = wxIcon(rec.c);
   return `<span>${ic}</span><span class="temps">${Math.round(rec.hi)}°<small>high</small>${Math.round(rec.lo)}°<small>low</small></span><span class="cond">${word} · ${loc[2]}</span>${rec.p>=10?`<span class="rain">${rec.p}% rain</span>`:""}`;
 }
