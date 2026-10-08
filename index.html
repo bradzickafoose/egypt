@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;600&display=swap">
 <style>
-html{font-size:17px;font:-apple-system-body;font-family:var(--body)}
+html{font-size:17px}
 
 /* Layout: one phone-width column. Sticky header with Cairo time; a scrolling day strip; a "right now" card that
    picks itself; one day card at a time; everything else folded below; a fixed bottom bar to jump between them. */
@@ -103,7 +103,7 @@ section{margin-top:18px}
 .mission{border-left:3px solid var(--nile);padding:2px 0 2px 12px;margin:0 0 14px;font-size:0.8824rem}
 .mission b{font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--nile);display:block;margin-bottom:2px}
 .agenda{list-style:none;margin:0;padding:0;display:grid;gap:0}
-.agenda li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.agenda li{display:grid;grid-template-columns:3.65rem 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);min-width:0}
 .agenda li:first-child{border-top:0}
 .agenda .t{font-family:var(--mono);font-weight:600;font-size:0.8235rem;font-variant-numeric:tabular-nums;padding-top:2px;color:var(--fg)}
 .agenda .t.alarm{color:var(--dusk)}
@@ -187,7 +187,7 @@ h2.sec{font-size:0.7941rem;letter-spacing:.1em;text-transform:uppercase;color:va
 .hotel>summary .more{color:var(--muted);font-size:1.1765rem;transition:transform .15s}
 .hotel[open]>summary .more{transform:rotate(90deg)}
 .hotel .hin{display:grid;gap:8px;padding:0 0 12px;font-size:0.8235rem}
-.hotel .hrow{display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:start}
+.hotel .hrow{display:grid;grid-template-columns:3.65rem 1fr;gap:8px;align-items:start}
 .hotel .hrow b{font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
 .hotel .hrow a{color:var(--nile-ink);font-weight:600}
 .hotel .btn.mini{padding:3px 8px;font-size:0.7059rem;vertical-align:middle}
@@ -320,7 +320,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .brief .bh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;margin-bottom:6px}
 .brief .bh b{font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .brief .bh span{font-size:0.7353rem;color:var(--muted)}
-.brief .br{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:0.8235rem;line-height:1.35;cursor:pointer}
+.brief .br{display:grid;grid-template-columns:3.8rem 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:0.8235rem;line-height:1.35;cursor:pointer}
 .brief .br:first-of-type{border-top:0}
 .brief .br b{font-family:var(--display);font-stretch:87.5%;font-size:0.6765rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
 .brief .br i{font-style:normal;color:var(--muted)}
@@ -502,7 +502,7 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .groan b{font-family:var(--display);font-stretch:87.5%;font-size:0.6765rem;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
 /* side games: each one its own object */
 .sg>summary{align-items:center;gap:10px;padding:11px 14px}
-.sg>summary .sg-i{font-size:1.2941rem;line-height:1;width:30px;text-align:center;flex:none}
+.sg>summary .sg-i{font-size:1.2941rem;line-height:1;width:1.35em;text-align:center;flex:none}
 .sg>summary .sg-t{display:flex;flex-direction:column;gap:1px;min-width:0}
 .sg>summary .sg-t small{font-weight:500;font-size:0.7059rem;color:var(--muted);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sg>summary .pill{flex:none}
@@ -750,8 +750,8 @@ p.muted{margin:0 0 8px}
 .pptab{position:fixed;right:-13px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;width:44px;height:66px;border:0;padding:0;border-radius:7px 3px 3px 7px;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-4px 6px 14px -6px rgba(0,0,0,.6);transform:rotate(-6deg);transform-origin:right bottom;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .2s}
 .pptab::before{content:"";position:absolute;inset:5px;border:1px solid rgba(216,178,90,.4);border-radius:4px 2px 2px 4px;pointer-events:none}
 .pptab::after{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 5px);pointer-events:none}
-.pptab .ppt-s{writing-mode:vertical-rl;transform:rotate(180deg);font-family:Georgia,"Times New Roman",serif;font-size:0.5882rem;letter-spacing:.32em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.6)}
-.pptab .ppt-n{position:absolute;left:-7px;top:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#b5322b;color:#fff;font:700 0.6471rem/20px var(--mono);text-align:center;border:2px solid var(--bg);box-sizing:border-box;font-style:normal}
+.pptab .ppt-s{writing-mode:vertical-rl;transform:rotate(180deg);font-family:Georgia,"Times New Roman",serif;font-size:10px;letter-spacing:.32em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.6)}
+.pptab .ppt-n{position:absolute;left:-7px;top:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#b5322b;color:#fff;font:700 11px/20px var(--mono);text-align:center;border:2px solid var(--bg);box-sizing:border-box;font-style:normal}
 .pptab:active{transform:rotate(-2deg) scale(.96)}
 .pptab.bump{animation:ppbump .7s cubic-bezier(.2,.8,.2,1)}
 @keyframes ppbump{0%{transform:rotate(-6deg)}30%{transform:rotate(3deg) translate(-6px,-10px) scale(1.08)}60%{transform:rotate(-10deg)}100%{transform:rotate(-6deg)}}
@@ -920,7 +920,7 @@ h3.arch{font-family:Georgia,serif;font-size:0.6471rem;letter-spacing:.22em;text-
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pcard{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--bg);display:flex;flex-direction:column;gap:3px;transition:box-shadow .3s}
 .pcard.lit{box-shadow:0 0 0 3px var(--nile)}
-.pc-top{display:flex;align-items:center;gap:9px}.pc-g{width:54px;height:54px;border-radius:14px;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:1.7647rem;flex:none;font-family:"Hiero","Apple Color Emoji","Segoe UI Emoji",sans-serif}.pc-g.hg{font-size:2.1176rem;line-height:1;color:var(--ink);-webkit-text-stroke:.45px currentColor;vertical-align:0}.pc-g.hg.n2{font-size:1.5882rem;letter-spacing:-1px}.pc-g.hg.n3{font-size:1.1176rem;letter-spacing:-1.5px}
+.pc-top{display:flex;align-items:center;gap:9px}.pc-g{min-width:54px;width:auto;padding:0 6px;box-sizing:border-box;height:54px;border-radius:14px;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:1.7647rem;flex:none;font-family:"Hiero","Apple Color Emoji","Segoe UI Emoji",sans-serif}.pc-g.hg{font-size:2.1176rem;line-height:1;color:var(--ink);-webkit-text-stroke:.45px currentColor;vertical-align:0}.pc-g.hg.n2{font-size:1.5882rem;letter-spacing:-1px}.pc-g.hg.n3{font-size:1.1176rem;letter-spacing:-1.5px}
 :root:not([data-theme="light"]) .pc-g{background:rgba(255,255,255,.1)}
 .pcard b{font-size:0.8824rem}.pcard em{font-style:normal;font:600 0.7059rem var(--mono);color:var(--nile);line-height:1.3}.pcard span{font-size:0.7941rem;line-height:1.35;color:var(--fg)}
 .brf{margin:-16px -16px 0;padding:0 16px 8px}
@@ -996,7 +996,7 @@ h3.arch{font-family:Georgia,serif;font-size:0.6471rem;letter-spacing:.22em;text-
 .fold.listen{margin-top:10px}
 .lstl{display:flex;flex-direction:column;gap:6px}
 .lst{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg);text-decoration:none}
-.lst-i{font-size:1.1765rem;line-height:1;width:28px;text-align:center;flex:none;padding-top:2px}
+.lst-i{font-size:1.1765rem;line-height:1;width:1.4em;text-align:center;flex:none;padding-top:2px}
 .lst-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.lst-b b{font-size:0.8235rem;line-height:1.3}.lst-b small{font:600 0.7059rem var(--mono);color:var(--muted)}.lst-b span{font-size:0.7941rem;line-height:1.4;margin-top:2px}
 .lst-go{font:700 0.7059rem var(--mono);letter-spacing:.04em;color:#1db954;flex:none;padding-top:3px}
 .lst.pod .lst-i{color:#b3261e}
@@ -1121,10 +1121,70 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 .split b{font-family:var(--mono);color:var(--fg)}
 .agenda .t{min-width:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.brand{flex-direction:column;align-items:flex-start;gap:4px;line-height:1}
+.brand .b1{display:flex;align-items:center;gap:8px;min-width:0}
+.brand .b2{font-family:var(--body);font-weight:500;font-size:0.6765rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;font-stretch:100%}
+.brand .b2 #offline{color:#b5322b}
+.brand .pill.me{display:inline-flex;align-items:center;gap:6px;padding:4px 9px 4px 10px;border-radius:999px;font-size:0.7647rem;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.brand .pill.me .me-c{width:5px;height:5px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:translateY(-2px) rotate(45deg);opacity:.55}
+.brand .pill.me:active{transform:scale(.96)}
+html.bigtext .top .in{align-items:flex-start}
+
+.book .photo.tap{cursor:pointer;border-style:dashed;border-color:rgba(43,36,32,.35)}
+.book .photo.tap span{font-size:1.6rem}
+.book .photo.tap small{font-size:8px;letter-spacing:.14em;text-align:center;line-height:1.3;margin-top:6px}
+.book .photo.has{padding:0;overflow:hidden;border-style:solid}
+.book .photo.has img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.35) sepia(.18) contrast(1.06);mix-blend-mode:multiply}
+.book .photo.tap:active{transform:scale(.97)}
+.book .photo small{font-size:9px}
+.cart{max-width:100%;box-sizing:border-box;border:3px double var(--fg);padding:5px 14px;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent)}
+.cart::after{right:-8px;width:3px;height:64%;box-shadow:3px 0 0 -1px var(--fg)}
+.cart-g{overflow:visible}
+.gb-one{cursor:pointer;border-radius:10px}
+.gb-one.on{background:var(--dusk-soft)}
+.gb-back{display:inline-flex;align-items:center;gap:6px;margin:0 auto 4px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:0.7647rem;color:var(--fg)}
+.gb-big.one .hg{font-size:min(9rem,58vw)}
+.gb-tip{text-align:center;font-size:0.7353rem;color:var(--muted);margin:2px 0 8px}
+.gb{max-height:88vh;overflow:auto;overscroll-behavior:contain}
+
+.hin,.hrow span,.hfit{overflow-wrap:anywhere}
+html.bigtext .navg{grid-template-columns:repeat(2,1fr)}
+html.bigtext .pgrid{grid-template-columns:1fr}
+html.bigtext .pc-g{height:auto;min-height:54px;padding:6px}
+html.hugetext .agenda li,html.hugetext .brief .br,html.hugetext .br,html.hugetext .hotel .hrow,html.hugetext .hrow{grid-template-columns:1fr;gap:2px}
+html.hugetext .navg{grid-template-columns:1fr 1fr}
+html.hugetext .nb-row{grid-template-columns:1.5fr repeat(4,1fr) 1.15fr;gap:3px}
+body{overflow-wrap:break-word}
+.lst-b{min-width:0;overflow-wrap:anywhere}
+
+.top .in>.brand{flex:1 1 auto;min-width:0}
+.brand .b2{overflow:hidden;text-overflow:ellipsis;max-width:100%}
+html.bigtext .fband{flex-wrap:wrap;row-gap:8px}
+html.bigtext .fband>div{flex:1 1 calc(100% - 2.6em)}
+html.bigtext .fband>.btn,html.bigtext .fband>a.btn{margin-left:auto}
+
+html.bigtext .book dl{grid-template-columns:1fr;gap:0}
+html.bigtext .book dl dd{margin:0 0 6px}
+.book .mrz{font-size:12.5px}
+.cart{padding:8px 16px}
+.cart-g{line-height:1.2}
+.gb-one .hg{width:1.7em;font-size:min(2.35rem,48px);overflow:visible}
+.gb-one>div{min-width:0}
+.gb-big{padding-top:34px}
+.gb-step{display:grid;grid-template-columns:44px 1fr 44px;align-items:center}
+.gb-step button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:1.2rem}
+.gb-step button:disabled{opacity:.25}
+.lst.watch .lst-go{color:#c4302b}
+.rcard .cart-g{font-size:2.7rem}
 </style>
+<script>
+// text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
+(function(){ function fs(){ try{ let px=17; if(window.CSS&&CSS.supports("font","-apple-system-body")){ const p=document.createElement("div"); p.style.cssText="font:-apple-system-body;position:absolute;visibility:hidden;pointer-events:none"; p.textContent="x"; document.documentElement.appendChild(p); px=parseFloat(getComputedStyle(p).fontSize)||17; p.remove(); } px=Math.max(15,Math.min(28,px)); document.documentElement.style.fontSize=px+"px"; document.documentElement.classList.toggle("bigtext",px>=21); document.documentElement.classList.toggle("hugetext",px>=25); }catch(e){} } fs(); window.__fs=fs; document.addEventListener("visibilitychange",()=>{ if(!document.hidden) fs(); }); })();
+</script>
 
 <header class="top" id="top"><div class="in">
-  <div class="brand">Egypt <button type="button" class="pill me" id="meChip" aria-label="Whose phone is this">who?</button><span class="pill" id="prog">Oct 10–19</span><span class="pill off" id="offline" hidden>offline</span></div>
+  <div class="brand"><div class="b1">Egypt <button type="button" class="pill me" id="meChip" aria-label="Whose phone is this">who?</button></div><div class="b2"><span id="prog">Oct 10–19</span><span id="offline" hidden> · offline</span></div></div>
   <div class="clock"><span id="cairoTime">–:––</span><small id="cairoDate">Cairo</small></div>
 </div><nav class="days" id="dayStrip" aria-label="Days"></nav></header>
 
@@ -1939,8 +1999,8 @@ function renderClock(){
   const d = new Date(n.date+"T12:00:00Z");
   $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"});
   const di = dayIndexFor(n.date); const pr=$("#prog");
-  if(di>=0) pr.textContent = `Day ${di+1}/${DAYS.length}`; pr.classList.toggle("off", di>=0 && DAYS[di].who==="brad");
-  const bs=document.querySelector(".brand small"); if(bs) bs.textContent = (di>=0 && DAYS[di].who==="brad") ? "Brad · Sinai + the desert" : "Brad + Duane"; else if(n.date<DAYS[0].date) pr.textContent = (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"tomorrow":`${k} days to go`; })(); else pr.textContent = "Oct 10–19";
+  pr.textContent = di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${di+1} of ${DAYS.length}` : `Day ${di+1} of ${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home · Oct 10–25";
+  if(document.documentElement.classList.contains("hugetext")) $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"});
   $("#offline").hidden = navigator.onLine !== false;
 }
 
@@ -2302,7 +2362,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v82)";
+const BUILD = "Oct 9, 2026 (v83)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2571,7 +2631,7 @@ function makeAwards(){
 function gameWire(){
   document.addEventListener("click", e=>{
     const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); safe(()=>renderFlights()); safe(()=>renderGuideFront()); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
-    if(e.target.id==="meChip"){ whoSheet(true); return; }
+    if(e.target.closest("#meChip")){ whoSheet(true); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); const wasBlackout=set.size>=25; set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } if(wasBlackout && set.size<25){ GS.set("blackoutDay",""); overturn(/BLACKOUT/, "blackout touchdown taken back"); toast("Overturned. The card is open again."); renderGame(); return; } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(set.size>=25){ const ln=call("BO", callVars(me())); jumbo("Blackout · Touchdown", me(), `+${ptsFor(6,GS.get("blackoutDay","sun18"))} · ${ln}`); safe(()=>burst(me(),40)); } if(after>before){ safe(()=>logEvent(set.size>=25?`BLACKOUT — the whole card. Touchdown. ${call("BO", callVars(me()))}`:"a bingo line — bragging rights")); } return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); const id=c.dataset.chal; ch[id]=!ch[id]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===id) renderDay(); safe(renderNow); const takeBack=()=>{ const ch2=GS.get("chal",{}); delete ch2[id]; GS.set("chal",ch2); renderGame(); if(DAYS[sel]&&DAYS[sel].id===id) renderDay(); safe(renderNow); overturn(new RegExp("touchdown — challenge done, "+dayLabel(id)), `touchdown, ${dayLabel(id)}, taken back`); toast("Overturned. Six off the board."); }; if(!ch[id]){ if(QUARTER[id]){ overturn(new RegExp("touchdown — challenge done, "+dayLabel(id)), `touchdown, ${dayLabel(id)}, taken back`); toast("Overturned. Six off the board."); } return; } if(ch[id]){ toast(QUARTER[id]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)", QUARTER[id]?{undo:takeBack}:undefined); if(QUARTER[c.dataset.chal]){ safe(()=>sfx("td")); const ln=call("TD", callVars(me())); jumbo("Touchdown", me(), `+${ptsFor(6,c.dataset.chal)} · ${ln}`); safe(()=>logEvent(`touchdown — challenge done, ${dayLabel(c.dataset.chal)}. ${ln}`)); safe(()=>burst(me(),28)); } else safe(()=>logEvent("challenge done (overtime), "+dayLabel(c.dataset.chal))); } return; }
     const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); const id=sp.dataset.stupid; s[id]=!s[id]; GS.set("stupid",s); renderDay(); renderGame(); const takeBack=()=>{ const s2=GS.get("stupid",{}); delete s2[id]; GS.set("stupid",s2); renderDay(); renderGame(); overturn(new RegExp("two-point conversion, "+dayLabel(id)), `two-point conversion, ${dayLabel(id)}, taken back`); toast("Overturned. Two off the board."); }; if(!s[id]){ if(QUARTER[id]){ overturn(new RegExp("two-point conversion, "+dayLabel(id)), `two-point conversion, ${dayLabel(id)}, taken back`); toast("Overturned."); } return; } if(s[id]){ toast("Two-point conversion. Good.", QUARTER[id]?{undo:takeBack}:undefined); safe(()=>sfx("td")); const ln=call("TWO", callVars(me())); jumbo("Two-point conversion", me(), `+${ptsFor(2,sp.dataset.stupid)} · ${ln}`); safe(()=>logEvent(`two-point conversion, ${dayLabel(sp.dataset.stupid)}. ${ln}`)); } return; }
@@ -2818,7 +2878,7 @@ function passportBook(o){
   return `<div class="book ${o.archived?"archived":""}"><div class="spread">
     <div class="cover"><div class="emb">${crest}</div><div class="cv-t">Passport</div><div class="cv-s">Egypt · MMXXVI</div><div class="cv-n">${esc(who)}</div>${o.archived?`<div class="cv-a">Archived · ${esc(o.saved||"")}</div>`:""}<i class="dogear"></i></div>
     <div class="page bio"><div class="pgh"><span>Passport</span><span>Passeport</span><span>جواز سفر</span></div>
-      <div class="bio-grid"><div class="photo"><span>${esc(who.slice(0,1))}</span><small>${esc(T?T.short:"")}</small></div>
+      <div class="bio-grid">${o.archived?(o.portrait?`<div class="photo has"><img src="${o.portrait}" alt=""></div>`:`<div class="photo"><span>${esc(who.slice(0,1))}</span><small>${esc(T?T.short:"")}</small></div>`):(portraitOf()?`<label class="photo has tap" for="ppPortrait" aria-label="Change the passport photo"><img src="${portraitOf()}" alt="Your passport photo"></label>`:`<label class="photo tap" for="ppPortrait" aria-label="Add a passport photo"><span>📷</span><small>TAP FOR<br>PHOTO</small></label>`)}<input type="file" id="ppPortrait" accept="image/*" hidden>
         <dl><dt>Name</dt><dd>${esc(who.toUpperCase())}</dd><dt>Nationality</dt><dd>${nation}</dd>${hon?`<dt>Title</dt><dd>${esc(hon)}</dd>`:""}<dt>Issued</dt><dd>${issued?fmt(issued)+" · "+CITY_OF(first):"ON FIRST STAMP"}</dd><dt>Expires</dt><dd>NEVER</dd><dt>Entries</dt><dd>${n} of ${DAYS.filter(d=>who!=="Duane"||d.who!=="brad").length} · ${cities.size} ${cities.size===1?"place":"places"}</dd></dl></div>
       <div class="mrz">${esc(mrzLine("P<EGY"+who, "NILE<BOWL"))}<br>${esc(mrzLine("2026"+"10"+"10"+"EGY<"+(T?T.short:"TRV"), String(n).padStart(2,"0")+"STAMPS"))}</div>
     </div></div>
@@ -2849,7 +2909,7 @@ async function loadArchive(){
   for(const who of ["brad","duane"]){ try{ const r=await fetch(`passport-${who}.json`,{cache:"no-store"}); if(r.ok){ const p=await r.json(); if(p&&p.data) found.push(p); } }catch(e){} }
   if(!found.length) return;
   const J=(p)=>(id)=>(p.data["egypt.journal."+id]||"").trim(); const P=(p,k)=>{ try{ return JSON.parse(p.data["egypt.game."+k]||"{}"); }catch(e){ return {}; } };
-  el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>passportBook({who:p.who||"traveller", st:P(p,"stamp"), rate:P(p,"rate"), ch:P(p,"chal"), j:J(p), archived:true, saved:new Date(p.saved).toLocaleDateString()})).join("");
+  el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>passportBook({who:p.who||"traveller", st:P(p,"stamp"), rate:P(p,"rate"), ch:P(p,"chal"), j:J(p), archived:true, portrait:(p.data&&p.data["egypt.portrait"])||"", saved:new Date(p.saved).toLocaleDateString()})).join("");
 }
 function passportWire(){
   safe(ppTabRender); setTimeout(()=>safe(maybeMummy), 1500);
@@ -3069,7 +3129,7 @@ const PERSONAL = {
          Duane:{alarm:"4:00", mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
 };
 function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; return o ? Object.assign({}, d, o) : d; }
-function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.textContent = w ? w : "who?"; el.classList.toggle("unset", !w); }
+function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.innerHTML = `${esc(w||"Whose phone?")}<i class="me-c" aria-hidden="true"></i>`; el.setAttribute("aria-label", w?`This is ${w}’s phone. Tap to change.`:"Whose phone is this?"); el.classList.toggle("unset", !w); }
 function whoSheet(force){
   if(!force && me()) return; if($("#whoSheet")) return;
   const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad" style="background:#101820;color:#FFB612">Brad<small>Steelers</small></button><button type="button" data-me="Duane" style="background:#FB4F14;color:#000">Duane<small>Bengals</small></button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
@@ -3424,6 +3484,9 @@ function qcPanel(kind){
 function recapText(id){ const d=DAYS.find(x=>x.id===id); const w=me(), o=OTHER(); const live=GS.get("live",{})||{}; const mine=GS.get("events",[]).filter(e=>e.at.slice(0,10)===d.date); const theirs=((live[o]&&live[o].events)||[]).filter(e=>e.at.slice(0,10)===d.date); const A=nileTotal(w), B=nileTotal(o); const plays=[...mine,...theirs].filter(e=>/touchdown|field goal|extra point|two-point|blackout|safety|toss|relic|mummy/i.test(e.text)).sort((a,b)=>a.at<b.at?-1:1); const line=p=>String(p.text).replace(/^[^.]*\.\s*/,"").replace(/^🗣\s*/,""); const score=A&&B?`${TEAMS[w].team} ${A.pts}, ${TEAMS[o].team} ${B.pts}.`:""; const open=[`Good evening and welcome to Nile Bowl Tonight. ${d.dow} the ${d.num}, ${CITY_OF(d)}.`]; const body=plays.length?plays.slice(0,5).map(p=>line(p)||p.text):[`Nobody scored. The pyramids, we're told, were also built slowly.`]; const close=[score?`At the close of play: ${score}`:"",`${dayTitle(dayPoints(id))} goes to ${w}. Goodnight.`]; return open.concat(body,close).filter(Boolean).join(" "); }
 document.addEventListener("click", e=>{ if(e.target.id==="recapBtn"){ const id=e.target.dataset.id; const txt=recapText(id); if(!soundOn()){ toast("Booth is muted — turn it on under Games."); } announce(txt); e.target.textContent="On air…"; setTimeout(()=>{ e.target.textContent="📻 Nile Bowl Tonight"; }, 8000); } });
 const photoKey = id => "egypt.photo."+id;
+function portraitOf(){ try{ return localStorage.getItem("egypt.portrait")||""; }catch(e){ return ""; } }
+// the passport photo: cropped to 3:4 from the middle, faces sit in the upper third
+document.addEventListener("change", e=>{ const inp=e.target.closest("#ppPortrait"); if(!inp||!inp.files||!inp.files[0]) return; const f=inp.files[0]; const url=URL.createObjectURL(f); const img=new Image(); img.onload=()=>{ try{ const W=360,H=480; const r=W/H; let sw=img.width, sh=img.height, sx=0, sy=0; if(sw/sh>r){ const nw=sh*r; sx=(sw-nw)/2; sw=nw; } else { const nh=sw/r; sy=Math.max(0,(sh-nh)*0.35); sh=nh; } const c=document.createElement("canvas"); c.width=W; c.height=H; c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,W,H); localStorage.setItem("egypt.portrait", c.toDataURL("image/jpeg",.74)); toast("Photo in. Official now."); safe(()=>sfx("stamp")); renderPassport(); }catch(err){ toast("Couldn't keep that one — try another photo."); } URL.revokeObjectURL(url); inp.value=""; }; img.src=url; });
 function photoOf(id){ try{ return localStorage.getItem(photoKey(id))||""; }catch(e){ return ""; } }
 function photoBox(d){ const p=photoOf(d.id); return `<div class="photobox"><b>The day's photo</b>${p?`<div class="pb-has"><img src="${p}" alt=""><div><span class="muted">On the passport page and the stamp card.</span><br><label class="btn mini" for="ph-${d.id}">Replace</label> <button type="button" class="btn mini" data-phdel="${d.id}">Remove</button></div></div>`:`<div class="pb-none"><span class="muted">One picture, kept on this phone, printed on the passport page.</span><label class="btn" for="ph-${d.id}">📷 Add the photo</label></div>`}<input type="file" id="ph-${d.id}" accept="image/*" data-photo="${d.id}" hidden></div>`; }
 document.addEventListener("change", e=>{ const inp=e.target.closest("input[data-photo]"); if(!inp||!inp.files||!inp.files[0]) return; const id=inp.dataset.photo; const f=inp.files[0]; const img=new Image(); const url=URL.createObjectURL(f); img.onload=()=>{ try{ const max=900; const sc=Math.min(1, max/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); const data=c.toDataURL("image/jpeg",.78); localStorage.setItem(photoKey(id), data); toast("Kept. It's on the passport page."); safe(()=>sfx("stamp")); const s=$("#sheetCD"); if(s&&s.classList.contains("on")) closeDaySheet(id); renderPassport(); }catch(err){ toast("Couldn't keep that one — try a smaller photo."); } URL.revokeObjectURL(url); }; img.src=url; });
@@ -3570,6 +3633,9 @@ function reviewButtons(){
   const b=[]; if(togetherDone) b.push(`<button type="button" class="btn" data-review="together">Egypt, together — in review</button>`); if(soloDone) b.push(`<button type="button" class="btn" data-review="solo">Brad's week — in review</button>`);
   return b.join("");
 }
+
+// re-rendering the passport while it's open (a new photo, a stamp) keeps the cover open
+(function(){ const _rp=renderPassport; renderPassport=function(){ const r=_rp.apply(this,arguments); try{ const o=$("#ppOverlay"); if(o&&o.classList.contains("open")){ const c=o.querySelector(".book .cover"); if(c) c.classList.add("flip"); } }catch(e){} return r; }; })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
@@ -3886,10 +3952,16 @@ function wallsForBriefing(d){ const sites=SITE_SIGNS[d.id]; if(!sites) return ""
 const GLYPH_EXTRA = { "𓈍":["khai","sunrise over a hill — 'to appear, to shine'"], "𓏠":["men","a game board — 'enduring, established'"], "𓄊":["user","a staff with an animal's head — 'strong, powerful'"], "𓍉":["setep","an adze — 'chosen'"], "𓍯":["wa","a lasso — the sound 'wa / o'"], "𓆇":["egg","marks a female name"], "𓊁":["serekh","the palace façade a Horus name sits in"], "𓇯":["Nut","the sky, arched"], "𓇼":["seba","a star"], "𓄥":["sema","a windpipe and lungs — 'to unite' (the Two Lands)"], "𓀀":["seated man","a determinative: 'this word is a person'"], "𓂻":["legs","a determinative: 'this word is motion'"], "𓆤":["bity","the bee — king of Lower Egypt"], "𓇓":["sut","the sedge — king of Upper Egypt"], "𓅭":["sa","a goose — 'son'"], "𓏙":["di","a loaf — 'to give'"], "𓇾":["ta","a strip of land"], "𓃣":["Anubis","the jackal on his shrine"] };
 function glyphInfo(ch){ const a=ALPHA.find(x=>x[1]===ch); if(a) return [a[0], a[2]+" — the sound '"+a[0]+"'"]; const s=SIGNS.find(x=>x[1]===ch); if(s) return [s[2], s[3]]; const n=NUMBERS.find(x=>x[0]===ch); if(n) return [n[1], n[2]]; if(GLYPH_EXTRA[ch]) return GLYPH_EXTRA[ch]; return ["", ""]; }
 function glyphBox(run, title){ const chars=[...String(run)].filter(c=>{ const cp=c.codePointAt(0); return cp>=0x13000&&cp<=0x1343F; }); if(!chars.length) return;
-  let el=$("#glyphBox"); if(!el){ el=document.createElement("div"); el.id="glyphBox"; document.body.appendChild(el); el.addEventListener("click", e=>{ if(e.target===el||e.target.closest(".gb-x")) el.classList.remove("on"); }); }
+  let el=$("#glyphBox"); if(!el){ el=document.createElement("div"); el.id="glyphBox"; document.body.appendChild(el); el.addEventListener("click", e=>{ if(e.target===el||e.target.closest(".gb-x")){ el.classList.remove("on"); return; } const one=e.target.closest(".gb-one"); const back=e.target.closest(".gb-back"); const big=el.querySelector(".gb-big"); if(!big) return; if(!big.dataset.whole) big.dataset.whole=big.innerHTML;
+    if(back||(one&&one.classList.contains("on"))){ big.innerHTML=big.dataset.whole; big.classList.remove("one"); el.querySelectorAll(".gb-one.on").forEach(x=>x.classList.remove("on")); fitGlyphs(el); return; }
+    const step=e.target.closest("[data-gbstep]"); const rows=[...el.querySelectorAll(".gb-one")];
+    let target=one; if(step){ const cur=rows.findIndex(x=>x.classList.contains("on")); target=rows[Math.max(0,Math.min(rows.length-1,cur+(+step.dataset.gbstep)))]; }
+    if(target){ const i=rows.indexOf(target); const c=target.querySelector(".hg").textContent; const b=target.querySelector("b").textContent; const m=target.querySelector("small")?.textContent||"";
+      big.innerHTML=`${rows.length>1?`<button type="button" class="gb-back">‹ the whole name</button>`:""}<div class="gb-step"><button type="button" data-gbstep="-1" aria-label="Previous sign" ${i<=0?"disabled":""}>‹</button><span class="hg">${c}</span><button type="button" data-gbstep="1" aria-label="Next sign" ${i>=rows.length-1?"disabled":""}>›</button></div><div class="gb-tip"><b>${esc(b)}</b> · ${esc(m)} <span class="muted">(${i+1} of ${rows.length})</span></div>`;
+      big.classList.add("one"); rows.forEach(x=>x.classList.remove("on")); target.classList.add("on"); if(!step) el.querySelector(".gb").scrollTo({top:0,behavior:"smooth"}); } }); }
   const compound=SIGNS.find(x=>x[1]===run); const royal=ROYAL.find(x=>x[2]===run);
   const head = royal?`<b>${esc(royal[1])}</b><em>${esc(royal[3])} · ${esc(royal[4])}</em>` : compound?`<b>${esc(compound[2])}</b><em>${esc(compound[3])}</em>` : title?`<b>${esc(title)}</b>`:"";
-  el.innerHTML=`<div class="gb"><button type="button" class="gb-x" aria-label="Close">✕</button><div class="gb-big ${chars.length>4?"many":""}">${royal?`<span class="cart huge"><span class="cart-g">${esc(run)}</span></span>`:`<span class="hg">${esc(chars.join(""))}</span>`}</div>${head?`<div class="gb-head">${head}</div>`:""}<div class="gb-list">${chars.map((c,i)=>{ const [n,m]=glyphInfo(c); return `<div class="gb-one"><span class="hg">${c}</span><div><b>${esc(n||"—")}</b><small>${esc(m||"a sign in this name")}</small></div></div>`; }).join("")}</div><p class="muted" style="margin:10px 0 0;font-size:0.7647rem">${royal?"Inside a cartouche, read top to bottom — but Ra 𓇳 is written first and read last.":chars.length>1?"Read in the order shown; a sign can be a sound, a word, or a silent hint.":"Tap anywhere to close."}</p></div>`;
+  el.innerHTML=`<div class="gb"><button type="button" class="gb-x" aria-label="Close">✕</button><div class="gb-big ${chars.length>4?"many":""}">${royal?`<span class="cart huge"><span class="cart-g">${esc(run)}</span></span>`:`<span class="hg">${esc(chars.join(""))}</span>`}</div>${head?`<div class="gb-head">${head}</div>`:""}${chars.length>1?`<div class="gb-tip">Tap any sign below to see it on its own</div>`:""}<div class="gb-list">${chars.map((c,i)=>{ const [n,m]=glyphInfo(c); return `<div class="gb-one"><span class="hg">${c}</span><div><b>${esc(n||"—")}</b><small>${esc(m||"a sign in this name")}</small></div></div>`; }).join("")}</div><p class="muted" style="margin:10px 0 0;font-size:0.7647rem">${royal?"Inside a cartouche, read top to bottom — but Ra 𓇳 is written first and read last.":chars.length>1?"Read in the order shown; a sign can be a sound, a word, or a silent hint.":"Tap anywhere to close."}</p></div>`;
   el.classList.add("on"); }
 document.addEventListener("click", e=>{
   if(e.target.closest("#glyphBox")) return;
@@ -3903,18 +3975,26 @@ document.addEventListener("click", e=>{
   glyphBox(run, title);
 });
 
+function fitGlyphs(root){ (root||document).querySelectorAll(".cart .cart-g, .gb-big .hg").forEach(g=>{ g.style.fontSize=""; const box=g.closest(".cart")||g; const host=box.parentElement; if(!host||!host.clientWidth) return; const cs=getComputedStyle(box); const chrome=box===g?0:(parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight)+parseFloat(cs.borderLeftWidth)+parseFloat(cs.borderRightWidth)+12); const avail=host.clientWidth-chrome-6; const need=g.scrollWidth; if(need<=avail) return; const fs=parseFloat(getComputedStyle(g).fontSize); g.style.fontSize=Math.max(14, Math.floor(fs*avail/need*10)/10)+"px"; }); }
+(function(){ let q=0; const run=()=>{ q=0; fitGlyphs(); }; const later=()=>{ if(!q) q=requestAnimationFrame(run); }; try{ new MutationObserver(muts=>{ if(muts.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&(n.matches?.(".cart,.gb,.hg")||n.querySelector?.(".cart,.gb-big"))))) later(); }).observe(document.body,{childList:true,subtree:true}); }catch(e){} addEventListener("resize",later); document.fonts&&document.fonts.ready.then(later); later(); })();
+
 // ---------- listen: podcasts, music and audiobooks on Spotify, one tap to search, downloadable for the plane and the boat ----------
 // kind: pod | music | book. q is the Spotify search; names are as they appear on Spotify (episode titles may differ slightly — search, then download).
 const LISTEN = {
  sat10:[
+  ["watch","Ancient Egypt by Train","Alice Roberts · Channel 5, 2023","Alexandria to Aswan by rail, stopping at the places you're about to see. Our route, more or less, from a train window.","Ancient Egypt by Train with Alice Roberts","where"],
+  ["watch","The Story of Egypt","Joann Fletcher · Channel 5, 2016","Four hours, pharaohs to the present, presented on site by an Egyptologist who clearly loves it. The best single primer — watch it this week.","The Story of Egypt Joann Fletcher","YouTube"],
   ["book","The Rise and Fall of Ancient Egypt","Toby Wilkinson","The one-volume story of all of it, in order. Start on the plane; it carries you to Luxor.","Rise and Fall of Ancient Egypt Wilkinson"],
   ["pod","The History of Egypt Podcast","Dominic Perry","Chronological, episode by episode, by an Egyptologist who likes jokes. Download the early Old Kingdom episodes for Sunday.","The History of Egypt Podcast"],
   ["music","Omar Khairat","piano, orchestra","Cairo's film composer. The sound of the city at night from a hotel balcony.","Omar Khairat"]],
  sun11:[
+  ["watch","Secrets of the Saqqara Tomb","Netflix, 2020","The 2018 discovery of Wahtye's untouched tomb — at Saqqara, the site you're standing in today. Download it on Netflix for the hotel.","Secrets of the Saqqara Tomb","Netflix"],
   ["pod","The History of Egypt Podcast — Sneferu & the pyramids","Dominic Perry","Why the Bent Pyramid bent, and how the Red Pyramid fixed it. Listen in the car to Dahshur.","History of Egypt Podcast Sneferu"],
   ["pod","In Our Time — The Pyramids","BBC Radio 4","Forty minutes, three professors, no fluff. Who built them and how.","In Our Time Pyramids"],
   ["music","Umm Kulthum — Enta Omri","the voice of Egypt","Play it walking into the Khan at dusk; every shopkeeper will know the words.","Umm Kulthum Enta Omri"]],
  mon12:[
+  ["watch","Lost Treasures of Egypt — Tutankhamun","National Geographic","Why the tomb stayed hidden for 3,000 years, then the 1922 opening. Watch before the GEM, not after.","Lost Treasures of Egypt Tutankhamun","where"],
+  ["watch","Mysteries of Egypt","IMAX, 1998 · narrated by Omar Sharif","Old, short and gorgeous: how the Great Pyramid went up, from the air. Forty minutes; the night before Giza.","Mysteries of Egypt IMAX Omar Sharif","YouTube"],
   ["pod","The Rest Is History — Tutankhamun","Holland & Sandbrook","The discovery, the curse, the politics. Four parts; the first two before the GEM.","The Rest Is History Tutankhamun"],
   ["pod","In Our Time — Tutankhamun","BBC Radio 4","The boy king without the tabloid bits.","In Our Time Tutankhamun"],
   ["music","Cairokee","Cairo rock","The band the city actually listens to. For the Uber back from Giza.","Cairokee"]],
@@ -3923,15 +4003,18 @@ const LISTEN = {
   ["music","Ali Hassan Kuban","Nubian wedding music","What the village will be playing. Loud, brass, joyful.","Ali Hassan Kuban"],
   ["pod","In Our Time — The Rosetta Stone","BBC Radio 4","How the script was cracked — using the cartouches you'll see at Philae.","In Our Time Rosetta Stone"]],
  wed14:[
+  ["watch","The Nile: 5,000 Years of History","Bettany Hughes · 2019","The whole river, mouth to the Sudan border, episode by episode. Download before the boat.","The Nile 5000 Years of History Bettany Hughes","where"],
   ["pod","The History of Egypt Podcast — Ramesses II","Dominic Perry","Kadesh, the hundred children, the man who built Abu Simbel. For the 4am car.","History of Egypt Podcast Ramesses II"],
   ["pod","Fall of Civilizations — The Bronze Age Collapse","Paul Cooper","Why the world Ramses built fell apart a century later. Three hours; the sail south is for exactly this.","Fall of Civilizations Bronze Age Collapse"]],
  thu15:[
+  ["pod","Hardcore History — Kings of Kings II","Dan Carlin","Persia's Cambyses marches into Egypt in 525 BC and, Herodotus says, stabs the sacred Apis bull — the bulls whose giant tombs you saw at Saqqara. Carlin weighs the gossip against the Egyptian records. Five hours; the river has them. Older episodes can be paywalled — check it downloads before you fly.","Hardcore History Kings of Kings II"],
   ["book","Death on the Nile","Agatha Christie · read by Kenneth Branagh","You're on the river she wrote it about. Deck chair, afternoon, hot hours.","Death on the Nile Agatha Christie audiobook"],
   ["music","Naseer Shamma","oud","Solo oud for a boat with no engine.","Naseer Shamma"]],
  fri16:[
   ["pod","The Rest Is History — Cleopatra","Holland & Sandbrook","The last Ptolemy, for the Ptolemaic temple. Edfu in the morning, Cleopatra in the car.","The Rest Is History Cleopatra"],
   ["pod","In Our Time — Akhenaten","BBC Radio 4","The heretic whose demolished temple is the wall of blocks in the Luxor Museum.","In Our Time Akhenaten"]],
  sat17:[
+  ["watch","Egypt's Lost Queens","Channel 4, 2014","Hatshepsut, Nefertari and the women who ruled — the night before Deir el-Bahari and Nefertari's valley.","Egypt's Lost Queens documentary","YouTube"],
   ["pod","In Our Time — Hatshepsut","BBC Radio 4","The woman who ruled as king, whose temple you'll stand in at noon.","In Our Time Hatshepsut"],
   ["pod","The History of Egypt Podcast — Hatshepsut","Dominic Perry","A longer, stranger version of the same story; several episodes.","History of Egypt Podcast Hatshepsut"],
   ["pod","In Our Time — The Egyptian Book of the Dead","BBC Radio 4","What's painted on the tomb walls you'll walk through in the morning.","In Our Time Egyptian Book of the Dead"]],
@@ -3943,13 +4026,15 @@ const LISTEN = {
  wed21:[["music","Sheikh Yasin al-Tuhami","Sufi inshad","Hypnotic, ecstatic, two hours. The right thing at 3am on a mountain with the stars out — or silence, which is also right.","Yasin al-Tuhami"]],
  fri23:[["pod","Fall of Civilizations — Roman Britain","Paul Cooper","Nothing to do with Egypt; it's three hours and the drive to Bahariya is four.","Fall of Civilizations Roman Britain"],["music","Mahmoud Fadl — The Drummers of the Nile","Nubian percussion","For the fire.","Mahmoud Fadl Drummers of the Nile"]],
 };
-const LISTEN_ICON = {pod:"🎙️", music:"🎵", book:"📚"};
+const LISTEN_ICON = {pod:"🎙️", music:"🎵", book:"📚", watch:"🎬"};
+// films: YouTube links search YouTube; streaming ones open JustWatch, which says where it's playing in your country today
+function watchHref(q,where){ return where==="YouTube"?"https://www.youtube.com/results?search_query="+encodeURIComponent(q):"https://www.justwatch.com/us/search?q="+encodeURIComponent(q.replace(/ (documentary|IMAX.*|Joann.*|with Alice.*|Bettany.*)$/,"")); }
 function spotifyHref(q){ return "https://open.spotify.com/search/"+encodeURIComponent(q); }
-function listenItem([kind,name,by,why,q]){ return `<a class="lst ${kind}" href="${spotifyHref(q)}" target="_blank" rel="noopener"><span class="lst-i">${LISTEN_ICON[kind]||"🎧"}</span><span class="lst-b"><b>${esc(name)}</b><small>${esc(by)}</small><span>${esc(why)}</span></span><span class="lst-go">Spotify ↗</span></a>`; }
-function listenBlock(d){ const L=LISTEN[d.id]; if(!L||!L.length) return ""; return `<details class="fold listen"><summary>🎧 Listen today <span class="pill">${L.length}</span></summary><div class="in"><div class="lstl">${L.map(listenItem).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:0.7941rem">Each one opens a Spotify search — tap the result, then the download arrow, while you still have wifi. Episode titles can differ slightly from what's written here.</p></div></details>`; }
-function listenForBriefing(d){ const L=LISTEN[d.id]; if(!L||!L.length) return ""; return `<div class="br-h">On the way</div><div class="lstl sm">${L.slice(0,2).map(listenItem).join("")}</div>`; }
+function listenItem([kind,name,by,why,q,where]){ const w=kind==="watch"; return `<a class="lst ${kind}" href="${w?watchHref(q,where):spotifyHref(q)}" target="_blank" rel="noopener"><span class="lst-i">${LISTEN_ICON[kind]||"🎧"}</span><span class="lst-b"><b>${esc(name)}</b><small>${esc(by)}</small><span>${esc(why)}</span></span><span class="lst-go">${w?(where==="YouTube"?"YouTube ↗":where==="Netflix"?"Netflix ↗":"Where to watch ↗"):"Spotify ↗"}</span></a>`; }
+function listenBlock(d){ const L=LISTEN[d.id]; if(!L||!L.length) return ""; return `<details class="fold listen"><summary>🎧 ${L.some(x=>x[0]==="watch")?"Listen & watch":"Listen today"} <span class="pill">${L.length}</span></summary><div class="in"><div class="lstl">${L.map(listenItem).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:0.7941rem">Audio opens a Spotify search — tap the result, then the download arrow, while you have wifi. Films open YouTube, or a page that shows which service is streaming it now. Titles can differ slightly.</p></div></details>`; }
+function listenForBriefing(d){ const L=(LISTEN[d.id]||[]).filter(x=>x[0]!=="watch"); const W=(LISTEN[d.id]||[]).filter(x=>x[0]==="watch"); if(!L.length&&!W.length) return ""; return `<div class="br-h">On the way</div><div class="lstl sm">${L.slice(0,2).concat(W.slice(0,1)).map(listenItem).join("")}</div>`; }
 function listenPre(){ const seen=new Set(); const all=[]; DAYS.forEach(d=>(LISTEN[d.id]||[]).forEach(it=>{ if(!seen.has(it[1])){ seen.add(it[1]); all.push([d,it]); } }));
-  return `<details class="fold listen" style="margin-top:8px"><summary>🎧 Download before you fly <span class="pill">${all.length}</span></summary><div class="in"><p class="muted" style="margin:0 0 8px;font-size:0.7941rem">Everything the days ask for, in order. Open each in Spotify on wifi and hit the download arrow — the boat has no signal and the planes have no wifi. Podcasts and music download on any plan; audiobooks need Premium.</p><div class="lstl">${all.map(([d,it])=>`<div class="lst-day">${d.dow} ${d.num}</div>`+listenItem(it)).join("")}</div></div></details>`; }
+  return `<details class="fold listen" style="margin-top:8px"><summary>🎧 Listen & watch before you fly <span class="pill">${all.length}</span></summary><div class="in"><p class="muted" style="margin:0 0 8px;font-size:0.7941rem">Everything the days ask for, in order. Audio: open in Spotify on wifi and hit the download arrow — the boat has no signal and the planes have no wifi (podcasts and music download on any plan; audiobooks need Premium). Films: Netflix downloads to the phone; YouTube only with Premium — otherwise watch the 🎬 ones this week.</p><div class="lstl">${all.map(([d,it])=>`<div class="lst-day">${d.dow} ${d.num}</div>`+listenItem(it)).join("")}</div></div></details>`; }
 
 // ---------- the larger story: nine days as nine chapters of one 4,600-year narrative ----------
 // Each chapter: title, where we are in time, "so far" (what the previous chapters established), the chapter itself,
