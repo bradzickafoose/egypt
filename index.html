@@ -482,7 +482,9 @@ p.muted{margin:0 0 8px}
 .acard .ai{display:grid;grid-template-columns:140px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
 .acard .am{margin-top:10px;font-size:13px}.acard .am b{display:block;margin-bottom:4px}.acard .am i{color:var(--muted);font-style:normal;margin-right:4px}
 /* PASSPORT — a booklet. paper, ink, rubber. stays paper in dark mode: it's an object, not a screen */
-.book{--paper:#f4ecd8;--paper2:#ebe1c8;--rule:rgba(60,40,20,.14);--inkk:#2b2420;--hand:"Caveat","Bradley Hand","Segoe Script",cursive;color:var(--inkk);margin:0 -4px}
+.ppwrap,.book,.page.back{--paper:#f4ecd8;--paper2:#ebe1c8;--rule:rgba(60,40,20,.14);--inkk:#2b2420;--hand:"Caveat","Bradley Hand","Segoe Script",cursive}
+.book{color:var(--inkk);margin:0 -4px}
+.page.back{color:var(--inkk);margin-left:-4px;margin-right:-4px}
 .book .cover{position:relative;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;border-radius:10px 18px 18px 10px;padding:30px 22px 26px;min-height:200px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 10px 0 18px -14px rgba(0,0,0,.8),0 16px 30px -18px rgba(0,0,0,.7);overflow:hidden;text-align:center}
 .book .cover::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 2px,transparent 2px 5px),repeating-linear-gradient(45deg,rgba(0,0,0,.08) 0 1px,transparent 1px 4px);pointer-events:none}
 .book .cover::after{content:"";position:absolute;inset:10px;border:1px solid rgba(216,178,90,.35);border-radius:6px 12px 12px 6px;pointer-events:none}
@@ -531,7 +533,7 @@ p.muted{margin:0 0 8px}
 .book.archived{margin-top:14px}
 .ppwrap{margin:0 auto;max-width:520px}
 /* the passport lives in your pocket: a tab peeking in from the right edge */
-.pptab{position:fixed;right:-5px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;width:44px;height:66px;border:0;padding:0;border-radius:7px 3px 3px 7px;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-4px 6px 14px -6px rgba(0,0,0,.6);transform:rotate(-6deg);transform-origin:right bottom;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .2s}
+.pptab{position:fixed;right:-13px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;width:44px;height:66px;border:0;padding:0;border-radius:7px 3px 3px 7px;background:radial-gradient(120% 90% at 30% 10%,#2d4b6b,#13263a 60%,#0d1b2a);color:#d8b25a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-4px 6px 14px -6px rgba(0,0,0,.6);transform:rotate(-6deg);transform-origin:right bottom;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .2s}
 .pptab::before{content:"";position:absolute;inset:5px;border:1px solid rgba(216,178,90,.4);border-radius:4px 2px 2px 4px;pointer-events:none}
 .pptab::after{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 5px);pointer-events:none}
 .pptab .ppt-s{writing-mode:vertical-rl;transform:rotate(180deg);font-family:Georgia,"Times New Roman",serif;font-size:9px;letter-spacing:.32em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.6)}
@@ -539,6 +541,7 @@ p.muted{margin:0 0 8px}
 .pptab:active{transform:rotate(-2deg) scale(.96)}
 .pptab.bump{animation:ppbump .7s cubic-bezier(.2,.8,.2,1)}
 @keyframes ppbump{0%{transform:rotate(-6deg)}30%{transform:rotate(3deg) translate(-6px,-10px) scale(1.08)}60%{transform:rotate(-10deg)}100%{transform:rotate(-6deg)}}
+html.scrolling-down .pptab{transform:translateX(26px) rotate(-6deg)}
 html:has(.qs.on) .pptab,html:has(#review.on) .pptab,html:has(#whoSheet.on) .pptab,html.pp-open .pptab,html:has(.lb[style*="block"]) .pptab{opacity:0;pointer-events:none}
 .ppov{position:fixed;inset:0;z-index:75;background:radial-gradient(120% 70% at 50% -10%,#3a2e22,#17120e 60%,#0e0b08);opacity:0;pointer-events:none;transition:opacity .25s}
 .ppov.on{opacity:1;pointer-events:auto}
@@ -1600,7 +1603,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v42)";
+const BUILD = "Oct 8, 2026 (v43)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2022,7 +2025,9 @@ async function loadArchive(){
   el.innerHTML=`<h3 class="arch">Archived passports</h3>`+found.map(p=>passportBook({who:p.who||"traveller", st:P(p,"stamp"), rate:P(p,"rate"), ch:P(p,"chal"), j:J(p), archived:true, saved:new Date(p.saved).toLocaleDateString()})).join("");
 }
 function passportWire(){
-  safe(ppTabRender); try{ if(!GS.get("ppHint","") && me()){ setTimeout(()=>{ if(!document.hidden){ GS.set("ppHint",new Date().toISOString()); safe(ppTabBump); toast("Your passport is in your pocket — bottom right."); } }, 4000); } }catch(e){}
+  safe(ppTabRender);
+  // the tab ducks while you read down, comes back when you stop or scroll up
+  (()=>{ let last=window.scrollY, t=null; window.addEventListener("scroll", ()=>{ const y=window.scrollY; const h=document.documentElement; if(y>last+6 && y>120) h.classList.add("scrolling-down"); else if(y<last-6) h.classList.remove("scrolling-down"); last=y; clearTimeout(t); t=setTimeout(()=>h.classList.remove("scrolling-down"), 900); }, {passive:true}); })(); try{ if(!GS.get("ppHint","") && me()){ setTimeout(()=>{ if(!document.hidden){ GS.set("ppHint",new Date().toISOString()); safe(ppTabBump); toast("Your passport is in your pocket — bottom right."); } }, 4000); } }catch(e){}
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePassport(); });
   document.addEventListener("click", e=>{
     if(e.target.closest("#ppTab")||e.target.closest("[data-pp]")){ openPassport(); return; }
