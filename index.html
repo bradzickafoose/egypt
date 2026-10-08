@@ -201,7 +201,9 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .lived{margin:8px 0 2px;padding:8px 10px;border-left:3px solid #b5322b;background:var(--bg);border-radius:0 10px 10px 0}
 .lived .lvb{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:var(--muted)}
 .lived .lq{margin-top:4px;font-family:var(--display);font-size:15px;line-height:1.35;font-style:italic}
-.dayhead.stamped h2{padding-right:120px}
+.dayhead.stamped>.k,.dayhead.stamped>h2,.dayhead.stamped>.place{padding-right:122px}
+html.big .bingo button{font-size:11px}
+.who .nudge{color:var(--dusk);font-size:12.5px;font-weight:600}
 
 /* game + passport */
 .dayhead{position:relative}
@@ -1160,7 +1162,7 @@ function renderNow(){
   if(now.date < first){
     const days = dateDiffDays(now.date, first);
     const minsLeft = (24*60 - now.mins) + (days-1)*24*60 + toMins("17:20");
-    html = `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>`;
+    const hon0 = safe(()=>honorific()); html = (hon0?`<div class="hon">${esc(hon0)} — soon.</div>`:"") + `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>`;
   } else if(now.date > last){
     html = safe(()=>lookingBack()) || `<div class="eyebrow">After</div><div class="big">Egypt, October 2026.</div>`;
   } else {
@@ -1288,7 +1290,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v18)";
+const BUILD = "Oct 8, 2026 (v19)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1481,8 +1483,8 @@ function renderGame(){
   const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
   el.innerHTML = `
   <div class="card">
-    <div class="who"><span>This phone is</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
-    <div class="score"><div><b>${s.bingo}<small>/24</small></b><span>bingo · ${s.lines} line${s.lines===1?"":"s"}</span></div><div><b>${s.chal}</b><span>challenges</span></div><div><b>${s.best}%</b><span>best haggle</span></div><div><b>${s.saved.toLocaleString()}</b><span>EGP saved</span></div></div>
+    <div class="who"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    <div class="score"><div><b>${s.bingo}<small>/24</small></b><span>bingo · ${s.lines} line${s.lines===1?"":"s"}</span></div><div><b>${s.chal}</b><span>challenges</span></div><div><b>${s.n?s.best+"%":"—"}</b><span>best haggle</span></div><div><b>${s.saved.toLocaleString()}</b><span>EGP saved</span></div></div>
     <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare on WhatsApp — that's the fun part.</span></div>
   </div>
 
@@ -1607,7 +1609,7 @@ function livedLine(d, now){
 function lookingBack(){
   const st=stamps(); const n=Object.keys(st).length; const s=gameScore();
   const lines=[]; DAYS.forEach(d=>{ try{ const v=(localStorage.getItem("egypt.journal."+d.id)||"").trim(); if(v) lines.push([d, v.split("\n")[0]]); }catch(e){} });
-  const pick=lines.length?lines[Math.floor(Math.random()*lines.length)]:null;
+  const pick=lines.length?lines[hash(new Date().toISOString().slice(0,13))%lines.length]:null;
   return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row"><a class="btn" href="#game">Open the passport</a><a class="btn" href="#today">Re-read a day</a></div>`;
 }
 
