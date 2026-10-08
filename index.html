@@ -721,7 +721,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <a href="#guides" data-go="guides"><span class="i">🍢</span>Eat</a>
   <a href="#game" data-go="game"><span class="i">🛂</span>Game</a>
 </div></nav>
-<div class="lvb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
+<div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"><div class="bd" id="shBd"></div><div class="pn"><div class="hd"><h3 id="shTitle"></h3><button class="x" id="shX" aria-label="Close">×</button></div><div class="bodyx" id="shBody"></div></div></div>
 <div class="toast" id="toast">Copied</div>
 <div class="upd" id="upd"><span>A newer plan is ready</span><button id="updBtn">Reload</button></div>
@@ -1233,7 +1233,7 @@ function journalWire(d){
 
 function shotList(d){
   const shots = d.agenda.filter(a=>a.photo); const st = (typeof STUPID!=="undefined") && STUPID[d.id]; if(!shots.length && !st) return "";
-  return `<details class="askday shots"><summary>Shot list <span class="pill">${shots.length+(st?1:0)}</span></summary><div class="in"><ul>${shots.map(a=>`<li><b>${fmt12(a.t)}</b> ${esc(a.photo)}</li>`).join("")}${st?`<li class="stupid"><b>Mandatory stupid photo</b> ${esc(st)}</li>`:""}</ul></div></details>`;
+  return `<details class="askday shots"><summary>Shot list <span class="pill">${shots.length+(st?1:0)}</span></summary><div class="in"><ul>${shots.map(a=>`<li><b>${fmt12(a.t)}</b> ${esc(a.photo)}</li>`).join("")}${st?`<li class="stupid"><b>The two-point play</b> ${esc(st)}</li>`:""}</ul></div></details>`;
 }
 function askToday(d){
   const seen = new Set(); const groups = [];
@@ -1378,7 +1378,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v29)";
+const BUILD = "Oct 8, 2026 (v30)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1516,7 +1516,7 @@ const GUIDES = [
 const CHALLENGES = {
  sat10:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone.",
  sun11:"Haggle one thing in the Khan and log it on the scoreboard. First to beat 40% off takes the day.",
- mon12:"Order koshary — or anything — entirely in Arabic: “wahed koshary, min fadlak… shukran.”",
+ mon12:"Order one thing entirely in Arabic: “wahed koshary, min fadlak… shukran.” The waiter's smile is the proof.",
  tue13:"Learn every crew member's name by dinner, and use them.",
  wed14:"Abu Simbel at dawn: phones stay in pockets for the first ten minutes. Then shoot.",
  thu15:"Name three gods on the Kom Ombo or Edfu walls before the guide does. Horus, Sobek and Hathor all count.",
@@ -1526,7 +1526,7 @@ const CHALLENGES = {
  mon19:"Brad: in the sea before lunch. Duane: a photo from the layover.",
  tue20:"Blue Hole: say hello to one stranger and find out where they're from.",
  wed21:"Write one line on the summit, not afterwards.",
- thu22:"Dinner where locals eat, no phone on the table.",
+ thu22:"Dinner where locals eat, no phone on the table, and you come back knowing the owner's name.",
  fri23:"Count shooting stars. Text Duane the number. He will not believe it.",
  sat24:"Buy the dates.",
  sun25:"The whole trip in ten lines, on the plane."
@@ -1633,7 +1633,7 @@ function gameWire(){
     if(e.target.id==="meChip"){ whoSheet(true); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(after>before){ safe(()=>logEvent(set.size>=25?"BLACKOUT — the whole card. Touchdown.":"a bingo line — bragging rights")); } return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]){ toast(QUARTER[c.dataset.chal]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)"); safe(()=>logEvent("touchdown — challenge done, "+dayLabel(c.dataset.chal))); } return; }
-    const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); s[sp.dataset.stupid]=!s[sp.dataset.stupid]; GS.set("stupid",s); renderDay(); renderGame(); if(s[sp.dataset.stupid]){ toast("Two-point conversion. Good."); safe(()=>logEvent("went for two — the stupid photo, "+dayLabel(sp.dataset.stupid))); } return; }
+    const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); s[sp.dataset.stupid]=!s[sp.dataset.stupid]; GS.set("stupid",s); renderDay(); renderGame(); if(s[sp.dataset.stupid]){ toast("Two-point conversion. Good."); safe(()=>logEvent("went for two and got the shot, "+dayLabel(sp.dataset.stupid))); } return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
     const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); safe(checkMilestones); return; }
     if(e.target.id==="scoreShare"||e.target.id==="scoreCopy"){ const t=scoreText(); if(e.target.id==="scoreShare"&&navigator.share){ navigator.share({text:t}).catch(()=>{}); } else { (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into Messages")).catch(()=>toast("Couldn't copy here")); } return; }
@@ -1713,7 +1713,7 @@ function lookingBack(){
 const HONORIFICS = ["Lord of the Two Lands","Keeper of the Small Bills","He Who Rises at 4:15","Beloved of the Felucca Captain","Strong Bull of the Corniche","First Prophet of Koshary","Great of Sunscreen","Overseer of the Tip Pocket","Scourge of the Touts","Master of the Eleventh Shukran","He Who Found the Bathroom","Bearer of the Daypack","Admiral of the Dahabiya","Friend of the Cats of Karnak","Holder of the Only Charger","Son of Ra, Wearer of the Hat","Counter of the Steps","He Who Orders the Pigeon","Reader of One Hieroglyph","Horus of the Early Flight"];
 const ORACLE = ["The guide will say “very important” eleven times today. Count them.","A man will offer you a camel. Decline with dignity. Then ask how many.","You will pay 20 pounds for something that costs 5. It will be worth it.","Beware the second cup of karkadeh. It is never free.","Someone will call you Rambo. Answer to it.","Ra favours shade today. Seek it by one o'clock.","A cat will choose you. You have no say in this.","The bathroom attendant knows you are coming. Have the ten ready.","You will take 140 photos. Three will be good. One will be of a thumb.","A stranger will know your football team better than you do.","Ra rises at 6:14. You will rise at 6:40 and call it sunrise.","Your brother will say “we should have done this years ago.” He is right.","The Nile will be exactly the colour you expected and still surprise you.","Do not trust the man who says “no charge.”","Tonight you will be tired in the good way.","Someone will sell papyrus made of banana. Smile — you know things now.","The guide's cousin has a shop. It is a very nice shop. You are not going.","Order the thing you cannot pronounce.","The pharaohs built for eternity. You will build a sunburn in forty minutes. Hat.","Your step count will embarrass your watch's expectations.","You will haggle brilliantly and then tip it all back. This is correct.","Someone will say the pyramids were built by aliens. Let it go.","The best meal today costs less than the worst coffee at home."];
 const GROANS = ["Why don't mummies take holidays? They're afraid they'll relax and unwind.","What did the pharaoh say when he got home? “Mummy, I'm back.”","Why was the pharaoh so confident? He Sphinx he's the best.","What do you call a pharaoh who plays trumpet? Tootin' Khamun.","Old pharaohs never die. They just get a little crusty.","A mummy's favourite music? Wrap.","Where do pharaohs keep their money? In the river bank.","Why did the mummy go to the doctor? He was coffin.","What's a pharaoh's favourite exercise? Pyramid schemes.","How does a pharaoh answer the phone? “Tut, who's this?”","What did the Nile say to the delta? Nothing. It just went with the flow.","Why don't pyramids ever get lost? They've got a point.","What do you call an Egyptian who's good at maths? Sum-set.","Why was Cleopatra bad at tennis? She was in de-Nile about her backhand.","What did Duane say at the top of the Great Pyramid? Nothing. He's not allowed up there.","How many touts does it take to change a lightbulb? One, my friend, special price."];
-const FORFEITS = [["Checked work email","buys dinner"],["Fell asleep in the car","gets photographed for the passport"],["Said “back in my day”","one tea"],["Paid asking price without trying","one tea"],["Took a phone call inside a temple","one tea"],["Complained about the heat before 10am","one tea"],["Lost the group's only charger","all the teas"],["Posed Walk-Like-an-Egyptian at a monument","compulsory — no fine"],["Delay of game — late to the lobby","one tea, 5 yards"],["Illegal use of hands — touched the merchandise before agreeing a price","one tea"],["Unsportsmanlike conduct — wore the other guy's colors","two teas, loss of down"],["Taunting","permitted. Encouraged."]];
+const FORFEITS = [["Checked work email","buys dinner"],["Fell asleep in the car","the other guy picks the next restaurant"],["Said “back in my day”","one tea"],["Paid asking price without trying","one tea"],["Took a phone call inside a temple","one tea"],["Complained about the heat before 10am","one tea"],["Lost the group's only charger","all the teas"],["Delay of game — late to the lobby","one tea, 5 yards"],["Illegal use of hands — touched the merchandise before agreeing a price","one tea"],["Unsportsmanlike conduct — wore the other guy's colors","two teas, loss of down"],["Taunting","permitted. Encouraged."]];
 const hash = s => { let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0); };
 const pickDaily = (arr, salt, roll) => arr[(hash(cairoNow().date+"|"+salt)+(roll||0))%arr.length];
 function honorific(){ const w=me(); if(!w) return ""; const pool=HONORIFICS.concat(TEAM_HON[w]||[]); return `${w}, ${pickDaily(pool, w)}`; }
@@ -1782,22 +1782,22 @@ const FINEPRINT = {
  sun25:"Home. Your phone has 1,400 photos, three of which are good. You'll show people all 1,400."
 };
 const STUPID = {
- sat10:"Duane: a selfie with the Hilton's revolving restaurant visibly not revolving.",
- sun11:"Both of you 'holding up' the Bent Pyramid. It's bent. You failed.",
- mon12:"The pinch-the-Great-Pyramid photo. Mandatory. No exceptions. No dignity.",
- tue13:"Brad asleep on the boat's sun deck, photographed by Duane, captioned 'day one'.",
- wed14:"Both of you doing the Ramesses II seated pose in front of Ramesses II. Stone face.",
- thu15:"Kissing the crocodile mummy case at Kom Ombo (glass permitting).",
- fri16:"Walk Like an Egyptian in front of an actual Egyptian wall painting of people walking like Egyptians.",
- sat17:"Duane mummified in a Hilton bathrobe. Toilet-paper optional.",
- sun18:"The two of you dwarfed by one Karnak column, arms out, pretending it's heavy.",
- mon19:"Airport goodbye: the fake-crying photo. Then the real one.",
- tue20:"Brad with a Bedouin cat at the Blue Hole. The cat will not cooperate.",
- wed21:"Summit selfie with the sun exactly behind your head like a halo. Moses energy.",
- thu22:"The 'last Red Sea swim' underwater selfie, eyes open, regret visible.",
- fri23:"Brad on a chalk mushroom pretending to be a Smurf. The guide will understand.",
+ sat10:"The first photo together: both of you, the Nile behind, taken by the night porter. Ask him his name first.",
+ sun11:"The Red Pyramid from far enough back that it fills the frame and the two of you are small at the bottom. The guide knows the spot.",
+ mon12:"A portrait of you both with the Sphinx, taken by a stranger you asked in Arabic: “mumkin sura, min fadlak?”",
+ tue13:"High tea: the photo in the exact spot Agatha Christie sat. Ask the waiter which chair.",
+ wed14:"Abu Simbel with not one other tourist in the frame. Patience, timing, and the far corner.",
+ thu15:"The whole crew with the two of you on deck, every name written under it in the journal that night.",
+ fri16:"Inside a tomb: the ceiling of stars, no flash, steady hands, both of you in silhouette below.",
+ sat17:"From the balloon: your own balloon's shadow on the West Bank fields.",
+ sun18:"Karnak's great hall: one of you tiny against a single column, shot from the ground looking up.",
+ mon19:"The last one: both passports' stamp pages side by side at the airport, with the coffee.",
+ tue20:"Brad at the Blue Hole from the cliff café above, with the reef showing the colour change.",
+ wed21:"Summit at first light: the shadow of the mountain on the desert, which only exists for ten minutes.",
+ thu22:"One last underwater frame, eyes open, no regret visible.",
+ fri23:"Brad on a chalk mushroom at blue hour with the first stars behind.",
  sat24:"The fox. Any fox. Pretend it's the same fox.",
- sun25:"Both passports' stamp pages side by side, on the plane, with the airline's tiny wine."
+ sun25:"The stamp page, on the plane, next to the airline's tiny wine."
 };
 const ALARM_TAUNT = {
  tue13:"You chose this.", wed14:"The sun isn't up. Neither should you be.", sat17:"Ballooning is for the brave and the under-slept.", mon19:"Last one together. Make it count, then make coffee.", fri23:"The desert does not care that you're tired.", sun25:"Home wins."
@@ -1920,7 +1920,7 @@ function rivalryCard(){
   return `<details class="fold"><summary>AFC North on the Nile</summary><div class="in">
     <div class="riv"><div><b>Last meeting</b><span>${RIVALRY.last}</span></div><div><b>Rematch</b><span>${RIVALRY.next}</span></div><div><b>Standings</b><span>${RIVALRY.standings}</span></div></div>
     <p class="muted"><b>The Nile Bowl.</b> Four quarters: Q1 Cairo (Sat–Mon), Q2 the Nile (Tue–Thu), Q3 Luxor (Fri–Sat), Q4 Sunday. <b>Final whistle: Sunday 8:00pm Cairo, kickoff of Steelers–Bucs.</b> The loser buys that dinner — the last one together, with the game on. Nothing is owed after the gate; Monday's goodbye and Brad's week are overtime with no score.</p>
-    <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> with the mandatory stupid photo — one or the other. <b>Field goal (3)</b> — a haggle under 40% of the ask, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it.</p>
+    <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> by landing the day's two-point play in the shot list, a photo that takes nerve or patience — one or the other. <b>Field goal (3)</b> — a haggle under 40% of the ask, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it.</p>
     <p class="muted">Game days are on the Sun 11 and Sun 18 cards under “What's on.” ${w?`${t.chant}, ${w}.`:""}</p>
   </div></details>`;
 }
@@ -2012,7 +2012,7 @@ function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nil
 function conversionBox(d){
   if(!QUARTER[d.id]) return ""; const ch=GS.get("chal",{}); if(!ch[d.id]) return "";
   const st=!!stamps()[d.id], sp=!!GS.get("stupid",{})[d.id];
-  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — the stupid photo. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the mandatory stupid photo (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn primary" data-stupid="${d.id}">Go for two 📸</button>`}</div></div>`;
+  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — you got the shot. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the two-point play in the shot list (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn primary" data-stupid="${d.id}">Go for two 📸</button>`}</div></div>`;
 }
 
 const WHATSON = {
