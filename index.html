@@ -1359,7 +1359,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v27)";
+const BUILD = "Oct 8, 2026 (v28)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1909,7 +1909,7 @@ function rivalryCard(){
 // DB_URL is the Firebase Realtime Database; the room code lives on the phone (from the link Brad sends), never in the repo.
 const DB_URL = "https://egypt-brothers-default-rtdb.firebaseio.com";
 const room = ()=>{ try{ return localStorage.getItem("egypt.room")||""; }catch(e){ return ""; } };
-(function roomFromLink(){ try{ const m=location.hash.match(/room=([a-f0-9]{24,})/); if(m){ localStorage.setItem("egypt.room", m[1]); history.replaceState(null,"",location.pathname+location.search); } }catch(e){} })();
+(function roomFromLink(){ try{ const m=location.hash.match(/room=([a-f0-9]{24,})/); if(m){ localStorage.setItem("egypt.room", m[1]); history.replaceState(null,"",location.pathname+location.search); setTimeout(()=>{ try{ toast("Linked to the live scoreboard"); }catch(e){} }, 1200); } }catch(e){} })();
 const liveOK = ()=> DB_URL.startsWith("https://") && room().length>=24 && !!me();
 function livePayload(){
   const f=footballScore(); const s=gameScore(); const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
@@ -1933,6 +1933,7 @@ function renderLive(){
     <div class="sbl">${theirs?`${OTHER()}: ${theirs.td} TD · ${theirs.fg} FG · ${theirs.tpc} 2-pt · ${theirs.xp} XP · ${Object.keys(theirs.stamps||{}).length} stamps · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
     ${events.length?`<ul class="feed">${events.map(e=>`<li><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span>${esc(e.text)}<small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}</small></li>`).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every minute when the app is open.</span></div>
+    <div class="row" style="margin-top:8px"><button type="button" class="btn mini" data-copy="${room()}">Copy room code</button><span class="muted">The home-screen copy of this app keeps its own settings — if it says “not linked,” paste the code there once.</span></div>
   </div>`;
 }
 function liveWire(){
