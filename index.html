@@ -1412,12 +1412,13 @@ const DAYS = [
   agenda:[
    {t:"07:30",title:"Up. Pack.",alarm:true},
    {t:"08:30",photo:"Lie on the ground in the Hypostyle Hall and shoot straight up; the two of you between the columns; the obelisk; the scarab.",title:"Karnak Temple",note:"5 min from the hotel. ≈$12. The Great Hypostyle Hall: 134 columns, each wider than a car. Hire a guide at the gate (≈$25, agree first). 2.5 hours.",map:"Karnak Temple"},
-   {t:"12:00",title:"Lunch — Al-Sahaby Lane rooftop by Luxor Temple, or Sofra again",map:"Al-Sahaby Lane Restaurant Luxor"},
-   {t:"14:00",title:"Check out → airport (20 min)",note:"Luxor airport is tiny; 75 min before is plenty.",map:"Luxor International Airport"},
-   {t:"17:00",title:"Fly to Cairo (1h) → Uber to the Waldorf Astoria Cairo Heliopolis",note:"15–20 min from the airport.",map:"Waldorf Astoria Cairo Heliopolis",approx:true},
-   {t:"20:00",title:"Last dinner: the hotel, or good Lebanese in Heliopolis. Pack. Tomorrow's alarm is the worst one.",approx:true}],
+   {t:"11:45",title:"Lunch — Al-Sahaby Lane rooftop by Luxor Temple, or Sofra again",map:"Al-Sahaby Lane Restaurant Luxor"},
+   {t:"13:30",title:"Check out → airport (20 min)",note:"Luxor airport is tiny; at the desk by 14:25 is plenty.",map:"Luxor International Airport"},
+   {t:"15:40",title:"EgyptAir MS 275 to Cairo (1h10)"},
+   {t:"16:50",title:"Land → Uber to the Waldorf Astoria Cairo Heliopolis",note:"15–20 min from the airport. Check in, shower, nothing to be at.",map:"Waldorf Astoria Cairo Heliopolis"},
+   {t:"20:00",title:"Final whistle — Steelers–Bucs kickoff. The loser buys the last dinner: the hotel, or good Lebanese in Heliopolis. Pack. Tomorrow's alarm is the worst one.",approx:true}],
   know:["Karnak at 8:30 is already warm; hats","The souk by Luxor Temple is open in the morning if anything's left on the list"],
-  planb:"Book the ≈5pm Luxor→Cairo flight, not the last one: EgyptAir has a ≈9pm behind it, so a cancellation still gets Duane to the Waldorf tonight for his 07:25 flight. If the 9pm also dies, the overnight train won't make it; EgyptAir rebooks at the counter, and Duane's airline gets a call that evening."},
+  planb:"MS 275 cancelled → EgyptAir has the 16:55 and the 21:30 behind it and Air Cairo a 22:00; rebook at the counter, Duane still makes the Waldorf tonight for his 07:25. If every evening flight dies (it won't), the overnight train won't make it — Duane's airline gets a call that evening."},
  {id:"mon19",who:"both",sleep:"Dahab guesthouse",sleepq:"Dahab",date:"2026-10-19",dow:"Mon",num:19,title:"Split: Duane home, Brad to Sinai",place:"Cairo → Sharm → Dahab",emoji:"👋",
   alarm:"4:00",bag:"everything",dress:"anything",cash:"Uber + ≈$30 taxi in Sinai",
   mission:"Duane flies home. Brad flies to the Red Sea and drives to Dahab, where the pace drops to nothing.",
@@ -1521,13 +1522,13 @@ const HOTELS = [
  {n:"Hilton Luxor Resort & Spa", d:"Fri 16 – Sat 17 · $50/night ✅", q:"Hilton Luxor Resort & Spa",
   addr:"New Karnak, east bank, 3 km north of Luxor Temple", tel:"+20952399999", telD:"+20 95 239 9999", email:"reservation.luxor@hilton.com", app:"Hilton Honors app → Message hotel", help:"1-800-445-8667 (Hilton, US)",
   cin:"3pm", cout:"12pm",
-  fit:["Fri 16: off the boat in the morning, West Bank all day — you'll arrive ≈5–6pm, after check-in time. Message the hotel Thursday from the boat anyway with the arrival time.","Sun 18: flight ≈5pm, checkout noon. Ask Saturday for a 2pm late checkout (Honors members usually get it) or leave bags with the bell desk and use the spa pool until the car."],
+  fit:["Fri 16: off the boat in the morning, West Bank all day — you'll arrive ≈5–6pm, after check-in time. Message the hotel Thursday from the boat anyway with the arrival time.","Sun 18: MS 275 at 3:40pm, checkout noon. Ask Saturday for a 1:30pm late checkout (Honors members usually get it) or leave bags with the bell desk and use the spa pool until the car at 2:00."],
   amen:"Nile-view infinity pool at the spa · two pools · gym · thermal garden · Olives (Mediterranean), Silk Road (Asian), Rosetta, Sunset Lounge with live music, shisha café · free wifi · free parking · no shuttle",
   ask:"Concierge books the Sat 17 hot-air balloon and the Sun 18 airport car; ask for a Nile-facing room when you message."},
  {n:"Waldorf Astoria Cairo Heliopolis", d:"Sun 18 · ✅", q:"Waldorf Astoria Cairo Heliopolis",
   addr:"Orouba St, Heliopolis — 5 km / 10–15 min from the airport", tel:"+20226960000", telD:"+20 2 2696 0000", app:"Hilton Honors app → Message hotel", help:"1-800-925-3673 (Waldorf, US)",
   cin:"3pm", cout:"12pm",
-  fit:["Sun 18: landing from Luxor ≈6:30pm, check-in long open.","Mon 19: Duane's flight is 07:25 (AA 6609, BA) → car at 4:35am. Brad's CAI→SSH ≈10am → car at 7:45. Ask at check-in for express checkout, two separate early cars, and a 4:00 wake-up call plus a breakfast box for Duane."],
+  fit:["Sun 18: MS 275 lands 16:50, at the hotel by 17:30, check-in long open.","Mon 19: Duane's flight is 07:25 (AA 6609, BA) → car at 4:35am. Brad's CAI→SSH ≈10am → car at 7:45. Ask at check-in for express checkout, two separate early cars, and a 4:00 wake-up call plus a breakfast box for Duane."],
   amen:"Outdoor pool · spa with hammam · gym · Brasserie Ayda (Mediterranean), Peacock Lounge (afternoon tea), jazz bar, Le Jardin pool bar · personal concierge",
   ask:"Have the concierge book the two airport cars the moment you check in; Hagouga (10 min) for the last dinner, or Korba for a walk."},
  {n:"Dahab guesthouse (Brad)", d:"Mon 19 – Wed 21 · Masbat or Mashraba, sea view, ≈$40 ⬜", q:"Dahab", solo:true,
@@ -1555,7 +1556,7 @@ const WEEK = [
  {k:"w1",who:"Both",t:"Booking details for the boat and the two EgyptAir flights: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
  {k:"w3",who:"Either",t:"Dahabiya: board Tue Oct 13, night 1 moored in Aswan, Abu Simbel Wed dawn, off the boat Fri morning → Luxor West Bank.",s:"Shared cabin ≈$1,000 each; ask for a private quote too. Get the boat's name."},
- {k:"w4",who:"Brad",t:"Flights: CAI→ASW Tue 8:00am ✓ booked (Nile Air NP 81) · LXR→CAI Sun ≈5pm"},
+ {k:"w4",who:"Brad",t:"Flights: CAI→ASW Tue 8:00am ✓ booked (Nile Air NP 81) · LXR→CAI Sun 3:40pm ✓ booked (EgyptAir MS 275)"},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)'},
  {k:"w6",who:"Both",t:"e-Visa, or $25 USD cash on arrival, exact bills",h:'<a href="https://visa2egypt.gov.eg" target="_blank" rel="noopener">e-Visa</a>, or $25 USD cash on arrival, exact bills'},
  {k:"w7",who:"Both",t:"USD small bills, $300+ each. Get them before you fly."},
@@ -1885,7 +1886,7 @@ const FLIGHTS = [
  {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:05",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"Cape Town",mins:30,before:150}},
  {id:"brad-out2",who:"Brad",date:"2026-10-10",no:"ET 452",op:"Ethiopian Airlines",from:{ap:"ADD",city:"Addis Ababa",t:"22:05",tz:3,approx:true},to:{ap:"CAI",city:"Cairo",t:"02:05",tz:3,date:"2026-10-11"},status:"ok",note:"A350, about four hours. Lands 2am Sunday — the Hilton has been told; Duane is asleep.",arrive:"Visa counter before immigration (bank window, $25 cash) or the e-Visa lane. Uber from the signed pickup, ≈$15, 45 min at that hour."},
  {id:"asw",who:"Both",date:"2026-10-13",no:"NP 81",op:"Nile Air",from:{ap:"CAI",city:"Cairo",t:"08:00",tz:3},to:{ap:"ASW",city:"Aswan",t:"09:25",tz:3},status:"ok",note:"Domestic, Airbus. Nile Air does not use Terminal 3 — the terminal is on the ticket; check it the night before. The boat's rep meets this flight: send them NP 81 / 09:25.",leave:{from:"Hilton Cairo Grand Nile",mins:45,before:75}},
- {id:"lxr",who:"Both",date:"2026-10-18",no:"",op:"EgyptAir / Nile Air",from:{ap:"LXR",city:"Luxor",t:"17:00",tz:3,approx:true},to:{ap:"CAI",city:"Cairo",t:"18:00",tz:3},status:"book",note:"Take the ≈5pm, not the last one — a cancellation still has the ≈9pm behind it, and Duane has a 7:25 the next morning.",leave:{from:"Hilton Luxor Resort & Spa",mins:25,before:90}},
+ {id:"lxr",who:"Both",date:"2026-10-18",no:"MS 275",op:"EgyptAir",from:{ap:"LXR",city:"Luxor",t:"15:40",tz:3},to:{ap:"CAI",city:"Cairo",t:"16:50",tz:3},status:"ok",note:"Domestic. Luxor airport is tiny — 75 min before is plenty. Three flights behind it the same evening (EgyptAir 16:55 and 21:30, Air Cairo 22:00), so a cancellation is an annoyance, not a crisis for Duane's 07:25.",leave:{from:"Hilton Luxor Resort & Spa",mins:25,before:75}},
  {id:"dua-home",who:"Duane",date:"2026-10-19",no:"AA 6609",op:"British Airways",from:{ap:"CAI",city:"Cairo",t:"07:25",tz:3},to:{ap:"LHR",city:"London Heathrow",t:"10:50",tz:1},status:"ok",note:"BA plane, AA ticket — the BA app has the terminal and gate. International: be at the desk 2½ hours out.",leave:{from:"Waldorf Astoria Cairo Heliopolis",mins:15,before:150}},
  {id:"dua-home2",who:"Duane",date:"2026-10-19",no:"",op:"",slot:"home",from:{ap:"LHR",city:"London Heathrow",t:"",tz:1},to:{ap:"",city:"home",t:"",tz:0},status:"tbd",note:"The London → home leg. Send Brad the flight number and it goes in here; the layover maths follows."},
  {id:"brad-ssh",who:"Brad",date:"2026-10-19",no:"",op:"EgyptAir / Nile Air",from:{ap:"CAI",city:"Cairo · T3",t:"10:00",tz:3,approx:true},to:{ap:"SSH",city:"Sharm el-Sheikh",t:"11:00",tz:3},status:"book",note:"Domestic, Terminal 3. Then a taxi up the coast to Dahab, 1h15, ≈$30 agreed first.",leave:{from:"Waldorf Astoria Cairo Heliopolis",mins:15,before:105}},
@@ -1924,10 +1925,10 @@ function flightDep(f){ return legUTC(f.date, f.from.t, f.from.tz); }
 function flightKey(f){ const d=flightDep(f); if(d!==null) return d; const a=flightArr(f); if(a!==null) return a-1; return legUTC(f.date,"23:59",0); }
 function flightArr(f){ return legUTC(f.to.date||f.date, f.to.t, f.to.tz); }
 function nowUTC(){ const n=cairoNow(); return legUTC(n.date, `${n.h}:${n.m||0}`, 3); }
-function flightPlan(f){ if(!f.leave||!f.from.t) return null; const dep=hm(f.from.t); const at=dep-f.leave.before; const go=at-f.leave.mins; const up=go-40; return {up:mmhh(up), go:mmhh(go), at:mmhh(at), board:mmhh(dep-40)}; }
+function flightPlan(f){ if(!f.leave||!f.from.t) return null; const dep=hm(f.from.t); const at=dep-f.leave.before; const go=at-f.leave.mins; const up=go-40; return {up: up<9*60?mmhh(up):"", go:mmhh(go), at:mmhh(at), board:mmhh(dep-40)}; }
 function flightDur(f){ const a=flightDep(f), b=flightArr(f); if(a===null||b===null) return ""; const m=Math.round((b-a)/60000); return m>0?`${Math.floor(m/60)}h${pad2(m%60)}`:""; }
 function flightCountdown(f){ const dep=flightDep(f); if(dep===null) return ""; const diff=dep-nowUTC(); if(diff<-3*3600000) return "flown"; if(diff<0) return "in the air"; const m=Math.round(diff/60000); if(m<60) return `boards in ${Math.max(0,m-40)} min`; if(m<36*60) return `in ${Math.floor(m/60)}h ${pad2(m%60)}m`; return `in ${Math.round(m/1440)} days`; }
-function flightICS(f){ const dep=flightDep(f), arr=flightArr(f); if(dep===null) return ""; const cairo=ms=>{ const d=new Date(ms+3*3600000); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}00`; }; const plan=flightPlan(f); const ev={title:`✈️ ${f.no||f.op||"Flight"} ${f.from.ap} → ${f.to.ap}${f.from.approx?" (≈)":""}`, loc:`${f.from.city} airport`, desc:[`${f.who} · departs ${f.from.t} ${f.from.ap} local${f.to.t?` · arrives ${f.to.t} ${f.to.ap} local`:""}`, f.op?`Operated by ${f.op}`:"", plan?`Up ${plan.up} · leave ${f.leave.from} ${plan.go} · at the airport ${plan.at} · boards ≈${plan.board}`:"", f.note||""].filter(Boolean).join("\n"), start:cairo(dep), end:cairo(arr!==null&&arr>dep?arr:dep+2*3600000), lead:plan?f.leave.before+f.leave.mins+40:180}; return icsHref([ev]); }
+function flightICS(f){ const dep=flightDep(f), arr=flightArr(f); if(dep===null) return ""; const cairo=ms=>{ const d=new Date(ms+3*3600000); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}00`; }; const plan=flightPlan(f); const ev={title:`✈️ ${f.no||f.op||"Flight"} ${f.from.ap} → ${f.to.ap}${f.from.approx?" (≈)":""}`, loc:`${f.from.city} airport`, desc:[`${f.who} · departs ${f.from.t} ${f.from.ap} local${f.to.t?` · arrives ${f.to.t} ${f.to.ap} local`:""}`, f.op?`Operated by ${f.op}`:"", plan?`${plan.up?`Up ${plan.up} · `:""}leave ${f.leave.from} ${plan.go} · at the airport ${plan.at} · boards ≈${plan.board}`:"", f.note||""].filter(Boolean).join("\n"), start:cairo(dep), end:cairo(arr!==null&&arr>dep?arr:dep+2*3600000), lead:plan?f.leave.before+f.leave.mins+40:180}; return icsHref([ev]); }
 function statusHref(f){ return f.no?`https://www.google.com/search?q=${encodeURIComponent(f.no.replace(/\s+/g,"")+" flight status")}`:""; }
 function myFlights(){ const w=(typeof me==="function"&&me())||""; return allFlights().filter(f=>!w||f.who===w||f.who==="Both").sort((a,b)=>flightKey(a)-flightKey(b)); }
 function renderFlights(){
@@ -1938,7 +1939,7 @@ function renderFlights(){
     return `<div class="bp ${mine?"mine":"theirs"} st-${f.status}"><div class="bp-top"><span class="bp-who">${esc(f.who)}</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ${f.status==="ok"?"ok":""}">${f.status==="ok"?"✓":f.status==="tbd"?"add it":"book"}</span></div>
       <div class="bp-route"><div><b>${esc(f.from.ap||"—")}</b><small>${esc(f.from.city)}</small><em>${f.from.t?(f.from.approx?"≈":"")+f.from.t:"—"}</em></div><div class="bp-arrow"><i>✈</i>${dur?`<small>${dur}</small>`:""}</div><div><b>${esc(f.to.ap||"—")}</b><small>${esc(f.to.city)}</small><em>${f.to.t?(f.to.approx?"≈":"")+f.to.t:"—"}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div>
       <div class="bp-meta"><span>${dlab(f.date)}</span>${cd?`<span class="bp-cd">${esc(cd)}</span>`:""}</div>
-      ${plan?`<div class="bp-plan"><span>⏰ up <b>${plan.up}</b></span><span>🚗 leave ${esc(f.leave.from.split(" ")[0])} <b>${plan.go}</b></span><span>🛂 airport <b>${plan.at}</b></span><span>🛫 boards <b>≈${plan.board}</b></span></div>`:""}
+      ${plan?`<div class="bp-plan">${plan.up?`<span>⏰ up <b>${plan.up}</b></span>`:""}<span>🚗 leave ${esc(f.leave.from.split(" ")[0])} <b>${plan.go}</b></span><span>🛂 airport <b>${plan.at}</b></span><span>🛫 boards <b>≈${plan.board}</b></span></div>`:""}
       ${f.note?`<div class="bp-note">${esc(f.note)}</div>`:""}${f.arrive?`<div class="bp-note"><b>On landing:</b> ${esc(f.arrive)}</div>`:""}
       ${f.status==="tbd"&&mine?xFlightForm(f):""}
       ${mine&&f.status==="ok"&&airlineOf(f)?`<form class="pnrf" data-f="${f.id}"><label>Confirmation code</label><input value="${esc(pnrOf(f))}" placeholder="e.g. ABC123" maxlength="8" autocapitalize="characters" autocomplete="off"><button class="btn mini" type="submit">Save</button>${pnrOf(f)?`<button type="button" class="btn mini" data-copy="${esc(pnrOf(f))}">Copy</button>`:""}</form>`:""}
@@ -1949,7 +1950,7 @@ function renderFlights(){
 function flightBand(now){ try{ const w=me(); if(!w) return ""; const mine=allFlights().filter(f=>(f.who===w||f.who==="Both")&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
   const today=mine.filter(f=>f.date===now.date && (flightDep(f)-nowUTC())>-2*3600000); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
   const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const cd=flightCountdown(f); const isT=f.date===now.date;
-  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${plan?`up ${plan.up} · leave ${plan.go} · airport ${plan.at}`:""}${cd&&isT?` · ${esc(cd)}`:""}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
+  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""}${cd&&isT?` · ${esc(cd)}`:""}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
 function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHER(); const theirs=allFlights().filter(f=>f.who===o&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
   const f=theirs.find(x=>x.date===now.date && (flightArr(x)||flightDep(x))-nowUTC()>-3*3600000) || (now.h>=15?theirs.find(x=>x.date===tmr):null); if(!f) return "";
   const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); let state; if(n<dep){ const m=Math.round((dep-n)/60000); state=m<60?`boards in ${Math.max(0,m-40)} min`:`departs in ${Math.floor(m/60)}h ${pad2(m%60)}m`; } else if(arr&&n<arr){ const m=Math.round((arr-n)/60000); state=`in the air · lands ${f.to.t} ${f.to.ap} (${Math.floor(m/60)}h ${pad2(m%60)}m)`; } else if(arr){ state=`landed ${f.to.ap} ${f.to.t} local`; } else state="in the air";
@@ -2102,7 +2103,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v68)";
+const BUILD = "Oct 8, 2026 (v69)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
