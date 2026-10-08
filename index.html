@@ -185,6 +185,24 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+.box table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0 4px}
+.box th{font-size:10.5px;letter-spacing:.08em;color:var(--muted);text-align:center;padding:2px 0;font-weight:600}
+.box th.qnow{color:var(--fg);text-decoration:underline}
+.box td{text-align:center;padding:7px 0;border-top:1px solid var(--line)}
+.box td:first-child{text-align:left}
+.box .tn{font-family:var(--display);font-stretch:87.5%;font-weight:800;padding:3px 8px;border-radius:6px}
+.box tr.mine .tn{background:var(--t1);color:var(--t2)}.box tr.theirs .tn{background:var(--o1);color:var(--o2)}
+.box td.tot{font-weight:800;font-size:17px}
+.hon .ql{display:inline-block;margin-left:6px;font-style:normal;font-family:var(--mono);font-size:12px;opacity:.85}
+.convx{margin-top:8px;border:1px dashed var(--line);border-radius:12px;padding:9px 12px}
+.convx b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.convx .cv{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
+.convx.xp,.convx.two{border-style:solid;background:var(--nile-soft)}
+html.team .convx .btn.primary{background:var(--t1);color:var(--t2);border-color:transparent}
+.feed li.flagged span{color:var(--muted)}
+.feed .rev{font-style:normal;color:#b5322b;font-size:11px}
+.flagbtn{background:none;border:0;cursor:pointer;font-size:13px;padding:0 2px;opacity:.6}
+
 #live .lk{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nile);margin-bottom:4px}
 #live{margin-bottom:8px}
 .feed{list-style:none;margin:10px 0 6px;padding:0;display:grid;gap:4px;font-size:13px}
@@ -1190,6 +1208,7 @@ function renderDay(){
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
     ${safe(()=>challengeBox(d))}
+    ${safe(()=>conversionBox(d))}
     ${safe(()=>toutMeter(d))}
     <ul class="agenda">${items}</ul>
     ${safe(()=>calDay(d))}
@@ -1241,7 +1260,7 @@ function renderNow(){
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
-    const hon = safe(()=>honorific()); html = (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
+    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
     if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
@@ -1359,7 +1378,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v28)";
+const BUILD = "Oct 8, 2026 (v29)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1508,7 +1527,7 @@ const CHALLENGES = {
  tue20:"Blue Hole: say hello to one stranger and find out where they're from.",
  wed21:"Write one line on the summit, not afterwards.",
  thu22:"Dinner where locals eat, no phone on the table.",
- fri23:"Count shooting stars. Loser of the trip buys the first dinner at home.",
+ fri23:"Count shooting stars. Text Duane the number. He will not believe it.",
  sat24:"Buy the dates.",
  sun25:"The whole trip in ten lines, on the plane."
 };
@@ -1532,12 +1551,12 @@ function gameScore(){
   const saved=hg.reduce((s,h)=>s+Math.max(0,h.a-h.p),0);
   return {bingo:b.size-1, lines:bingoLines(b), chal, best, saved, n:hg.length};
 }
-function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const f=safe(footballScore); const tm=safe(team); return `${tm?tm.team.toUpperCase()+" "+f.pts+" · ":""}${who} · Egypt score: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
+function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const f=safe(footballScore)||{pts:0}; const tm=safe(team); return `${tm?tm.team.toUpperCase()+" "+f.pts+" · ":""}${who} · Nile Bowl: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
 
 function challengeBox(d){
   const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
   const done=!!GS.get("chal",{})[d.id];
-  return `<div class="chal ${done?"done":""}"><b>Today's challenge · 1 pt</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":"primary"}" data-chal="${d.id}">${done?"Done ✓ — undo":"Done ✓"}</button></div>`;
+  return `<div class="chal ${done?"done":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":"primary"}" data-chal="${d.id}">${done?"Done ✓ — undo":"Done ✓"}</button></div>`;
 }
 function rateBox(d){
   const r=GS.get("rate",{})[d.id]||{};
@@ -1574,7 +1593,7 @@ function renderGame(){
     <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini" data-chal="${d.id}">${ch[d.id]?"✓":"○"}</button></li>`).join("")}</ul>
   </div></details>
 
-  <details class="fold"><summary>The Brothers' Awards</summary><div class="in">
+  <details class="fold"><summary>The Nile Bowl — final</summary><div class="in">
     <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
     <button type="button" class="btn primary" id="awardsBtn">Make the awards</button>
     <div id="awards"></div>
@@ -1595,15 +1614,16 @@ function makeAwards(){
    ["🏛️ Best sight", top("sight") && `${top("sight").dow} ${top("sight").num} — ${top("sight").title}`],
    ["😴 Worst night", top("sleep",false) && `${top("sleep",false).dow} ${top("sleep",false).num} — ${top("sleep",false).sleep||top("sleep",false).title}`],
    ["🤝 Haggle of the trip", king && `${king.w}: asked ${king.a.toLocaleString()}, paid ${king.p.toLocaleString()} (${Math.round((1-king.p/king.a)*100)}% off)`],
-   ["🎯 Bingo", `${s.bingo}/24, ${s.lines} line${s.lines===1?"":"s"}`],
-   ["🏅 Challenges", `${s.chal} done`],
+   ["🎯 Yardage", `${s.bingo*YDS_PER_SQUARE} yds (${s.bingo}/24 squares, ${s.lines} line${s.lines===1?"":"s"})`],
+   ["🏈 Touchdowns", `${nileOwn().td} · ${nileOwn().xp} XP · ${nileOwn().two} two-pointers · ${nileOwn().fg} FG`],
+   ["🍽️ The bet", "Loser buys Sunday night's dinner in Heliopolis. Settled on the trip, nothing owed after."],
    ["🗣️ “My friend” count", (()=>{ const n=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0); return n?`${n} — ${n>=50?"you have more friends in Egypt than at home":"respectable"}`:null; })()],
    ["🐪 Biggest camel valuation", (()=>{ const c=GS.get("camel",[]); if(!c.length) return null; const b=c.reduce((a,x)=>x.n>a.n?x:a); return `${b.who}, ${b.n.toLocaleString()} camels${b.d?" ("+b.d+")":""}`; })()],
    ["🍵 Tea debt", (()=>{ const ff=GS.get("forfeit",{}); const o=w=>FORFEITS.reduce((s,f,i)=>s+((ff[i]||{})[w]||0),0); const b=o("Brad"), d=o("Duane"); if(!b&&!d) return null; return b===d?"All square. Suspicious.":(b>d?`Brad owes ${b-d}`:`Duane owes ${d-b}`); })()],
   ].filter(x=>x[1]);
   const moments=DAYS.map(d=>[d,j(d.id)]).filter(x=>x[1]).slice(0,16);
-  const text=`THE BROTHERS' AWARDS — Egypt 2026 (${who})\n`+items.map(x=>`${x[0]}: ${x[1]}`).join("\n")+(moments.length?`\n\nMoments:\n`+moments.map(([d,m])=>`${d.dow} ${d.num}: ${m}`).join("\n"):"");
-  $("#awards").innerHTML=`<div class="acard"><div class="ah">The Brothers' Awards</div><div class="as">Egypt, October 2026 · ${esc(who)}</div>${items.map(x=>`<div class="ai"><b>${x[0]}</b><span>${esc(x[1])}</span></div>`).join("")}${moments.length?`<div class="am"><b>Moments</b>${moments.map(([d,m])=>`<div><i>${d.dow} ${d.num}</i> ${esc(m)}</div>`).join("")}</div>`:""}<div class="row" style="margin-top:10px"><button type="button" class="btn" data-sharetext="${esc(text).replace(/"/g,"&quot;")}">Share</button><button type="button" class="btn" data-copy="${esc(text).replace(/"/g,"&quot;")}">Copy</button></div></div>`;
+  const _A=nileTotal(me()), _B=nileTotal(OTHER()); const text=`THE NILE BOWL — Egypt 2026\n${team().team} ${_A?_A.pts:0} · ${TEAMS[OTHER()].team} ${_B?_B.pts:"?"}\n`+items.map(x=>`${x[0]}: ${x[1]}`).join("\n")+(moments.length?`\n\nMoments:\n`+moments.map(([d,m])=>`${d.dow} ${d.num}: ${m}`).join("\n"):"");
+  $("#awards").innerHTML=`<div class="acard"><div class="ah">The Nile Bowl</div>${boxScore()}<div class="as">Egypt, October 2026 · ${esc(who)}</div>${items.map(x=>`<div class="ai"><b>${x[0]}</b><span>${esc(x[1])}</span></div>`).join("")}${moments.length?`<div class="am"><b>Moments</b>${moments.map(([d,m])=>`<div><i>${d.dow} ${d.num}</i> ${esc(m)}</div>`).join("")}</div>`:""}<div class="row" style="margin-top:10px"><button type="button" class="btn" data-sharetext="${esc(text).replace(/"/g,"&quot;")}">Share</button><button type="button" class="btn" data-copy="${esc(text).replace(/"/g,"&quot;")}">Copy</button></div></div>`;
   if(!days.length && !hg.length) toast("Rate a few days first");
 }
 
@@ -1611,8 +1631,9 @@ function gameWire(){
   document.addEventListener("click", e=>{
     const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
     if(e.target.id==="meChip"){ whoSheet(true); return; }
-    const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before){ toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); safe(()=>logEvent(after===12?"BLACKOUT. The whole bingo card.":"touchdown — a bingo line")); } return; }
-    const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]){ toast("Field goal. Three points."); safe(()=>logEvent("field goal — challenge done, "+c.dataset.chal.replace(/(\D+)(\d+)/,"$1 $2"))); } return; }
+    const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(after>before){ safe(()=>logEvent(set.size>=25?"BLACKOUT — the whole card. Touchdown.":"a bingo line — bragging rights")); } return; }
+    const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]){ toast(QUARTER[c.dataset.chal]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)"); safe(()=>logEvent("touchdown — challenge done, "+dayLabel(c.dataset.chal))); } return; }
+    const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); s[sp.dataset.stupid]=!s[sp.dataset.stupid]; GS.set("stupid",s); renderDay(); renderGame(); if(s[sp.dataset.stupid]){ toast("Two-point conversion. Good."); safe(()=>logEvent("went for two — the stupid photo, "+dayLabel(sp.dataset.stupid))); } return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
     const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); safe(checkMilestones); return; }
     if(e.target.id==="scoreShare"||e.target.id==="scoreCopy"){ const t=scoreText(); if(e.target.id==="scoreShare"&&navigator.share){ navigator.share({text:t}).catch(()=>{}); } else { (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into Messages")).catch(()=>toast("Couldn't copy here")); } return; }
@@ -1625,7 +1646,7 @@ function gameWire(){
     const h={w:$("#hw").value.trim(), d:$("#hd").value.trim(), a:num($("#ha").value), p:num($("#hp").value), day:(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id};
     if(!h.w||!h.a){ toast("Need the item and the asking price"); return; }
     const hg=GS.get("haggle",[]); hg.unshift(h); GS.set("haggle",hg); renderGame();
-    const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off — that's a win`:`${pct}% off. Logged.`); if(pct>=40) safe(()=>logEvent(`two-point conversion — ${h.w}, ${pct}% off`));
+    const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off. Field goal — three points.`:`${pct}% off. Logged.`); if(pct>=40) safe(()=>logEvent(`field goal — ${h.w}, ${pct}% off`));
   });
 }
 
@@ -1658,7 +1679,7 @@ async function loadArchive(){
 }
 function passportWire(){
   document.addEventListener("click", e=>{
-    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]){ const dd=DAYS.find(d=>d.id===id); toast("Stamped · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}`)); } return; }
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}${td&&QUARTER[id]?" — extra point":""}`)); } return; }
     if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const f=new File([blob],name,{type:"application/json"}); if(navigator.canShare && navigator.canShare({files:[f]})){ navigator.share({files:[f], title:name, text:"My Egypt passport file"}).then(()=>toast("Sent. Brad puts it in the repo.")).catch(()=>{}); return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
@@ -1733,9 +1754,9 @@ function funWire(){
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
     if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>${TEAMS[other].team} win the toss. ${who} pays.</b>`; },900); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
-    const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); renderGame(); toast(`${w}: ${FORFEITS[i][1]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}`)); return; }
+    const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
-  let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); renderGame(); toast("Taken back"); } },650); }, {passive:true});
+  let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); for(let k=pl.length-1;k>=0;k--){ if(pl[k].w===w&&pl[k].i===+i){ pl.splice(k,1); break; } } GS.set("penlog",pl); renderGame(); toast("Taken back"); } },650); }, {passive:true});
   document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
   document.addEventListener("submit", e=>{ if(e.target.id==="rform"){ e.preventDefault(); const n=+String($("#rn").value).replace(/[^\d]/g,""); if(isNaN(n)) return; GS.set("rival",{n, at:new Date().toISOString()}); renderGame(); const f=footballScore(); toast(f.pts>n?`${team().team} lead by ${f.pts-n}.`:f.pts<n?`${TEAMS[OTHER()].team} lead by ${n-f.pts}. Fix it.`:"Tied. Suspicious."); return; }
     if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); safe(()=>logEvent(`logged a camel offer: ${n.toLocaleString()} for ${$("#cw").value}`)); });
@@ -1811,10 +1832,10 @@ function checkMilestones(){
   if(st===10) milestone("stamp10","Ten stamps. You could get a job at the border.");
   if(st>=16) milestone("stamp16","Every day stamped. Frame it.");
   if(hg.length===1) milestone("hag1","First haggle logged. The souq has noticed you.");
-  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Two-point conversion. Somewhere a shopkeeper is telling his wife about you.");
+  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Field goal. Somewhere a shopkeeper is telling his wife about you.");
   if(s.best>=60) milestone("win60","Sixty percent off. Are you sure you didn't just steal it?");
   if(s.bingo>=12) milestone("bingo12","Half the bingo card. The other half involves a camel.");
-  if(s.lines>=1) milestone("line1","TOUCHDOWN. Seven points. Say BINGO out loud wherever you are.");
+  if(s.lines>=1) milestone("line1","BINGO. A line. Say it out loud wherever you are.");
   if(camels.some(c=>c.n>=1000)) milestone("camel1k","A four-figure camel offer. Someone is now worth more than the rental car.");
   if(camels.some(c=>c.n>=5000)) milestone("camel5k","Five thousand camels. Sell. Sell now.");
   if(tout>=50) milestone("tout50","Fifty 'my friends'. You have more friends in Egypt than at home.");
@@ -1876,7 +1897,7 @@ const TEAM_HON = { Brad:["Keeper of the Terrible Towel","Sixth Ring Pending","Bl
 const RIVALRY = { last:"Steelers 30, Bengals 27 · Sep 27, Pittsburgh", next:"Sunday Night Football, Nov 15, Cincinnati", standings:"Both 2–2 as of Oct 8" };
 const GAMEDAYS = {
  sun11:{ w:"NFL Sunday · 8:00pm Cairo", d:"Steelers–Colts and Bengals–Dolphins kick off at the same minute. Two phones, the VPN, dinner. Whoever's team loses buys it." },
- sun18:{ w:"Steelers at Tampa Bay · 8:00pm Cairo", d:"Last night together, and the Bengals are on a bye. Duane heckles with nothing at stake. The Waldorf's jazz bar has screens; Hagouga does not." },
+ sun18:{ w:"Steelers at Tampa Bay · 8:00pm Cairo", d:"Kickoff is the final whistle of the Nile Bowl — the loser buys this dinner. Bengals are on a bye, so Duane heckles the Steelers with nothing at stake. The Waldorf's jazz bar has screens; Hagouga does not." },
  sun25:{ w:"Steelers at Saints · 4:30pm Cairo", d:"Brad's somewhere over the Atlantic. Bengals at Ravens at 8pm Cairo — Duane's been home a week and watches it properly." }
 };
 function team(w){ return TEAMS[w||me()]; }
@@ -1888,19 +1909,18 @@ function teamCSS(){
   document.documentElement.classList.toggle("team", !!t);
 }
 // points: bingo square 1 (extra point), line 7 (touchdown), challenge 3 (field goal), haggle win 2 (two-point conversion), stamp 1
-function footballScore(){ const s=gameScore(); const st=Object.keys(stamps()).length; const hg=GS.get("haggle",[]); const wins=hg.filter(h=>h.a>0&&(1-h.p/h.a)>=0.4).length; const pts=s.bingo*1 + s.lines*7 + s.chal*3 + wins*2 + st*1; return {pts, td:s.lines, fg:s.chal, xp:s.bingo+st, tpc:wins}; }
+function footballScore(){ const A=nileTotal(me()); return A?{pts:A.pts, td:A.own.td, fg:A.own.fg, xp:A.own.xp, tpc:A.own.two, saf:A.saf, yds:A.own.yds}:{pts:0,td:0,fg:0,xp:0,tpc:0,saf:0,yds:0}; }
 function scoreboard(){
   const w=me(); if(!w) return ""; if(typeof liveOK==="function" && liveOK()) return "";
-  const t=TEAMS[w], o=TEAMS[OTHER()]; const f=footballScore(); const r=GS.get("rival",null);
-  return `<div class="sb"><div class="sbt mine"><small>${t.city}</small><b>${t.team}</b><span class="pts">${f.pts}</span></div><div class="sbv">vs</div><div class="sbt theirs"><small>${o.city}</small><b>${o.team}</b><span class="pts">${r?r.n:"?"}</span></div></div>
-  <div class="sbl">TD ${f.td} × 7 · FG ${f.fg} × 3 · 2-pt ${f.tpc} × 2 · XP ${f.xp} × 1${r?` · ${OTHER()} reported ${r.n} at ${new Date(r.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`:""}</div>
-  <form class="rform" id="rform"><input id="rn" inputmode="numeric" placeholder="${OTHER()}'s score, from his text"><button class="btn" type="submit">Post it</button></form>`;
+  const r=GS.get("rival",null);
+  return `${boxScore()}<form class="rform" id="rform"><input id="rn" inputmode="numeric" placeholder="${OTHER()}'s total, from his text"><button class="btn" type="submit">Post it</button></form>`;
 }
 function rivalryCard(){
   const w=me(); const t=TEAMS[w]||TEAMS.Brad, o=TEAMS[OTHER()]||TEAMS.Duane;
   return `<details class="fold"><summary>AFC North on the Nile</summary><div class="in">
     <div class="riv"><div><b>Last meeting</b><span>${RIVALRY.last}</span></div><div><b>Rematch</b><span>${RIVALRY.next}</span></div><div><b>Standings</b><span>${RIVALRY.standings}</span></div></div>
-    <p class="muted">Scoring on this trip: bingo line = touchdown (7), challenge = field goal (3), haggle under 40% = two-point conversion (2), bingo square or passport stamp = extra point (1). Post the other guy's score when he texts it. Final whistle is the plane home.</p>
+    <p class="muted"><b>The Nile Bowl.</b> Four quarters: Q1 Cairo (Sat–Mon), Q2 the Nile (Tue–Thu), Q3 Luxor (Fri–Sat), Q4 Sunday. <b>Final whistle: Sunday 8:00pm Cairo, kickoff of Steelers–Bucs.</b> The loser buys that dinner — the last one together, with the game on. Nothing is owed after the gate; Monday's goodbye and Brad's week are overtime with no score.</p>
+    <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> with the mandatory stupid photo — one or the other. <b>Field goal (3)</b> — a haggle under 40% of the ask, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it.</p>
     <p class="muted">Game days are on the Sun 11 and Sun 18 cards under “What's on.” ${w?`${t.chant}, ${w}.`:""}</p>
   </div></details>`;
 }
@@ -1914,7 +1934,7 @@ const liveOK = ()=> DB_URL.startsWith("https://") && room().length>=24 && !!me()
 function livePayload(){
   const f=footballScore(); const s=gameScore(); const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
   const camels=GS.get("camel",[]); const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0); const ff=GS.get("forfeit",{});
-  return { who:me(), team:team().team, at:new Date().toISOString(), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:GS.get("events",[]).slice(0,30) };
+  return { who:me(), team:team().team, at:new Date().toISOString(), own:nileOwn(), pen:nilePen(), flags:GS.get("flags",[]), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:GS.get("events",[]).slice(0,30) };
 }
 function logEvent(text){ const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text}); GS.set("events", ev.slice(0,40)); livePush(); }
 let pushT=null, lastPushed="";
@@ -1925,25 +1945,74 @@ function renderLive(){
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone first.</p>`:room().length<24?`<p class="muted">Not linked yet. Open the link Brad sent (it has the room code in it), or paste the code:</p><form id="roomForm" class="rform"><input id="roomIn" placeholder="room code" autocapitalize="off"><button class="btn" type="submit">Link</button></form>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
   const d=GS.get("live",{})||{}; const mine=d[me()], theirs=d[OTHER()]; const t=team(), o=TEAMS[OTHER()];
   const tm=x=>x?new Date(x.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"}):"—";
-  const events=[...(mine&&mine.events||[]),...(theirs&&theirs.events||[])].sort((a,b)=>b.at<a.at?-1:1).slice(0,12);
+  const events=[...(mine&&mine.events||[]),...(theirs&&theirs.events||[])].sort((a,b)=>b.at<a.at?-1:1).slice(0,12); const flagged=new Set([...(GS.get("flags",[])),...((theirs&&theirs.flags)||[])]);
   const pulled=GS.get("livePulled",""); 
   el.innerHTML=`<div class="card">
     <div class="lk">Live scoreboard <span class="muted">· ${pulled?"updated "+new Date(pulled).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):"waiting for signal"}</span></div>
-    <div class="sb"><div class="sbt mine"><small>${t.city}</small><b>${t.team}</b><span class="pts">${footballScore().pts}</span></div><div class="sbv">vs</div><div class="sbt theirs"><small>${o.city}</small><b>${o.team}</b><span class="pts">${theirs?theirs.pts:"?"}</span></div></div>
-    <div class="sbl">${theirs?`${OTHER()}: ${theirs.td} TD · ${theirs.fg} FG · ${theirs.tpc} 2-pt · ${theirs.xp} XP · ${Object.keys(theirs.stamps||{}).length} stamps · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
-    ${events.length?`<ul class="feed">${events.map(e=>`<li><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span>${esc(e.text)}<small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}</small></li>`).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
+    ${boxScore()}
+    <div class="sbl">${theirs?`${OTHER()}: ${theirs.own?theirs.own.td:0} TD · ${theirs.own?theirs.own.fg:0} FG · ${theirs.own?theirs.own.yds:0} yds · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
+    ${events.length?`<ul class="feed">${events.map(e=>{ const id=e.at+"|"+e.who; const fl=flagged.has(id); return `<li class="${fl?"flagged":""}"><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span><span>${esc(e.text)}${fl?` <i class="rev">🚩 under review</i>`:""}</span><small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}${e.who!==me()?` <button type="button" class="flagbtn" data-flag="${id}" aria-label="Challenge flag">🚩</button>`:""}</small></li>`; }).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every minute when the app is open.</span></div>
     <div class="row" style="margin-top:8px"><button type="button" class="btn mini" data-copy="${room()}">Copy room code</button><span class="muted">The home-screen copy of this app keeps its own settings — if it says “not linked,” paste the code there once.</span></div>
   </div>`;
 }
 function liveWire(){
-  document.addEventListener("click", e=>{ if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
+  document.addEventListener("click", e=>{ const fb=e.target.closest("[data-flag]"); if(fb){ const f=GS.get("flags",[]); const i=f.indexOf(fb.dataset.flag); if(i>=0) f.splice(i,1); else f.push(fb.dataset.flag); GS.set("flags",f); renderLive(); livePush(); toast(i>=0?"Flag picked up":"Flag thrown. Under review."); return; }
+    if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
   document.addEventListener("submit", e=>{ if(e.target.id!=="roomForm") return; e.preventDefault(); const v=$("#roomIn").value.trim().toLowerCase(); if(!/^[a-f0-9]{24,}$/.test(v)){ toast("That's not a room code"); return; } localStorage.setItem("egypt.room", v); renderLive(); livePush(); livePull(); toast("Linked"); });
   // push whenever game state changes
   const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival"].includes(k)) livePush(); };
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ livePull(); livePush(); } });
   setInterval(()=>{ if(!document.hidden) livePull(); }, 60000);
   livePull(); livePush();
+}
+
+// ---------- THE NILE BOWL: scoring that feels like football ----------
+const dayLabel = id => { const d=DAYS.find(x=>x.id===id); return d?`${d.dow} ${d.num}`:id; };
+const QUARTER = { sat10:1,sun11:1,mon12:1, tue13:2,wed14:2,thu15:2, fri16:3,sat17:3, sun18:4 };
+const QNAME = {1:"Cairo",2:"The Nile",3:"Luxor",4:"Sunday"};
+const YDS_PER_SQUARE = 10;
+// own points from this phone's state; penalties are credited to the OTHER side (a safety)
+function nileOwn(){
+  const ch=GS.get("chal",{}); const st=stamps(); const sp=GS.get("stupid",{}); const hg=GS.get("haggle",[]); const b=new Set(GS.get("bingo",[12]));
+  const q={1:0,2:0,3:0,4:0}; const ev=[]; let td=0,xp=0,two=0,fg=0;
+  for(const id in QUARTER){ const Q=QUARTER[id];
+    if(ch[id]){ td++; q[Q]+=6; ev.push([id,"TD"]); if(sp[id]){ two++; q[Q]+=2; ev.push([id,"2PT"]); } else if(st[id]){ xp++; q[Q]+=1; ev.push([id,"XP"]); } }
+  }
+  const fgDays=new Set(); hg.forEach(h=>{ if(h.a>0 && (1-h.p/h.a)>=0.4 && QUARTER[h.day] && !fgDays.has(h.day)){ fgDays.add(h.day); fg++; q[QUARTER[h.day]]+=3; ev.push([h.day,"FG"]); } });
+  const yds=(b.size-1)*YDS_PER_SQUARE; const blackout=b.size>=25; const boDay=GS.get("blackoutDay","");
+  if(blackout){ td++; const Q=QUARTER[boDay]||4; q[Q]+=6; ev.push([boDay||"sun18","TD"]); }
+  const pts=q[1]+q[2]+q[3]+q[4];
+  return {q, pts, td, xp, two, fg, yds, blackout};
+}
+// penalties flagged on this phone, by name: {Brad:n, Duane:n}, with quarters
+function nilePen(){ const ff=GS.get("forfeit",{}); const out={Brad:{n:0,q:{1:0,2:0,3:0,4:0}},Duane:{n:0,q:{1:0,2:0,3:0,4:0}}}; const log=GS.get("penlog",[]); log.forEach(p=>{ if(out[p.w]){ out[p.w].n++; const Q=QUARTER[p.day]||4; out[p.w].q[Q]+=2; } }); return out; }
+// full picture for a name, merging the other phone's record when live
+function nileTotal(name){
+  const live=GS.get("live",{})||{}; const other = name===me() ? OTHER() : me();
+  const own = name===me() ? nileOwn() : (live[name] && live[name].own) || null;
+  const penMine = nilePen(); const penTheirs = (live[OTHER()] && live[OTHER()].pen) || {Brad:{n:0,q:{1:0,2:0,3:0,4:0}},Duane:{n:0,q:{1:0,2:0,3:0,4:0}}};
+  // safeties for `name` = penalties against `other`, logged on either phone
+  const against = other; const q={1:0,2:0,3:0,4:0}; let saf=0;
+  [penMine, penTheirs].forEach(P=>{ const p=P[against]; if(p){ saf+=p.n; for(const k in q) q[k]+=p.q[k]||0; } });
+  if(!own) return null;
+  const tq={}; for(const k in q) tq[k]=(own.q[k]||0)+q[k];
+  return { own, saf, q:tq, pts:own.pts+saf*2 };
+}
+function quarterNow(){ const d=DAYS[dayIndexFor(cairoNow().date)]; return d?QUARTER[d.id]||0:0; }
+function boxScore(){
+  const w=me(); if(!w) return "";
+  const t=TEAMS[w], o=TEAMS[OTHER()]; const A=nileTotal(w), B=nileTotal(OTHER()); const r=GS.get("rival",null); const live=liveOK();
+  const row=(T,S,cls)=> `<tr class="${cls}"><td><span class="tn">${T.short}</span></td>${[1,2,3,4].map(k=>`<td>${S?S.q[k]:"–"}</td>`).join("")}<td class="tot">${S?S.pts:(r&&cls==="theirs"?r.n:"?")}</td></tr>`;
+  const qn=quarterNow();
+  return `<div class="box"><table><thead><tr><th></th>${[1,2,3,4].map(k=>`<th class="${k===qn?"qnow":""}">Q${k}</th>`).join("")}<th>T</th></tr></thead><tbody>${row(t,A,"mine")}${row(o,B,"theirs")}</tbody></table>
+  <div class="sbl">${A?`${A.own.td} TD · ${A.own.xp} XP · ${A.own.two} 2-pt · ${A.own.fg} FG · ${A.saf} safety${A.saf===1?"":"s"} · ${A.own.yds} yds`:""}${!live&&!r?` · he hasn't linked yet`:""}</div></div>`;
+}
+function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); const qn=quarterNow(); if(!qn||!A) return ""; const t=TEAMS[w].team, o=TEAMS[OTHER()].team; const bp=B?B.pts:null; const lead = bp===null?`${t} ${A.pts}`:(A.pts>bp?`${t} by ${A.pts-bp}`:A.pts<bp?`${o} by ${bp-A.pts}`:"tied"); return `Q${qn} · ${QNAME[qn]} · ${lead}`; }
+function conversionBox(d){
+  if(!QUARTER[d.id]) return ""; const ch=GS.get("chal",{}); if(!ch[d.id]) return "";
+  const st=!!stamps()[d.id], sp=!!GS.get("stupid",{})[d.id];
+  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — the stupid photo. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the mandatory stupid photo (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn primary" data-stupid="${d.id}">Go for two 📸</button>`}</div></div>`;
 }
 
 const WHATSON = {
