@@ -167,7 +167,44 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .alarms span{font-family:var(--mono);font-size:12.5px;font-weight:600;background:var(--sand);border-radius:999px;padding:5px 10px;cursor:pointer}
 .alarms span b{color:var(--dusk);font-weight:600}
 .alarms span.today{outline:2px solid var(--nile)}
-.hotel{display:grid;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
+.hotel{padding:0;border-top:1px solid var(--line)}
+.hotel>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0}
+.hotel>summary::-webkit-details-marker{display:none}
+.hotel>summary .more{color:var(--muted);font-size:20px;transition:transform .15s}
+.hotel[open]>summary .more{transform:rotate(90deg)}
+.hotel .hin{display:grid;gap:8px;padding:0 0 12px;font-size:13.5px}
+.hotel .hrow{display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:start}
+.hotel .hrow b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.hotel .hrow a{color:var(--nile-ink);font-weight:600}
+.hotel .btn.mini{padding:3px 8px;font-size:11px;vertical-align:middle}
+.hotel .hfit{background:var(--nile-soft);border-radius:10px;padding:8px 10px}
+.hotel.solo .hfit{background:var(--dusk-soft)}
+.hotel .hfit b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--nile);margin-bottom:4px}
+.hotel.solo .hfit b{color:var(--dusk)}
+.hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
+ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+/* city guides */
+.gtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 8px}
+.gtabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font:600 13px var(--body);color:var(--fg);cursor:pointer}
+.gtabs button.on{background:var(--nile);color:#fff;border-color:transparent}
+.gtabs button.solo.on{background:var(--dusk)}
+.guide .gi{font-size:13.5px;color:var(--muted);margin-bottom:10px}
+.guide h3{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nile);margin:14px 0 6px}
+.guide.solo h3{color:var(--dusk)}
+.guide .gl{display:grid;gap:10px}
+.guide .g{padding:10px 0;border-top:1px solid var(--line)}
+.guide .g .n{font-weight:600}
+.guide .g .w{color:var(--muted);font-size:12.5px;margin:1px 0 4px}
+.guide .g .x{font-size:13.5px;line-height:1.45}
+.guide .g .f{margin-top:5px;font-size:12.5px;color:var(--nile-ink);background:var(--nile-soft);display:inline-block;padding:3px 8px;border-radius:7px}
+.guide.solo .g .f{color:var(--dusk);background:var(--dusk-soft)}
+.guide .g .maps{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.guide table{width:100%;border-collapse:collapse;font-size:13px}
+.guide td{padding:6px 6px 6px 0;vertical-align:top;border-top:1px solid var(--line)}
+.guide td:first-child{font-weight:600;white-space:nowrap;padding-right:10px}
+.guide td small{display:block;color:var(--muted);margin-top:2px}
+
+.fold.howto{margin-top:10px}
 .hotel:first-child{border-top:0}
 .hotel .n{font-weight:600}
 .hotel.solo .n{color:var(--dusk)}
@@ -213,8 +250,8 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tblwrap{overflow-x:auto}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
-.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
-.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:6px 2px;border-radius:10px}
+.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.02em;padding:6px 1px;border-radius:10px;white-space:nowrap}
 .bottom a span.i{font-size:18px;line-height:1}
 .bottom a.on{color:var(--nile-ink);background:var(--nile-soft)}
 .toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -381,6 +418,13 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     </div>
   </section>
 
+  <section id="guides">
+    <h2 class="sec">Eat &amp; shop like a local</h2>
+    <div class="card" style="margin-bottom:8px"><div style="font-size:13.5px;color:var(--muted)">For every city: where people who live there eat, the markets worth your evening, and what each place is actually known for — with how to tell the real thing from the airport version. Every line says which day it fits.</div></div>
+    <div id="guideCity" class="gtabs" role="tablist"></div>
+    <div id="guideBody"></div>
+  </section>
+
   <section id="more">
     <h2 class="sec">Flights</h2>
     <div class="card flights">
@@ -497,6 +541,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <a href="#notes" data-go="notes"><span class="i">📝</span>Notes</a>
   <a href="#tools" data-go="tools"><span class="i">💵</span>Money</a>
   <a href="#map" data-go="map"><span class="i">🏛️</span>Places</a>
+  <a href="#guides" data-go="guides"><span class="i">🍢</span>Eat&amp;shop</a>
 </div></nav>
 <div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"><div class="bd" id="shBd"></div><div class="pn"><div class="hd"><h3 id="shTitle"></h3><button class="x" id="shX" aria-label="Close">×</button></div><div class="bodyx" id="shBody"></div></div></div>
@@ -803,13 +848,46 @@ const DAYS = [
 ];
 
 const HOTELS = [
- {n:"Hilton Cairo Grand Nile",d:"Sat 10 – Mon 12 · Corniche el-Nil, Garden City · $55 ✅",q:"Hilton Cairo Grand Nile"},
- {n:"Dahabiya (name TBC)",d:"Tue 13 – Thu 15 · Tue night moored in Aswan ⬜",q:""},
- {n:"Hilton Luxor Resort & Spa",d:"Fri 16 – Sat 17 · New Karnak · $50 ✅",q:"Hilton Luxor Resort & Spa"},
- {n:"Waldorf Astoria Cairo Heliopolis",d:"Sun 18 · 15–20 min from the airport ✅",q:"Waldorf Astoria Cairo Heliopolis"},
- {n:"Dahab guesthouse (Brad)",d:"Mon 19 – Wed 21 · Masbat or Mashraba, sea view, ≈$40 ⬜",q:"Dahab",solo:true},
- {n:"Le Méridien Cairo Airport (Brad)",d:"Thu 22 and Sat 24 · in the terminal, ≈$120 ⬜",q:"Le Meridien Cairo Airport",solo:true},
- {n:"The White Desert (Brad)",d:"Fri 23 · camp under the stars, with the tour ⬜",q:"",solo:true}
+ {n:"Hilton Cairo Grand Nile", d:"Sat 10 – Mon 12 · $55/night ✅", q:"Hilton Cairo Grand Nile",
+  addr:"Corniche el-Nil, Garden City", tel:"+20221300700", telD:"+20 2 2130 0700", email:"caign_info@hilton.com", app:"Hilton Honors app → Message hotel", help:"1-800-445-8667 (Hilton, US)",
+  cin:"3pm", cout:"12pm",
+  fit:["Duane lands 5:20pm Sat — check-in is 3pm, no issue.","Brad arrives ≈3:30am Sun — tell the front desk the night before so they key a second card and expect him (list item ✓).","Tue 13: out the door at 4:45am. Ask reception Monday for express checkout and a breakfast box; settle the bill Monday night."],
+  amen:"Outdoor pool · gym · spa · executive lounge · 9 restaurants incl. a revolving one on the roof · free wifi · no airport shuttle · alcohol-free hotel (no bar — the felucca beer comes from outside)",
+  ask:"Concierge for the Sunday guide if yours falls through; the revolving restaurant for one Nile-view coffee."},
+ {n:"Dahabiya (name TBC)", d:"Tue 13 – Thu 15 · Tue night moored in Aswan ⬜", q:"",
+  fit:["Boarding Tue afternoon; the boat's rep meets the 6:30am flight. Put the rep's WhatsApp in Notes the moment you have it."],
+  amen:"All meals on board · crew of ≈8 for ≈12 guests · sun deck · no wifi worth having · tip envelope $60 each on the last night"},
+ {n:"Hilton Luxor Resort & Spa", d:"Fri 16 – Sat 17 · $50/night ✅", q:"Hilton Luxor Resort & Spa",
+  addr:"New Karnak, east bank, 3 km north of Luxor Temple", tel:"+20952399999", telD:"+20 95 239 9999", email:"reservation.luxor@hilton.com", app:"Hilton Honors app → Message hotel", help:"1-800-445-8667 (Hilton, US)",
+  cin:"3pm", cout:"12pm",
+  fit:["Fri 16: off the boat in the morning, West Bank all day — you'll arrive ≈5–6pm, after check-in time. Message the hotel Thursday from the boat anyway with the arrival time.","Sun 18: flight ≈5pm, checkout noon. Ask Saturday for a 2pm late checkout (Honors members usually get it) or leave bags with the bell desk and use the spa pool until the car."],
+  amen:"Nile-view infinity pool at the spa · two pools · gym · thermal garden · Olives (Mediterranean), Silk Road (Asian), Rosetta, Sunset Lounge with live music, shisha café · free wifi · free parking · no shuttle",
+  ask:"Concierge books the Sat 17 hot-air balloon and the Sun 18 airport car; ask for a Nile-facing room when you message."},
+ {n:"Waldorf Astoria Cairo Heliopolis", d:"Sun 18 · ✅", q:"Waldorf Astoria Cairo Heliopolis",
+  addr:"Orouba St, Heliopolis — 5 km / 10–15 min from the airport", tel:"+20226960000", telD:"+20 2 2696 0000", app:"Hilton Honors app → Message hotel", help:"1-800-925-3673 (Waldorf, US)",
+  cin:"3pm", cout:"12pm",
+  fit:["Sun 18: landing from Luxor ≈6:30pm, check-in long open.","Mon 19: Duane's flight is 7:30am → car at 5:00am. Brad's CAI→SSH ≈10am → car at 7:30. Ask at check-in for express checkout, two separate early cars, and whether breakfast can be boxed at 4:45."],
+  amen:"Outdoor pool · spa with hammam · gym · Brasserie Ayda (Mediterranean), Peacock Lounge (afternoon tea), jazz bar, Le Jardin pool bar · personal concierge",
+  ask:"Have the concierge book the two airport cars the moment you check in; Hagouga (10 min) for the last dinner, or Korba for a walk."},
+ {n:"Dahab guesthouse (Brad)", d:"Mon 19 – Wed 21 · Masbat or Mashraba, sea view, ≈$40 ⬜", q:"Dahab", solo:true,
+  fit:["Book somewhere that will hold the bag Tue night during Mt Sinai and let you shower Wed morning."],
+  amen:"Ask for: sea view, breakfast, bag storage, dive-centre partner, airport transfer from Sharm (≈$25, 1h)"},
+ {n:"Le Méridien Cairo Airport (Brad)", d:"Thu 22 and Sat 24 · ≈$120 ⬜", q:"Le Meridien Cairo Airport", solo:true,
+  addr:"Inside Terminal 3 — walk the footbridge, no taxi", tel:"+20222659600", telD:"+20 2 2265 9600", app:"Marriott Bonvoy app → Chat", help:"1-888-236-2427 (Marriott, US)",
+  cin:"3pm", cout:"12pm",
+  fit:["Thu 22: landing from Sharm in the evening — walk the bridge from Terminal 3; T2 arrivals need the shuttle bus or a 5-min taxi.","Fri 23: White Desert pickup from the lobby; checkout, leave the big bag with the bell desk (free).","Sun 25: 10:20am flight → checkout and walk the bridge at 7:30. EVOO breakfast opens 4:30am."],
+  amen:"Outdoor pool · gym · EVOO all-day (breakfast 4:30–10:30) · Mezzeh (Lebanese) · China Red · Live sports bar · Latitude coffee · Meet & Assist with passport fast-track $30 · free wifi for Bonvoy members",
+  ask:"Bell desk to hold the bag Fri–Sat; a late dinner at Mezzeh Saturday after the desert."},
+ {n:"The White Desert (Brad)", d:"Fri 23 · camp under the stars, with the tour ⬜", q:"", solo:true,
+  fit:["Nothing to check into. The tour brings the camp, the sleeping bag, and dinner. You bring a warm layer — it drops to 10°C."],
+  amen:"Fire, foxes, the Milky Way"}
+];
+const HOTEL_HOWTO = [
+ ["Message first", "Hilton Honors / Marriott Bonvoy app → the hotel's chat. Works before you arrive, gets answered in minutes, leaves a record. Use it for arrival times, early cars, bag holds."],
+ ["Call the main number", "Egyptian hotels route everything through the operator. Ask for the department by name: <b>Reservations</b> (dates, rates), <b>Front Desk</b> (keys, checkout, bills), <b>Concierge</b> (cars, tours, restaurants, balloon), <b>Housekeeping</b> (room), <b>Room Service</b>, <b>Duty Manager</b> (anything that's gone wrong)."],
+ ["From the room", "The phone has one-touch buttons; <b>0</b> is the operator everywhere. Ask for the Duty Manager if a problem isn't fixed in ten minutes."],
+ ["WhatsApp", "Most Egyptian hotels answer WhatsApp on the main number. Save each hotel in your phone before you fly."],
+ ["If the hotel won't budge", "The US help line can re-book, escalate, or apply Honors/Bonvoy benefits the desk forgets (late checkout, upgrades)."]
 ];
 
 const WEEK = [
@@ -902,6 +980,20 @@ function calDay(d){
 }
 
 
+let gsel = 0;
+function renderGuides(){
+  const tabs=$("#guideCity"); if(!tabs) return;
+  tabs.innerHTML = GUIDES.map((g,i)=>`<button type="button" role="tab" class="${i===gsel?"on":""} ${g.solo?"solo":""}" data-g="${i}" aria-selected="${i===gsel}">${g.emoji} ${esc(g.city)}</button>`).join("");
+  const g=GUIDES[gsel];
+  const item=(x,body)=>`<div class="g"><div class="n">${esc(x.n)}</div>${x.where?`<div class="w">${esc(x.where)}</div>`:""}<div class="x">${esc(body)}</div>${x.fit?`<div class="f">↳ ${esc(x.fit)}</div>`:""}${x.q?mapBtns(x.q,null,false):""}</div>`;
+  $("#guideBody").innerHTML = `<div class="card guide ${g.solo?"solo":""}">
+    <div class="gi"><b>${esc(g.when)}.</b> ${esc(g.intro)}</div>
+    <h3>Where locals eat</h3><div class="gl">${g.eat.map(x=>item(x,x.what)).join("")}</div>
+    <h3>Markets &amp; bazaars</h3><div class="gl">${g.shop.map(x=>item(x,x.buy)).join("")}</div>
+    <h3>Known for — and where the real one is</h3><table>${g.buy.map(b=>`<tr><td>${esc(b.i)}<small>${esc(b.w)}</small></td><td>${esc(b.r)}</td></tr>`).join("")}</table>
+  </div>`;
+}
+function pickGuideForToday(){ const d=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const p=(d.place||"").toLowerCase(); const i=GUIDES.findIndex(g=> (g.id==="cairo"&&/cairo|giza|saqqara/.test(p)) || (g.id==="aswan"&&/aswan|abu simbel|nile|edfu|kom ombo|esna/.test(p)) || (g.id==="luxor"&&/luxor/.test(p)) || (g.id==="sinai"&&/dahab|sinai|sharm/.test(p)) || (g.id==="desert"&&/desert|bahariya/.test(p))); if(i>=0) gsel=i; }
 function renderStrip(){
   const now = cairoNow(); const ti = dayIndexFor(now.date);
   // newspaper order: today first, then the days ahead, then (dimmed, after a gap) the days already done
@@ -1011,7 +1103,17 @@ function renderClock(){
 }
 
 function renderHotels(){
-  $("#hotels").innerHTML = HOTELS.map(h=>`<div class="hotel ${h.solo?"solo":""}"><div><div class="n">${esc(h.n)}</div><div class="d">${esc(h.d)}</div></div>${h.q?mapBtns(h.q,null,true):""}</div>`).join("");
+  $("#hotels").innerHTML = HOTELS.map((h,i)=>`<details class="hotel ${h.solo?"solo":""}"><summary><div><div class="n">${esc(h.n)}</div><div class="d">${esc(h.d)}${h.cin?` · in ${h.cin} / out ${h.cout}`:""}</div></div><span class="more">›</span></summary><div class="hin">
+      ${h.addr?`<div class="hrow"><b>Where</b><span>${esc(h.addr)}</span></div>`:""}
+      ${h.tel?`<div class="hrow"><b>Phone</b><span><a href="tel:${h.tel}">${h.telD}</a> <button class="btn mini" data-copy="${h.tel}">Copy</button> · <a href="https://wa.me/${h.tel.replace("+","")}" target="_blank" rel="noopener">WhatsApp</a></span></div>`:""}
+      ${h.email?`<div class="hrow"><b>Email</b><span><a href="mailto:${h.email}">${h.email}</a></span></div>`:""}
+      ${h.app?`<div class="hrow"><b>Chat</b><span>${esc(h.app)}</span></div>`:""}
+      ${h.help?`<div class="hrow"><b>US line</b><span>${esc(h.help)}</span></div>`:""}
+      ${h.fit&&h.fit.length?`<div class="hfit"><b>Our timings vs. theirs</b><ul>${h.fit.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+      ${h.amen?`<div class="hrow"><b>Has</b><span>${esc(h.amen)}</span></div>`:""}
+      ${h.ask?`<div class="hrow"><b>Ask them</b><span>${esc(h.ask)}</span></div>`:""}
+      ${h.q?mapBtns(h.q,null,true):""}
+    </div></details>`).join("") + `<details class="fold howto"><summary>How to reach any hotel, by department</summary><div class="in"><ol class="howto">${HOTEL_HOWTO.map(([k,v])=>`<li><b>${k}.</b> ${v}</li>`).join("")}</ol></div></details>`;
 }
 
 // ---------- checklists (per-phone) ----------
@@ -1055,6 +1157,7 @@ document.addEventListener("click",e=>{
   const c = e.target.closest("[data-copy]"); if(c){ const v=c.dataset.copy; (navigator.clipboard?.writeText(v)||Promise.reject()).then(()=>toast("Copied "+v)).catch(()=>{ const s=c.previousElementSibling; if(s){ const r=document.createRange(); r.selectNodeContents(s); const selx=getSelection(); selx.removeAllRanges(); selx.addRange(r); toast("Selected — long-press to copy"); } }); }
   const chip = e.target.closest(".chip"); if(chip){ goDay(+chip.dataset.i, true); }
   const ct = e.target.closest("[data-caltoast]"); if(ct){ toast(ct.dataset.caltoast); }
+  const gt = e.target.closest("[data-g]"); if(gt){ gsel=+gt.dataset.g; renderGuides(); }
   const cb = e.target.closest("[data-cal]"); if(cb){ const li=cb.closest("li"); const o=li.querySelector(".calopts"); const open=o.classList.contains("open"); document.querySelectorAll(".calopts.open").forEach(x=>x.classList.remove("open")); if(!open){ o.classList.add("open"); } }
 });
 function goDay(i, scroll){
@@ -1089,7 +1192,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v14)";
+const BUILD = "Oct 8, 2026 (v15)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1119,6 +1222,110 @@ function alarmsStrip(){
   aa.addEventListener("click",()=>{ big=!big; apply(); try{ localStorage.setItem("egypt.big", big?"1":"0"); }catch(e){} }); apply();
 }
 const WIKI = {"Great Pyramid of Giza":["Giza pyramid complex","Giza"],"Grand Egyptian Museum":["Grand Egyptian Museum","Giza"],"Red Pyramid Dahshur":["Red Pyramid","Saqqara"],"Step Pyramid of Djoser Saqqara":["Pyramid of Djoser","Saqqara"],"Citadel of Saladin Cairo":["Cairo Citadel","Cairo"],"Sultan Hassan Mosque Cairo":["Mosque-Madrasa of Sultan Hassan","Cairo"],"Khan el-Khalili Cairo":["Khan el-Khalili","Cairo"],"Al-Muizz Street Cairo":["Al-Muizz Street","Cairo"],"Naguib Mahfouz Cafe Khan el Khalili":["Naguib Mahfouz","Cairo"],"Khufu's Restaurant Giza":["","Giza"],"Felfela Restaurant Downtown Cairo":["Egyptian cuisine","Cairo"],"Abou Tarek Cairo":["Koshary","Cairo"],"Zooba Zamalek":["Zamalek","Cairo"],"Philae Temple Aswan":["Philae","Aswan"],"Sofitel Legend Old Cataract Aswan":["Old Cataract Hotel","Aswan"],"Gharb Soheil Nubian Village Aswan":["Nubians","Aswan"],"Kato Dool Nubian Village Aswan":["Nubian cuisine","Aswan"],"Abu Simbel Temples":["Abu Simbel","Abu Simbel"],"Temple of Kom Ombo":["Temple of Kom Ombo","Kom Ombo"],"Gebel el-Silsila":["Gebel el-Silsila","Edfu"],"Temple of Edfu":["Temple of Edfu","Edfu"],"Luxor Museum":["Luxor Museum","Luxor"],"Luxor Temple":["Luxor Temple","Luxor"],"Sofra Restaurant Luxor":["","Luxor"],"Valley of the Kings":["Valley of the Kings","Luxor"],"Temple of Hatshepsut":["Mortuary Temple of Hatshepsut","Luxor"],"Colossi of Memnon":["Colossi of Memnon","Luxor"],"Sofitel Winter Palace Luxor":["Winter Palace Hotel","Luxor"],"Karnak Temple":["Karnak","Luxor"],"Al-Sahaby Lane Restaurant Luxor":["","Luxor"],"Hilton Cairo Grand Nile":["Garden City, Cairo","Cairo"],"Hilton Luxor Resort & Spa":["","Luxor"],"Waldorf Astoria Cairo Heliopolis":["Heliopolis, Cairo","Cairo"],"Cairo International Airport":["Cairo International Airport","Cairo"],"Cairo International Airport Terminal 3":["Cairo International Airport","Cairo"],"Aswan International Airport":["Aswan International Airport","Aswan"],"Luxor International Airport":["Luxor International Airport","Luxor"],"Dahab":["Dahab","Dahab"],"Masbat Bay Dahab":["Dahab","Dahab"],"Blue Hole Dahab":["Blue Hole (Red Sea)","Dahab"],"Lighthouse Reef Dahab":["Dahab","Dahab"],"Ali Baba Restaurant Dahab":["","Dahab"],"Saint Catherine Egypt":["Saint Catherine, Egypt","Saint Catherine"],"Mount Sinai":["Mount Sinai","Saint Catherine"],"Saint Catherine's Monastery":["Saint Catherine's Monastery","Saint Catherine"],"Ras Abu Galum":["Ras Abu Galum Protected Area","Dahab"],"Sharm El Sheikh International Airport":["Sharm El Sheikh International Airport","Sharm el-Sheikh"],"Le Meridien Cairo Airport":["Cairo International Airport","Cairo"],"Bahariya Oasis":["Bahariya Oasis","Bahariya Oasis"],"Black Desert Egypt":["Black Desert (Egypt)","Bahariya Oasis"],"Crystal Mountain Egypt":["","Bahariya Oasis"],"White Desert National Park":["White Desert National Park","Farafra"],"Wikala al-Ghuri Cairo":["Wikala of al-Ghuri","Cairo"],"Cairo Opera House":["Cairo Opera House","Cairo"]};
+// City guides: where locals eat, markets and what to buy, and the real thing vs the tourist version.
+const GUIDES = [
+ {id:"cairo", city:"Cairo & Giza", emoji:"🕌", when:"Sat 10 – Tue 13 · Sun 18 · Brad Thu 22, Sat 24",
+  intro:"Cairo eats late and loud. Lunch is 3pm, dinner is 10pm, and the best places are plain rooms with plastic chairs and a 50-year-old reputation. Nothing here needs a reservation except Abou El Sid.",
+  eat:[
+   {n:"Abou Tarek", where:"Downtown, Champollion St · 24h", what:"Koshary — Egypt's national dish: rice, lentils, macaroni, chickpeas, fried onions, tomato and garlic-vinegar sauce. Order a large, add extra onions, splash both sauces. ≈60–100 EGP.", q:"Abou Tarek Koshary Cairo", fit:"Sun 11 lunch with the guide, or any Cairo night."},
+   {n:"Fasahet Somaya", where:"Downtown, Abdel Khalek Tharwat · opens ≈2pm, closes when the food's gone, Sun–Thu", what:"Somaya cooks one home-style menu a day in a room the size of a kitchen: molokheya, stuffed vine leaves, duck, mahshi. Egyptians queue for it. Cash, ≈150–250 EGP.", q:"Fasahet Somaya Cairo", fit:"Sun 11 — ask the guide to time Islamic Cairo so you land here at 2."},
+   {n:"Kebdet El Prince", where:"Imbaba, west bank · noon to 3am", what:"Where Cairo actually goes for dinner. Grilled liver (kebda), sausage (sogo'), tarb (kofta in fat), stuffed pigeon, mombar. Loud, cheap (≈200–300 EGP), no English menu — point at the next table. Uber there and back.", q:"Kebdet El Prince Imbaba", fit:"Sun 11 dinner if you want the realest night in Cairo."},
+   {n:"Sobhy Kaber", where:"Shubra · late", what:"The other pilgrimage grill: kofta, kebab, and the molokheya with chicken. Huge, bright, families at midnight. ≈250–350 EGP.", q:"Sobhy Kaber Shubra", fit:"Alternative to El Prince."},
+   {n:"Andrea Mariouteya", where:"Giza, on the canal road toward Saqqara · lunch to late", what:"Since the 1950s: chicken grilled over charcoal, baladi bread baked in front of you, feteer, eggs with basterma, in a garden. Go at golden hour. ≈300–400 EGP.", q:"Andrea Mariouteya Giza", fit:"Sun 11 on the way back from Saqqara and Dahshur — ask the guide to end the day here."},
+   {n:"Zooba", where:"Zamalek, 26th of July St · also inside the GEM", what:"Street food done by chefs: ta'ameya (Egyptian falafel, green inside), hawawshi, ful, koshary. On the MENA 50 Best list and still ≈150 EGP a head.", q:"Zooba Zamalek", fit:"Mon 12 late bite; GEM lunch backup."},
+   {n:"Abou El Sid", where:"Zamalek, 157 26th of July St · dinner · book", what:"Old-Cairo dining room, dim and brass-lamped. The duck with molokheya, circassian chicken, om ali for dessert. ≈500–700 EGP. The one that needs a reservation.", q:"Abou El Sid Zamalek", fit:"Sat 10 night or Mon 12 if you'd rather sit than queue."},
+   {n:"El Fishawy & Naguib Mahfouz Café", where:"Khan el-Khalili · all hours", what:"Fishawy has poured mint tea since 1773 and never closes — sit, say no to every seller with a smile, order karkadeh (hibiscus) or sahlab. Naguib Mahfouz, two alleys over, for hawawshi and the air-con.", q:"El Fishawy Cafe Khan el-Khalili", fit:"Mon 12 at 7, before the dervishes."},
+   {n:"Hagouga", where:"Heliopolis, near the airport · dinner", what:"Grilled meats and the molokheya locals drive across town for. Heavy, generous, 10 minutes from the Waldorf and the airport hotel. ≈250–350 EGP.", q:"Hagouga Restaurant Heliopolis", fit:"Sun 18 last dinner together · Brad Thu 22 and Sat 24."},
+   {n:"El Abd", where:"Downtown, Talaat Harb · to midnight", what:"Cairo's pastry shop since 1974: bite-sized basbousa, konafa, and the ice cream people queue around the block for. Stand at the counter like everyone. ≈50 EGP.", q:"El Abd Patisserie Talaat Harb", fit:"Any Downtown stop."},
+   {n:"Breakfast like a Cairene", where:"Any ful cart, or Gad / Shabrawy (chains)", what:"Ful (stewed fava beans) and ta'ameya in baladi bread with pickles, 20–40 EGP from a cart. Ask the guide to stop at his. Felfela (Downtown, since 1959) is the sit-down version.", q:"Felfela Restaurant Downtown Cairo", fit:"Any morning the hotel breakfast feels beige."}
+  ],
+  shop:[
+   {n:"Khan el-Khalili + Al-Muizz St", where:"Islamic Cairo · shops ≈10am–10pm; quiet Friday morning", buy:"Brass and copper lanterns from the coppersmiths' lane (Haret el-Nahhasin, off Al-Muizz — the workshops, not the tourist alley), silver cartouche with your names in hieroglyphs (≈800–1,800 EGP, 925-stamped), spices in Souq al-Attarine, perfume oils, mother-of-pearl boxes. Open at 40% of the ask; cash.", q:"Khan el-Khalili", fit:"Sun 11 with the guide · Mon 12 evening."},
+   {n:"Tentmakers' Street (Souq al-Khayamiya)", where:"Covered lane just south of Bab Zuweila, 15 min walk from the Khan · most stalls shut Sunday", buy:"The one truly Cairo-only buy: khayamiya, hand-stitched appliqué panels and cushion covers in the patterns that lined Mamluk tents. ≈600–2,000 EGP a panel, 200–500 a cushion. Flip it over — real work shows hand stitches on the back. Shops of the Fattouh and Tarek families are the known names.", q:"Street of the Tentmakers Cairo", fit:"Mon 12 late afternoon, or Sat 10 if you walk Al-Muizz early."},
+   {n:"Souq al-Fustat", where:"Old Cairo, opposite the Amr ibn al-As mosque · daily ≈10–10, arrive by 2 for the workshops", buy:"Fixed prices and the best quality in the city: Garagos blue-glaze pottery, hand-blown Muski glass, Naqada hand-loomed linen, Bedouin silver, khayamiya, hand-bound notebooks. Cards at the bigger shops.", q:"Souq al-Fustat Cairo", fit:"Sun 11 — it's on the road back from Saqqara. Brad Sat 24."},
+   {n:"Zamalek's shops", where:"Zamalek island · ≈10am–8pm", buy:"Fair Trade Egypt (27 Yehia Ibrahim St) for kilims, Fayoum pottery, Siwan embroidery at honest prices · Azza Fahmy (26th of July St) — Egypt's great jeweller, the gift that matters · Diwan bookshop (159 26th of July) for Naguib Mahfouz in English and the AUC Press · Nouby Antiques (157 26th of July) for old postcards, copper and chandeliers.", q:"Fair Trade Egypt Zamalek", fit:"Mon 12 before Zooba. Sat 10 before dinner."},
+   {n:"Korba, Heliopolis", where:"Baghdad St and the arcades · evenings", buy:"Not a market — a belle-époque street of arcades, cafés and pastry shops ten minutes from the Waldorf. The right last-night stroll: a walk, a konafa, Hagouga after.", q:"Korba Heliopolis", fit:"Sun 18 evening."},
+   {n:"Not on this trip (so you don't wonder)", where:"", buy:"Souq el-Gomaa (Friday dawn flea market) — you're on the boat. Cairo Flea Market (Sat 17, Heliopolis) — you're in Luxor. Nun Center farmers' market (Tue/Sat, Zamalek) — wrong days. Darb 1718 arts centre was demolished in 2024.", q:"", fit:""}
+  ],
+  buy:[
+   {i:"Khayamiya appliqué", w:"Tentmakers' Street", r:"Hand-stitched back, slightly uneven lines. Printed 'khayamiya' on the Khan's main drag is 100 EGP and machine-made."},
+   {i:"Brass lantern", w:"Coppersmiths' lane off Al-Muizz", r:"Buy from a workshop with a hammer going. It's heavy; pick one you'll carry, or ship from Fair Trade Egypt."},
+   {i:"Silver cartouche", w:"Khan back lanes, or Azza Fahmy for the serious version", r:"925 stamp, weigh it, agree the price before they engrave. Ready in a day."},
+   {i:"Papyrus", w:"Only a papyrus institute or the GEM shop", r:"Real papyrus is stiff, doesn't crack when rolled, and shows crossed fibres against the light. Street 'papyrus' is banana leaf."},
+   {i:"Spices, hibiscus, dukkah", w:"Souq al-Attarine (Khan), or Aswan's souq", r:"Whole, not ground. 'Saffron' at 50 EGP is safflower."},
+   {i:"Egyptian cotton", w:"Zamalek (Fair Trade Egypt, Anut) or Souq al-Fustat", r:"Khan 'Egyptian cotton' galabeyas are usually polyester. Feel it; real cotton is heavy and cool."},
+   {i:"Perfume oils", w:"Khan, a shop that lets you sit", r:"Buy small bottles, haggle hard, and pass on the 'lotus' story."}
+  ]},
+ {id:"aswan", city:"Aswan & the boat", emoji:"⛵", when:"Tue 13 – Fri 16",
+  intro:"Aswan is the gentlest city in Egypt — Nubian, slow, and its souq is the one place sellers take 'la, shukran' the first time. The boat feeds you; these are for the Tuesday evening and the mornings ashore.",
+  eat:[
+   {n:"Makka Restaurant", where:"Abtal el-Tahrir St, near the station · lunch and dinner", what:"Aswan's grill: stuffed pigeon, kofta, molokheya, mixed grill. Locals and boat crews, ≈200–300 EGP.", q:"Makka Restaurant Aswan", fit:"Tue 13 lunch before the Old Cataract tea."},
+   {n:"Abeer", where:"Abtal el-Tahrir St, downtown", what:"The local-favourite grill: barbecued meats with rice, soup and salad for ≈150 EGP. No frills, always full.", q:"Abeer Restaurant Aswan", fit:"Tue 13 if Makka is packed."},
+   {n:"Chef Khalil", where:"Saad Zaghloul St, by the souq", what:"Pick your Nile perch or Red Sea fish from the ice and it comes grilled or fried with rice and salad. ≈300–500 EGP.", q:"Chef Khalil Aswan", fit:"Tue 13 dinner if the Nubian dinner falls through."},
+   {n:"Nubian dinner, Gharb Soheil", where:"West bank Nubian village · boat across", what:"Kato Dool or Lawanda Nubian House: tagines cooked in clay, Nubian bread, hibiscus, on a roof over the river. ≈300–500 EGP, book through the boat or hotel.", q:"Kato Dool Nubian House Aswan", fit:"Tue 13 — already in the plan."},
+   {n:"Karkadeh and dates in the souq", where:"Sharia as-Souq · evenings", what:"A glass of cold hibiscus from a juice stand (≈15 EGP), a bag of dates from a pile. Dinner is on the boat; this is the walk after.", q:"Aswan Souq", fit:"Any evening ashore."}
+  ],
+  shop:[
+   {n:"Aswan Souq (Sharia as-Souq)", where:"Parallel to the Corniche, 1 km long · best 5–10pm", buy:"Dried hibiscus (karkadeh) and dukkah by the kilo, Nubian baskets and woven plates, hand-beaded Nubian necklaces, bright scarves, Sudanese ebony, spices and henna. The friendliest bargaining in Egypt — start at half.", q:"Aswan Souq", fit:"Tue 13 after tea, or any evening the boat is moored."},
+   {n:"Gharb Soheil village lane", where:"Nubian village, west bank", buy:"Beadwork and crochet from the women who make it, painted Nubian house motifs on wood, baskets. Pay the asking price — it's small and it's theirs.", q:"Gharb Soheil Nubian Village", fit:"Tue 13 with dinner."},
+   {n:"Elephantine island & the boat's stops", where:"Edfu, Kom Ombo, Esna", buy:"Edfu's carriage-stand sellers and Kom Ombo's stalls are the pushiest of the trip; nothing there you can't get better in Aswan or Luxor.", q:"", fit:"Walk through, buy nothing, enjoy the sport."}
+  ],
+  buy:[
+   {i:"Nubian basket or woven plate", w:"Aswan souq, Gharb Soheil", r:"Palm fibre, bright wool, the real ones are slightly irregular. ≈200–600 EGP."},
+   {i:"Hibiscus and dukkah", w:"Aswan souq", r:"Whole dark flowers, not dust. The crew will show you how they brew it."},
+   {i:"Nubian beaded necklace", w:"Gharb Soheil", r:"Made by the women selling it; the stall price is the price."}
+  ]},
+ {id:"luxor", city:"Luxor", emoji:"🏺", when:"Fri 16 – Sun 18",
+  intro:"Luxor is a small town wrapped around the biggest open-air museum on earth. The East Bank souq is for the evening; the West Bank is where the craftsmen live.",
+  eat:[
+   {n:"Sofra", where:"90 Mohamed Farid St, East Bank · lunch and dinner · book", what:"A 1930s house with the best Egyptian menu in Upper Egypt: molokheya, stuffed pigeon, okra tagine, a mezze spread, karkadeh. Locals bring visiting family here. ≈300–500 EGP.", q:"Sofra Restaurant Luxor", fit:"Sat 17 dinner."},
+   {n:"Al-Sahaby Lane", where:"Rooftop beside Luxor Temple", what:"Tagines and grills with the temple lit up below. Touristy, and worth it once. ≈300–400 EGP.", q:"Al-Sahaby Lane Restaurant Luxor", fit:"Fri 16 evening after Luxor Temple."},
+   {n:"Restaurant Mohamed", where:"Gezira village, West Bank · book a day ahead", what:"Mohamed's family cooks duck, chicken, and vegetables from their garden in a courtyard between the sugarcane. Simple, ≈200 EGP, and the West Bank meal people remember.", q:"Restaurant Mohamed Gezira Luxor", fit:"Fri 16 lunch between the tombs and the temples."},
+   {n:"Maratonga Café", where:"Opposite Medinet Habu, West Bank", what:"Shaded tables facing the temple walls: fresh lemon-mint, omelettes, stuffed vegetables. The guides' lunch stop. ≈100–150 EGP.", q:"Maratonga Cafe Medinet Habu", fit:"Sat 17 if you do Medinet Habu."},
+   {n:"Koshary and ta'ameya on Television St", where:"East Bank, where the town eats", what:"Walk Television Street in the evening and eat where the queue is: koshary, shawerma, feteer from a wood oven. 30–80 EGP.", q:"Television Street Luxor", fit:"Any night you want a 30-pound dinner."}
+  ],
+  shop:[
+   {n:"Luxor Souq (Sharia al-Souq)", where:"Behind Luxor Temple, pedestrian · 5–10pm", buy:"Spices, galabeyas, cotton scarves, alabaster, cheap but decent papyrus-style prints, Luxor's famous honey-sesame sweets. Firmer bargaining than Aswan; start at a third.", q:"Luxor Souq", fit:"Fri 16 evening."},
+   {n:"Habiba", where:"Off Sharia al-Souq, East Bank", buy:"A fair-trade gallery of hand-made Egyptian crafts: Siwan and Bedouin embroidery, Fayoum pottery, Nagada weaving, hand-made soap. Fixed prices, no pressure — the place to buy the gift you haven't found yet.", q:"Habiba Gallery Luxor", fit:"Fri 16 or Sat 17 evening."},
+   {n:"West Bank alabaster workshops, Gurna", where:"Along the road to the Valley of the Kings", buy:"The village has carved alabaster for 3,000 years. The 'factories' the drivers stop at are shows; ask the guide for a small family workshop, hold the piece to the light — real alabaster glows and is cold and heavy, resin fakes are warm and uniform.", q:"Gurna alabaster workshop Luxor", fit:"Fri 16 or Sat 17 with the guide."},
+   {n:"Caravanserai", where:"Opposite Medinet Habu, West Bank", buy:"A small, honest crafts shop next to Maratonga: pottery, textiles, baskets from Upper Egypt. Fixed prices.", q:"Caravanserai Medinet Habu Luxor", fit:"Sat 17."}
+  ],
+  buy:[
+   {i:"Alabaster vase or bowl", w:"A Gurna family workshop", r:"Translucent, veined, cold to the touch. Thin walls = skill. 300–1,500 EGP by size."},
+   {i:"Siwan embroidery, Fayoum pottery", w:"Habiba", r:"Fixed, fair prices and you know who made it."},
+   {i:"Galabeya in real cotton", w:"Luxor souq, a tailor's shop not a stall", r:"Ask for 'otn masri' (Egyptian cotton), feel the weight, 400–800 EGP."}
+  ]},
+ {id:"sinai", city:"Dahab & Sinai", emoji:"🤿", when:"Brad · Mon 19 – Thu 22", solo:true,
+  intro:"Dahab is a Bedouin town that turned into a dive village. Eat along the Masbat promenade with your feet in the sand, or in the back streets where the dive guides eat.",
+  eat:[
+   {n:"Al Sultan's Kitchen", where:"Talaat Harb St, off the promenade", what:"Slow-cooked meats, kofta, liver sandwiches, ful. Where the Egyptians who work in Dahab eat. A full grill plate ≈100–150 EGP.", q:"Al Sultan's Kitchen Dahab", fit:"Mon 19 lunch."},
+   {n:"Friends", where:"Mashraba, one street in from the sea · 11–11", what:"Pick a fish from the ice, it comes grilled with rice, tahina and salad. ≈200–500 EGP.", q:"Friends Restaurant Dahab", fit:"Mon 19 or Wed 21 dinner."},
+   {n:"Zanooba Slow Cooking", where:"El Malel St", what:"Tagines and stews cooked slow, busy every night. ≈200–300 EGP.", q:"Zanooba Dahab", fit:"Wed 21 after the Blue Hole."},
+   {n:"Ali Baba", where:"Masbat promenade · 11–midnight", what:"The promenade institution: huge menu, cushions on the sand, sunrise-to-moonlight views. ≈250 EGP.", q:"Ali Baba Restaurant Dahab", fit:"Any sunset."},
+   {n:"Ralph's German Bakery", where:"Mashraba", what:"Real bread, cinnamon rolls and coffee at 7am, which in Dahab counts as a miracle.", q:"Ralph's German Bakery Dahab", fit:"Every morning."},
+   {n:"Bedouin tea at the Blue Hole", where:"The cliffside cafés", what:"Sweet tea on cushions after the dive, 20 EGP, and the best people-watching in Sinai.", q:"Blue Hole Dahab", fit:"Wed 21."}
+  ],
+  shop:[
+   {n:"Masbat promenade shops", where:"The seafront walk · evenings", buy:"Bedouin silver and beaded jewellery, embroidered bags and cushions, Sinai turquoise-and-silver, hand-dyed cotton. Half the stock is Indian import — the Bedouin pieces are coarser, heavier, better. Bargain gently.", q:"Masbat Dahab", fit:"Mon 19 evening."},
+   {n:"Assalah village", where:"Inland, the Bedouin quarter", buy:"Women's embroidery cooperatives sell direct: veils, bags and cushions in the red-and-black Sinai stitch. Ask the guesthouse which one is open this week.", q:"Assalah Dahab", fit:"Tue 20 afternoon before the Sinai pickup."}
+  ],
+  buy:[
+   {i:"Sinai Bedouin embroidery", w:"Assalah cooperative, or a promenade shop that names the woman who made it", r:"Dense cross-stitch on black, slightly uneven; machine copies are perfect and flat."},
+   {i:"Silver with Sinai turquoise", w:"Promenade", r:"Ask for the 925 mark, expect 500–2,000 EGP."}
+  ]},
+ {id:"desert", city:"The White Desert", emoji:"🏜️", when:"Brad · Fri 23 – Sat 24", solo:true,
+  intro:"No restaurants, no shops — that's the point. The tour cooks over a fire. Buy nothing but dates in Bahariya.",
+  eat:[
+   {n:"Bahariya oasis lunch", where:"Bawiti town, with the tour", what:"Chicken, rice, vegetables, oasis dates. Then nothing but the Bedouin cook's chicken and potatoes under the chalk at night, and fox tracks around the camp at dawn.", q:"Bawiti Bahariya Oasis", fit:"Fri 23."}
+  ],
+  shop:[
+   {n:"Bahariya dates and olive oil", where:"Bawiti market street", buy:"Oasis dates (siwi and the soft dark ones) and oil from the groves — 100 EGP a kilo, the best cheap present on the trip.", q:"Bawiti market", fit:"Fri 23 or Sat 24 on the way back."}
+  ],
+  buy:[
+   {i:"Oasis dates", w:"Bawiti", r:"Ask for this season's. They keep for the flight home."}
+  ]}
+];
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -1202,7 +1409,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
