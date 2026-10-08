@@ -1,5 +1,5 @@
 // Egypt companion — offline cache. Network first so updates arrive immediately; cache when the signal is gone.
-const V = "egypt-v59";
+const V = "egypt-v60";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 self.addEventListener("message", e => { if (e.data && e.data.type === "SKIP") self.skipWaiting(); });
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });

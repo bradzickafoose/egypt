@@ -157,6 +157,12 @@ section{margin-top:18px}
 .know ul,.planb ul{margin:0;padding-left:18px;display:grid;gap:3px}
 
 h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px 2px;font-weight:700}
+.secsub{margin:-4px 2px 10px;font-size:12.5px;color:var(--muted)}
+.sg-n{display:flex;align-items:center;gap:6px;min-width:0}.sg-pts{display:inline-block;font:700 10px/1 var(--mono);letter-spacing:.06em;padding:3px 6px;border-radius:6px;background:rgba(0,0,0,.08);color:inherit;white-space:nowrap;flex:none}
+.sg.playbook .sg-pts,.sg.toss .sg-pts{background:rgba(255,255,255,.16)}.sg.flags .sg-pts{background:#111;color:#ffd400}
+.sg.lit{box-shadow:0 0 0 3px var(--nile);transition:box-shadow .3s}
+.nb-st{font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:3px 7px;cursor:pointer}.nb-st:active{background:rgba(255,255,255,.18)}
+.fold.rules{margin-top:8px}
 .fold{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin-top:8px}
 .fold>summary{list-style:none;cursor:pointer;padding:12px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .fold>summary .pill{margin-left:auto}
@@ -518,6 +524,7 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .sg.playbook .clist b{font-family:var(--mono);font-size:11px;color:rgba(241,241,230,.7)}
 .sg.playbook .clist li.done span{color:rgba(241,241,230,.45)}.sg.playbook .clist li.solo b{color:#e58a5e}
 .sg.playbook .btn.mini{background:transparent;color:#f1f1e6;border-color:rgba(255,255,255,.4)}
+html.team .sg.playbook .btn.mini.pts-me{background:var(--t1);color:var(--t2);border-color:transparent}
 /* flags: the referee */
 .sg.flags>summary{background:repeating-linear-gradient(90deg,#111 0 14px,#f4f1ea 14px 28px);color:#111;border-radius:var(--r) var(--r) 0 0}
 .sg.flags>summary .sg-t{background:#f4f1ea;padding:4px 10px;border-radius:8px}
@@ -2088,7 +2095,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v64)";
+const BUILD = "Oct 8, 2026 (v65)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2300,26 +2307,29 @@ function renderGame(){
     ${safe(colorKey)}
     ${safe(scoreboard)}
     <div class="sbl" style="text-align:left;margin:6px 0 8px"><b>Your line:</b> ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
-    <div class="row"><button type="button" class="btn dark" id="tauntBtn">🗣 Trash talk</button><button type="button" class="btn" id="scoreShare">Share the board</button><button type="button" class="btn mini" id="soundBtn" aria-pressed="${soundOn()}">${soundOn()?"🔊 booth on":"🔇 booth off"}</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
+    <div class="row"><button type="button" class="btn dark" id="tauntBtn">🗣 Trash talk</button><button type="button" class="btn" id="scoreShare">Share the board</button><button type="button" class="btn mini" id="soundBtn" aria-pressed="${soundOn()}">${soundOn()?"🔊 booth on":"🔇 booth off"}</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every 20 seconds — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
   </div>
+  ${safe(rivalryCard)}
 
-  <h2 class="sec" style="margin-top:18px">Side games</h2>
-  <details class="fold sg bingo-sg" open><summary><span class="sg-i">🎯</span><span class="sg-t">Egypt Bingo<small>ten yards a square · blackout is a touchdown</small></span><span class="pill">${s.bingo}/24</span></summary><div class="in">
-    <p class="muted">Tap when it happens. Ten yards a square, a line is bragging rights, and the last square of a blackout is a touchdown — it turns your colors when you get there.</p>
-    <div class="bingo ${bset.size>=25?"blackout":""}">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""} ${!bset.has(i)&&bset.size===24?"td":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
+  <h2 class="sec" style="margin-top:18px">How you score</h2><p class="secsub">Four ways onto the board. Tap a stat on the scoreboard to jump to its play.</p>
+  <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t"><span class="sg-n">The Playbook <i class="sg-pts">TD · 6</i></span><small>${(()=>{ const d=todayDay(); const c=d&&CHALLENGES[d.id]?((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]):""; return c?`${ch[d.id]?"✓ ":"today: "}${esc(c)}`:"one play a day · six points, then the conversion"; })()}</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).filter(k=>me()!=="Duane"||(DAYS.find(d=>d.id===k)||{}).who!=="brad").length}</span></summary><div class="in">
+    <p class="muted">Drawn up on each day's card. Every completed play is six, then the conversion: stamp the day for the <b>extra point</b>, or land the day's two-point shot to <b>go for two</b>. Brad's week after Sunday is overtime, no score.</p>
+    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini ${!ch[d.id]&&QUARTER[d.id]?"pts-me":""}" data-chal="${d.id}" aria-label="${ch[d.id]?"Undo":"Done"}">${ch[d.id]?"✓":QUARTER[d.id]?"+6":"○"}</button></li>`).join("")}</ul>
   </div></details>
 
-  <details class="fold sg souk" open><summary><span class="sg-i">🏷️</span><span class="sg-t">The Souk Exchange<small>${s.n?`${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`:"every buy, asked vs paid"}</small></span><span class="pill">${hg.length}</span></summary><div class="in">
+  <details class="fold sg souk" open><summary><span class="sg-i">🏷️</span><span class="sg-t"><span class="sg-n">The Souk Exchange <i class="sg-pts">FG · 3</i></span><small>${s.n?`${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`:"every buy, asked vs paid"}</small></span><span class="pill">${hg.length}</span></summary><div class="in">
     <p class="muted">Log every buy: what, asking price, what you paid. <b>Forty percent off or more is a field goal</b> — three points, once a day. The button turns your colors when the numbers add up.</p>
     <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>
     ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button>${sendBtn(`🏷️ ${h.w}${h.d?" at "+h.d:""}: asked ${h.a.toLocaleString()}, paid ${h.p.toLocaleString()} — ${pct}% off.${pct>=40?" Field goal.":""}`, SEND_ICON, "mini tagsend")}</div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
   </div></details>
 
-  <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t">The Playbook<small>one play a day · each one a touchdown through Sunday</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).filter(k=>me()!=="Duane"||(DAYS.find(d=>d.id===k)||{}).who!=="brad").length}</span></summary><div class="in">
-    <p class="muted">Drawn up on each day's card. Through Sunday the 18th every completed play is six; Brad's week after is overtime, no score.</p>
-    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini ${!ch[d.id]&&QUARTER[d.id]?"pts-me":""}" data-chal="${d.id}" aria-label="${ch[d.id]?"Undo":"Done"}">${ch[d.id]?"✓":QUARTER[d.id]?"+6":"○"}</button></li>`).join("")}</ul>
+  ${safe(flagsBox)}
+  <details class="fold sg bingo-sg"><summary><span class="sg-i">🎯</span><span class="sg-t"><span class="sg-n">Egypt Bingo <i class="sg-pts">YDS</i></span><small>ten yards a square · blackout is a touchdown</small></span><span class="pill">${s.bingo}/24</span></summary><div class="in">
+    <p class="muted">Tap when it happens. Ten yards a square, a line is bragging rights, and the last square of a blackout is a touchdown — it turns your colors when you get there.</p>
+    <div class="bingo ${bset.size>=25?"blackout":""}">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""} ${!bset.has(i)&&bset.size===24?"td":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
   </div></details>
 
+  <h2 class="sec" style="margin-top:18px">Sidelines</h2><p class="secsub">No points. Just glory, tea and who pays.</p>
   ${safe(()=>funBox())}
   <h2 class="sec" style="margin-top:18px">After the whistle</h2>
   <details class="fold"><summary>The Nile Bowl — final</summary><div class="in">
@@ -2327,7 +2337,6 @@ function renderGame(){
     <div class="row"><button type="button" class="btn primary" data-review="together">Trip in review${(()=>{ try{ const n=cairoNow(); return n.date>"2026-10-18"?"":" · so far"; }catch(e){ return ""; } })()}</button><button type="button" class="btn" data-review="solo">Brad's week</button><button type="button" class="btn" id="awardsBtn">The awards</button></div>
     <div id="awards"></div>
   </div></details>
-  ${safe(rivalryCard)}
   ${safe(resetCard)}`;
 }
 
@@ -2685,6 +2694,17 @@ function toutMeter(d){
   const c = n===0?"Quiet so far.":n<4?"Warming up.":n<10?"You have arrived.":n<20?"You're famous.":n<40?"Local celebrity.":"Honorary citizen.";
   return `<div class="tout"><div><b>“My friend” counter</b><div class="muted">${c}</div></div><div class="tctl"><button type="button" class="btn" data-tout="${d.id}" data-d="-1" aria-label="Minus">−</button><span class="tn">${n}</span><button type="button" class="btn primary" data-tout="${d.id}" data-d="1" aria-label="Plus">+</button></div></div>`;
 }
+function flagsBox(){
+  const ff=GS.get("forfeit",{}); const owed=w=>FORFEITS.reduce((s,f,i)=>s+((ff[i]||{})[w]||0),0);
+  const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0);
+  const bw=owed("Brad"), dw=owed("Duane"); const verdict = bw===dw?"All square.":(bw>dw?`Brad owes ${bw-dw} tea${bw-dw>1?"s":""}.`:`Duane owes ${dw-bw} tea${dw-bw>1?"s":""}.`);
+  return `
+  <details class="fold sg flags"><summary><span class="sg-i">🚩</span><span class="sg-t"><span class="sg-n">Flags <i class="sg-pts">SAF · 2</i></span><small>penalties &amp; forfeits · two to the other guy</small></span><span class="pill">${verdict}</span></summary><div class="in">
+    <p class="muted">Tap the guilty party. The button wears the colors of whoever collects the two points. Long-press a name to take one back.</p>
+    <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>ffBtn(i,w,ff)).join("")}</div></li>`).join("")}</ul>
+    <div class="ledger"><span>Tea ledger</span><b>${verdict}</b><span>“My friend”, trip total</span><b>${tout}</b></div>
+  </div></details>`;
+}
 function funBox(){
   const roll=GS.get("oracle",{})[cairoNow().date]||0; const o=pickDaily(ORACLE,"oracle",roll);
   const camels=GS.get("camel",[]); const best=w=>camels.filter(c=>c.who===w).reduce((m,c)=>Math.max(m,c.n),0);
@@ -2693,10 +2713,8 @@ function funBox(){
   const bw=owed("Brad"), dw=owed("Duane"); const verdict = bw===dw?"All square.":(bw>dw?`Brad owes ${bw-dw} tea${bw-dw>1?"s":""}.`:`Duane owes ${dw-bw} tea${dw-bw>1?"s":""}.`);
   const bb=best("Brad"), db=best("Duane"); const camelBar=n=>{ const k=Math.min(12,Math.max(0,Math.round(n/500))); return "🐪".repeat(k)||"—"; };
   return `
-  <details class="fold sg flags"><summary><span class="sg-i">🚩</span><span class="sg-t">Flags<small>penalties &amp; forfeits · a penalty is a safety</small></span><span class="pill">${verdict}</span></summary><div class="in">
-    <p class="muted">Tap the guilty party. The button wears the colors of whoever collects the two points. Long-press a name to take one back.</p>
-    <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>ffBtn(i,w,ff)).join("")}</div></li>`).join("")}</ul>
-    <div class="ledger"><span>Tea ledger</span><b>${verdict}</b><span>“My friend”, trip total</span><b>${tout}</b></div>
+  <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · a bronze from the reign of Ra, struck twice</small></span></summary><div class="in">
+    <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Sun side, scarab side. Tails never fails.</div></div>
   </div></details>
   <details class="fold sg camel"><summary><span class="sg-i">🐪</span><span class="sg-t">The Camel Market<small>what Egypt thinks you're worth</small></span><span class="pill">${camels.length}</span></summary><div class="in">
     <p class="muted">Every trip to Egypt has the “I give you a thousand camels for your friend” moment. Log the bids. The market sets the price.</p>
@@ -2708,9 +2726,7 @@ function funBox(){
     <div class="oracle">“${esc(o)}”</div>
     <div class="row"><button type="button" class="btn" id="oracleRoll">Consult again</button>${sendBtn(`🔮 The Oracle of Amun says: “${o}”`, "Send "+SEND_ICON, "")}<span class="muted">Re-asking is permitted; the Oracle notices.</span></div>
   </div></details>
-  <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · a bronze from the reign of Ra, struck twice</small></span></summary><div class="in">
-    <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Sun side, scarab side. Tails never fails.</div></div>
-  </div></details>`;
+`;
 }
 function funWire(){
   document.addEventListener("click", e=>{
@@ -2881,7 +2897,7 @@ function scoreboard(){
 }
 function rivalryCard(){
   const w=me(); const t=TEAMS[w]||TEAMS.Brad, o=TEAMS[OTHER()]||TEAMS.Duane;
-  return `<details class="fold"><summary>AFC North on the Nile</summary><div class="in">
+  return `<details class="fold rules"><summary>The rules · AFC North on the Nile</summary><div class="in">
     <div class="riv"><div><b>Last meeting</b><span>${RIVALRY.last}</span></div><div><b>Rematch</b><span>${RIVALRY.next}</span></div><div><b>Standings</b><span>${RIVALRY.standings}</span></div></div>
     <p class="muted"><b>The Nile Bowl.</b> Four quarters: Q1 Cairo (Sat–Mon), Q2 the Nile (Tue–Thu), Q3 Luxor (Fri–Sat), Q4 Sunday. <b>Final whistle: Sunday 8:00pm Cairo, kickoff of Steelers–Bucs.</b> <b>Sunday is the fourth quarter and every play counts double</b> — nobody is out of it until the whistle. The loser buys that dinner — the last one together, with the game on. Nothing is owed after the gate; Monday's goodbye and Brad's week are overtime with no score.</p>
     <p class="muted"><b>Touchdown (6)</b> — the day's challenge, done. Then the conversion: <b>extra point (+1)</b> for stamping the day, or <b>go for two (+2)</b> by landing the day's two-point play in the shot list, a photo that takes nerve or patience — one or the other. <b>Field goal (3)</b> — a haggle 40% off the ask or better, one a day max. <b>Safety (2 to the other guy)</b> — every penalty flagged on you. Bingo squares are <b>yards</b> (the tiebreaker); a blackout is a touchdown. Any play can be <b>flagged 🚩</b> by the other guy and sits “under review” until he drops it. <b>Trash talk</b> goes straight to his jumbotron; the booth calls every play.</p>
@@ -2945,6 +2961,7 @@ document.addEventListener("click", e=>{
 });
 // the other phone: a reset marker in the room newer than the last one seen wipes this phone too
 function followReset(d){ try{ const r=d&&d.reset; if(!r||!r.at) return false; const seen=GS.get("resetSeen",""); if(r.at<=seen) return false; wipeLocalBowl(); GS.set("resetSeen", r.at); GS.set("live", d); livePush(true); rerenderAll(); toast(`${r.by||"The other phone"} reset the Nile Bowl — fresh start, 0–0.`); return true; }catch(e){ return false; } }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-sg]"); if(!b) return; const k=b.dataset.sg; if(k==="today"){ const l=document.querySelector(".bottom a[data-go=today]"); if(l) l.click(); toast("Stamp the day on its card for the extra point; the two-point shot is in the shot list."); return; } const d=document.querySelector(".sg."+k); if(!d) return; d.open=true; const top=d.getBoundingClientRect().top+window.scrollY-(typeof topH==="function"?topH():100)-8; window.scrollTo({top, behavior:"smooth"}); d.classList.add("lit"); setTimeout(()=>d.classList.remove("lit"),1600); });
 function liveWire(){
   document.addEventListener("click", e=>{ const fb=e.target.closest("[data-flag]"); if(fb){ const f=GS.get("flags",[]); const i=f.indexOf(fb.dataset.flag); if(i>=0) f.splice(i,1); else f.push(fb.dataset.flag); GS.set("flags",f); renderLive(); livePush(); toast(i>=0?"Flag picked up":"Flag thrown. Under review."); return; }
     if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
@@ -3110,7 +3127,7 @@ function boxScore(opts){
     <div class="nb-head">${NB_CREST}<div class="nb-mark"><div class="nb-name">The Nile Bowl <span class="nb-roman">I</span></div><div class="nb-sub">AFC North on the Nile · Cairo → Aswan → Luxor · Oct 10–18, 2026</div></div><div class="nb-status">${st.k==="live"?`<i class="nb-dot"></i>`:""}${st.t}</div></div>
     <div class="nb-grid"><div class="nb-row nb-hdr"><div></div>${[1,2,3,4].map(k=>`<div class="${k===qn&&st.k==="live"?"lit":""}">Q${k}</div>`).join("")}<div>T</div></div>${row(t,A,"mine",w)}${row(o,B,"theirs",OTHER())}</div>
     ${field}
-    <div class="nb-foot">${A?`<span>${A.own.td} TD</span><span>${A.own.xp} XP</span><span>${A.own.two} 2PT</span><span>${A.own.fg} FG</span><span>${A.saf} SAF</span>`:""}${winner?`<em>${winner==="tie"?"Tied. Dinner is split; the argument is forever.":TEAMS[winner].team+" win the Nile Bowl. "+(winner===w?OTHER():w)+" buys dinner."}</em>`:lead?`<em>${lead}</em>`:(!live?`<em>he hasn't linked yet</em>`:"")}</div>
+    <div class="nb-foot">${A?`<button type="button" class="nb-st" data-sg="playbook">${A.own.td} TD</button><button type="button" class="nb-st" data-sg="today">${A.own.xp} XP</button><button type="button" class="nb-st" data-sg="today">${A.own.two} 2PT</button><button type="button" class="nb-st" data-sg="souk">${A.own.fg} FG</button><button type="button" class="nb-st" data-sg="flags">${A.saf} SAF</button><button type="button" class="nb-st" data-sg="bingo-sg">${A.own.yds} YDS</button>`:""}${winner?`<em>${winner==="tie"?"Tied. Dinner is split; the argument is forever.":TEAMS[winner].team+" win the Nile Bowl. "+(winner===w?OTHER():w)+" buys dinner."}</em>`:lead?`<em>${lead}</em>`:(!live?`<em>he hasn't linked yet</em>`:"")}</div>
     ${(()=>{ const bits=[]; const mo=safe(momentum); if(mo&&st.k==="live") bits.push(`<span class="nb-mo" style="--tc1:${TEAMS[mo].c1};--tc2:${TEAMS[mo].c2.toLowerCase()==="#000000"?"#fff":TEAMS[mo].c2}">◀ momentum · ${TEAMS[mo].team}</span>`); const sk=safe(stampStreak)||0; if(sk>=2) bits.push(`<span>🔥 ${sk}-day stamp streak</span>`); if(st.k==="pre") bits.push(`<button type="button" class="nb-chipbtn" data-toss="1">🪙 kickoff ritual: flip the coin of Ra — winner picks Saturday dinner ›</button>`); if(st.k==="live"&&qn===4) bits.push(`<span>⚡ fourth quarter: every play counts double</span>`); if(st.k==="live"&&qn<4) bits.push(`<span>Sunday is Q4 · everything ×2 · nobody is out of it</span>`); return bits.length?`<div class="nb-extra">${bits.join("")}</div>`:""; })()}
     ${safe(nbTicker)||""}
   </div>`;
