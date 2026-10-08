@@ -31,8 +31,8 @@ button{font:inherit;color:inherit}
 h1,h2,h3{font-family:var(--display);font-stretch:87.5%;letter-spacing:-.01em;text-wrap:balance;margin:0}
 .wrap{max-width:620px;margin:0 auto;padding-inline:16px;padding-block:0 92px}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(0,0,0,.35)}
-.top .in{max-width:620px;margin:0 auto;padding:10px 16px 8px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.brand{font-family:var(--display);font-stretch:87.5%;font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;row-gap:4px}
+.top .in{max-width:620px;margin:0 auto;padding:10px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:var(--display);font-stretch:87.5%;font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0}
 .brand .pill{font-family:var(--mono)}
 .pill.aa{cursor:pointer;font-family:var(--body);font-weight:700;letter-spacing:0}
 .pill.aa[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -45,6 +45,8 @@ html.big .know,html.big .planb,html.big .fold .in{font-size:15px}
 .brand small{font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted);letter-spacing:0}
 .clock{font-family:var(--mono);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums;text-align:right;line-height:1}
 .clock small{display:block;font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.foot .pill.aa{padding:6px 12px;font-size:12px}
+@media (max-width:420px){.brand small{display:none}}
 .days{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;max-width:620px;margin:0 auto;scroll-padding-inline:16px;scroll-snap-type:x proximity}
 .chip{scroll-snap-align:center}
 .days::-webkit-scrollbar{display:none}
@@ -93,16 +95,26 @@ section{margin-top:18px}
 .agenda .body{min-width:0}
 .agenda .ttl{font-weight:600;font-size:15px;line-height:1.3}
 .agenda .note{color:var(--muted);font-size:14px;margin-top:2px}
-.agenda .maps{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.agenda .maps{display:flex;gap:6px;margin-top:7px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.agenda .maps::-webkit-scrollbar{display:none}
 .agenda li.past{opacity:.55}
 .agenda li.isalarm .ttl{color:var(--dusk)}
 .agenda .maps{margin-top:5px}
-.agenda .maps .btn{padding:7px 12px;font-size:12.5px}
+.agenda .maps .btn{padding:7px 11px;font-size:12.5px;flex:0 0 auto}
 .agenda li.next .ttl{color:var(--nile-ink)}
 .agenda li.next{background:linear-gradient(90deg,var(--nile-soft),transparent 70%);margin-inline:-16px;padding-inline:16px;border-radius:0}
 .know,.planb{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px}
 .know b,.planb b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
 .know b{color:var(--muted)} .planb b{color:var(--dusk)}
+.agenda .ttl.has{cursor:pointer}
+.agenda .ttl .more{color:var(--nile);font-weight:700;margin-left:2px}
+.askday{margin-top:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.askday>summary{list-style:none;cursor:pointer;padding:10px 14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.askday>summary::-webkit-details-marker{display:none}
+.askday .in{padding:0 14px 12px;font-size:13.5px}
+.askday .in b{display:block;margin:10px 0 4px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.askday ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.askday .ask li::marker{content:"👉 "}
 .peek{margin:14px -16px -14px;padding:10px 16px;background:var(--sand);border-radius:0 0 var(--r) var(--r);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:13.5px}
 .peek b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .peek .al{font-family:var(--mono);font-weight:600;color:var(--dusk);margin-left:auto}
@@ -233,7 +245,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 </style>
 
 <header class="top" id="top"><div class="in">
-  <div class="brand">Egypt <small>Brad + Duane</small><span class="pill" id="prog">Oct 10–19</span><span class="pill off" id="offline" hidden>offline</span><button class="pill aa" id="aa" type="button" aria-pressed="false" title="Larger text">Aa</button></div>
+  <div class="brand">Egypt <small>Brad + Duane</small><span class="pill" id="prog">Oct 10–19</span><span class="pill off" id="offline" hidden>offline</span></div>
   <div class="clock"><span id="cairoTime">–:––</span><small id="cairoDate">Cairo</small></div>
 </div><nav class="days" id="dayStrip" aria-label="Days"></nav></header>
 
@@ -417,6 +429,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     </div></details>
     <p class="foot">Plan B if no boat will overnight in Aswan on Tuesday: board Wednesday instead, Old Cataract Tuesday night, Hilton Luxor Saturday only. Same trip, one fewer Luxor night, one more Aswan night.</p>
     <p class="foot" id="build"></p>
+    <p class="foot" style="margin-top:8px"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p>
   </section>
 </div>
 
@@ -687,7 +700,7 @@ function dur(mins){ const h=Math.floor(mins/60), m=mins%60; return h?`${h}h ${St
 let sel = 0;
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
-function mapBtns(q, pkey){ const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about) return ""; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}">Apple Maps</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}">Google Maps</a>`:""}</div>`; }
+function mapBtns(q, pkey, long){ const k = pkey || q; const about = (k && PLACES[k]) ? `<button type="button" class="btn about" data-place="${esc(k)}">About</button>` : ""; if(!q && !about) return ""; const la = long?"Apple Maps":"Apple", lg = long?"Google Maps":"Google"; return `<div class="maps">${about}${q?`<a class="btn nav" target="_blank" rel="noopener" href="${A(q)}" aria-label="Directions in Apple Maps">${la}</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}" aria-label="Directions in Google Maps">${lg}</a>`:""}</div>`; }
 
 function renderStrip(){
   const now = cairoNow(); const ti = dayIndexFor(now.date);
@@ -701,7 +714,8 @@ function renderDay(){
   if(isToday){ nextIdx = d.agenda.findIndex(a=>toMins(a.t)>=now.mins); }
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl">${a.alarm?"⏰ ":""}${esc(a.title)}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${mapBtns(a.map, a.p)}</div></li>`;
+    const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${mapBtns(a.map, a.p)}</div></li>`;
   }).join("");
   $("#dayCard").innerHTML = `
     <div class="dayhead"><div class="k">${d.dow} Oct ${d.num} · ${d.emoji}</div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
@@ -715,9 +729,17 @@ function renderDay(){
     <ul class="agenda">${items}</ul>
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
+    ${askToday(d)}
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
 }
 
+function askToday(d){
+  const seen = new Set(); const groups = [];
+  d.agenda.forEach(a=>{ const k=a.p||a.map; if(k && PLACES[k] && PLACES[k].ask && !seen.has(k)){ seen.add(k); groups.push(PLACES[k]); } });
+  if(!groups.length) return "";
+  const n = groups.reduce((t,g)=>t+g.ask.length,0);
+  return `<details class="askday"><summary>Ask the guide today <span class="pill">${n}</span></summary><div class="in">${groups.map(g=>`<b>${esc(g.n)}</b><ul class="ask">${g.ask.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`).join("")}</div></details>`;
+}
 function renderNow(){
   const now = cairoNow();
   const first = DAYS[0].date, last = DAYS[DAYS.length-1].date;
@@ -735,7 +757,8 @@ function renderNow(){
     let next = ni===-1 ? null : d.agenda[ni]; let nextDay = d; let nextMins = next?toMins(next.t)-now.mins:0;
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
-    html = `<div class="eyebrow">${d.dow} Oct ${d.num} · ${esc(d.title)} · ${done}/${d.agenda.length} stops</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
+    const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
+    html = `<div class="eyebrow">${d.dow} Oct ${d.num} · ${esc(d.title)} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
     if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
@@ -761,7 +784,7 @@ function renderClock(){
 }
 
 function renderHotels(){
-  $("#hotels").innerHTML = HOTELS.map(h=>`<div class="hotel"><div><div class="n">${esc(h.n)}</div><div class="d">${esc(h.d)}</div></div>${h.q?mapBtns(h.q):""}</div>`).join("");
+  $("#hotels").innerHTML = HOTELS.map(h=>`<div class="hotel"><div><div class="n">${esc(h.n)}</div><div class="d">${esc(h.d)}</div></div>${h.q?mapBtns(h.q,null,true):""}</div>`).join("");
 }
 
 // ---------- checklists (per-phone) ----------
@@ -837,7 +860,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v9)";
+const BUILD = "Oct 8, 2026 (v10)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -866,6 +889,7 @@ function alarmsStrip(){
   const apply=()=>{ document.documentElement.classList.toggle("big",big); aa.setAttribute("aria-pressed", big?"true":"false"); };
   aa.addEventListener("click",()=>{ big=!big; apply(); try{ localStorage.setItem("egypt.big", big?"1":"0"); }catch(e){} }); apply();
 }
+const WIKI = {"Great Pyramid of Giza":["Giza pyramid complex","Giza"],"Grand Egyptian Museum":["Grand Egyptian Museum","Giza"],"Red Pyramid Dahshur":["Red Pyramid","Saqqara"],"Step Pyramid of Djoser Saqqara":["Pyramid of Djoser","Saqqara"],"Citadel of Saladin Cairo":["Cairo Citadel","Cairo"],"Sultan Hassan Mosque Cairo":["Mosque-Madrasa of Sultan Hassan","Cairo"],"Khan el-Khalili Cairo":["Khan el-Khalili","Cairo"],"Al-Muizz Street Cairo":["Al-Muizz Street","Cairo"],"Naguib Mahfouz Cafe Khan el Khalili":["Naguib Mahfouz","Cairo"],"Khufu's Restaurant Giza":["","Giza"],"Felfela Restaurant Downtown Cairo":["Egyptian cuisine","Cairo"],"Abou Tarek Cairo":["Koshary","Cairo"],"Zooba Zamalek":["Zamalek","Cairo"],"Philae Temple Aswan":["Philae","Aswan"],"Sofitel Legend Old Cataract Aswan":["Old Cataract Hotel","Aswan"],"Gharb Soheil Nubian Village Aswan":["Nubians","Aswan"],"Kato Dool Nubian Village Aswan":["Nubian cuisine","Aswan"],"Abu Simbel Temples":["Abu Simbel","Abu Simbel"],"Temple of Kom Ombo":["Temple of Kom Ombo","Kom Ombo"],"Gebel el-Silsila":["Gebel el-Silsila","Edfu"],"Temple of Edfu":["Temple of Edfu","Edfu"],"Luxor Museum":["Luxor Museum","Luxor"],"Luxor Temple":["Luxor Temple","Luxor"],"Sofra Restaurant Luxor":["","Luxor"],"Valley of the Kings":["Valley of the Kings","Luxor"],"Temple of Hatshepsut":["Mortuary Temple of Hatshepsut","Luxor"],"Colossi of Memnon":["Colossi of Memnon","Luxor"],"Sofitel Winter Palace Luxor":["Winter Palace Hotel","Luxor"],"Karnak Temple":["Karnak","Luxor"],"Al-Sahaby Lane Restaurant Luxor":["","Luxor"],"Hilton Cairo Grand Nile":["Garden City, Cairo","Cairo"],"Hilton Luxor Resort & Spa":["","Luxor"],"Waldorf Astoria Cairo Heliopolis":["Heliopolis, Cairo","Cairo"],"Cairo International Airport":["Cairo International Airport","Cairo"],"Cairo International Airport Terminal 3":["Cairo International Airport","Cairo"],"Aswan International Airport":["Aswan International Airport","Aswan"],"Luxor International Airport":["Luxor International Airport","Luxor"]};
 const PLACE_INDEX = [["Cairo",["Great Pyramid of Giza","Grand Egyptian Museum","Red Pyramid Dahshur","Step Pyramid of Djoser Saqqara","Citadel of Saladin Cairo","Sultan Hassan Mosque Cairo","Khan el-Khalili Cairo","Al-Muizz Street Cairo"]],["Aswan",["Philae Temple Aswan","Sofitel Legend Old Cataract Aswan","Gharb Soheil Nubian Village Aswan","Abu Simbel Temples"]],["On the river",["Temple of Kom Ombo","Gebel el-Silsila","Temple of Edfu"]],["Luxor",["Luxor Temple","Karnak Temple","Valley of the Kings","Temple of Hatshepsut","Colossi of Memnon","Luxor Museum","Sofitel Winter Palace Luxor"]],["Eating",["Khufu's Restaurant Giza","Naguib Mahfouz Cafe Khan el Khalili","Felfela Restaurant Downtown Cairo","Abou Tarek Cairo","Zooba Zamalek","Sofra Restaurant Luxor","Al-Sahaby Lane Restaurant Luxor"]],["Sleeping",["Hilton Cairo Grand Nile","Hilton Luxor Resort & Spa","Waldorf Astoria Cairo Heliopolis"]]];
 function openPlace(k){
   const P = PLACES[k]; if(!P) return;
@@ -877,14 +901,21 @@ function openPlace(k){
   if(P.story) h += `<details><summary>Deep dive: the story</summary><div class="story">${paras(P.story)}</div></details>`;
   const q = /Gebel/.test(k) ? "" : k;
   if(q) h += `<div class="maps"><a class="btn nav" target="_blank" rel="noopener" href="${A(q)}">Apple Maps</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}">Google Maps</a></div>`;
+  const w = WIKI[k]; if(w && (w[0]||w[1])){ h += `<h4>Read further</h4><div class="maps">${w[0]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/${encodeURIComponent(w[0].replace(/ /g,"_"))}">Wikipedia: ${esc(w[0])}</a>`:""}${w[1]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikivoyage.org/wiki/${encodeURIComponent(w[1].replace(/ /g,"_"))}">Wikivoyage: ${esc(w[1])}</a>`:""}</div>`; }
   $("#shBody").innerHTML = h; $("#shBody").scrollTop = 0;
-  $("#sheet").classList.add("show"); document.body.style.overflow="hidden";
+  openPlace.last = document.activeElement;
+  $("#sheet").classList.add("show"); document.body.style.overflow="hidden"; setTimeout(()=>$("#shX").focus(),50);
 }
-function closePlace(){ $("#sheet").classList.remove("show"); document.body.style.overflow=""; }
+function closePlace(){ if(!$("#sheet").classList.contains("show")) return; $("#sheet").classList.remove("show"); document.body.style.overflow=""; try{ openPlace.last && openPlace.last.focus(); }catch(e){} }
 function placesUI(){
   $("#pidx").innerHTML = PLACE_INDEX.map(([g,ks])=>`<div class="grp"><b>${g}</b><div>${ks.filter(k=>PLACES[k]).map(k=>`<button type="button" data-place="${esc(k)}">${esc(PLACES[k].n)}</button>`).join("")}</div></div>`).join("");
   document.addEventListener("click",e=>{ const b=e.target.closest("[data-place]"); if(b){ openPlace(b.dataset.place); } });
   $("#shX").addEventListener("click",closePlace); $("#shBd").addEventListener("click",closePlace);
+  (function(){ let y0=0,t0=0; const hd=document.querySelector("#sheet .hd");
+    hd.addEventListener("touchstart",e=>{ y0=e.touches[0].clientY; t0=Date.now(); },{passive:true});
+    hd.addEventListener("touchend",e=>{ const dy=e.changedTouches[0].clientY-y0; if(dy>70 && Date.now()-t0<700) closePlace(); },{passive:true});
+    document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target.matches(".ttl.has")){ e.preventDefault(); openPlace(e.target.dataset.place); } });
+  })();
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePlace(); });
 }
 // ---- weather (Open-Meteo, no key; cached so it still shows offline)
