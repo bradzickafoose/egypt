@@ -1419,7 +1419,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v32)";
+const BUILD = "Oct 8, 2026 (v33)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1955,7 +1955,7 @@ function footballScore(){ const A=nileTotal(me()); return A?{pts:A.pts, td:A.own
 function scoreboard(){
   const w=me(); if(!w) return ""; if(typeof liveOK==="function" && liveOK()) return "";
   const r=GS.get("rival",null);
-  return `${boxScore()}<form class="rform" id="rform"><input id="rn" inputmode="numeric" placeholder="${OTHER()}'s total, from his text"><button class="btn" type="submit">Post it</button></form>`;
+  return boxScore();
 }
 function rivalryCard(){
   const w=me(); const t=TEAMS[w]||TEAMS.Brad, o=TEAMS[OTHER()]||TEAMS.Duane;
