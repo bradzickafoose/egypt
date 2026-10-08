@@ -2065,7 +2065,12 @@ function toast(msg, opt){ if(msg==null||msg==="") return; const t=$("#toast"); o
   t.classList.add("show"); toastT=setTimeout(()=>t.classList.remove("show","undo"), opt.undo?7000:1400); }
 document.addEventListener("click",e=>{
   const c = e.target.closest("[data-copy]"); if(c){ const v=c.dataset.copy; (navigator.clipboard?.writeText(v)||Promise.reject()).then(()=>toast("Copied "+v)).catch(()=>{ const s=c.previousElementSibling; if(s){ const r=document.createRange(); r.selectNodeContents(s); const selx=getSelection(); selx.removeAllRanges(); selx.addRange(r); toast("Selected — long-press to copy"); } }); }
-  const chip = e.target.closest(".chip"); if(chip){ if(chip.dataset.pre) goPre(true); else goDay(+chip.dataset.i, true); }
+  const chip = e.target.closest(".chip"); if(chip){
+    // the tab you're on stays the tab you're on: a date tapped from Map re-draws the map for that day, from Guide the guide; otherwise it's the day card
+    const tab=(document.querySelector(".bottom a.on")||{}).dataset||{}; const stay = tab.go==="map"||tab.go==="guide" ? tab.go : "";
+    if(chip.dataset.pre){ goPre(!stay); if(stay) setTimeout(()=>scrollToEl(document.getElementById(stay)),140); }
+    else { goDay(+chip.dataset.i, !stay); if(stay) setTimeout(()=>{ const s=document.getElementById(stay); const r=s.getBoundingClientRect(); if(r.top<topH()-2 || r.top>topH()+40) scrollToEl(s); },140); }
+  }
   const ct = e.target.closest("[data-caltoast]"); if(ct){ toast(ct.dataset.caltoast); }
   const gt = e.target.closest("[data-g]"); if(gt){ gsel=+gt.dataset.g; renderGuides(); }
   const cb = e.target.closest("[data-cal]"); if(cb){ const li=cb.closest("li"); const o=li.querySelector(".calopts"); const open=o.classList.contains("open"); document.querySelectorAll(".calopts.open").forEach(x=>x.classList.remove("open")); if(!open){ o.classList.add("open"); } }
@@ -2104,7 +2109,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v72)";
+const BUILD = "Oct 8, 2026 (v73)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
