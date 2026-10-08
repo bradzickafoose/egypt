@@ -313,11 +313,11 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .navg button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:9px 8px 8px;font:600 0.7941rem/1.2 var(--body);color:var(--fg);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:3px;min-height:66px}
 .navg button .qi{font-size:1.0588rem;line-height:1}
 .navg button small{display:block;font-weight:500;font-size:0.6765rem;color:var(--muted);line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.navh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.navh{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 .navh b{font-family:var(--display);font-stretch:87.5%;font-size:1.0588rem;letter-spacing:-.01em}
-.navh span{font-family:var(--mono);font-size:0.7059rem;color:var(--muted);text-align:right;flex:0 1 auto;min-width:0}
+.navh span{font-family:var(--mono);font-size:0.7647rem;color:var(--muted);text-align:left;min-width:0}
 .brief{margin-top:8px}
-.brief .bh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.brief .bh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;margin-bottom:6px}
 .brief .bh b{font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .brief .bh span{font-size:0.7353rem;color:var(--muted)}
 .brief .br{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:0.8235rem;line-height:1.35;cursor:pointer}
@@ -1913,12 +1913,12 @@ function renderNow(){
     let next = ni===-1 ? null : d.agenda[ni]; let nextDay = d; let nextMins = next?toMins(next.t)-now.mins:0;
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
-    const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
+    const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = (safe(()=>otherFlightBand(now))||"") + evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
     const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
-    const fnow = safe(()=>flightNowLine(now)); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
+    const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
       if(next.note) html += `<div class="sub">${esc(next.note)}</div>`;
@@ -1948,7 +1948,7 @@ function renderClock(){
 const CITY_KEY = d => { const p=(d&&d.place||"").toLowerCase(); if(/dahab|sinai|sharm|blue hole/.test(p)) return "sinai"; if(/desert|bahariya/.test(p)) return "desert"; if(/luxor|karnak/.test(p)) return "luxor"; if(/aswan|abu simbel|nile|edfu|kom ombo|esna/.test(p)) return "aswan"; return "cairo"; };
 const AROUND = { cairo:"Uber or Careem, never the man at the kerb. 20–30 min across town off-peak, an hour at 6pm.", aswan:"The boat arranges cars; feluccas and motorboats from the Corniche — agree price, time and the wait before you step on.", luxor:"Uber works. East Bank is walkable along the Corniche; the ferry to the West Bank is 5 EGP, the private boat 50.", sinai:"Taxis and pickups — agree the price first. Dahab itself is a bike or a walk.", desert:"You're with the driver. The car is the plan." };
 function hotelFor(d){ if(!d) return null; const s=(d.sleep||"").toLowerCase(); let h=HOTELS.find(h=>s.includes(h.n.split(" (")[0].toLowerCase())); if(!h&&/dahabiya|boat|river|edfu/.test(s)) h=HOTELS.find(h=>/dahabiya/i.test(h.n)); if(!h&&/desert/.test(s)) h=HOTELS.find(h=>/desert/i.test(h.n)); if(!h&&/m[ée]ridien|airport/.test(s)) h=HOTELS.find(h=>/ridien/i.test(h.n)); if(!h&&/dahab/.test(s)) h=HOTELS.find(h=>/dahab guest/i.test(h.n)); return h||null; }
-function nextFlightLine(){ const f=myFlights().filter(x=>x.from.t&&x.status!=="tbd").find(x=>(flightDep(x)-nowUTC())>-2*3600000); if(!f) return "all flown"; const d=DAYS.find(y=>y.date===f.date); return `${d?d.dow+" "+d.num:f.date} · ${f.no||f.op} ${f.from.ap}→${f.to.ap} ${f.from.t}`; }
+function nextFlightLine(){ const f=myFlights().filter(x=>x.from.t&&x.status!=="tbd").find(x=>(flightDep(x)-nowUTC())>-2*3600000); if(!f) return "all flown"; const d=DAYS.find(y=>y.date===f.date); return `${d?d.dow+" "+d.num:f.date} ${f.from.t} · to ${f.to.city||f.to.ap}`; }
 function renderNavigator(){
   const el=$("#navigator"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const key=CITY_KEY(d); const g=GUIDES.find(x=>x.id===key)||GUIDES[0]; const h=hotelFor(d);
   let week=0; try{ const done=JSON.parse(localStorage.getItem("egypt.list.week")||"{}"); const items=document.querySelectorAll('[data-list="week"] li'); week=items.length?[...items].filter(li=>!li.classList.contains("done")).length:0; }catch(e){}
@@ -1958,14 +1958,14 @@ function renderNavigator(){
     ["eat","🍽️","Eat & shop", g.city],
     ["money","💵","Money", `1 USD = ${rate} EGP · tips`],
     ["phrases","🗣️","Words", "forty phrases, tap to hear"],
-    ["who","🏺","Who's who", "gods, kings, reading the walls"],
-    ["signs","📜","Hieroglyphs", "today's walls · royal names · your name"],
+    ["who","🏺","Who's who", "gods, kings, the walls"],
+    ["signs","📜","Hieroglyphs", "today's walls, your name"],
     ["arc","📖","The story", "nine chapters, one timeline"],
-    ["sos","🆘","SOS", "126 tourist police · 123 ambulance"],
+    ["sos","🆘","SOS", "126 police · 123 ambulance"],
     ["flights","✈️","Flights", nextFlightLine()],
     ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
     ["notes","📝","Notes", "yours, on this phone"],
-    ["reference","📚","Reference", "the boat, book now vs there"],
+    ["reference","📚","Reference", "the boat, costs, booking"],
   ];
   el.innerHTML=`<div class="card"><div class="navh"><b>${g.emoji} ${esc(g.city)}</b><span>${d.dow} ${d.num} · ${esc(d.place||"")}</span></div>
     <div class="navg">${tiles.map(([k,i,l,s])=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span>${l}<small>${esc(s)}</small></button>`).join("")}</div></div>`;
@@ -2020,15 +2020,15 @@ function indyMap(){
   const sinai="";
   const nile=`<path d="${smoothPath(EG_NILE)}" class="river"/><path d="${smoothPath(EG_DELTA)}" class="river"/><path d="${smoothPath(EG_NASSER)}" class="lake"/>`;
   const grid=(()=>{ let s=""; for(let lon=25;lon<=37;lon+=2) s+=`<line x1="${mx(lon)}" y1="0" x2="${mx(lon)}" y2="${MAP_H}" class="grid"/>`; for(let lat=22;lat<=32;lat+=2) s+=`<line x1="0" y1="${my(lat)}" x2="${MAP_W}" y2="${my(lat)}" class="grid"/>`; return s; })();
-  const seaLabels=`<text x="${mx(27.4)}" y="${my(32.0)}" class="sealbl">MEDITERRANEAN</text><text x="${mx(35.6)}" y="${my(25.6)}" class="sealbl" transform="rotate(62 ${mx(35.6)} ${my(25.6)})">RED SEA</text><text x="${mx(26.2)}" y="${my(25.2)}" class="desertlbl">WESTERN DESERT</text><text x="${mx(33.6)}" y="${my(29.6)}" class="desertlbl" style="font-size:1.2941rem">SINAI</text>`;
+  const seaLabels=`<text x="${mx(27.4)}" y="${my(31.78)}" class="sealbl">MEDITERRANEAN</text><text x="${mx(35.6)}" y="${my(25.6)}" class="sealbl" transform="rotate(62 ${mx(35.6)} ${my(25.6)})">RED SEA</text><text x="${mx(26.2)}" y="${my(25.2)}" class="desertlbl">WESTERN DESERT</text><text x="${mx(33.6)}" y="${my(29.6)}" class="desertlbl" style="font-size:1.2941rem">SINAI</text>`;
   const compass=`<g class="compass" transform="translate(${MAP_W-120} 150)"><circle r="60"/><path d="M0 -54 L13 0 L0 54 L-13 0 Z"/><path d="M-54 0 L0 -13 L54 0 L0 13 Z" opacity=".45"/><text y="-70" text-anchor="middle">N</text></g>`;
   const motion = curPath ? `<path id="curleg" d="${curPath}" class="route cur" pathLength="1"/><g class="veh"><text text-anchor="middle" dy="-18">${veh}</text><animateMotion dur="2.4s" begin="0.1s" fill="freeze" rotate="0"><mpath href="#curleg" xlink:href="#curleg"/></animateMotion></g>` : `<text x="${mx(tip[0])}" y="${(+my(tip[1])-26).toFixed(1)}" class="vehstat" text-anchor="middle">${veh}</text>`;
-  return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><b>${preMode?"Before we go":d.dow+" "+d.num}</b> · ${preMode?"the line begins Saturday in Cairo":esc(d.place||"")} <span class="in-key"><i class="r"></i> the route so far</span></div></div>`;
+  return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><span><b>${preMode?"Before we go":d.dow+" "+d.num}</b> · ${preMode?"the line begins Saturday in Cairo":esc(d.place||"")}</span><span class="in-key"><i class="r"></i> the route so far</span></div></div>`;
 }
 
 function renderWhere(){
-  const el=$("#whereami"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const seen=new Set(); const stops=(d.agenda||[]).filter(a=>a.map && !seen.has(a.map) && seen.add(a.map));
-  const h=hotelFor(d); const hq=d.sleepq||(h&&h.q)||"";
+  const el=$("#whereami"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const seen=new Set(); const h=hotelFor(d); const hq=d.sleepq||(h&&h.q)||""; const bed=String(d.sleep||"").toLowerCase().split(" (")[0];
+  const stops=(d.agenda||[]).filter(a=>a.map && !seen.has(a.map) && seen.add(a.map) && a.map!==hq && !(bed && a.map.toLowerCase().startsWith(bed)));
   el.innerHTML=`${safe(indyMap)||""}<div class="card where"><div class="navh"><b>${d.dow} ${d.num} · ${esc(d.title)}</b><span>${esc(d.place||"")}</span></div>
     ${stops.length?stops.map(a=>`<div class="wr"><span class="t">${esc(a.t||"")}</span><div><div class="wn">${esc(a.map)}</div>${mapBtns(a.map,null,false)}</div></div>`).join(""):`<p class="muted">No pinned stops on this day.</p>`}
     ${hq?`<div class="wr"><span class="t">night</span><div><div class="wn">${esc(d.sleep)}</div>${mapBtns(hq,null,false)}</div></div>`:""}
@@ -2104,7 +2104,7 @@ function flightArr(f){ return legUTC(f.to.date||f.date, f.to.t, f.to.tz); }
 function nowUTC(){ const n=cairoNow(); return legUTC(n.date, `${n.h}:${n.m||0}`, 3); }
 function flightPlan(f){ if(!f.leave||!f.from.t) return null; const dep=hm(f.from.t); const at=dep-f.leave.before; const go=at-f.leave.mins; const up=go-40; return {up: up<9*60?mmhh(up):"", go:mmhh(go), at:mmhh(at), board:mmhh(dep-40)}; }
 function flightDur(f){ const a=flightDep(f), b=flightArr(f); if(a===null||b===null) return ""; const m=Math.round((b-a)/60000); return m>0?`${Math.floor(m/60)}h${pad2(m%60)}`:""; }
-function flightCountdown(f){ const dep=flightDep(f); if(dep===null) return ""; const diff=dep-nowUTC(); if(diff<-3*3600000) return "flown"; if(diff<0) return "in the air"; const m=Math.round(diff/60000); if(m<60) return `boards in ${Math.max(0,m-40)} min`; if(m<36*60) return `in ${Math.floor(m/60)}h ${pad2(m%60)}m`; return `in ${Math.round(m/1440)} days`; }
+function flightCountdown(f){ const dep=flightDep(f); if(dep===null) return ""; const diff=dep-nowUTC(); if(diff<-3*3600000) return "flown"; if(diff<0) return "in the air"; const m=Math.round(diff/60000); if(m<=40) return `boarding · ${m} min`; if(m<60) return `boards in ${m-40} min`; if(m<36*60) return `in ${Math.floor(m/60)}h ${pad2(m%60)}m`; return `in ${Math.round(m/1440)} days`; }
 function flightICS(f){ const dep=flightDep(f), arr=flightArr(f); if(dep===null) return ""; const cairo=ms=>{ const d=new Date(ms+3*3600000); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}00`; }; const plan=flightPlan(f); const ev={title:`✈️ ${f.no||f.op||"Flight"} ${f.from.ap} → ${f.to.ap}${f.from.approx?" (≈)":""}`, loc:`${f.from.city} airport`, desc:[`${f.who} · departs ${f.from.t} ${f.from.ap} local${f.to.t?` · arrives ${f.to.t} ${f.to.ap} local`:""}`, f.op?`Operated by ${f.op}`:"", plan?`${plan.up?`Up ${plan.up} · `:""}leave ${f.leave.from} ${plan.go} · at the airport ${plan.at} · boards ≈${plan.board}`:"", f.note||""].filter(Boolean).join("\n"), start:cairo(dep), end:cairo(arr!==null&&arr>dep?arr:dep+2*3600000), lead:plan?f.leave.before+f.leave.mins+40:180}; return icsHref([ev]); }
 function statusHref(f){ return f.no?`https://www.google.com/search?q=${encodeURIComponent(f.no.replace(/\s+/g,"")+" flight status")}`:""; }
 function myFlights(){ const w=(typeof me==="function"&&me())||""; return allFlights().filter(f=>!w||f.who===w||f.who==="Both").sort((a,b)=>flightKey(a)-flightKey(b)); }
@@ -2141,10 +2141,14 @@ function flightStage(f,now,plan){ const dep=flightDep(f), arr=flightArr(f), n=no
   if(!steps.length) return `boards ${plan.board} · ${left} min`;
   const [k,v]=steps[0]; const inm=hm(v)-cur; return `${k} ${v} in ${inm<60?inm+" min":Math.floor(inm/60)+"h "+pad2(inm%60)+"m"}${steps.slice(1).map(([a,b])=>` · ${a} ${b}`).join("")}`; }
 function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHER(); const theirs=allFlights().filter(f=>f.who===o&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
-  const f=theirs.find(x=>x.date===now.date && (flightArr(x)||flightDep(x))-nowUTC()>-3*3600000) || (now.h>=15?theirs.find(x=>x.date===tmr):null); if(!f) return "";
-  const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); let state; if(n<dep){ const m=Math.round((dep-n)/60000); state=m<60?`boards in ${Math.max(0,m-40)} min`:`departs in ${Math.floor(m/60)}h ${pad2(m%60)}m`; } else if(arr&&n<arr){ const m=Math.round((arr-n)/60000); state=`in the air · lands ${f.to.t} ${f.to.ap} (${Math.floor(m/60)}h ${pad2(m%60)}m)`; } else if(arr){ state=`landed ${f.to.ap} ${f.to.t} local`; } else state="in the air";
+  const n0=nowUTC(); const live=theirs.filter(x=>(x.date===now.date||(x.to.date||x.date)===now.date) && ((flightArr(x)||flightDep(x)+2*3600000)-n0)>-3*3600000).sort((a,b)=>flightDep(a)-flightDep(b));
+  const f=live.find(x=>(flightArr(x)||flightDep(x)+2*3600000)>n0) || live[live.length-1] || (now.h>=15?theirs.find(x=>x.date===tmr):null); if(!f) return "";
+  const fin=flightArr(f)||flightDep(f); const onward=theirs.find(y=>y!==f&&y.from.ap===f.to.ap&&flightDep(y)>fin&&flightDep(y)-fin<12*3600000);
+  const dowS=ds=>["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(ds+"T12:00:00Z").getUTCDay()];
+  const then=onward?` · then ${onward.no||onward.op} → ${onward.to.ap} ${onward.to.t}${onward.to.date&&onward.to.date!==now.date?" "+dowS(onward.to.date):""}`:"";
+  const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); let state; if(n<dep){ const m=Math.round((dep-n)/60000); state=m<=40?`boarding · departs in ${m} min`:m<60?`boards in ${m-40} min`:`departs in ${Math.floor(m/60)}h ${pad2(m%60)}m`; } else if(arr&&n<arr){ const m=Math.round((arr-n)/60000); state=`in the air · lands ${f.to.t} ${f.to.ap} (${Math.floor(m/60)}h ${pad2(m%60)}m)`; } else if(arr){ state=`landed ${f.to.ap} ${f.to.t}${f.to.tz===3?"":" local"}`; } else state="in the air";
   const cairoArr = arr? (()=>{ const d=new Date(arr+3*3600000); return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}`; })():"";
-  return `<div class="fband theirs"><span class="fb-ic">🛫</span><div><b>${esc(o)} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(state)}${cairoArr&&f.to.tz!==3?` · ${cairoArr} Cairo time`:""}</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Track</a>`:""}</div>`; }catch(e){ return ""; } }
+  return `<div class="fband theirs"><span class="fb-ic">🛫</span><div><b>${esc(o)} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(state)}${cairoArr&&f.to.tz!==3?` · ${cairoArr} Cairo time`:""}${esc(then)}</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Track</a>`:""}</div>`; }catch(e){ return ""; } }
 // the Now card before the trip: my flight first, his second, the handshake last
 function cdLong(ms){ if(ms<=0) return "now"; const m=Math.round(ms/60000); if(m<60) return `${m} min`; const h=Math.floor(m/60), mm=m%60; if(h<48) return `${h}h ${pad2(mm)}m`; const d=Math.floor(h/24); return `${d} day${d>1?"s":""} ${h%24}h`; }
 function arrDow(f){ const d=f.to.date||f.date; const x=DAYS.find(y=>y.date===d); return x?x.dow:"Sat"; }
@@ -2298,7 +2302,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v81)";
+const BUILD = "Oct 9, 2026 (v82)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
