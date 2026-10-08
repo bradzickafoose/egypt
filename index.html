@@ -24,7 +24,7 @@
   --dusk:#e58a5e; --dusk-soft:#3b241a; --ok:#73c293; --now-btn:rgba(0,0,0,.09); --now-bar:rgba(0,0,0,.12); color-scheme:dark }
 
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{min-height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15.5px;line-height:1.45;-webkit-text-size-adjust:100%}
 a{color:var(--nile)}
 button{font:inherit;color:inherit}
@@ -1391,7 +1391,7 @@ function goDay(i, scroll){
   if(i<0||i>=DAYS.length) return; sel=i; const c=$("#dayCard"); c.classList.add("swap");
   setTimeout(()=>{ renderStrip(); renderDay(); c.classList.remove("swap"); },120);
   try{ history.replaceState(null,"","#"+DAYS[sel].id); }catch(e){}
-  if(scroll) window.scrollTo({top:document.querySelector("#today").offsetTop-topH(),behavior:"smooth"});
+  if(scroll) scrollToEl(document.querySelector("#today"));
 }
 (function swipe(){ let x0=0,y0=0,t0=0; const el=document.querySelector("#today");
   el.addEventListener("touchstart",e=>{ const t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now(); },{passive:true});
@@ -1405,12 +1405,14 @@ function goDay(i, scroll){
 })();
 window.addEventListener("online",renderClock); window.addEventListener("offline",renderClock);
 document.addEventListener("keydown",e=>{ if(e.target.matches("input,textarea")) return; if(e.key==="ArrowRight") goDay(sel+1,false); if(e.key==="ArrowLeft") goDay(sel-1,false); });
-const topH = () => (document.getElementById("top")?.offsetHeight||100) + 8;
+const topH = () => { const el=document.getElementById("top"); if(!el) return 108; const r=el.getBoundingClientRect(); return Math.max(r.bottom, r.height) + 8; };
+// scroll so `el` sits just under the sticky header, whatever the safe-area inset is
+function scrollToEl(el, smooth){ if(!el) return; const y = el.getBoundingClientRect().top + window.scrollY - topH(); window.scrollTo({top:Math.max(0,y), behavior: smooth===false?"auto":"smooth"}); }
 function bottomNav(){
   const links=[...document.querySelectorAll(".bottom a")]; const secs=links.map(l=>document.getElementById(l.dataset.go));
   const mark=()=>{ const h=topH(); let best=null,bd=1e9; secs.forEach((s,i)=>{ const r=s.getBoundingClientRect(); const d=Math.abs(r.top-h-10); if(r.bottom>h+10&&d<bd){bd=d;best=i;} }); links.forEach((l,i)=>l.classList.toggle("on",i===best)); };
   window.addEventListener("scroll",mark,{passive:true}); mark();
-  links.forEach(l=>l.addEventListener("click",e=>{ e.preventDefault(); if(l.dataset.go==="today"){ const n=cairoNow(); const ti=dayIndexFor(n.date); const want = ti>=0?ti:(n.date<DAYS[0].date?0:DAYS.length-1); if(want!==sel){ goDay(want,true); return; } } const s=document.getElementById(l.dataset.go); window.scrollTo({top:s.offsetTop-topH(),behavior:"smooth"}); }));
+  links.forEach(l=>l.addEventListener("click",e=>{ e.preventDefault(); if(l.dataset.go==="today"){ const n=cairoNow(); const ti=dayIndexFor(n.date); const want = ti>=0?ti:(n.date<DAYS[0].date?0:DAYS.length-1); if(want!==sel){ goDay(want,false); } window.scrollTo({top:0,behavior:"smooth"}); return; } const s=document.getElementById(l.dataset.go); scrollToEl(s); }));
 }
 function mapLinks(){
   const el=$("#mapLinks"); let h="";
@@ -1419,7 +1421,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v34)";
+const BUILD = "Oct 8, 2026 (v35)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2045,10 +2047,10 @@ function quarterNow(){ const d=DAYS[dayIndexFor(cairoNow().date)]; return d?QUAR
 function boxScore(){
   const w=me(); if(!w) return "";
   const t=TEAMS[w], o=TEAMS[OTHER()]; const A=nileTotal(w), B=nileTotal(OTHER()); const r=GS.get("rival",null); const live=liveOK();
-  const row=(T,S,cls)=> `<tr class="${cls}"><td><span class="tn">${T.short}</span></td>${[1,2,3,4].map(k=>`<td>${S?S.q[k]:"–"}</td>`).join("")}<td class="tot">${S?S.pts:(r&&cls==="theirs"?r.n:"?")}</td></tr>`;
+  const row=(T,S,cls)=> `<tr class="${cls}"><td><span class="tn">${T.short}</span></td>${[1,2,3,4].map(k=>`<td>${S?S.q[k]:"–"}</td>`).join("")}<td class="tot">${S?S.pts:"?"}</td></tr>`;
   const qn=quarterNow();
   return `<div class="box"><table><thead><tr><th></th>${[1,2,3,4].map(k=>`<th class="${k===qn?"qnow":""}">Q${k}</th>`).join("")}<th>T</th></tr></thead><tbody>${row(t,A,"mine")}${row(o,B,"theirs")}</tbody></table>
-  <div class="sbl">${A?`${A.own.td} TD · ${A.own.xp} XP · ${A.own.two} 2-pt · ${A.own.fg} FG · ${A.saf} ${A.saf===1?"safety":"safeties"} · ${A.own.yds} yds`:""}${!live&&!r?` · he hasn't linked yet`:""}</div></div>`;
+  <div class="sbl">${A?`${A.own.td} TD · ${A.own.xp} XP · ${A.own.two} 2-pt · ${A.own.fg} FG · ${A.saf} ${A.saf===1?"safety":"safeties"} · ${A.own.yds} yds`:""}${!live?` · he hasn't linked yet`:""}</div></div>`;
 }
 function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); const qn=quarterNow(); if(!qn||!A) return ""; const t=TEAMS[w].team, o=TEAMS[OTHER()].team; const bp=B?B.pts:null; const lead = bp===null?`${t} ${A.pts}`:(A.pts>bp?`${t} by ${A.pts-bp}`:A.pts<bp?`${o} by ${bp-A.pts}`:"tied"); return `Q${qn} · ${QNAME[qn]} · ${lead}`; }
 function conversionBox(d){
@@ -2139,7 +2141,7 @@ function sheetsWire(){
   });
 }
 function subnavWire(){
-  document.querySelectorAll(".subnav a").forEach(a=>a.addEventListener("click", e=>{ e.preventDefault(); const el=document.querySelector(a.getAttribute("href")); if(el){ window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - topH() - 8, behavior:"smooth"}); } }));
+  document.querySelectorAll(".subnav a").forEach(a=>a.addEventListener("click", e=>{ e.preventDefault(); const el=document.querySelector(a.getAttribute("href")); if(el){ scrollToEl(el); } }));
 }
 
 const WHATSON = {
