@@ -1400,7 +1400,7 @@ const DAYS = [
    {t:"17:00",title:"Fly to Cairo (1h) → Uber to the Waldorf Astoria Cairo Heliopolis",note:"15–20 min from the airport.",map:"Waldorf Astoria Cairo Heliopolis",approx:true},
    {t:"20:00",title:"Last dinner: the hotel, or good Lebanese in Heliopolis. Pack. Tomorrow's alarm is the worst one.",approx:true}],
   know:["Karnak at 8:30 is already warm; hats","The souk by Luxor Temple is open in the morning if anything's left on the list"],
-  planb:"Book the ≈5pm Luxor→Cairo flight, not the last one: EgyptAir has a ≈9pm behind it, so a cancellation still gets Duane to the Waldorf tonight for his 7:30 flight. If the 9pm also dies, the overnight train won't make it; EgyptAir rebooks at the counter, and Duane's airline gets a call that evening."},
+  planb:"Book the ≈5pm Luxor→Cairo flight, not the last one: EgyptAir has a ≈9pm behind it, so a cancellation still gets Duane to the Waldorf tonight for his 07:25 flight. If the 9pm also dies, the overnight train won't make it; EgyptAir rebooks at the counter, and Duane's airline gets a call that evening."},
  {id:"mon19",who:"both",sleep:"Dahab guesthouse",sleepq:"Dahab",date:"2026-10-19",dow:"Mon",num:19,title:"Split: Duane home, Brad to Sinai",place:"Cairo → Sharm → Dahab",emoji:"👋",
   alarm:"4:00",bag:"everything",dress:"anything",cash:"Uber + ≈$30 taxi in Sinai",
   mission:"Duane flies home. Brad flies to the Red Sea and drives to Dahab, where the pace drops to nothing.",
@@ -1912,7 +1912,7 @@ function renderFlights(){
   const order=[...allFlights()].sort((a,b)=>{ const am=!w||a.who===w||a.who==="Both", bm=!w||b.who===w||b.who==="Both"; if(am!==bm) return am?-1:1; const at=a.status==="tbd", bt=b.status==="tbd"; if(at!==bt) return at?1:-1; return (flightDep(a)||0)-(flightDep(b)||0); });
   const dlab=d=>{ const x=DAYS.find(y=>y.date===d); return x?`${x.dow} Oct ${x.num}`:d; };
   el.innerHTML=order.map(f=>{ const mine=!w||f.who===w||f.who==="Both"; const plan=flightPlan(f); const cd=flightCountdown(f); const dur=flightDur(f);
-    return `<div class="bp ${mine?"mine":"theirs"} ${f.status}"><div class="bp-top"><span class="bp-who">${esc(f.who)}</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ${f.status==="ok"?"ok":""}">${f.status==="ok"?"✓":f.status==="tbd"?"add it":"book"}</span></div>
+    return `<div class="bp ${mine?"mine":"theirs"} st-${f.status}"><div class="bp-top"><span class="bp-who">${esc(f.who)}</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ${f.status==="ok"?"ok":""}">${f.status==="ok"?"✓":f.status==="tbd"?"add it":"book"}</span></div>
       <div class="bp-route"><div><b>${esc(f.from.ap||"—")}</b><small>${esc(f.from.city)}</small><em>${f.from.t?(f.from.approx?"≈":"")+f.from.t:"—"}</em></div><div class="bp-arrow"><i>✈</i>${dur?`<small>${dur}</small>`:""}</div><div><b>${esc(f.to.ap||"—")}</b><small>${esc(f.to.city)}</small><em>${f.to.t?f.to.t:"—"}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div>
       <div class="bp-meta"><span>${dlab(f.date)}</span>${cd?`<span class="bp-cd">${esc(cd)}</span>`:""}</div>
       ${plan?`<div class="bp-plan"><span>⏰ up <b>${plan.up}</b></span><span>🚗 leave ${esc(f.leave.from.split(" ")[0])} <b>${plan.go}</b></span><span>🛂 airport <b>${plan.at}</b></span><span>🛫 boards <b>≈${plan.board}</b></span></div>`:""}
@@ -1938,7 +1938,7 @@ function preCard(){
   const mine=FLIGHTS.filter(f=>f.who===w&&f.status==="ok"&&f.from.t&&f.date<="2026-10-11"); const f=mine[0]; const plan=f?flightPlan(f):null; const cd=f?flightCountdown(f):"";
   const d0=DAYS[0];
   return `<div class="dayhead"><div class="dh1"><span class="dd">Before we go</span> · <span class="tagpre">${left} day${left===1?"":"s"} to go</span></div><h2>${w?`${esc(w)}, the trip is Saturday.`:"The trip is Saturday."}</h2><div class="sub">Bookings first, bag second, words third. Everything on this card is for this week; the trip itself starts on the Sat 10 chip.</div></div>
-  ${f?`<div class="bp mine ok" style="margin-top:12px"><div class="bp-top"><span class="bp-who">your flight</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ok">✓</span></div><div class="bp-route"><div><b>${esc(f.from.ap)}</b><small>${esc(f.from.city)}</small><em>${esc(f.from.t)}</em></div><div class="bp-arrow"><i>✈</i><small>${flightDur(f)}</small></div><div><b>${esc(f.to.ap)}</b><small>${esc(f.to.city)}</small><em>${esc(f.to.t)}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div><div class="bp-meta"><span>${d0.dow} Oct ${d0.num}</span><span class="bp-cd">${esc(cd)}</span></div><div class="row bp-acts"><a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>${statusHref(f)?`<a class="btn" target="_blank" rel="noopener" href="${statusHref(f)}">Status</a>`:""}<button type="button" class="btn mini" data-nav="flights">All flights</button></div></div>`:""}
+  ${f?`<div class="bp mine st-ok" style="margin-top:12px"><div class="bp-top"><span class="bp-who">your flight</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ok">✓</span></div><div class="bp-route"><div><b>${esc(f.from.ap)}</b><small>${esc(f.from.city)}</small><em>${esc(f.from.t)}</em></div><div class="bp-arrow"><i>✈</i><small>${flightDur(f)}</small></div><div><b>${esc(f.to.ap)}</b><small>${esc(f.to.city)}</small><em>${esc(f.to.t)}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div><div class="bp-meta"><span>${d0.dow} Oct ${d0.num}</span><span class="bp-cd">${esc(cd)}</span></div><div class="row bp-acts"><a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>${statusHref(f)?`<a class="btn" target="_blank" rel="noopener" href="${statusHref(f)}">Status</a>`:""}<button type="button" class="btn mini" data-nav="flights">All flights</button></div></div>`:""}
   ${FLIGHTS.some(x=>x.who===w&&x.status==="tbd")&&!xFlights().length?`<div class="card ask" style="margin-top:8px"><b>One thing for the app</b><p>Your London → home leg on Mon 19 isn't in here yet. Add it under Guide → Flights and it shows up on your board with the layover maths, and on Brad's so he can track you.</p><button type="button" class="btn primary" data-nav="flights">Add the flight</button></div>`:""}
   <details class="fold" open style="margin-top:12px"><summary>This week <span class="pill" data-count="week"></span></summary><div class="in"><ul class="check" data-list="week"></ul><p class="muted" style="margin-top:8px;font-size:12.5px">Ticks are saved on this phone. The full lists — bag, eSIM, bookings — are under Guide → Lists.</p></div></details>
   <div class="card" style="margin-top:8px;padding:12px 14px"><b style="font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">Worth doing before Saturday</b>
@@ -2047,7 +2047,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v57)";
+const BUILD = "Oct 8, 2026 (v58)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2726,7 +2726,7 @@ const PHRASEBOOK = [
  ["“Welcome to Alaska!”","It's 34°C. They say this every time. Laugh every time."],
  ["“Lucky man!”","You have a hat."],
  ["“Hakuna matata!”","Wrong continent. Correct energy."],
- ["“How many camels for your friend?”","Log it in the Game tab."],
+ ["“How many camels for your friend?”","Log it — ＋ → Camel offer."],
  ["“Shukran” (you, to anyone)","The single most disarming word you own. Use it 50 times a day."],
  ["“La, shukran” (with a smile, still walking)","The spell that ends every conversation above. Works 90% of the time."]
 ];
@@ -2783,7 +2783,7 @@ const PERSONAL = {
          Duane:{mission:"Land 5:20, visa, Uber, eat something good, sleep. Tell the desk Brad arrives ≈3:30am so they key him in.", chal:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone."} },
  sun11:{ Brad:{alarm:"≈8:30 · you landed at 2"}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
  mon19:{ Brad:{alarm:"7:00 · up at 4:15 for the hug", mission:"Hug at 4:30, back to bed, car at 7:45. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
-         Duane:{alarm:"4:30", mission:"Car at 5:00, flight 7:30. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
+         Duane:{alarm:"4:00", mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
 };
 function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; return o ? Object.assign({}, d, o) : d; }
 function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.textContent = w ? w : "who?"; el.classList.toggle("unset", !w); }
