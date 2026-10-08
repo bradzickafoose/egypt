@@ -1842,7 +1842,7 @@ function indyMap(){
   const visited=new Set(); legs.forEach(l=>{ visited.add(l[1]); visited.add(l[2]); }); visited.delete("LHR");
   const dayAt={}; INDY_LEGS.forEach(l=>{ if(l[3]!=="stay") dayAt[l[2]]=dayAt[l[2]]||l[0]; });
   const lbl=(k,dx,dy,anchor)=>{ const P=EG_PLACES[k]; const on=visited.has(k); const dd=DAYS.find(x=>x.id===dayAt[k]); return `<g class="mp ${on?"on":""} ${k===(cur&&cur[2])?"here":""}"><circle cx="${mx(P[0])}" cy="${my(P[1])}" r="${on?15:10}"/>${k===(cur&&cur[2])?`<circle class="pulse" cx="${mx(P[0])}" cy="${my(P[1])}" r="26"/>`:""}<text x="${(+mx(P[0])+dx).toFixed(1)}" y="${(+my(P[1])+dy).toFixed(1)}" text-anchor="${anchor||"start"}">${P[2]}${on&&dd?`<tspan class="dy"> · ${dd.dow} ${dd.num}</tspan>`:""}</text></g>`; };
-  const places=[["CAI",26,-10],["GIZA",-26,34,"end"],["ASW",26,12],["ABU",26,12],["EDFU",26,12],["KOM",26,12],["LXR",26,12],["DAHAB",26,12],["SSH",26,24],["SINAI",-26,-16,"end"],["DESERT",26,12],["BAH",26,-16],["ALEX",-18,-22,"end"],["HUR",26,12],["SUEZ",26,-16]].filter(([k])=>visited.has(k)||["ALEX","HUR","SUEZ","KOM","BAH"].includes(k)===false||true);
+  const places=[["CAI",26,-10],["GIZA",-26,34,"end"],["ASW",26,12],["ABU",26,-18],["EDFU",26,12],["KOM",26,12],["LXR",26,12],["DAHAB",26,12],["SSH",26,24],["SINAI",-26,-16,"end"],["DESERT",26,12],["BAH",26,-16],["ALEX",-18,-22,"end"],["HUR",26,12],["SUEZ",26,30]].filter(([k])=>visited.has(k)||["ALEX","HUR","SUEZ","KOM","BAH"].includes(k)===false||true);
   const sea=`<rect x="0" y="0" width="${MAP_W}" height="${MAP_H}" class="sea"/>`;
   const land=`<path d="${smoothPath(EG_COAST,true,EG_COAST.length-4)}" class="land"/>`;
   const sinai="";
@@ -1860,7 +1860,7 @@ function renderWhere(){
   el.innerHTML=`${safe(indyMap)||""}<div class="card where"><div class="navh"><b>${d.dow} ${d.num} · ${esc(d.title)}</b><span>${esc(d.place||"")}</span></div>
     ${stops.length?stops.map(a=>`<div class="wr"><span class="t">${esc(a.t||"")}</span><div><div class="wn">${esc(a.map)}</div>${mapBtns(a.map,null,false)}</div></div>`).join(""):`<p class="muted">No pinned stops on this day.</p>`}
     ${hq?`<div class="wr"><span class="t">night</span><div><div class="wn">${esc(d.sleep)}</div>${mapBtns(hq,null,false)}</div></div>`:""}
-    <p class="muted" style="margin:8px 0 0;font-size:12.5px">Directions open from wherever you're standing. Change the day on the Today tab and this follows.</p></div>`;
+    <p class="muted" style="margin:8px 0 0;font-size:12.5px">Directions open from wherever you're standing. Tap a date up top and this follows.</p></div>`;
 }
 function navGo(k){
   const open=(id)=>{ const f=document.getElementById(id); if(f&&f.tagName==="DETAILS") f.open=true; return f; };
