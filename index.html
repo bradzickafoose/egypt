@@ -1222,6 +1222,70 @@ html.bigtext .book dl dd{margin:0 0 6px}
  .pd h2{color:#000;border-color:#000}
  @page{margin:14mm}
 }
+
+.ng-h{font-family:var(--display);font-stretch:87.5%;font-size:0.6765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.navg{grid-template-columns:1fr 1fr!important;margin-top:0}
+.navg button{flex-direction:row;align-items:center;gap:10px;min-height:0;padding:10px}
+.navg button .qi{font-size:1.35rem;flex:none}
+.navg button .nl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.navg button small{-webkit-line-clamp:2}
+html.hugetext .navg{grid-template-columns:1fr!important}
+.navsos{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid rgba(179,38,30,.35);background:rgba(179,38,30,.07);color:#8f1d16;text-align:left;font:inherit;cursor:pointer}
+.navsos b{font-size:0.8235rem}
+.navsos small{font-size:0.7353rem;opacity:.85}
+.gch{margin:34px 0 4px;padding-top:16px;border-top:2px solid var(--fg)}
+.gch b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:1.1rem;letter-spacing:-.01em}
+.gch span{display:block;font-size:0.7647rem;color:var(--muted);margin-top:2px}
+.gch+section>.sec:first-child,.gch+section>h2.sec{margin-top:10px}
+
+.frame-ui .fr-lede{font-size:0.8235rem;color:rgba(43,36,32,.75);margin:4px 0 12px;line-height:1.45}
+.fr-picks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+html.bigtext .fr-picks{grid-template-columns:1fr}
+.fr-ph{display:flex;flex-direction:column;gap:6px;background:#fbf8f0;padding:8px 8px 10px;box-shadow:0 6px 16px -8px rgba(0,0,0,.45);transform:rotate(-1deg)}
+.fr-ph+.fr-ph,.fr-empty+.fr-ph{transform:rotate(1.2deg)}
+.fr-ph img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.fr-ph b{font-family:var(--hand);font-size:1.25rem;color:#1f3a6e;font-weight:500;line-height:1}
+.fr-ph small{display:block;font-size:0.7rem;color:rgba(43,36,32,.6)}
+.fr-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;min-height:150px;padding:12px;border:2px dashed rgba(43,36,32,.3);border-radius:4px;cursor:pointer;color:var(--inkk)}
+.fr-empty span{font-size:1.6rem}
+.fr-empty b{font-size:0.8235rem}
+.fr-empty small{font-size:0.7rem;color:rgba(43,36,32,.6)}
+.fr-empty.wait{cursor:default;border-style:dotted}
+.fr-empty .btn{margin-top:6px}
+.fr-cap{display:block;margin-top:10px;font-size:0.7647rem;color:rgba(43,36,32,.7)}
+.fr-cap input{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid var(--rule);border-radius:8px;background:#fbf8f0;font:1rem var(--body)}
+.fr-h{font-family:Georgia,serif;font-size:0.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(43,36,32,.6);margin:14px 0 6px}
+.fr-vote{display:flex;flex-wrap:wrap;gap:6px}
+.fr-vote .chip{border:1px solid var(--rule);background:#fbf8f0;border-radius:999px;padding:7px 12px;font:600 0.7647rem var(--body);color:var(--inkk);display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.fr-vote .chip.on{background:var(--inkk);color:#f4ecd8;border-color:var(--inkk)}
+.fr-vote .chip small{font-weight:500;font-size:0.65rem;opacity:.75}
+.fr-vote .chip:disabled{opacity:.4}
+.fr-status{font-size:0.7647rem;color:rgba(43,36,32,.7);margin:8px 0 0}
+.fr-status.ok{color:#1f6b33;font-weight:600}
+.print img.fr-prev{aspect-ratio:auto;margin-top:12px}
+
+.pptab{width:50px;height:70px;right:-16px;border-radius:9px 3px 3px 9px;justify-content:flex-start;flex-direction:column;align-items:flex-start;padding:9px 0 0 7px;box-sizing:border-box;
+ background:radial-gradient(140% 90% at 20% 0%,#36597f 0%,#1a3756 42%,#0d1d31 100%);
+ box-shadow:inset 1.5px 0 0 rgba(255,255,255,.10),inset 0 0 0 1px rgba(0,0,0,.35),-6px 9px 18px -7px rgba(0,0,0,.6),-1px 2px 3px rgba(0,0,0,.25)}
+.pptab::before{inset:4px 0 4px 4px;border:1px solid rgba(216,178,90,.55);border-right:0;border-radius:6px 0 0 6px}
+.pptab::after{background:repeating-radial-gradient(circle at 30% 20%,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),linear-gradient(180deg,rgba(255,255,255,.06),transparent 40%)}
+.pptab .ppt-crest{width:22px;height:22px;color:#e2be67;filter:drop-shadow(0 1px 0 rgba(0,0,0,.55)) drop-shadow(0 0 3px rgba(226,190,103,.25));position:relative;z-index:1}
+.pptab .ppt-l{position:relative;z-index:1;margin-top:6px;font:700 6.5px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.16em;color:#e2be67;text-shadow:0 1px 0 rgba(0,0,0,.6);text-align:left}
+.pptab .ppt-rib{position:absolute;left:13px;bottom:-11px;width:6px;height:16px;background:linear-gradient(90deg,#8e231b,#b8382c 50%,#8e231b);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);box-shadow:0 1px 1px rgba(0,0,0,.3)}
+.pptab .ppt-s{display:none}
+.memcard{border:1px solid var(--rule);border-radius:10px;padding:10px 12px;margin:8px 0 12px;background:rgba(255,255,255,.35)}
+.memcard b{display:block;font-size:0.8235rem;margin-bottom:2px}
+.memcard span{display:block;font-size:0.7647rem;color:rgba(43,36,32,.7);margin-bottom:8px}
+
+.exl{display:grid;gap:8px}
+.ex{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.ex-i{font-size:1.2rem;line-height:1;width:1.4em;text-align:center;flex:none;padding-top:2px}
+.ex-b{min-width:0;display:flex;flex-direction:column;gap:2px}
+.ex-b b{font-size:0.8235rem}
+.ex-b small{font:600 0.7059rem var(--mono);color:var(--muted)}
+.ex-b>span{font-size:0.7941rem;line-height:1.4;margin-top:2px}
+.ex.dance{border-color:rgba(181,50,43,.25)}
+.excof{opacity:.9}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
@@ -1242,6 +1306,8 @@ html.bigtext .book dl dd{margin:0 0 6px}
     <h2 class="sec">Guide</h2>
     <div id="navigator"></div>
     <div id="brief"></div>
+  
+  <div class="gch" id="g-ground"><b>On the ground</b><span>the bed, the money, the words, the food</span></div>
   <section id="pinned">
     <h2 class="sec">Hotels &amp; essentials</h2>
     <div class="card">
@@ -1267,40 +1333,46 @@ html.bigtext .book dl dd{margin:0 0 6px}
       <p style="margin-top:10px;color:var(--muted);font-size:0.7941rem">Tap-to-call may not work from this page. Copy the number into the phone app.</p>
     </div></details>
   </section>
-
+  <section id="tools">
+    <h2 class="sec">Money</h2>
+    <div class="card">
+      <div class="conv">
+        <div><label for="usd">US dollars</label><input id="usd" inputmode="decimal" value="20"></div>
+        <div><label for="egp">Egyptian pounds</label><input id="egp" inputmode="decimal" value="1000"></div>
+      </div>
+      <div class="rate"><span style="white-space:nowrap">Rate: 1 USD =</span> <input id="rate" inputmode="decimal" value="50"> EGP · check the ATM receipt and fix this once</div>
+      <div class="quick" id="quick"></div><div class="split" id="split"></div><div class="tips" id="tipGrid"></div>
+    </div>
+  </section>
   <section id="wordsSec">
     <h2 class="sec">Words</h2>
     <div class="card"><p class="muted" style="margin:0 0 6px">Egyptian Arabic, not the textbook kind. Tap a card to hear it; the phone's own Arabic voice says it. Lead with a greeting before any question — it changes the whole conversation.</p><div id="words"></div><p class="muted" style="font-size:0.7647rem;margin-top:6px">First tap can take a second while the voice loads.</p></div>
     <div id="phrasebook"></div>
   </section>
-
-  <section id="whoSec">
-    <h2 class="sec">Who's who</h2>
-    <div class="card"><p class="muted" style="margin:0 0 6px">The names you'll hear a hundred times, with the one thing to recognise each by. Read the walls before the guide does.</p><div id="who"></div></div>
-  </section>
-
-  <section id="signsSec">
-    <h2 class="sec">Hieroglyphs</h2>
-    <div class="card"><p class="muted" style="margin:0 0 6px">The little translation book: what's written on today's walls, the royal names in real glyphs, the alphabet, and your own name in a cartouche.</p><div id="signs"></div></div>
-  </section>
-
-  <section id="arcSec">
-    <h2 class="sec">The story in nine chapters</h2>
-    <div class="card"><div id="arc"></div></div>
-  </section>
-
-  <section id="eraSec">
-    <h2 class="sec">How old is this?</h2>
-    <div class="card"><div id="eras"></div></div>
-  </section>
-
   <section id="guides">
     <h2 class="sec">Eat &amp; shop like a local</h2>
     <div class="card" style="margin-bottom:8px"><div style="font-size:0.8235rem;color:var(--muted)">For every city: where people who live there eat, the markets worth your evening, and what each place is actually known for — with how to tell the real thing from the airport version. Every line says which day it fits.</div></div>
     <div id="guideCity" class="gtabs" role="tablist"></div>
     <div id="guideBody"></div>
   </section>
-
+  <div class="gch" id="g-see"><b>What you're looking at</b><span>the story, the people, the writing, the dates</span></div>
+  <section id="arcSec">
+    <h2 class="sec">The story in nine chapters</h2>
+    <div class="card"><div id="arc"></div></div>
+  </section>
+  <section id="whoSec">
+    <h2 class="sec">Who's who</h2>
+    <div class="card"><p class="muted" style="margin:0 0 6px">The names you'll hear a hundred times, with the one thing to recognise each by. Read the walls before the guide does.</p><div id="who"></div></div>
+  </section>
+  <section id="signsSec">
+    <h2 class="sec">Hieroglyphs</h2>
+    <div class="card"><p class="muted" style="margin:0 0 6px">The little translation book: what's written on today's walls, the royal names in real glyphs, the alphabet, and your own name in a cartouche.</p><div id="signs"></div></div>
+  </section>
+  <section id="eraSec">
+    <h2 class="sec">How old is this?</h2>
+    <div class="card"><div id="eras"></div></div>
+  </section>
+  <div class="gch" id="g-admin"><b>Trip admin</b><span>flights, lists, notes, the fine print</span></div>
   <section id="lists">
     <h2 class="sec">Lists</h2>
     <details class="fold" open><summary>This week <span class="pill" data-count="week"></span></summary><div class="in">
@@ -1322,7 +1394,6 @@ html.bigtext .book dl dd{margin:0 0 6px}
       <p style="margin-top:8px">Backup: a Vodafone SIM at CAI arrivals, ≈$12, passport needed.</p>
     </div></details>
   </section>
-
   <section id="notes">
     <h2 class="sec">Notes</h2>
     <div class="card">
@@ -1334,19 +1405,6 @@ html.bigtext .book dl dd{margin:0 0 6px}
       </div>
     </div>
   </section>
-
-  <section id="tools">
-    <h2 class="sec">Money</h2>
-    <div class="card">
-      <div class="conv">
-        <div><label for="usd">US dollars</label><input id="usd" inputmode="decimal" value="20"></div>
-        <div><label for="egp">Egyptian pounds</label><input id="egp" inputmode="decimal" value="1000"></div>
-      </div>
-      <div class="rate"><span style="white-space:nowrap">Rate: 1 USD =</span> <input id="rate" inputmode="decimal" value="50"> EGP · check the ATM receipt and fix this once</div>
-      <div class="quick" id="quick"></div><div class="split" id="split"></div><div class="tips" id="tipGrid"></div>
-    </div>
-  </section>
-
   <section id="more">
     <h2 class="sec">Flights</h2>
     <div class="card flights" id="flights"></div>
@@ -1468,7 +1526,7 @@ html.bigtext .book dl dd{margin:0 0 6px}
   </section>
 
   <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p><p class="foot" style="margin-top:6px"><button class="pill" id="updChk" type="button">Check for a newer version</button></p></section>
-<button type="button" id="ppTab" class="pptab" aria-label="Open the passport"><span class="ppt-s">Passport</span><i class="ppt-n" hidden></i></button>
+<button type="button" id="ppTab" class="pptab" aria-label="Open the passport"><svg class="ppt-crest" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><circle cx="40" cy="40" r="33"/><path d="M17 54 L40 20 L63 54 Z"/><path d="M29 54 L40 37 L51 54"/><path d="M10 60 Q40 52 70 60"/></g><circle cx="40" cy="12" r="4.5" fill="currentColor"/></svg><span class="ppt-l" aria-hidden="true">PASS<br>PORT</span><span class="ppt-rib" aria-hidden="true"></span><i class="ppt-n" hidden></i></button>
 <div id="ppOverlay" class="ppov" aria-hidden="true"><div class="ppov-top"><span class="ppov-h">Tap the cover to open · tap a stamp day to jump to it</span><button type="button" class="ppov-x" aria-label="Close the passport">×</button></div><div class="ppov-scroll"><div id="passport" class="ppwrap"></div></div></div>
 </div>
 
@@ -1985,7 +2043,7 @@ function renderDay(){
     ${safe(()=>calDay(d))}
     ${safe(()=>nbBlock(d, isToday))}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
-    ${safe(()=>listenBlock(d))||""}
+    ${safe(()=>listenBlock(d))||""}${safe(()=>extrasBlock(d))||""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
     ${(WHATSON[d.id]||(typeof GAMEDAYS!=="undefined"&&GAMEDAYS[d.id]))?`<div class="whatson"><b>What's on in town</b><ul>${(WHATSON[d.id]||[]).map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}${(typeof GAMEDAYS!=="undefined"&&GAMEDAYS[d.id])?`<li class="gameday"><strong>${esc(GAMEDAYS[d.id].w)}</strong> ${esc(GAMEDAYS[d.id].d)}</li>`:""}</ul></div>`:""}
     ${shotList(d)}
@@ -2037,7 +2095,7 @@ function renderNow(){
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
     const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
-    const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
+    const exm = safe(()=>extrasMorning(d, now)); const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur){ const ago=now.mins-toMins(cur.t); if(ago>150 && next && nextDay===d) html += `<div class="sub">Now: nothing until ${fmt12(next.t)}</div>`; else html += `<div class="sub">Now: ${esc(cur.title)}</div>`; } if(exm) html += `<div class="sub excof">${esc(exm)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
       if(next.note) html += `<div class="sub">${esc(next.note)}</div>`;
@@ -2072,22 +2130,26 @@ function renderNavigator(){
   const el=$("#navigator"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const key=CITY_KEY(d); const g=GUIDES.find(x=>x.id===key)||GUIDES[0]; const h=hotelFor(d);
   let week=0; try{ const done=JSON.parse(localStorage.getItem("egypt.list.week")||"{}"); const items=document.querySelectorAll('[data-list="week"] li'); week=items.length?[...items].filter(li=>!li.classList.contains("done")).length:0; }catch(e){}
   const rate=(()=>{ try{ return $("#rate").value||"50"; }catch(e){ return "50"; } })();
-  const tiles=[
-    ["hotel","🏨","Hotel desk", h?h.n.replace(/ \(.*\)/,""):"tonight's bed"],
-    ["eat","🍽️","Eat & shop", g.city],
-    ["money","💵","Money", `1 USD = ${rate} EGP · tips`],
-    ["phrases","🗣️","Words", "forty phrases, tap to hear"],
-    ["who","🏺","Who's who", "gods, kings, the walls"],
-    ["signs","📜","Hieroglyphs", "today's walls, your name"],
-    ["arc","📖","The story", "nine chapters, one timeline"],
-    ["sos","🆘","SOS", "126 police · 123 ambulance"],
-    ["flights","✈️","Flights", nextFlightLine()],
-    ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
-    ["notes","📝","Notes", "yours, on this phone"],
-    ["reference","📚","Reference", "the boat, costs, booking"],
+  const groups=[
+    ["On the ground",[
+      ["hotel","🏨","Hotel desk", h?h.n.replace(/ \(.*\)/,""):"tonight's bed"],
+      ["money","💵","Money", `$1 = ${rate} EGP · tips`],
+      ["phrases","🗣️","Words", "40 phrases, spoken"],
+      ["eat","🍽️","Eat & shop", g.city]]],
+    ["What you're looking at",[
+      ["arc","📖","The story", "9 chapters, one thread"],
+      ["who","🏺","Who's who", "gods, kings, walls"],
+      ["signs","📜","Hieroglyphs", "today's walls, your name"],
+      ["eras","⏳","Timeline", "every site, by age"]]],
+    ["Trip admin",[
+      ["flights","✈️","Flights", nextFlightLine()],
+      ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
+      ["notes","📝","Notes", "on this phone"],
+      ["reference","📚","Reference", "boat, costs, booking"]]],
   ];
   el.innerHTML=`<div class="card"><div class="navh"><b>${g.emoji} ${esc(g.city)}</b><span>${d.dow} ${d.num} · ${esc(d.place||"")}</span></div>
-    <div class="navg">${tiles.map(([k,i,l,s])=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span>${l}<small>${esc(s)}</small></button>`).join("")}</div></div>`;
+    ${groups.map(([gl,tiles])=>`<div class="ng-h">${esc(gl)}</div><div class="navg">${tiles.map(([k,i,l,s])=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span><span class="nl">${l}<small>${esc(s)}</small></span></button>`).join("")}</div>`).join("")}
+    <button type="button" class="navsos" data-nav="sos"><span>🆘</span><b>Emergency</b><small>126 tourist police · 123 ambulance · all numbers ›</small></button></div>`;
 }
 function cityBrief(){
   const el=$("#brief"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const key=CITY_KEY(d); const g=GUIDES.find(x=>x.id===key)||GUIDES[0]; const h=hotelFor(d);
@@ -2422,7 +2484,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v85)";
+const BUILD = "Oct 9, 2026 (v86)";
 // ---------- the trip on one page: built from DAYS / HOTELS / flights, so it can't go stale; no booking codes
 function planDocData(){ const days=DAYS.map(d=>({d, items:(d.agenda||[]).filter(a=>a.t&&a.title).slice(0,9)})); const fl=allFlights().filter(f=>f.status!=="tbd"&&f.from&&f.from.ap).sort((a,b)=>(a.date+(a.from.t||"")).localeCompare(b.date+(b.from.t||""))); return {days, fl}; }
 const PD_SOS=[["Tourist police","126"],["Ambulance","123"],["Police","122"],["US Embassy Cairo","+20 2 2797 3300"]];
@@ -2976,9 +3038,10 @@ function renderPassport(){
   const hon=(()=>{ try{ const w=me(); return w?pickDaily(HONORIFICS.concat(TEAM_HON[w]||[]), w):""; }catch(e){ return ""; } })();
   el.innerHTML=`${passportBook({who:me()||"traveller", st, rate, ch, j, hon})}
   ${safe(()=>tombPage())||""}
-  <div class="page back"><div class="pgh"><span>The print</span><span>Worth framing</span></div>
+  <div class="page back"><div id="frameUI" class="frame-ui"></div><div class="pgh" style="margin-top:22px"><span>Your passport sheet</span><span>Just yours</span></div>
   <div class="print"><img id="ppPrint" alt="The passport, as one sheet"><div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-print>Save the print</button><span class="muted">2400 × 3200. Every stamp where it happened, on an engraved Nile. Prints clean at 12 × 16 — frame it when you're home.</span></div></div>
   <div class="pgh" style="margin-top:18px"><span>Consular services</span><span>Back cover</span></div>
+  <div class="memcard"><b>☁️ Saved to the server</b><span id="memStatus">…</span><div class="row"><button type="button" class="btn" data-mem-now="1">Back up now</button><button type="button" class="btn" data-mem-restore="1">Restore from the server</button></div></div>
   <div class="row"><button type="button" class="btn primary" id="ppSave">Save / send my passport</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
   <p class="muted" style="margin-top:8px">The file holds everything on this phone: stamps, journal, ratings, bingo, haggles, notes. After the trip, send it to Brad; it goes into the site's repo as your archived passport and the page shows both of yours, on any device, for good.</p>
   <div id="archive"></div></div>`;
@@ -3215,7 +3278,7 @@ function whoSheet(force){
   if(!force && me()) return; if($("#whoSheet")) return;
   const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad" style="background:#101820;color:#FFB612">Brad<small>Steelers</small></button><button type="button" data-me="Duane" style="background:#FB4F14;color:#000">Duane<small>Bengals</small></button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
   document.body.appendChild(s); requestAnimationFrame(()=>s.classList.add("on"));
-  s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250); } });
+  s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250); if(e.target.closest("[data-me]")) setTimeout(()=>{ try{ sessionStorage.removeItem("egypt.memOffered"); memOffer(); }catch(x){} }, 1200); } });
 }
 function personalizeStatic(){
   const w=me(), o=OTHER(); safe(teamCSS);
@@ -3716,7 +3779,217 @@ function reviewButtons(){
 }
 
 // re-rendering the passport while it's open (a new photo, a stamp) keeps the cover open
-(function(){ const _rp=renderPassport; renderPassport=function(){ const r=_rp.apply(this,arguments); try{ const o=$("#ppOverlay"); if(o&&o.classList.contains("open")){ const c=o.querySelector(".book .cover"); if(c) c.classList.add("flip"); } }catch(e){} return r; }; })();
+(function(){ const _rp=renderPassport; renderPassport=function(){ const r=_rp.apply(this,arguments); try{ const o=$("#ppOverlay"); if(o&&o.classList.contains("open")){ const c=o.querySelector(".book .cover"); if(c) c.classList.add("flip"); } }catch(e){} try{ renderFrameUI(); frameSync(); memStatus(); }catch(e){} return r; }; })();
+
+// ---------- The Frame: one print for the wall — each of you picks a favourite photo (ideally both of you in it),
+// the map of where you went holds them, the nine days run along the bottom. Letter, tabloid or poster.
+const FRAME_SIZES = {
+  letter: {label:"8.5×11", w:8.5, h:11, dpi:300},
+  tabloid:{label:"11×17", w:11, h:17, dpi:250},
+  poster: {label:"18×24", w:18, h:24, dpi:150},
+};
+const FRAME_LS = { mine:"egypt.fav", cap:"egypt.favCap", vote:"egypt.frameVote", other:"egypt.favOther", size:"egypt.frameSize" };
+const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
+const lsSet=(k,v)=>{ try{ if(v==null) localStorage.removeItem(k); else localStorage.setItem(k,v); return true; }catch(e){ return false; } };
+function frameOther(){ try{ return JSON.parse(lsGet(FRAME_LS.other,"null")); }catch(e){ return null; } }
+function frameState(){
+  const w=me()||"Brad", o=OTHER()||"Duane"; const oth=frameOther()||{};
+  const photos={}; const mineImg=lsGet(FRAME_LS.mine,""); if(mineImg) photos[w]={img:mineImg, cap:lsGet(FRAME_LS.cap,""), who:w};
+  if(oth.img) photos[o]={img:oth.img, cap:oth.cap||"", who:o};
+  const vMine=lsGet(FRAME_LS.vote,"both"), vTheirs=oth.vote||"both"; const agreed=vMine===vTheirs;
+  let layout=agreed?vMine:"both"; if(layout!=="both"&&!photos[layout]) layout="both";
+  let use=layout==="both"?[photos.Brad,photos.Duane].filter(Boolean):[photos[layout]];
+  return {w,o,photos,vMine,vTheirs,agreed,layout,use,size:lsGet(FRAME_LS.size,"letter")};
+}
+// remote: a sibling key of the room, so the 20-second room poll never downloads the photos
+const frameURL=(who)=>`${DB_URL}/rooms/${room()}-frame${who?"/"+who:""}.json`;
+async function framePull(){ if(!liveOK()) return false; try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),15000); const r=await fetch(frameURL(),{cache:"no-store",signal:ctl.signal}); clearTimeout(t); if(!r.ok) return false; const d=(await r.json())||{}; const o=d[OTHER()]; const prev=lsGet(FRAME_LS.other,"null"); if(o){ const s=JSON.stringify(o); if(s!==prev){ lsSet(FRAME_LS.other,s); return true; } } return false; }catch(e){ return false; } }
+async function framePush(){ if(!liveOK()) return false; try{ const body=JSON.stringify({img:lsGet(FRAME_LS.mine,""), cap:lsGet(FRAME_LS.cap,""), vote:lsGet(FRAME_LS.vote,"both"), at:new Date().toISOString()}); const r=await fetch(frameURL(me()),{method:"PUT",body}); return r.ok; }catch(e){ return false; } }
+
+// ---- drawing
+const FRAME_GEO = {
+  border:[[25,31.6],[25.15,31.57],[27.24,31.35],[28.95,30.83],[29.9,31.2],[30.4,31.47],[31.0,31.58],[31.8,31.5],[32.3,31.27],[33.8,31.13],[34.25,31.3],[34.9,29.5],[34.67,29.0],[34.52,28.5],[34.33,27.9],[34.25,27.73],[33.6,28.24],[32.55,29.97],[32.6,29.6],[33.1,28.36],[33.8,27.25],[33.9,26.7],[34.9,25.1],[35.5,23.9],[35.65,23.2],[36.85,22.0],[25,22.0]],
+  nile:[[31.23,30.05],[31.1,29.07],[30.75,28.1],[31.18,27.18],[31.7,26.55],[32.25,26.05],[32.72,26.16],[32.64,25.69],[32.55,25.29],[32.87,24.98],[32.93,24.47],[32.9,24.09]],
+  lake:[[32.9,24.09],[32.85,23.6],[32.45,23.15],[32.0,22.7],[31.62,22.34],[31.3,22.05]],
+  delta:[[[31.23,30.05],[30.95,30.6],[30.4,31.47]],[[31.23,30.05],[31.45,30.75],[31.8,31.5]]],
+  cities:{Cairo:[31.24,30.05,"r"],Giza:[31.13,29.98,"l"],Luxor:[32.64,25.69,"r"],Edfu:[32.87,24.98,"r"],"Kom Ombo":[32.93,24.47,"r"],Aswan:[32.9,24.09,"r"],"Abu Simbel":[31.62,22.34,"r"]},
+  solo:{Dahab:[34.52,28.5,"l"],"Mt Sinai":[33.97,28.54,"l"],Bahariya:[28.86,28.35,"r"],"White Desert":[27.97,27.36,"r"]},
+};
+function loadImg(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+async function frameFonts(){ try{ await Promise.all([document.fonts.load(`500 40px Caveat`), document.fonts.load(`500 38px "IBM Plex Mono"`)]); }catch(e){} }
+async function drawFrame(opts){
+  const st0=frameState(); const sizeKey=opts.size||st0.size; const SZ=FRAME_SIZES[sizeKey]||FRAME_SIZES.letter;
+  const W=2400, H=Math.round(2400*SZ.h/SZ.w); const outW=opts.preview?720:Math.round(SZ.w*SZ.dpi); const S=outW/W;
+  const c=document.createElement("canvas"); c.width=outW; c.height=Math.round(H*S); const x=c.getContext("2d"); x.scale(S,S);
+  const PAPER="#f4ecd8", PAPER2="#e9dfc6", INK="#2b2420", BLUE="#1f3a6e", GOLD="#9a7a2a", RED="#9c2f22";
+  const serif='Georgia,"Times New Roman",serif', mono='"IBM Plex Mono",Menlo,monospace', hand='"Caveat","Bradley Hand",cursive';
+  const rnd=(seed)=>{ let s=hash(String(seed))||1; return ()=>{ s=(s*1664525+1013904223)%4294967296; return s/4294967296; }; };
+  const spaced=(txt,cx,cy,font,color,sp,align)=>{ x.font=font; x.fillStyle=color; x.textBaseline="middle"; const chars=[...String(txt)]; const ws=chars.map(ch=>x.measureText(ch).width); const total=ws.reduce((a,b)=>a+b,0)+sp*(chars.length-1); let px=align==="left"?cx:align==="right"?cx-total:cx-total/2; chars.forEach((ch,i)=>{ x.fillText(ch,px,cy); px+=ws[i]+sp; }); return total; };
+  // paper, grain, vignette
+  x.fillStyle=PAPER; x.fillRect(0,0,W,H);
+  const r0=rnd("frame"); x.fillStyle="rgba(90,60,30,.06)"; for(let i=0;i<(opts.preview?3000:11000);i++) x.fillRect(r0()*W, r0()*H, 1.6, 1.6);
+  const vg=x.createRadialGradient(W/2,H/2,H*.25,W/2,H/2,H*.8); vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(80,50,20,.15)"); x.fillStyle=vg; x.fillRect(0,0,W,H);
+  // engraved border with rivets and a key-pattern band
+  x.strokeStyle="rgba(43,36,32,.8)"; x.lineWidth=4; x.strokeRect(70,70,W-140,H-140); x.lineWidth=1.2; x.strokeRect(92,92,W-184,H-184);
+  x.lineWidth=1; x.strokeStyle="rgba(43,36,32,.35)"; for(let px=110;px<W-110;px+=36){ x.beginPath(); x.moveTo(px,104); x.lineTo(px+18,104); x.lineTo(px+18,114); x.lineTo(px+8,114); x.stroke(); x.beginPath(); x.moveTo(px,H-104); x.lineTo(px+18,H-104); x.lineTo(px+18,H-114); x.lineTo(px+8,H-114); x.stroke(); }
+  [[70,70],[W-70,70],[70,H-70],[W-70,H-70]].forEach(([cx,cy])=>{ x.beginPath(); x.arc(cx,cy,15,0,Math.PI*2); x.fillStyle=PAPER; x.fill(); x.lineWidth=2; x.strokeStyle="rgba(43,36,32,.8)"; x.stroke(); x.beginPath(); x.arc(cx,cy,5,0,Math.PI*2); x.fillStyle="rgba(43,36,32,.8)"; x.fill(); });
+  // header
+  x.save(); x.translate(W/2,215); x.strokeStyle=GOLD; x.lineWidth=4; x.lineJoin="round"; x.lineCap="round"; x.beginPath(); x.arc(0,0,58,0,Math.PI*2); x.stroke(); x.beginPath(); x.moveTo(-43,30); x.lineTo(0,-37); x.lineTo(43,30); x.closePath(); x.stroke(); x.beginPath(); x.moveTo(-20,30); x.lineTo(0,0); x.lineTo(20,30); x.stroke(); x.beginPath(); x.moveTo(-52,42); x.quadraticCurveTo(0,27,52,42); x.stroke(); x.restore();
+  spaced("EGYPT", W/2, 395, `700 190px ${serif}`, INK, 40);
+  spaced("BRAD & DUANE  ·  OCTOBER 10 – 19  ·  MMXXVI", W/2, 505, `400 36px ${serif}`, "rgba(43,36,32,.78)", 10);
+  x.strokeStyle="rgba(43,36,32,.45)"; x.lineWidth=1.5; x.beginPath(); x.moveTo(700,552); x.lineTo(1700,552); x.stroke();
+  // body box
+  const top=600, bot=H-640, bodyH=bot-top;
+  // the map, engraved, east-aligned so the Nile runs down the right and the western desert holds the photos
+  const lon0=24.7, lon1=35.3, lat0=21.8, lat1=31.8, cosL=.891; const k=Math.min(2100/((lon1-lon0)*cosL), bodyH/(lat1-lat0)); const mapW=(lon1-lon0)*cosL*k; const x0=2260-mapW, y0=top+(bodyH-(lat1-lat0)*k)/2;
+  const P=([lo,la])=>[x0+(lo-lon0)*cosL*k, y0+(lat1-la)*k];
+  const path=(pts,close)=>{ x.beginPath(); pts.forEach((p,i)=>{ const [a,b]=P(p); if(!i) x.moveTo(a,b); else x.lineTo(a,b); }); if(close) x.closePath(); };
+  const smooth=(pts)=>{ x.beginPath(); const Q=pts.map(P); x.moveTo(Q[0][0],Q[0][1]); for(let i=1;i<Q.length;i++){ const mx=(Q[i-1][0]+Q[i][0])/2, my=(Q[i-1][1]+Q[i][1])/2; x.quadraticCurveTo(Q[i-1][0],Q[i-1][1],mx,my); } x.lineTo(Q[Q.length-1][0],Q[Q.length-1][1]); };
+  // sea hatching
+  x.save(); x.beginPath(); x.rect(96, top-30, W-192, bodyH+60); x.clip();
+  const seaHatch=(poly)=>{ x.save(); path(poly,true); x.clip(); x.strokeStyle="rgba(31,58,110,.11)"; x.lineWidth=2; for(let yy=top-400; yy<bot+400; yy+=20){ x.beginPath(); x.moveTo(0,yy); x.lineTo(W,yy); x.stroke(); } x.restore(); };
+  seaHatch([[25,31.6],[25,31.95],[35.3,31.95],[35.3,31.3],[34.25,31.3],[33.8,31.13],[32.3,31.27],[31.8,31.5],[31.0,31.58],[30.4,31.47],[29.9,31.2],[28.95,30.83],[27.24,31.35],[25.15,31.57]]);
+  seaHatch([[32.55,29.97],[33.6,28.24],[34.25,27.73],[34.33,27.9],[34.52,28.5],[34.67,29.0],[34.9,29.5],[35.0,29.4],[35.3,28.0],[35.3,21.8],[36.85,21.8],[36.85,22.0],[35.65,23.2],[35.5,23.9],[34.9,25.1],[33.9,26.7],[33.8,27.25],[33.1,28.36],[32.6,29.6]]);
+  x.save(); path(FRAME_GEO.border,true); x.fillStyle="rgba(233,223,198,.55)"; x.fill(); x.strokeStyle="rgba(43,36,32,.55)"; x.lineWidth=2.5; x.stroke(); x.restore();
+  // graticule ticks
+  x.strokeStyle="rgba(43,36,32,.12)"; x.lineWidth=1; for(let lo=26;lo<=34;lo+=2){ const [a]=P([lo,0]); x.beginPath(); x.moveTo(a,top); x.lineTo(a,bot); x.stroke(); } for(let la=22;la<=31;la+=1){ const [,b]=P([0,la]); x.beginPath(); x.moveTo(x0,b); x.lineTo(2260,b); x.stroke(); }
+  // Nile, lake, delta
+  x.lineJoin="round"; x.lineCap="round";
+  x.strokeStyle="rgba(31,58,110,.65)"; x.lineWidth=7; smooth(FRAME_GEO.nile); x.stroke(); x.strokeStyle="rgba(31,58,110,.2)"; x.lineWidth=2; x.save(); x.translate(10,0); smooth(FRAME_GEO.nile); x.stroke(); x.restore();
+  x.strokeStyle="rgba(31,58,110,.45)"; x.lineWidth=16; smooth(FRAME_GEO.lake); x.stroke();
+  x.strokeStyle="rgba(31,58,110,.45)"; x.lineWidth=3; FRAME_GEO.delta.forEach(d=>{ smooth(d); x.stroke(); });
+  spaced("MEDITERRANEAN SEA", P([30.8,31.65])[0], P([0,31.68])[1], `italic 400 26px ${serif}`, "rgba(31,58,110,.5)", 9);
+  x.save(); const rs=P([34.9,25.6]); x.translate(rs[0]+60,rs[1]); x.rotate(1.05); spaced("RED SEA", 0, 0, `italic 400 26px ${serif}`, "rgba(31,58,110,.5)", 10); x.restore();
+  // our route: the boat leg in ink over the river, flights as dotted arcs
+  const leg=(a,b,bend,dash,col,lw)=>{ const A=P(a),B=P(b); x.setLineDash(dash); x.strokeStyle=col; x.lineWidth=lw; x.beginPath(); x.moveTo(A[0],A[1]); const mx=(A[0]+B[0])/2+bend[0], my=(A[1]+B[1])/2+bend[1]; x.quadraticCurveTo(mx,my,B[0],B[1]); x.stroke(); x.setLineDash([]); };
+  x.strokeStyle=RED; x.lineWidth=9; smooth(FRAME_GEO.nile.slice(7)); x.stroke(); // Luxor → Aswan, sailed downstream
+  leg([31.24,30.05],[32.9,24.09],[240,0],[2,18],"rgba(156,47,34,.85)",5);   // CAI → ASW
+  leg([32.9,24.09],[31.62,22.34],[-60,10],[22,14],"rgba(156,47,34,.85)",5); // road to Abu Simbel
+  leg([32.64,25.69],[31.24,30.05],[-170,0],[2,18],"rgba(156,47,34,.85)",5); // LXR → CAI
+  leg([31.24,30.05],[34.33,27.9],[60,-140],[2,16],"rgba(43,36,32,.35)",3);  // Brad: Cairo → Sinai
+  leg([31.13,29.98],[28.86,28.35],[0,-60],[16,12],"rgba(43,36,32,.35)",3);   // Brad: → Bahariya
+  leg([28.86,28.35],[27.97,27.36],[0,0],[16,12],"rgba(43,36,32,.35)",3);
+  // cities
+  const city=(nm,[lo,la,side],main)=>{ const [a,b]=P([lo,la]); x.beginPath(); x.arc(a,b,main?9:6,0,Math.PI*2); x.fillStyle=main?INK:"rgba(43,36,32,.5)"; x.fill(); if(main){ x.beginPath(); x.arc(a,b,16,0,Math.PI*2); x.strokeStyle="rgba(43,36,32,.6)"; x.lineWidth=1.5; x.stroke(); } spaced(nm.toUpperCase(), side==="l"?a-28:a+28, b, `${main?400:400} ${main?30:22}px ${serif}`, main?INK:"rgba(43,36,32,.5)", main?6:4, side==="l"?"right":"left"); };
+  Object.entries(FRAME_GEO.solo).forEach(([n,v])=>city(n,v,false));
+  Object.entries(FRAME_GEO.cities).forEach(([n,v])=>city(n,v,true));
+  { const [a,b]=P([34.52,28.5]); spaced("BRAD, ON ALONE", a-28, b+40, `italic 400 20px ${serif}`, "rgba(43,36,32,.45)", 3, "right"); }
+  // compass
+  x.save(); const cp=[2150, top+60]; x.translate(cp[0],cp[1]+40); x.strokeStyle="rgba(43,36,32,.6)"; x.fillStyle="rgba(43,36,32,.7)"; x.lineWidth=2; x.beginPath(); x.arc(0,0,44,0,Math.PI*2); x.stroke(); x.beginPath(); x.moveTo(0,-38); x.lineTo(10,0); x.lineTo(0,38); x.lineTo(-10,0); x.closePath(); x.fill(); spaced("N",0,-62,`700 24px ${serif}`,INK,0); x.restore();
+  x.restore();
+  // the photos
+  const st=frameState(); const use=opts.use||st.use; const imgs=[]; for(const p of use){ try{ imgs.push({...p, el:await loadImg(p.img)}); }catch(e){} }
+  const zone={x:170, y:top+10, w:1340, h:bodyH-20};
+  const slots = imgs.length?imgs:(opts.placeholders||[]).map(p=>({...p, el:null}));
+  const polaroid=(p, cx, cy, wPhoto, hPhoto, rot, k2)=>{ const bd=Math.round(wPhoto*.045), capH=Math.round(wPhoto*.15); const pw=wPhoto+bd*2, ph=hPhoto+bd+capH;
+    x.save(); x.translate(cx,cy); x.rotate(rot); x.shadowColor="rgba(40,25,10,.38)"; x.shadowBlur=40; x.shadowOffsetX=8; x.shadowOffsetY=16; x.fillStyle="#fbf8f0"; x.fillRect(-pw/2,-ph/2,pw,ph); x.shadowColor="transparent";
+    const px=-pw/2+bd, py=-ph/2+bd;
+    if(p.el){ const iw=p.el.naturalWidth, ih=p.el.naturalHeight; const r=Math.max(wPhoto/iw, hPhoto/ih); const sw=wPhoto/r, sh=hPhoto/r; const sx=(iw-sw)/2, sy=Math.max(0,(ih-sh)*0.38); x.drawImage(p.el, sx, sy, sw, sh, px, py, wPhoto, hPhoto); }
+    else { x.fillStyle="rgba(43,36,32,.08)"; x.fillRect(px,py,wPhoto,hPhoto); x.setLineDash([14,12]); x.strokeStyle="rgba(43,36,32,.3)"; x.lineWidth=3; x.strokeRect(px+20,py+20,wPhoto-40,hPhoto-40); x.setLineDash([]); spaced(`${(p.who||"").toUpperCase()}'S PICK GOES HERE`, 0, py+hPhoto/2, `400 ${Math.round(wPhoto*.035)}px ${serif}`, "rgba(43,36,32,.45)", 5); }
+    x.strokeStyle="rgba(0,0,0,.08)"; x.lineWidth=2; x.strokeRect(px,py,wPhoto,hPhoto);
+    const cap=(p.cap||"").trim(); const label=opts.single?(cap||"Our photo"):`${p.who}'s pick${cap?" — "+cap:""}`; x.font=`500 ${Math.round(capH*.46)}px ${hand}`; x.fillStyle=BLUE; x.textAlign="center"; x.textBaseline="middle"; let L=label; while(x.measureText(L).width>wPhoto*.94 && L.length>8) L=L.slice(0,-2)+"…"; x.fillText(L, 0, ph/2-capH/2+4); x.textAlign="left";
+    // tape
+    const tape=(tx,ty,tr)=>{ x.save(); x.translate(tx,ty); x.rotate(tr); x.fillStyle="rgba(222,205,160,.62)"; x.fillRect(-70,-22,140,44); x.strokeStyle="rgba(150,120,70,.18)"; x.lineWidth=1; x.strokeRect(-70,-22,140,44); x.restore(); };
+    tape(-pw/2+60,-ph/2+6,-.6+k2*.2); tape(pw/2-60,-ph/2+6,.55-k2*.15);
+    x.restore(); return [pw,ph]; };
+  const ar=(el)=>{ if(!el) return 4/3; const a=el.naturalWidth/el.naturalHeight; return Math.max(3/4, Math.min(4/3, a)); };
+  const fitOne=(p)=>{ const a=ar(p.el); const wMax=zone.w, hMax=zone.h; let wp=wMax/1.09, hp=wp/a; const ph=hp+wp*.045+wp*.15; if(ph>hMax){ const s=hMax/ph; wp*=s; hp*=s; } return [wp,hp]; };
+  if(slots.length===1){ const [wp,hp]=fitOne(slots[0]); polaroid(slots[0], zone.x+zone.w/2, zone.y+zone.h/2, wp, hp, -0.025, 0); }
+  else if(slots.length===2){ const [A,B]=slots; const aa=ar(A.el), ab=ar(B.el);
+    // try stacked-diagonal and side-by-side; keep whichever gives the bigger photos
+    const tryStack=()=>{ let w=zone.w*.74; const h1=w/aa, h2=w/ab; const ph1=h1+w*.195, ph2=h2+w*.195; const total=ph1*.97+ph2; const s=Math.min(1, zone.h/total); w*=s; return {s:w*w*(1/aa+1/ab), w, kind:"stack"}; };
+    const trySide=()=>{ let w=zone.w*.5; const h=Math.max(w/aa,w/ab)+w*.195; const s=Math.min(1, zone.h/(h*1.08)); w*=s; return {s:w*w*(1/aa+1/ab), w, kind:"side"}; };
+    const best=[tryStack(),trySide()].sort((p,q)=>q.s-p.s)[0]; const w=best.w;
+    if(best.kind==="stack"){ const ph1=w/aa+w*.195, ph2=w/ab+w*.195; const total=ph1*.97+ph2; const y0b=zone.y+(zone.h-total)/2; polaroid(A, zone.x+w*.52, y0b+ph1/2, w, w/aa, -0.03, 0); polaroid(B, zone.x+zone.w-w*.56, y0b+ph1*.97+ph2/2, w, w/ab, 0.025, 1); }
+    else { const ph=Math.max(w/aa,w/ab)+w*.195; const cy=zone.y+zone.h/2; polaroid(A, zone.x+w*.5, cy-ph*.04, w, w/aa, -0.035, 0); polaroid(B, zone.x+zone.w-w*.5+40, cy+ph*.06, w, w/ab, 0.03, 1); }
+  }
+  // the nine days, stamped
+  const together=DAYS.filter(d=>d.who!=="brad"); const live=GS.get("live",{})||{}; const theirs=(live[OTHER()]&&live[OTHER()].stamps)||{}; const mine=stamps();
+  const sy=H-470, gap=(W-360)/together.length; x.save(); x.globalCompositeOperation="multiply";
+  together.forEach((d,i)=>{ const s=mine[d.id]||theirs[d.id]; const L=stampLook(d); const cx=180+gap*(i+.5); x.save(); x.translate(cx,sy); x.scale(.58,.58); drawStamp(x, 0, 0, ((Math.abs(hash(d.id))%21)-10)*Math.PI/180, L[0], L[1], d, s, serif, mono); x.restore(); });
+  x.restore();
+  // stats + Nile Bowl
+  const vis=(()=>{ try{ const a=visitedMine(), b=visitedTheirs(); return new Set([...Object.keys(a),...Object.keys(b)].filter(k=>canVisit(k))).size; }catch(e){ return 0; } })();
+  const nb=(()=>{ try{ const A=nileTotal("Brad"), B=nileTotal("Duane"); return `THE NILE BOWL · STEELERS ${A.pts} — BENGALS ${B.pts}`; }catch(e){ return "THE NILE BOWL"; } })();
+  spaced(`NINE DAYS  ·  CAIRO → ASWAN → THE RIVER → LUXOR  ·  ${vis?vis+" PLACES  ·  ":""}${nb}`, W/2, H-292, `400 27px ${serif}`, "rgba(43,36,32,.8)", 6);
+  x.fillStyle=PAPER2; x.fillRect(93,H-250,W-186,157);
+  spaced(mrzLine("P<EGYBRAD<<DUANE","NILE<BOWL"), W/2, H-200, `500 38px ${mono}`, "rgba(43,36,32,.8)", 9);
+  spaced(mrzLine("20261010EGY<PIT<CIN", "MMXXVI<FRAME"), W/2, H-148, `500 38px ${mono}`, "rgba(43,36,32,.8)", 9);
+  return c;
+}
+
+// ---- UI on the passport's back page
+function frameThumb(p, who, mine){ return p?`<div class="fr-ph"><img src="${p.img}" alt="${esc(who)}'s pick"><div><b>${esc(who)}'s pick</b><small>${esc(p.cap||"no caption")}</small>${mine?`<div class="row"><label class="btn mini" for="favFile">Change</label></div>`:""}</div></div>`
+  : mine?`<label class="fr-empty" for="favFile"><span>📷</span><b>Choose your favourite photo</b><small>Ideally one with both of you in it. Full resolution from your camera roll.</small></label>`
+  : `<div class="fr-empty wait"><span>⏳</span><b>Waiting for ${esc(who)}'s pick</b><small>He chooses on his phone; it appears here.</small>${sendBtn(`Pick your favourite photo of the trip for the frame — Passport → back page → The frame. Ideally one with both of us in it.`, "Nudge him ↗", "mini")}</div>`; }
+function renderFrameUI(){ const el=document.getElementById("frameUI"); if(!el) return; const s=frameState(); const w=s.w, o=s.o;
+  const vlab={both:"Both photos", [w]:`Just mine`, [o]:`Just ${o}'s`}; const opts=["both",w,o];
+  const who=(v)=>[s.vMine===v?"you":"", s.vTheirs===v?o:""].filter(Boolean).join(" + ");
+  const status = !s.photos[o]&&!s.photos[w] ? "Pick a photo each. Two pictures, or the one you both agree on." : s.agreed ? (s.layout==="both"?"Agreed: both photos.":`Agreed: just ${s.layout===w?"your":o+"'s"} photo.`) : `You'd like “${vlab[s.vMine]}”, ${o} wants “${s.vTheirs==="both"?"Both photos":s.vTheirs===w?"just yours":"just his"}”. Until you agree, the frame holds both.`;
+  el.innerHTML=`<div class="pgh"><span>The frame</span><span>For the wall</span></div>
+   <p class="fr-lede">Each of you picks one favourite photo — the map of where you went holds them, the nine days run along the bottom. Or agree on a single photo and it takes the middle.</p>
+   <div class="fr-picks">${frameThumb(s.photos[w], w, true)}${frameThumb(s.photos[o], o, false)}</div>
+   <input type="file" id="favFile" accept="image/*" hidden>
+   ${s.photos[w]?`<label class="fr-cap">Caption for yours <input type="text" id="favCap" maxlength="40" placeholder="e.g. Philae, Tue 13" value="${esc(lsGet(FRAME_LS.cap,""))}"></label>`:""}
+   <div class="fr-h">Which goes in the frame?</div><div class="fr-vote">${opts.map(v=>`<button type="button" class="chip ${s.vMine===v?"on":""}" data-fvote="${esc(v)}" ${v!=="both"&&!s.photos[v]?"disabled":""}>${esc(vlab[v])}${who(v)?`<small>${esc(who(v))}</small>`:""}</button>`).join("")}</div>
+   <p class="fr-status ${s.agreed?"ok":""}">${esc(status)}</p>
+   <div class="fr-h">Print size</div><div class="fr-vote">${Object.entries(FRAME_SIZES).map(([k,v])=>`<button type="button" class="chip ${s.size===k?"on":""}" data-fsize="${k}">${v.label}″</button>`).join("")}</div>
+   <div class="print"><img id="frPrev" class="fr-prev" alt="The frame, preview"></div>
+   <div class="row" style="margin-top:10px"><button type="button" class="btn primary" data-fsave>Save the frame</button><span class="muted" id="frNote">${frameSizeNote(s.size)}</span></div>`;
+  const prev=document.getElementById("frPrev"); if(prev){ const SZ=FRAME_SIZES[s.size]; prev.style.aspectRatio=`${SZ.w}/${SZ.h}`; }
+  frameRenderPreview(); }
+function frameSizeNote(k){ const SZ=FRAME_SIZES[k]||FRAME_SIZES.letter; return `${Math.round(SZ.w*SZ.dpi)}×${Math.round(SZ.h*SZ.dpi)} px · ${SZ.label}″ at ${SZ.dpi} dpi${k==="poster"?" — poster print, viewed from a step back":k==="tabloid"?" — sharp up close":" — print-shop sharp"}`; }
+let frPrevT=0; async function frameRenderPreview(){ const img=document.getElementById("frPrev"); if(!img) return; const my=++frPrevT; await frameFonts(); const s=frameState(); const ph=s.use.length?null:[{who:s.w},{who:s.o}]; try{ const c=await drawFrame({preview:true, placeholders:ph, single:s.use.length===1&&s.layout!=="both"}); if(my!==frPrevT) return; img.src=c.toDataURL("image/jpeg",.85); img.classList.add("ready"); }catch(e){} }
+async function frameSave(){ const s=frameState(); if(!s.use.length){ toast("Pick a photo first."); return; } toast("Making the frame…"); await frameFonts(); let c; try{ c=await drawFrame({size:s.size, single:s.use.length===1&&s.layout!=="both"}); }catch(e){ toast("Couldn't draw it — try the smaller size."); return; }
+  c.toBlob(async blob=>{ if(!blob){ toast("Too big for this phone — try 8.5×11."); return; } const f=new File([blob], `egypt-frame-${s.size}.jpg`, {type:"image/jpeg"}); if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:"Egypt — the frame"}); }catch(e){} } else { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=f.name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); } toast(`Saved · ${FRAME_SIZES[s.size].label}″ — send it to a print shop as is`); }, "image/jpeg", .92); }
+document.addEventListener("change", e=>{ const inp=e.target.closest("#favFile"); if(!inp||!inp.files||!inp.files[0]) return; const f=inp.files[0]; const url=URL.createObjectURL(f); const img=new Image(); img.onload=()=>{ try{ const max=1800; const sc=Math.min(1, max/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); let data=c.toDataURL("image/jpeg",.84); if(!lsSet(FRAME_LS.mine,data)){ data=c.toDataURL("image/jpeg",.7); if(!lsSet(FRAME_LS.mine,data)){ toast("The phone's storage is full — try a smaller photo."); return; } } toast(img.width<1200?"In — it's a small photo, so it'll print soft. A full-size one prints sharper.":"In the frame. Sending it to the other phone…"); renderFrameUI(); framePush().then(ok=>{ if(!ok) toast("Saved here; it'll reach the other phone when you're online."); }); }catch(err){ toast("Couldn't use that one — try another photo."); } URL.revokeObjectURL(url); inp.value=""; }; img.src=url; });
+document.addEventListener("click", e=>{ const v=e.target.closest("[data-fvote]"); if(v){ lsSet(FRAME_LS.vote, v.dataset.fvote); renderFrameUI(); framePush(); return; }
+  const z=e.target.closest("[data-fsize]"); if(z){ lsSet(FRAME_LS.size, z.dataset.fsize); renderFrameUI(); return; }
+  if(e.target.closest("[data-fsave]")){ frameSave(); return; } });
+let frCapT=0; document.addEventListener("input", e=>{ if(e.target.id!=="favCap") return; lsSet(FRAME_LS.cap, e.target.value); clearTimeout(frCapT); frCapT=setTimeout(()=>{ frameRenderPreview(); framePush(); }, 700); });
+async function frameSync(){ const changed=await framePull(); if(changed) renderFrameUI(); }
+
+// ---------- Cloud memory: the trip's keepsakes (stamps, journal, ratings, photos, passport photo, the frame pick, visited places, notes)
+// are copied to the room's server space, so a new phone can bring them back. Small data in one document; each photo in its own.
+const MEM_SKIP = /^egypt\.(wx|favOther|memsent|memAt|room|dev$|game\.(me|live|livePushed|livePulled|liveFail|sound|resetSeen|ppHint|confetti|seenOther|digHint))/;
+const MEM_PIC = /^egypt\.(photo\.|portrait$|fav$)/;
+// each phone writes to its own slot, so a fresh phone can never overwrite a full one
+function memDev(){ let d=""; try{ d=localStorage.getItem("egypt.dev")||""; if(!d){ d=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); localStorage.setItem("egypt.dev",d); } }catch(e){ d="nodev"; } return d; }
+const memBase=()=>`${DB_URL}/rooms/${room()}-mem/${me()}`;
+const memURL=(path,dev)=>`${memBase()}/${dev||memDev()}${path?"/"+path:""}.json`;
+const memSafe=k=>k.replace(/[.#$\[\]\/]/g,"_");
+function memSnapshot(){ const data={}, pics={}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k||!k.startsWith("egypt.")||MEM_SKIP.test(k)) continue; const v=localStorage.getItem(k); if(v==null) continue; if(MEM_PIC.test(k)) pics[k]=v; else data[k]=v; } }catch(e){} return {data,pics}; }
+const memHash=s=>{ let h=0; for(let i=0;i<s.length;i+=Math.max(1,Math.floor(s.length/4000))) h=(h*31+s.charCodeAt(i))|0; return s.length+":"+h; };
+let memBusy=false;
+async function memBackup(force){ if(!liveOK()||memBusy) return false; if(!navigator.onLine) return false; memBusy=true;
+  try{ const {data,pics}=memSnapshot(); let sent={}; try{ sent=JSON.parse(localStorage.getItem("egypt.memsent")||"{}")||{}; }catch(e){}
+    const dh=memHash(JSON.stringify(data)); let changed=false;
+    if(force||sent.__data!==dh){ const r=await fetch(memURL("data"),{method:"PUT",body:JSON.stringify({saved:new Date().toISOString(), blob:JSON.stringify(data)})}); if(!r.ok) throw 0; sent.__data=dh; changed=true; }
+    for(const [k,v] of Object.entries(pics)){ const h=memHash(v); if(!force&&sent[k]===h) continue; const r=await fetch(memURL("pics/"+memSafe(k)),{method:"PUT",body:JSON.stringify({k, v})}); if(!r.ok) throw 0; sent[k]=h; changed=true; }
+    for(const k of Object.keys(sent)){ if(k==="__data"||pics[k]) continue; try{ await fetch(memURL("pics/"+memSafe(k)),{method:"DELETE"}); }catch(e){} delete sent[k]; changed=true; }
+    localStorage.setItem("egypt.memsent", JSON.stringify(sent)); if(changed||force) localStorage.setItem("egypt.memAt", new Date().toISOString());
+    memStatus(); return true;
+  }catch(e){ memStatus(true); return false; } finally{ memBusy=false; } }
+function memKeys(d){ try{ return d&&d.blob?JSON.parse(d.blob):null; }catch(e){ return null; } }
+async function memFetchMeta(){ if(!liveOK()) return null; try{ const r=await fetch(`${memBase()}.json?shallow=true`,{cache:"no-store"}); if(!r.ok) return null; const devs=Object.keys((await r.json())||{}).filter(d=>d!==memDev()); let best=null;
+  for(const dev of devs){ try{ const q=await fetch(memURL("data",dev),{cache:"no-store"}); if(!q.ok) continue; const d=await q.json(); const k=memKeys(d); if(!k) continue; const score=Object.keys(JSON.parse(k["egypt.game.stamp"]||"{}")).length*100+Object.keys(k).length; const t=new Date(d.saved||0).getTime(); if(!best||score>best.score||(score===best.score&&t>best.t)) best={...d, dev, score, t}; }catch(e){} }
+  return best; }catch(e){ return null; } }
+async function memRestore(){ if(!liveOK()){ toast("Pick whose phone this is first."); return; } toast("Bringing your trip back…");
+  try{ const d=await memFetchMeta(); const keys=memKeys(d); if(!keys){ toast("Nothing saved for "+me()+" yet."); return; }
+    const r=await fetch(memURL("pics",d.dev),{cache:"no-store"}); const pics=r.ok?((await r.json())||{}):{};
+    let n=0; Object.entries(keys).forEach(([k,v])=>{ if(MEM_SKIP.test(k)) return; try{ localStorage.setItem(k,v); n++; }catch(e){} });
+    let p=0; Object.values(pics).forEach(o=>{ if(o&&o.k&&typeof o.v==="string"){ try{ localStorage.setItem(o.k,o.v); p++; }catch(e){} } });
+    localStorage.removeItem("egypt.memsent"); localStorage.setItem("egypt.memAt", d.saved||new Date().toISOString());
+    toast(`Restored — ${p} photo${p===1?"":"s"} and everything else. Reloading…`); setTimeout(()=>location.reload(), 1400);
+  }catch(e){ toast("Couldn't reach the server — try again with signal."); } }
+function memAgo(){ const a=localStorage.getItem("egypt.memAt"); if(!a) return ""; const m=Math.round((Date.now()-new Date(a))/60000); return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.round(m/60)} h ago`:new Date(a).toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
+function memStatus(err){ const el=document.getElementById("memStatus"); if(!el) return; const a=memAgo(); el.textContent = err?"Couldn't back up just now — it retries on its own.": a?`Backed up to the server ${a}. A new phone gets it all back.`:(liveOK()?"Backs up on its own once there's signal.":"Pick whose phone this is to turn on backup."); }
+// a fresh phone (nothing stamped, no journal) with a backup waiting: offer it once per session
+async function memOffer(){ try{ if(!liveOK()||sessionStorage.getItem("egypt.memOffered")) return; const has=Object.keys(stamps()).length || [...Array(localStorage.length).keys()].some(i=>{ const k=localStorage.key(i)||""; return k.startsWith("egypt.journal.")||k.startsWith("egypt.photo."); }); if(has) return; const d=await memFetchMeta(); const keys=memKeys(d); if(!keys) return; sessionStorage.setItem("egypt.memOffered","1");
+  const when=d.saved?new Date(d.saved).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):""; const nStamps=(()=>{ try{ return Object.keys(JSON.parse(keys["egypt.game.stamp"]||"{}")).length; }catch(e){ return 0; } })();
+  openSheet("sheetQC", `<div class="qh"><h3>Welcome back, ${esc(me())}</h3><button type="button" class="x" data-mem-close="1" aria-label="Close">✕</button></div><p>Your trip is saved on the server${when?` (last backed up ${esc(when)})`:""}${nStamps?` — ${nStamps} stamp${nStamps===1?"":"s"}, your journal and photos`:""}. Bring it onto this phone?</p><div class="row"><button type="button" class="btn primary" data-mem-restore="1">Restore my trip</button><button type="button" class="btn" data-mem-close="1">Not now</button></div><p class="muted" style="font-size:0.7647rem;margin-top:10px">It's also under Passport → back page → Consular services.</p>`); }catch(e){} }
+document.addEventListener("click", e=>{ if(e.target.closest("[data-mem-restore]")){ closeSheet("sheetQC"); memRestore(); return; } if(e.target.closest("[data-mem-close]")){ closeSheet("sheetQC"); return; } if(e.target.closest("[data-mem-now]")){ memBackup(true).then(ok=>toast(ok?"Backed up.":"No signal — it'll try again.")); } });
+(function(){ const tick=()=>{ if(document.hidden) return; memBackup(false); }; setTimeout(()=>{ memOffer(); tick(); }, 4000); setInterval(tick, 120000); document.addEventListener("visibilitychange",()=>{ if(document.hidden) memBackup(false); else { memOffer(); } }); addEventListener("online",()=>memBackup(false)); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
@@ -4116,6 +4389,62 @@ function listenBlock(d){ const L=LISTEN[d.id]; if(!L||!L.length) return ""; retu
 function listenForBriefing(d){ const L=(LISTEN[d.id]||[]).filter(x=>x[0]!=="watch"); const W=(LISTEN[d.id]||[]).filter(x=>x[0]==="watch"); if(!L.length&&!W.length) return ""; return `<div class="br-h">On the way</div><div class="lstl sm">${L.slice(0,2).concat(W.slice(0,1)).map(listenItem).join("")}</div>`; }
 function listenPre(){ const seen=new Set(); const all=[]; DAYS.forEach(d=>(LISTEN[d.id]||[]).forEach(it=>{ if(!seen.has(it[1])){ seen.add(it[1]); all.push([d,it]); } }));
   return `<details class="fold listen" style="margin-top:8px"><summary>🎧 Listen & watch before you fly <span class="pill">${all.length}</span></summary><div class="in"><p class="muted" style="margin:0 0 8px;font-size:0.7941rem">Everything the days ask for, in order. Audio: open in Spotify on wifi and hit the download arrow — the boat has no signal and the planes have no wifi (podcasts and music download on any plan; audiobooks need Premium). Films: Netflix downloads to the phone; YouTube only with Premium — otherwise watch the 🎬 ones this week.</p><div class="lstl">${all.map(([d,it])=>`<div class="lst-day">${d.dow} ${d.num}</div>`+listenItem(it)).join("")}</div></div></details>`; }
+
+// ---------- Coffee, heat & dancing: Brad's standing requests, per day. kind: coffee | heat | dance. when: am | pm | any.
+// Checked Oct 2026 from listings and reviews — dance nights especially move around, so the line says who to message.
+const EXTRAS = {
+ sun11:[
+  ["coffee","Alaa ElDin coffeehouse","Qasr El-Ainy St, across from Garden City","am","An old-school ahwa five minutes from the Hilton: Turkish coffee mazboot (medium sugar), plastic chairs, the city waking up. Before the 9am pickup.","Alaa ElDin Cafe Qasr El Ainy Cairo"],
+  ["coffee","El Fishawy","Khan el-Khalili, off Al-Hussein Square","pm","Open around the clock since 1797; mirrors, brass, a waiter with a tray of everything. Turkish coffee for about a dollar. Today's Khan stop, so sit down here.","El Fishawy Cafe Khan el Khalili"],
+  ["heat","Hilton spa: sauna, steam, hot tub","Hilton Cairo Grand Nile","pm","Saqqara dust out of every pore. Ask at the gym desk; the wet areas are free for guests.","Hilton Cairo Grand Nile"],
+  ["dance","AfroLatin Holidays Egypt — zouk, kizomba","Saraya Hall, Old Cairo (it moves)","pm","A touring festival (Oct 1–15) with zouk in the mix and nightly parties. Email info@afrolatinegypt.com or WhatsApp +20 10 974 964 34 to ask if there's a Cairo party Sat or Sun. The best zouk chance of the trip.","Saraya Hall Old Cairo"]],
+ mon12:[
+  ["coffee","30 North — inside the Grand Egyptian Museum","GEM, Giza","am","Egypt's best-known specialty roaster has a café in the museum. A flat white before Tutankhamun is the correct order.","Grand Egyptian Museum"],
+  ["dance","Latin Love Practica — salsa, bachata, kiz","Narges Buildings, New Cairo","pm","Every other Monday, and Oct 12 is on: 9–11pm, 150 EGP. 45–60 min by Uber. WhatsApp +20 15 59642700 to confirm. No tango, but bodies moving to music, which is the point.","Latin Love Studios New Cairo"],
+  ["dance","Tango — ask before you fly","Dansation (Mohandessin) · In The Mood (Dokki)","pm","Cairo milongas live on Facebook: message Dansation Egypt or In The Mood (+20 120 779 6177) for this week's milonga. Small scene, warm welcome.","Dokki Cairo"],
+  ["heat","Four Seasons Nile Plaza hammam","Next door to the Hilton, Garden City","pm","The proper hammam, sauna and steam nearby. Non-guest access isn't published — call the spa first.","Four Seasons Hotel Cairo at Nile Plaza"]],
+ tue13:[
+  ["coffee","Nubian coffee — jabana","Gharb Soheil (Kerma Nubian Restaurant or any house café)","pm","Charcoal-roasted, ground with ginger and cardamom, poured from a clay pot. Ask for 'gabana'. The best coffee ritual of the trip, in the village tonight.","Gharb Soheil Nubian Village Aswan"],
+  ["coffee","Old Cataract terrace","Sofitel Legend Old Cataract, Aswan","pm","Already on the plan for sunset. Order coffee instead of tea if you like; the view's the same.","Sofitel Legend Old Cataract Aswan"]],
+ wed14:[
+  ["coffee","Dawn coffee on deck","The dahabiya","am","Ask the crew the night before for Turkish coffee at first light. Sails up, river silent, cup in hand: no café on earth beats it."]],
+ thu15:[
+  ["coffee","Dawn coffee on deck, again","The dahabiya","am","Same request, better because you know the crew's names now (that's today's play)."],
+  ["heat","The river, for a cold plunge","Mooring stops","pm","If the crew says the swimming spot is safe, the Nile in October is cool, not cold. A plunge you might actually like."]],
+ fri16:[
+  ["coffee","Golden Mug","8 Mohamed Farid St, by Marhaba Market, Luxor","am","Luxor's best-reviewed coffee: proper espresso in a town of instant. Ten minutes by taxi from the Hilton.","Golden Mug Luxor"],
+  ["heat","Hilton Luxor spa: sauna, steam, hot tub","Hilton Luxor Resort & Spa","pm","After the Valley of the Kings is the right moment. Book a treatment if you want one; the wet areas are free.","Hilton Luxor Resort & Spa"]],
+ sat17:[
+  ["coffee","Beyt Ward","Near Karnak, on the Nile","pm","Turkish coffee with a river view, after the hot hours.","Beyt Ward Luxor"],
+  ["heat","Hilton Luxor spa, round two","Hilton Luxor Resort & Spa","pm","You were up at 4:30 for the balloon. Sauna, then sleep.","Hilton Luxor Resort & Spa"]],
+ sun18:[
+  ["coffee","El Korba coffee walk — Nomadic, 929, Bouchée","Baghdad St, Heliopolis","pm","Ten minutes from the Waldorf, under the Belgian arcades: Nomadic roasts on site (try the cold brew), Bouchée does cake. Last night together; walk it.","El Korba Heliopolis"],
+  ["heat","Waldorf spa: sauna, steam, Turkish bath","Waldorf Astoria Cairo Heliopolis","pm","The best spa of the trip, and you're sleeping upstairs. Pool closes at 5pm; the wet areas don't.","Waldorf Astoria Cairo Heliopolis"],
+  ["dance","Tango in Heliopolis — maybe","Ask Tango in Egypt (facebook.com/tangoinegypt)","pm","Heliopolis used to host a weekly milonga. Nothing confirmed for Sundays now; a message settles it.","Heliopolis Cairo"]],
+ mon19:[
+  ["coffee","Coffee & Cotton","Lighthouse, Dahab","am","Best espresso in Dahab, two steps from the water.","Coffee and Cotton Dahab"],
+  ["coffee","11:11 Avenue","Assalah, Dahab","any","Specialty beans, slow bar. The other contender.","11:11 Avenue Dahab"]],
+ tue20:[
+  ["coffee","Flat White","Mashraba, Dahab","am","Good Turkish coffee too, before the Blue Hole jeep.","Flat White Dahab"],
+  ["heat","Sauna — Tropitel Dahab Oasis or Happy Life Village","Dahab","pm","Both have sauna and steam; day use for non-guests isn't published — ask at the desk. The Red Sea is 26°C: not a cold plunge, sorry/you're welcome.","Tropitel Dahab Oasis"]],
+ wed21:[
+  ["coffee","Bedouin coffee at the summit","Mount Sinai","am","The tea and coffee sellers at the top at dawn. Cardamom, smoke, the sun coming up over the Gulf. You'll pay mountain prices and not mind."]],
+ thu22:[
+  ["coffee","Espressolab — the lab bar","City Centre Almaza, 2nd floor","pm","Six beans × six methods (Chemex, AeroPress, siphon). The nerdiest coffee near the airport hotel, 15 min away.","City Centre Almaza Cairo"],
+  ["dance","Egypt Latin School — Thursday classes","The CAK, New Cairo","pm","Classes, not a social: 8–10pm, +20 12 83286787. Close enough to the airport to be worth asking about.","The CAK New Cairo"]],
+ fri23:[
+  ["heat","Bir el-Ghaba hot spring","15 km NE of Bawiti, Bahariya","pm","A concrete tank of 35–40°C spring water in a eucalyptus grove, desert night falling. Ask the guide to stop on the way in — short tours skip it unless you do.","Bir El Ghaba Bahariya"]],
+ sat24:[
+  ["coffee","30 North — Zamalek","Iconia courtyard, Zamalek","am","The roaster's home café, open-air, good breakfast. A last proper flat white in Egypt.","30 North Zamalek"],
+  ["dance","Check the week's socials","salsavida.com/guides/egypt/cairo","pm","Nothing confirmed for Saturday yet. The calendar fills in close to the date.",""]],
+};
+const EX_ICON={coffee:"☕", heat:"♨️", dance:"💃"};
+const EX_LABEL={coffee:"Coffee", heat:"Sauna", dance:"Dancing"};
+function extrasFor(d){ return EXTRAS[d.id]||[]; }
+function extrasBlock(d){ const L=extrasFor(d); if(!L.length) return ""; const kinds=[...new Set(L.map(x=>x[0]))];
+  return `<details class="fold extras"><summary>${kinds.map(k=>EX_ICON[k]).join("")} ${kinds.map(k=>EX_LABEL[k]).join(" · ")} <span class="pill">${L.length}</span></summary><div class="in"><div class="exl">${L.map(([k,n,where,when,why,q])=>`<div class="ex ${k}"><span class="ex-i">${EX_ICON[k]}</span><div class="ex-b"><b>${esc(n)}</b><small>${esc(where)}${when==="am"?" · morning":when==="pm"?" · later":""}</small><span>${esc(why)}</span>${q?mapBtns(q,null,false):""}</div></div>`).join("")}</div></div></details>`; }
+// the morning line on the Now card: today's coffee, before 11
+function extrasMorning(d, now){ if(!d||now.h>=11) return ""; const c=extrasFor(d).find(x=>x[0]==="coffee"&&x[3]!=="pm"); return c?`☕ Coffee: ${c[1]} — ${c[2]}`:""; }
 
 // ---------- the larger story: nine days as nine chapters of one 4,600-year narrative ----------
 // Each chapter: title, where we are in time, "so far" (what the previous chapters established), the chapter itself,
