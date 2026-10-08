@@ -8,7 +8,7 @@
   --bg:#f4efe3; --card:#fffdf7; --fg:#1d1b16; --muted:#5e5849; --line:#e2dac8; --sand:#ebe2cd;
   --nile:#17698a; --nile-ink:#0f4b63; --nile-soft:#dcecf3;
   --dusk:#c0522a; --dusk-soft:#f6e3d8;
-  --ok:#2f7a50;
+  --ok:#2f7a50; --now-btn:rgba(255,255,255,.14); --now-bar:rgba(255,255,255,.18);
   --display:"Archivo","Helvetica Neue",Arial,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -17,11 +17,11 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#15140f; --card:#1f1d17; --fg:#ede6d6; --muted:#a69e8c; --line:#34312a; --sand:#2a2720;
   --nile:#5fb4d6; --nile-ink:#a6d8ea; --nile-soft:#17323d;
-  --dusk:#e58a5e; --dusk-soft:#3b241a; --ok:#73c293; color-scheme:dark } }
+  --dusk:#e58a5e; --dusk-soft:#3b241a; --ok:#73c293; --now-btn:rgba(0,0,0,.09); --now-bar:rgba(0,0,0,.12); color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#15140f; --card:#1f1d17; --fg:#ede6d6; --muted:#a69e8c; --line:#34312a; --sand:#2a2720;
   --nile:#5fb4d6; --nile-ink:#a6d8ea; --nile-soft:#17323d;
-  --dusk:#e58a5e; --dusk-soft:#3b241a; --ok:#73c293; color-scheme:dark }
+  --dusk:#e58a5e; --dusk-soft:#3b241a; --ok:#73c293; --now-btn:rgba(0,0,0,.09); --now-bar:rgba(0,0,0,.12); color-scheme:dark }
 
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -36,13 +36,17 @@ h1,h2,h3{font-family:var(--display);font-stretch:87.5%;letter-spacing:-.01em;tex
 .brand small{font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted);margin-left:8px;letter-spacing:0}
 .clock{font-family:var(--mono);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums;text-align:right;line-height:1}
 .clock small{display:block;font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
-.days{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;max-width:620px;margin:0 auto;scroll-padding-inline:16px}
+.days{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;max-width:620px;margin:0 auto;scroll-padding-inline:16px;scroll-snap-type:x proximity}
+.chip{scroll-snap-align:center}
 .days::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.1;min-width:54px}
 .chip small{font-family:var(--body);font-weight:500;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
 .chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .chip.on small{color:var(--bg);opacity:.75}
 .chip.today:not(.on){border-color:var(--nile);color:var(--nile)}
+.chip{position:relative}
+.chip.today::after{content:"";position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:currentColor}
+.chip.today{padding-bottom:11px}
 .chip.solo{border-style:dashed}
 section{margin-top:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
@@ -51,12 +55,12 @@ section{margin-top:18px}
 .now .big{font-family:var(--display);font-stretch:87.5%;font-weight:700;font-size:21px;line-height:1.15}
 .now .sub{font-size:13.5px;opacity:.85}
 .now .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.now .bar{height:3px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden;margin-top:-4px}
+.now .bar{height:3px;background:var(--now-bar);border-radius:3px;overflow:hidden;margin-top:-4px}
 .now .bar i{display:block;height:100%;background:var(--nile);border-radius:3px}
-.now .cd{font-family:var(--mono);font-weight:600;font-size:13px;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+.now .cd{font-family:var(--mono);font-weight:600;font-size:13px;background:var(--now-btn);padding:4px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
 .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;text-decoration:none;color:var(--fg);cursor:pointer;line-height:1;white-space:nowrap}
 .btn.nav{background:var(--nile-soft);border-color:transparent;color:var(--nile-ink)}
-.now .btn{background:rgba(255,255,255,.12);border-color:transparent;color:var(--bg);padding:6px 10px;font-size:12px}
+.now .btn{background:var(--now-btn);border-color:transparent;color:var(--bg);padding:6px 10px;font-size:12px}
 .btn:focus-visible,.chip:focus-visible,.fold>summary:focus-visible,input:focus-visible{outline:2px solid var(--nile);outline-offset:2px}
 
 .dayhead{display:grid;gap:4px;margin:4px 0 12px}
@@ -151,7 +155,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tblwrap{overflow-x:auto}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
-.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
 .bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:6px 2px;border-radius:10px}
 .bottom a span.i{font-size:18px;line-height:1}
 .bottom a.on{color:var(--nile-ink);background:var(--nile-soft)}
@@ -244,6 +248,18 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </ul>
       <p style="margin-top:8px">Backup: a Vodafone SIM at CAI arrivals, ≈$12, passport needed.</p>
     </div></details>
+  </section>
+
+  <section id="notes">
+    <h2 class="sec">Notes</h2>
+    <div class="card">
+      <label for="noteBox" style="display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Confirmation numbers, the boat's name, the guide's WhatsApp, pickup times</label>
+      <textarea id="noteBox" rows="5" placeholder="Boat: …&#10;Rep's WhatsApp: …&#10;EgyptAir ref: …" style="width:100%;font:14px/1.45 var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical;min-width:0"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap">
+        <span style="color:var(--muted);font-size:12.5px" id="noteStatus">Saved on this phone only.</span>
+        <span style="display:flex;gap:6px"><button class="btn" id="noteCopy" type="button">Copy notes</button><button class="btn" id="shareBtn" type="button" hidden>Share this page</button></span>
+      </div>
+    </div>
   </section>
 
   <section id="tools">
@@ -356,6 +372,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <a href="#today" data-go="today"><span class="i">📍</span>Today</a>
   <a href="#pinned" data-go="pinned"><span class="i">📌</span>Pinned</a>
   <a href="#lists" data-go="lists"><span class="i">☑️</span>Lists</a>
+  <a href="#notes" data-go="notes"><span class="i">📝</span>Notes</a>
   <a href="#tools" data-go="tools"><span class="i">💵</span>Money</a>
   <a href="#map" data-go="map"><span class="i">🗺️</span>Map</a>
 </div></nav>
@@ -719,7 +736,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026";
+const BUILD = "Oct 8, 2026 (v7)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -740,11 +757,18 @@ function appShell(){
     $("#updBtn").addEventListener("click",()=>location.reload());
   }
 }
+function notes(){
+  const box=$("#noteBox"), st=$("#noteStatus");
+  try{ box.value = localStorage.getItem("egypt.notes")||""; }catch(e){}
+  let t; box.addEventListener("input",()=>{ clearTimeout(t); st.textContent="Saving…"; t=setTimeout(()=>{ try{ localStorage.setItem("egypt.notes",box.value); st.textContent="Saved on this phone only."; }catch(e){ st.textContent="Couldn't save here (private window?). Copy the notes somewhere safe."; } },400); });
+  $("#noteCopy").addEventListener("click",()=>{ (navigator.clipboard?.writeText(box.value)||Promise.reject()).then(()=>toast("Notes copied")).catch(()=>{ box.focus(); box.select(); toast("Selected — long-press to copy"); }); });
+  if(navigator.share && location.protocol.startsWith("http")){ const b=$("#shareBtn"); b.hidden=false; b.addEventListener("click",()=>{ navigator.share({title:document.title,text:"Our Egypt plan, day by day",url:location.href}).catch(()=>{}); }); }
+}
 function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
