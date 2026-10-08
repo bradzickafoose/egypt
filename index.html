@@ -485,7 +485,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         <div><label for="usd">US dollars</label><input id="usd" inputmode="decimal" value="20"></div>
         <div><label for="egp">Egyptian pounds</label><input id="egp" inputmode="decimal" value="1000"></div>
       </div>
-      <div class="rate">Rate: 1 USD = <input id="rate" inputmode="decimal" value="50"> EGP · check the ATM receipt and fix this once</div>
+      <div class="rate"><span style="white-space:nowrap">Rate: 1 USD =</span> <input id="rate" inputmode="decimal" value="50"> EGP · check the ATM receipt and fix this once</div>
       <div class="quick" id="quick"></div><div class="split" id="split"></div><div class="tips" id="tipGrid"></div>
     </div>
   </section>
@@ -941,37 +941,37 @@ const DAYS = [
 ];
 
 const HOTELS = [
- {n:"Hilton Cairo Grand Nile", d:"Sat 10 – Mon 12 · $55/night ✅", q:"Hilton Cairo Grand Nile",
+ {n:"Hilton Cairo Grand Nile", d:"Sat 10 – Mon 12 · $55/night ✅", q:"Hilton Cairo Grand Nile",
   addr:"Corniche el-Nil, Garden City", tel:"+20221300700", telD:"+20 2 2130 0700", email:"caign_info@hilton.com", app:"Hilton Honors app → Message hotel", help:"1-800-445-8667 (Hilton, US)",
   cin:"3pm", cout:"12pm",
   fit:["Duane lands 5:20pm Sat — check-in is 3pm, no issue.","Brad arrives ≈3:30am Sun — tell the front desk the night before so they key a second card and expect him (list item ✓).","Tue 13: out the door at 4:45am. Ask reception Monday for express checkout and a breakfast box; settle the bill Monday night."],
   amen:"Outdoor pool · gym · spa · executive lounge · 9 restaurants incl. a revolving one on the roof · free wifi · no airport shuttle · alcohol-free hotel (no bar — the felucca beer comes from outside)",
   ask:"Concierge for the Sunday guide if yours falls through; the revolving restaurant for one Nile-view coffee."},
- {n:"Dahabiya (name TBC)", d:"Tue 13 – Thu 15 · Tue night moored in Aswan ⬜", q:"",
+ {n:"Dahabiya (name TBC)", d:"Tue 13 – Thu 15 · Tue night moored in Aswan ⬜", q:"",
   fit:["Boarding Tue afternoon; the boat's rep meets the 6:30am flight. Put the rep's WhatsApp in Notes the moment you have it."],
   amen:"All meals on board · crew of ≈8 for ≈12 guests · sun deck · no wifi worth having · tip envelope $60 each on the last night"},
- {n:"Hilton Luxor Resort & Spa", d:"Fri 16 – Sat 17 · $50/night ✅", q:"Hilton Luxor Resort & Spa",
+ {n:"Hilton Luxor Resort & Spa", d:"Fri 16 – Sat 17 · $50/night ✅", q:"Hilton Luxor Resort & Spa",
   addr:"New Karnak, east bank, 3 km north of Luxor Temple", tel:"+20952399999", telD:"+20 95 239 9999", email:"reservation.luxor@hilton.com", app:"Hilton Honors app → Message hotel", help:"1-800-445-8667 (Hilton, US)",
   cin:"3pm", cout:"12pm",
   fit:["Fri 16: off the boat in the morning, West Bank all day — you'll arrive ≈5–6pm, after check-in time. Message the hotel Thursday from the boat anyway with the arrival time.","Sun 18: flight ≈5pm, checkout noon. Ask Saturday for a 2pm late checkout (Honors members usually get it) or leave bags with the bell desk and use the spa pool until the car."],
   amen:"Nile-view infinity pool at the spa · two pools · gym · thermal garden · Olives (Mediterranean), Silk Road (Asian), Rosetta, Sunset Lounge with live music, shisha café · free wifi · free parking · no shuttle",
   ask:"Concierge books the Sat 17 hot-air balloon and the Sun 18 airport car; ask for a Nile-facing room when you message."},
- {n:"Waldorf Astoria Cairo Heliopolis", d:"Sun 18 · ✅", q:"Waldorf Astoria Cairo Heliopolis",
+ {n:"Waldorf Astoria Cairo Heliopolis", d:"Sun 18 · ✅", q:"Waldorf Astoria Cairo Heliopolis",
   addr:"Orouba St, Heliopolis — 5 km / 10–15 min from the airport", tel:"+20226960000", telD:"+20 2 2696 0000", app:"Hilton Honors app → Message hotel", help:"1-800-925-3673 (Waldorf, US)",
   cin:"3pm", cout:"12pm",
   fit:["Sun 18: landing from Luxor ≈6:30pm, check-in long open.","Mon 19: Duane's flight is 7:30am → car at 5:00am. Brad's CAI→SSH ≈10am → car at 7:30. Ask at check-in for express checkout, two separate early cars, and whether breakfast can be boxed at 4:45."],
   amen:"Outdoor pool · spa with hammam · gym · Brasserie Ayda (Mediterranean), Peacock Lounge (afternoon tea), jazz bar, Le Jardin pool bar · personal concierge",
   ask:"Have the concierge book the two airport cars the moment you check in; Hagouga (10 min) for the last dinner, or Korba for a walk."},
- {n:"Dahab guesthouse (Brad)", d:"Mon 19 – Wed 21 · Masbat or Mashraba, sea view, ≈$40 ⬜", q:"Dahab", solo:true,
+ {n:"Dahab guesthouse (Brad)", d:"Mon 19 – Wed 21 · Masbat or Mashraba, sea view, ≈$40 ⬜", q:"Dahab", solo:true,
   fit:["Book somewhere that will hold the bag Tue night during Mt Sinai and let you shower Wed morning."],
   amen:"Ask for: sea view, breakfast, bag storage, dive-centre partner, airport transfer from Sharm (≈$25, 1h)"},
- {n:"Le Méridien Cairo Airport (Brad)", d:"Thu 22 and Sat 24 · ≈$120 ⬜", q:"Le Meridien Cairo Airport", solo:true,
+ {n:"Le Méridien Cairo Airport (Brad)", d:"Thu 22 and Sat 24 · ≈$120 ⬜", q:"Le Meridien Cairo Airport", solo:true,
   addr:"Inside Terminal 3 — walk the footbridge, no taxi", tel:"+20222659600", telD:"+20 2 2265 9600", app:"Marriott Bonvoy app → Chat", help:"1-888-236-2427 (Marriott, US)",
   cin:"3pm", cout:"12pm",
   fit:["Thu 22: landing from Sharm in the evening — walk the bridge from Terminal 3; T2 arrivals need the shuttle bus or a 5-min taxi.","Fri 23: White Desert pickup from the lobby; checkout, leave the big bag with the bell desk (free).","Sun 25: 10:20am flight → checkout and walk the bridge at 7:30. EVOO breakfast opens 4:30am."],
   amen:"Outdoor pool · gym · EVOO all-day (breakfast 4:30–10:30) · Mezzeh (Lebanese) · China Red · Live sports bar · Latitude coffee · Meet & Assist with passport fast-track $30 · free wifi for Bonvoy members",
   ask:"Bell desk to hold the bag Fri–Sat; a late dinner at Mezzeh Saturday after the desert."},
- {n:"The White Desert (Brad)", d:"Fri 23 · camp under the stars, with the tour ⬜", q:"", solo:true,
+ {n:"The White Desert (Brad)", d:"Fri 23 · camp under the stars, with the tour ⬜", q:"", solo:true,
   fit:["Nothing to check into. The tour brings the camp, the sleeping bag, and dinner. You bring a warm layer — it drops to 10°C."],
   amen:"Fire, foxes, the Milky Way"}
 ];
@@ -1290,7 +1290,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v19)";
+const BUILD = "Oct 8, 2026 (v20)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1535,7 +1535,7 @@ function makeAwards(){
 
 function gameWire(){
   document.addEventListener("click", e=>{
-    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); return; }
+    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); renderPassport(); renderNow(); renderDay(); toast("Salaam, "+m.dataset.me); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before) toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]) toast("Point to "+(me()||"you")); return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
