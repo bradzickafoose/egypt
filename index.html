@@ -748,7 +748,6 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       </ul>
     </div></details>
     <p class="foot">Plan B if no boat will overnight in Aswan on Tuesday: board Wednesday instead, Old Cataract Tuesday night, Hilton Luxor Saturday only. Same trip, one fewer Luxor night, one more Aswan night.</p>
-    <p class="foot" style="margin-top:8px"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p>
   </section>
   </section>
 
@@ -785,7 +784,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <div class="card" id="passport"></div>
   </section>
 
-  <section id="foot"><p class="foot" id="build"></p></section>
+  <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p></section>
 </div>
 
 <nav class="bottom" aria-label="Sections"><div class="in">
@@ -1453,7 +1452,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v37)";
+const BUILD = "Oct 8, 2026 (v38)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1834,8 +1833,7 @@ function funWire(){
   });
   let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); for(let k=pl.length-1;k>=0;k--){ if(pl[k].w===w&&pl[k].i===+i){ pl.splice(k,1); break; } } GS.set("penlog",pl); renderGame(); toast("Taken back"); } },650); }, {passive:true});
   document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
-  document.addEventListener("submit", e=>{ if(e.target.id==="rform"){ e.preventDefault(); const n=+String($("#rn").value).replace(/[^\d]/g,""); if(isNaN(n)) return; GS.set("rival",{n, at:new Date().toISOString()}); renderGame(); const f=footballScore(); toast(f.pts>n?`${team().team} lead by ${f.pts-n}.`:f.pts<n?`${TEAMS[OTHER()].team} lead by ${n-f.pts}. Fix it.`:"Tied. Suspicious."); return; }
-    if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); safe(()=>logEvent(`logged a camel offer: ${n.toLocaleString()} for ${$("#cw").value}`)); });
+  document.addEventListener("submit", e=>{ if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); safe(()=>logEvent(`logged a camel offer: ${n.toLocaleString()} for ${$("#cw").value}`)); });
 }
 
 // ---------- make them laugh ----------
