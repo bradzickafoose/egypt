@@ -183,6 +183,21 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+.hon{font-family:var(--display);font-style:italic;font-size:15px;opacity:.9;margin-bottom:4px}
+.tout{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;padding:8px 12px;border:1px dashed var(--line);border-radius:12px}
+.tout b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block}
+.tctl{display:flex;align-items:center;gap:8px}.tctl .tn{font-family:var(--display);font-size:22px;min-width:28px;text-align:center}.tctl .btn{padding:6px 12px;font-size:16px}
+.groan{margin-top:12px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.groan b{font-family:var(--display);font-stretch:87.5%;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
+.oracle{font-family:var(--display);font-size:18px;line-height:1.35;font-style:italic;margin:4px 0 10px}
+.coinr{font-size:15px;min-height:28px;display:flex;align-items:center}.coinr .spin{display:inline-block;font-size:28px;animation:spin .9s ease-in-out}
+@keyframes spin{from{transform:rotateY(0)}to{transform:rotateY(1080deg)}}
+.flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.flist li{display:grid;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.flist li span{display:block;color:var(--muted);font-size:12.5px}
+.fbtn{display:flex;gap:6px}
+.hform select{font:14px var(--body);padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg)}
+
 .lived{margin:8px 0 2px;padding:8px 10px;border-left:3px solid #b5322b;background:var(--bg);border-radius:0 10px 10px 0}
 .lived .lvb{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:var(--muted)}
 .lived .lq{margin-top:4px;font-family:var(--display);font-size:15px;line-height:1.35;font-style:italic}
@@ -1106,6 +1121,7 @@ function renderDay(){
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
     ${safe(()=>challengeBox(d))}
+    ${safe(()=>toutMeter(d))}
     <ul class="agenda">${items}</ul>
     ${safe(()=>calDay(d))}
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
@@ -1114,6 +1130,7 @@ function renderDay(){
     ${shotList(d)}
     ${askToday(d)}
     <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="…"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
+    ${safe(()=>groanBox(d))}
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
   openCls.forEach(c=>{ const a=[...document.querySelectorAll("#dayCard details")].find(x=>x.className===c); if(a) a.open=true; });
   journalWire(d);
@@ -1154,7 +1171,7 @@ function renderNow(){
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
-    html = `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
+    const hon = safe(()=>honorific()); html = (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
     if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
@@ -1271,7 +1288,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v17)";
+const BUILD = "Oct 8, 2026 (v18)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1489,7 +1506,9 @@ function renderGame(){
     <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
     <button type="button" class="btn primary" id="awardsBtn">Make the awards</button>
     <div id="awards"></div>
-  </div></details>`;
+  </div></details>
+  <h2 class="sec" style="margin-top:18px">For the road</h2>
+  ${safe(()=>funBox())}`;
 }
 
 function makeAwards(){
@@ -1592,6 +1611,58 @@ function lookingBack(){
   return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row"><a class="btn" href="#game">Open the passport</a><a class="btn" href="#today">Re-read a day</a></div>`;
 }
 
+// ---------- the funny bits ----------
+const HONORIFICS = ["Lord of the Two Lands","Keeper of the Small Bills","He Who Rises at 4:15","Beloved of the Felucca Captain","Strong Bull of the Corniche","First Prophet of Koshary","Great of Sunscreen","Overseer of the Tip Pocket","Scourge of the Touts","Master of the Eleventh Shukran","He Who Found the Bathroom","Bearer of the Daypack","Admiral of the Dahabiya","Friend of the Cats of Karnak","Holder of the Only Charger","Son of Ra, Wearer of the Hat","Counter of the Steps","He Who Orders the Pigeon","Reader of One Hieroglyph","Horus of the Early Flight"];
+const ORACLE = ["The guide will say “very important” eleven times today. Count them.","A man will offer you a camel. Decline with dignity. Then ask how many.","You will pay 20 pounds for something that costs 5. It will be worth it.","Beware the second cup of karkadeh. It is never free.","Someone will call you Rambo. Answer to it.","Ra favours shade today. Seek it by one o'clock.","A cat will choose you. You have no say in this.","The bathroom attendant knows you are coming. Have the ten ready.","You will take 140 photos. Three will be good. One will be of a thumb.","A stranger will know your football team better than you do.","Ra rises at 6:14. You will rise at 6:40 and call it sunrise.","Your brother will say “we should have done this years ago.” He is right.","The Nile will be exactly the colour you expected and still surprise you.","Do not trust the man who says “no charge.”","Tonight you will be tired in the good way.","Someone will sell papyrus made of banana. Smile — you know things now.","The guide's cousin has a shop. It is a very nice shop. You are not going.","Order the thing you cannot pronounce.","The pharaohs built for eternity. You will build a sunburn in forty minutes. Hat.","Your step count will embarrass your watch's expectations.","You will haggle brilliantly and then tip it all back. This is correct.","Someone will say the pyramids were built by aliens. Let it go.","The best meal today costs less than the worst coffee at home."];
+const GROANS = ["Why don't mummies take holidays? They're afraid they'll relax and unwind.","What did the pharaoh say when he got home? “Mummy, I'm back.”","Why was the pharaoh so confident? He Sphinx he's the best.","What do you call a pharaoh who plays trumpet? Tootin' Khamun.","Old pharaohs never die. They just get a little crusty.","A mummy's favourite music? Wrap.","Where do pharaohs keep their money? In the river bank.","Why did the mummy go to the doctor? He was coffin.","What's a pharaoh's favourite exercise? Pyramid schemes.","How does a pharaoh answer the phone? “Tut, who's this?”","What did the Nile say to the delta? Nothing. It just went with the flow.","Why don't pyramids ever get lost? They've got a point.","What do you call an Egyptian who's good at maths? Sum-set.","Why was Cleopatra bad at tennis? She was in de-Nile about her backhand.","What did Duane say at the top of the Great Pyramid? Nothing. He's not allowed up there.","How many touts does it take to change a lightbulb? One, my friend, special price."];
+const FORFEITS = [["Checked work email","buys dinner"],["Fell asleep in the car","gets photographed for the passport"],["Said “back in my day”","one tea"],["Paid asking price without trying","one tea"],["Took a phone call inside a temple","one tea"],["Complained about the heat before 10am","one tea"],["Lost the group's only charger","all the teas"],["Posed Walk-Like-an-Egyptian at a monument","compulsory — no fine"]];
+const hash = s => { let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0); };
+const pickDaily = (arr, salt, roll) => arr[(hash(cairoNow().date+"|"+salt)+(roll||0))%arr.length];
+function honorific(){ const w=me(); if(!w) return ""; return `${w}, ${pickDaily(HONORIFICS, w)}`; }
+function groanBox(d){ const g=GROANS[(hash(d.date+"groan"))%GROANS.length]; return `<div class="groan"><b>Groan of the day</b>${esc(g)}</div>`; }
+function toutMeter(d){
+  const n=(GS.get("tout",{})[d.id])||0;
+  const c = n===0?"Quiet so far.":n<4?"Warming up.":n<10?"You have arrived.":n<20?"You're famous.":n<40?"Local celebrity.":"Honorary citizen.";
+  return `<div class="tout"><div><b>“My friend” counter</b><div class="muted">${c}</div></div><div class="tctl"><button type="button" class="btn" data-tout="${d.id}" data-d="-1" aria-label="Minus">−</button><span class="tn">${n}</span><button type="button" class="btn primary" data-tout="${d.id}" data-d="1" aria-label="Plus">+</button></div></div>`;
+}
+function funBox(){
+  const roll=GS.get("oracle",{})[cairoNow().date]||0; const o=pickDaily(ORACLE,"oracle",roll);
+  const camels=GS.get("camel",[]); const best=w=>camels.filter(c=>c.who===w).reduce((m,c)=>Math.max(m,c.n),0);
+  const ff=GS.get("forfeit",{}); const owed=w=>FORFEITS.reduce((s,f,i)=>s+((ff[i]||{})[w]||0),0);
+  const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0);
+  const bw=owed("Brad"), dw=owed("Duane"); const verdict = bw===dw?"All square.":(bw>dw?`Brad owes ${bw-dw} tea${bw-dw>1?"s":""}.`:`Duane owes ${dw-bw} tea${dw-bw>1?"s":""}.`);
+  return `
+  <details class="fold" open><summary>The Oracle of Amun</summary><div class="in">
+    <div class="oracle">“${esc(o)}”</div>
+    <div class="row"><button type="button" class="btn" id="oracleRoll">Ask again</button><span class="muted">One a day. Re-asking is permitted; the Oracle notices.</span></div>
+  </div></details>
+  <details class="fold"><summary>Who pays?</summary><div class="in">
+    <div class="row"><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="coinr" id="coinr"></div></div>
+  </div></details>
+  <details class="fold"><summary>Camel offers <span class="pill">${camels.length}</span></summary><div class="in">
+    <p class="muted">Every trip to Egypt has the “I give you a thousand camels for your friend” moment. Log the offers. Market value: <b>Brad ${best("Brad").toLocaleString()}</b> · <b>Duane ${best("Duane").toLocaleString()}</b> camels.</p>
+    <form class="hform" id="cform"><input id="cn" inputmode="numeric" placeholder="How many camels" required><select id="cw"><option>Duane</option><option>Brad</option></select><input id="cd" placeholder="Where (Khan, Edfu carriage…)"><button class="btn primary" type="submit">Log the offer</button></form>
+    ${camels.length?`<ul class="clist">${camels.map((c,i)=>`<li><b>${c.n.toLocaleString()}</b><span>for ${esc(c.who)}${c.d?" · "+esc(c.d):""}</span><button type="button" class="btn mini" data-cdel="${i}">✕</button></li>`).join("")}</ul>`:""}
+  </div></details>
+  <details class="fold"><summary>House rules &amp; forfeits <span class="pill">${verdict}</span></summary><div class="in">
+    <p class="muted">Tap the name of the guilty party. Settle nightly, in tea.</p>
+    <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>`<button type="button" class="btn ${((ff[i]||{})[w]||0)?"primary":""}" data-ff="${i}" data-w="${w}">${w} ${((ff[i]||{})[w]||0)?"· "+ff[i][w]:""}</button>`).join("")}</div></li>`).join("")}</ul>
+    <p class="muted" style="margin-top:8px">Long-press a name to take one back. “My friend” total for the trip so far: <b>${tout}</b>.</p>
+  </div></details>`;
+}
+function funWire(){
+  document.addEventListener("click", e=>{
+    const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); return; }
+    if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; r.innerHTML=`<span class="spin">𓂀</span>`; setTimeout(()=>{ r.innerHTML=`<b>Ra has spoken: ${who} pays.</b>`; },900); return; }
+    const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
+    const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); renderGame(); toast(`${w}: ${FORFEITS[i][1]}`); return; }
+  });
+  let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); renderGame(); toast("Taken back"); } },650); }, {passive:true});
+  document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
+  document.addEventListener("submit", e=>{ if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); });
+}
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -1675,7 +1746,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); loadArchive(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
