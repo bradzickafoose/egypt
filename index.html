@@ -122,6 +122,8 @@ section{margin-top:18px}
 .agenda .calopts .btn{padding:7px 11px;font-size:12.5px}
 .agenda .calopts .btn.primary{background:var(--nile);color:#fff;border-color:transparent}
 #dayCard.solo .agenda .calopts .btn.primary{background:var(--dusk)}
+.btn.send{border-style:dashed}
+.feed .flagbtn{font-family:var(--mono)}
 .calday{margin:10px 0 2px;display:flex;flex-direction:column;gap:5px;align-items:flex-start}
 .calday .btn{padding:8px 13px}
 .calday small{color:var(--muted);font-size:12px;line-height:1.35}
@@ -290,7 +292,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .navg button small{display:block;font-weight:500;font-size:10.5px;color:var(--muted);line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .navh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .navh b{font-family:var(--display);font-stretch:87.5%;font-size:18px;letter-spacing:-.01em}
-.navh span{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.navh span{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;flex:0 1 auto;min-width:0}
 .brief{margin-top:8px}
 .brief .bh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
 .brief .bh b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -447,7 +449,7 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .sg.souk>summary .sg-t small,.sg.souk .muted{color:#7a6448}.sg.souk>summary::after{color:#7a6448}
 .sg.souk .hform input{background:#fffaf0;border-color:#d9c39a;color:#2b2420}
 .tags{display:flex;flex-wrap:wrap;gap:10px 8px;margin-top:6px}
-.tag{position:relative;background:#fffdf7;color:#2b2420;border:1px solid #cdb891;border-radius:4px 14px 14px 4px;padding:8px 30px 8px 22px;min-width:120px;box-shadow:0 3px 8px -4px rgba(0,0,0,.35);transform:rotate(var(--r,0deg));font-size:12.5px}
+.tag{position:relative;background:#fffdf7;color:#2b2420;border:1px solid #cdb891;border-radius:4px 14px 14px 4px;padding:8px 44px 8px 22px;min-width:120px;box-shadow:0 3px 8px -4px rgba(0,0,0,.35);transform:rotate(var(--r,0deg));font-size:12.5px}
 .tag .hole{position:absolute;left:8px;top:50%;width:8px;height:8px;border-radius:50%;background:#e8dcc0;box-shadow:inset 0 0 0 1.5px #cdb891;transform:translateY(-50%)}
 .tag b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:13px}
 .tag small{display:block;color:#7a6448;font-size:10.5px}
@@ -455,8 +457,9 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .tag .px s{color:#9a8468;font-size:12px}.tag .px em{font-style:normal;font-family:"Caveat",cursive;font-size:22px;line-height:1;color:#b5322b;font-weight:600}
 .tag .off{display:inline-block;margin-top:3px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#7a6448}
 .tag.fg .off{color:#2f7d4e;font-weight:700}
-.tag.fg::after{content:"🏈";position:absolute;right:8px;bottom:6px;font-size:14px}
+.tag.fg .off::after{content:" 🏈";font-size:13px}
 .tag .x{position:absolute;right:4px;top:4px;background:none;border:0;color:#9a8468;font-size:11px;cursor:pointer;padding:2px 4px}
+.tag .tagsend{position:absolute;right:6px;bottom:5px;padding:2px 7px;font-size:11px;border:1px dashed #cdb891;border-radius:999px;background:transparent;color:#7a6448;line-height:1}
 /* the playbook: chalkboard */
 .sg.playbook{background:radial-gradient(120% 100% at 50% 0%,#2a4a3a,#1b3328);border-color:#2f4f40;color:#f1f1e6}
 .sg.playbook>summary .sg-t small,.sg.playbook .muted,.sg.playbook>summary::after{color:rgba(241,241,230,.6)}
@@ -1472,7 +1475,7 @@ function calOpts(d,i){
 function calDay(d){
   const idx=d.agenda.map((a,i)=>i).filter(i=>calOK(d.agenda[i])); if(idx.length<2) return "";
   const evs=idx.map(i=>calEvent(d,i)); const f=`egypt-${d.dow}-oct-${d.num}.ics`;
-  return `<div class="calday"><a class="btn" href="${icsHref(evs)}" download="${f}" data-caltoast="Adding ${idx.length} events…">📅 Add this whole day <span class="pill">${idx.length}</span></a><small>${IOS?"Opens in Calendar as one import. ":"Downloads a .ics you can import into Google Calendar. "}Flights are left out — those are already in your airline apps.</small></div>`;
+  return `<div class="calday"><a class="btn" href="${icsHref(evs)}" download="${f}" data-caltoast="Adding ${idx.length} events…">📅 Add this whole day <span class="pill">${idx.length}</span></a><button type="button" class="btn send" data-sendday="${d.id}">Send the day ↗</button><small>${IOS?"Opens in Calendar as one import. ":"Downloads a .ics you can import into Google Calendar. "}Flights are left out — those are already in your airline apps. <b>Send the day</b> drops the times and stops into iMessage.</small></div>`;
 }
 
 
@@ -1564,7 +1567,7 @@ function renderNow(){
   if(now.date < first){
     const days = dateDiffDays(now.date, first);
     const minsLeft = (24*60 - now.mins) + (days-1)*24*60 + toMins("17:20");
-    const hon0 = safe(()=>honorific()); html = (hon0?`<div class="hon">${esc(hon0)} — soon.</div>`:"") + `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>${hon0?"":`<div class="sub">Then open <b>Game</b> and tell the app who's holding it. It has titles for you.</div>`}`;
+    const hon0 = safe(()=>honorific()); html = (hon0?`<div class="hon">${esc(hon0)} — soon.</div>`:"") + `<div class="eyebrow">Before the trip</div><div class="big">Duane lands Cairo Sat Oct 10, 5:20pm</div><div class="row"><span class="cd">${days===0?"today":`${days} day${days>1?"s":""}`} · ${dur(Math.max(0,minsLeft))}</span></div><div class="sub">Open <b>Lists</b> for what has to happen this week. Bookings first, bag second.</div>${hon0?"":`<div class="sub">Tap <b>who?</b> at the top and tell the app who's holding it. It has titles for you.</div>`}`;
   } else if(now.date > last){
     html = safe(()=>lookingBack()) || `<div class="eyebrow">After</div><div class="big">Egypt, October 2026.</div>`;
   } else {
@@ -1679,7 +1682,7 @@ function renderHotels(){
       ${h.fit&&h.fit.length?`<div class="hfit"><b>Our timings vs. theirs</b><ul>${h.fit.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
       ${h.amen?`<div class="hrow"><b>Has</b><span>${esc(h.amen)}</span></div>`:""}
       ${h.ask?`<div class="hrow"><b>Ask them</b><span>${esc(h.ask)}</span></div>`:""}
-      ${h.q?mapBtns(h.q,null,true):""}
+      ${h.q?mapBtns(h.q,null,true, `<button type="button" class="btn send" data-sendtext="${esc("🏨 "+h.n.replace(/ \(.*\)/,"")+(h.addr?" · "+h.addr:"")+(h.telD?" · "+h.telD:"")+(h.q?" — "+G(h.q):"")).replace(/"/g,"&quot;")}">Send ↗</button>`):""}
     </div></details>`).join("") + `<details class="fold howto"><summary>How to reach any hotel, by department</summary><div class="in"><ol class="howto">${HOTEL_HOWTO.map(([k,v])=>`<li><b>${k}.</b> ${v}</li>`).join("")}</ol></div></details>`;
 }
 
@@ -1760,7 +1763,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v45)";
+const BUILD = "Oct 8, 2026 (v46)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1915,7 +1918,7 @@ const CHALLENGES = {
  sun25:"The whole trip in ten lines, on the plane."
 };
 const BINGO = [
- "Called “my friend” 10 times before noon","Haggled below 40% of the ask","Karkadeh at El Fishawy","A cat on a temple wall","Said “khalas” and it worked",
+ "Called “my friend” 10 times before noon","Haggled 40% off the ask","Karkadeh at El Fishawy","A cat on a temple wall","Said “khalas” and it worked",
  "Tut's gold mask","Stuffed pigeon, eaten","Camel photo, nothing paid","The felucca captain sang","A sunrise you were awake for",
  "Koshary at Abou Tarek","Ta'ameya from a cart","FREE","Got lost in the Khan","A crocodile mummy",
  "Call to prayer, up close","Brothers photo at a pyramid","A hieroglyph you can read","Shisha, one puff minimum","Beat the guide to a fact",
@@ -1972,7 +1975,7 @@ function renderGame(){
   <details class="fold sg souk" open><summary><span class="sg-i">🏷️</span><span class="sg-t">The Souk Exchange<small>${s.n?`${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`:"every buy, asked vs paid"}</small></span><span class="pill">${hg.length}</span></summary><div class="in">
     <p class="muted">Log every buy: what, asking price, what you paid. <b>Forty percent off or more is a field goal</b> — three points, once a day. The button turns your colors when the numbers add up.</p>
     <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>
-    ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button></div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
+    ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button>${sendBtn(`🏷️ ${h.w}${h.d?" at "+h.d:""}: asked ${h.a.toLocaleString()}, paid ${h.p.toLocaleString()} — ${pct}% off.${pct>=40?" Field goal.":""}`, SEND_ICON, "mini tagsend")}</div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
   </div></details>
 
   <details class="fold sg playbook"><summary><span class="sg-i">📋</span><span class="sg-t">The Playbook<small>one play a day · each one a touchdown through Sunday</small></span><span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
@@ -2045,8 +2048,30 @@ const stampLook = d => STAMP_LOOK[CITY_OF(d)] || ["#b5322b","round"];
 function stampHTML(d, s, small){ if(!s) return ""; const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0"); const L=stampLook(d); return `<div class="stamp ${small?"small":""} ${L[1]}" style="--rot:${(parseInt(d.id.replace(/\D/g,""))%7-3)*4}deg;--ink:${L[0]}"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num} OCT 2026</div><div class="r3">${esc((s.who||"").toUpperCase()||"ENTERED")} · ${hh}</div></div>`; }
 function stampBox(d){
   const s=stamps()[d.id]; const xp = !s && !!QUARTER[d.id] && !!GS.get("chal",{})[d.id] && !GS.get("stupid",{})[d.id];
-  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"pts-me":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button></div></div>`;
+  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"pts-me":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button>${s?` <button type="button" class="btn send" data-sendstamp="${d.id}">Send the stamp ${SEND_ICON}</button>`:""}</div></div>`;
 }
+
+// ---------- iMessage: anything worth gloating about has a Send button ----------
+function shareText(text, title){ if(!text) return; if(navigator.share){ navigator.share({text, title:title||"Egypt"}).catch(()=>{}); return; } (navigator.clipboard?.writeText(text)||Promise.reject()).then(()=>toast("Copied — paste it into Messages")).catch(()=>toast("Couldn't copy here")); }
+function shareCanvas(c, name, title){ c.toBlob(async blob=>{ const f=new File([blob], name, {type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:title||"Egypt"}); }catch(e){} return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); }, "image/png"); }
+const SEND_ICON = "↗";
+function sendBtn(text, label, cls){ return `<button type="button" class="btn ${cls||"mini"} send" data-sendtext="${esc(text).replace(/"/g,"&quot;")}">${label||"Send"}</button>`; }
+// the day as a text message: times and stops, for the other phone
+function dayText(d){ const stops=(d.agenda||[]).filter(a=>a.t||a.title).map(a=>`${a.t?a.t+"  ":"      "}${(a.title||"").replace(/\s+/g," ")}`); return `${d.dow} Oct ${d.num} — ${d.title}\n${d.place||""}\n\n${stops.join("\n")}\n\n${d.alarm&&d.alarm!=="none"?"⏰ "+d.alarm+" · ":""}${d.bag?"carry: "+d.bag:""}${d.sleep?"\ntonight: "+d.sleep:""}\nbradzickafoose.github.io/egypt#${d.id}`; }
+// the stamp as a square card: paper, the rubber stamp, the line you wrote
+async function stampCard(d){ const s=stamps()[d.id]; if(!s) return; try{ await Promise.all([document.fonts.load('500 40px Caveat'), document.fonts.load('500 38px "IBM Plex Mono"')]); }catch(e){}
+  const W=1080; const c=document.createElement("canvas"); c.width=W; c.height=W; const x=c.getContext("2d");
+  x.fillStyle="#f4ecd8"; x.fillRect(0,0,W,W); const r=((a)=>{ let s0=Math.abs(hash(a))||1; return ()=>{ s0=(s0*1664525+1013904223)%4294967296; return s0/4294967296; }; })(d.id); x.fillStyle="rgba(90,60,30,.06)"; for(let i=0;i<2500;i++) x.fillRect(r()*W,r()*W,1.5,1.5);
+  x.strokeStyle="rgba(43,36,32,.6)"; x.lineWidth=2; x.strokeRect(40,40,W-80,W-80); x.lineWidth=1; x.strokeRect(52,52,W-104,W-104);
+  const serif='Georgia,"Times New Roman",serif', mono='"IBM Plex Mono",Menlo,monospace', hand='"Caveat","Bradley Hand",cursive';
+  x.fillStyle="rgba(43,36,32,.6)"; x.font=`400 26px ${serif}`; x.textBaseline="middle"; x.textAlign="left"; x.fillText("EGYPT  ·  OCTOBER MMXXVI", 90, 110); x.textAlign="right"; x.fillText((me()||"").toUpperCase(), W-90, 110);
+  x.textAlign="left"; x.fillStyle="#2b2420"; x.font=`700 54px ${serif}`; x.fillText(`${d.dow} Oct ${d.num}`, 90, 190); x.font=`italic 400 34px ${serif}`; x.fillStyle="rgba(43,36,32,.8)"; const title=d.title.length>34?d.title.slice(0,33)+"…":d.title; x.fillText(title, 90, 240);
+  const L=stampLook(d); x.globalCompositeOperation="multiply"; drawStamp(x, W/2, 520, -0.14, L[0], L[1], d, s, serif, mono); x.globalCompositeOperation="source-over";
+  const j=(()=>{ try{ return (localStorage.getItem("egypt.journal."+d.id)||"").trim(); }catch(e){ return ""; } })();
+  if(j){ x.fillStyle="#1f3a6e"; x.font=`500 44px ${hand}`; x.textAlign="center"; const words=j.split(/\s+/); const lines=[]; let line=""; words.forEach(w=>{ const tst=line+w+" "; if(x.measureText(tst).width>860){ lines.push(line.trim()); line=w+" "; } else line=tst; }); lines.push(line.trim()); lines.slice(0,3).forEach((ln,k)=>x.fillText(k===2&&lines.length>3?ln+" …":ln, W/2, 790+k*54)); }
+  const A=safe(()=>nileTotal(me())); x.textAlign="center"; x.fillStyle="rgba(43,36,32,.55)"; x.font=`400 24px ${serif}`; x.fillText(`${A&&QUARTER[d.id]?`THE NILE BOWL · ${TEAMS[me()].team.toUpperCase()} ${A.pts}  ·  `:""}bradzickafoose.github.io/egypt`, W/2, W-80);
+  shareCanvas(c, `egypt-stamp-${d.id}.png`, `${d.dow} ${d.num} · stamped`); }
+document.addEventListener("click", e=>{ const s=e.target.closest("[data-sendtext]"); if(s){ shareText(s.dataset.sendtext); return; } const sc=e.target.closest("[data-sendstamp]"); if(sc){ const d=DAYS.find(x=>x.id===sc.dataset.sendstamp); if(d) stampCard(d); return; } const sd=e.target.closest("[data-sendday]"); if(sd){ const d=DAYS.find(x=>x.id===sd.dataset.sendday); if(d) shareText(dayText(d), `${d.dow} ${d.num}`); return; } });
 
 // ---------- THE PRINT: one sheet, worth framing. Paper, an engraved Nile, every stamp where it happened. ----------
 const PRINT_CITY = { "CAIRO":[640,900], "GIZA":[720,1230], "WHITE DESERT":[520,1680], "HOME":[520,2060], "ABU SIMBEL":[840,2400], "DAHAB · SINAI":[2010,1320], "ON THE NILE":[1990,1600], "LUXOR":[2080,1900], "ASWAN":[2060,2260] };
@@ -2254,11 +2279,11 @@ function funBox(){
     <p class="muted">Every trip to Egypt has the “I give you a thousand camels for your friend” moment. Log the bids. The market sets the price.</p>
     <div class="valu"><div><small>Brad</small><b>${bb.toLocaleString()}</b><i>${camelBar(bb)}</i></div><div><small>Duane</small><b>${db.toLocaleString()}</b><i>${camelBar(db)}</i></div></div>
     <form class="hform" id="cform"><input id="cn" inputmode="numeric" placeholder="How many camels" required><select id="cw"><option>${OTHER()||"Duane"}</option><option>${me()||"Brad"}</option></select><input id="cd" placeholder="Where (Khan, Edfu carriage…)"><button class="btn primary" type="submit">Log the bid</button></form>
-    ${camels.length?`<ul class="bids">${camels.map((c,i)=>`<li><b>${c.n.toLocaleString()}</b><span>for ${esc(c.who)}${c.d?" · "+esc(c.d):""}</span><button type="button" class="btn mini" data-cdel="${i}">✕</button></li>`).join("")}</ul>`:""}
+    ${camels.length?`<ul class="bids">${camels.map((c,i)=>`<li><b>${c.n.toLocaleString()}</b><span>for ${esc(c.who)}${c.d?" · "+esc(c.d):""}</span><span class="row" style="gap:4px">${sendBtn(`🐪 ${c.who} was just valued at ${c.n.toLocaleString()} camels${c.d?" at "+c.d:""}. The market has spoken.`, SEND_ICON)}<button type="button" class="btn mini" data-cdel="${i}">✕</button></span></li>`).join("")}</ul>`:""}
   </div></details>
   <details class="fold sg oracle-sg" open><summary><span class="sg-i">🔮</span><span class="sg-t">The Oracle of Amun<small>one prophecy a day</small></span></summary><div class="in">
     <div class="oracle">“${esc(o)}”</div>
-    <div class="row"><button type="button" class="btn" id="oracleRoll">Consult again</button><span class="muted">Re-asking is permitted; the Oracle notices.</span></div>
+    <div class="row"><button type="button" class="btn" id="oracleRoll">Consult again</button>${sendBtn(`🔮 The Oracle of Amun says: “${o}”`, "Send "+SEND_ICON, "")}<span class="muted">Re-asking is permitted; the Oracle notices.</span></div>
   </div></details>
   <details class="fold sg toss"><summary><span class="sg-i">🪙</span><span class="sg-t">The Toss<small>who pays · the coin of Ra decides</small></span></summary><div class="in">
     <div class="tossbox"><div class="coinr" id="coinr"><div class="coin idle"><div class="face f1">PIT</div><div class="face f2">CIN</div></div></div><button type="button" class="btn primary" id="coin">Flip the coin of Ra</button><div class="tossr" id="tossr">Tails never fails. Heads is also fine.</div></div>
@@ -2268,7 +2293,7 @@ function funWire(){
   document.addEventListener("click", e=>{
     const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1">PIT</div><div class="face f2">CIN</div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays.`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1">PIT</div><div class="face f2">CIN</div></div>`; out.textContent="…"; e.target.disabled=true; setTimeout(()=>{ out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`lost the toss — ${who} pays`)); },1400); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); if(isPen) jumbo("Safety", w==="Brad"?"Duane":"Brad", `+2 · ${w} flagged: ${FORFEITS[i][0]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
@@ -2347,7 +2372,7 @@ function checkMilestones(){
   if(st===10) milestone("stamp10","Ten stamps. You could get a job at the border.");
   if(st>=16) milestone("stamp16","Every day stamped. Frame it.");
   if(hg.length===1) milestone("hag1","First haggle logged. The souq has noticed you.");
-  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Field goal. Somewhere a shopkeeper is telling his wife about you.");
+  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Forty off. Field goal. Somewhere a shopkeeper is telling his wife about you.");
   if(s.best>=60) milestone("win60","Sixty percent off. Are you sure you didn't just steal it?");
   if(s.bingo>=12) milestone("bingo12","Half the bingo card. The other half involves a camel.");
   if(s.lines>=1) milestone("line1","BINGO. A line. Say it out loud wherever you are.");
@@ -2467,7 +2492,7 @@ function renderLive(){
     <div class="lk">Live scoreboard <span class="muted">· ${pulled?"updated "+new Date(pulled).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):"waiting for signal"}</span></div>
     ${boxScore()}
     <div class="sbl">${theirs?`${OTHER()}: ${theirs.own?theirs.own.yds:0} yds · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
-    ${events.length?`<ul class="feed">${events.map(e=>{ const id=e.at+"|"+e.who; const fl=flagged.has(id); return `<li class="${fl?"flagged":""}"><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span><span>${esc(e.text)}${fl?` <i class="rev">🚩 under review</i>`:""}</span><small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}${e.who!==me()?` <button type="button" class="flagbtn" data-flag="${id}" aria-label="Challenge flag">🚩</button>`:""}</small></li>`; }).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
+    ${events.length?`<ul class="feed">${events.map(e=>{ const id=e.at+"|"+e.who; const fl=flagged.has(id); return `<li class="${fl?"flagged":""}"><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span><span>${esc(e.text)}${fl?` <i class="rev">🚩 under review</i>`:""}</span><small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}${e.who!==me()?` <button type="button" class="flagbtn" data-flag="${id}" aria-label="Challenge flag">🚩</button>`:` <button type="button" class="flagbtn" data-sendtext="${esc("🏈 "+e.who+" "+e.text+(safe(()=>{ const A=nileTotal(me()),B=nileTotal(OTHER()); return A&&B?` · ${TEAMS[me()].short} ${A.pts}–${TEAMS[OTHER()].short} ${B.pts}`:""; })||"")).replace(/"/g,"&quot;")}" aria-label="Send">${SEND_ICON}</button>`}</small></li>`; }).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every minute when the app is open.</span></div>
   </div>`;
 }
@@ -2774,7 +2799,7 @@ function openPlace(k){
   if(P.pop&&P.pop.length) h += `<h4>Threads you'll recognise</h4><ul class="pop">${P.pop.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
   if(P.story) h += `<details><summary>Deep dive: the story</summary><div class="story">${paras(P.story)}</div></details>`;
   const q = /Gebel/.test(k) ? "" : k;
-  if(q) h += `<div class="maps"><a class="btn nav" target="_blank" rel="noopener" href="${A(q)}">Apple Maps</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}">Google Maps</a></div>`;
+  if(q) h += `<div class="maps"><a class="btn nav" target="_blank" rel="noopener" href="${A(q)}">Apple Maps</a><a class="btn nav" target="_blank" rel="noopener" href="${G(q)}">Google Maps</a><button type="button" class="btn send" data-sendtext="${esc("📍 "+P.n+" — "+G(q)).replace(/"/g,"&quot;")}">Send ↗</button></div>`;
   const w = WIKI[k]; if(w && (w[0]||w[1])){ h += `<h4>Read further</h4><div class="maps">${w[0]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/${encodeURIComponent(w[0].replace(/ /g,"_"))}">Wikipedia: ${esc(w[0])}</a>`:""}${w[1]?`<a class="btn" target="_blank" rel="noopener" href="https://en.wikivoyage.org/wiki/${encodeURIComponent(w[1].replace(/ /g,"_"))}">Wikivoyage: ${esc(w[1])}</a>`:""}</div>`; }
   $("#shBody").innerHTML = h; $("#shBody").scrollTop = 0;
   openPlace.last = document.activeElement;
