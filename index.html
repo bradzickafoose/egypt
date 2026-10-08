@@ -33,7 +33,8 @@ h1,h2,h3{font-family:var(--display);font-stretch:87.5%;letter-spacing:-.01em;tex
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(0,0,0,.35)}
 .top .in{max-width:620px;margin:0 auto;padding:10px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{font-family:var(--display);font-stretch:87.5%;font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0}
-.brand .pill{font-family:var(--mono)}
+.brand .pill{font-family:var(--mono);white-space:nowrap}
+@media (max-width:400px){ .brand{font-size:20px;gap:6px} .brand .pill{font-size:10.5px;padding:3px 7px} }
 .pill.aa{cursor:pointer;font-family:var(--body);font-weight:700;letter-spacing:0}
 .pill.aa[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 html.big{font-size:112%}
@@ -44,7 +45,8 @@ html.big .status .s span{font-size:15px}
 html.big .know,html.big .planb,html.big .fold .in{font-size:15px}
 .brand small{font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted);letter-spacing:0}
 .clock{font-family:var(--mono);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums;text-align:right;line-height:1}
-.clock small{display:block;font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.clock{flex:0 0 auto;white-space:nowrap}
+.clock small{display:block;white-space:nowrap;font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
 .foot .pill.aa{padding:6px 12px;font-size:12px}
 @media (max-width:420px){.brand small{display:none}}
 .days{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;max-width:620px;margin:0 auto;scroll-padding-inline:16px;scroll-snap-type:x proximity}
@@ -183,6 +185,24 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+.brand .pill.me{border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-family:var(--body);font-weight:600;padding:3px 9px}
+.brand .pill.me.unset{border-style:dashed;color:var(--dusk);border-color:var(--dusk)}
+#whoSheet{position:fixed;inset:0;z-index:70;background:rgba(10,10,8,.55);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .25s}
+#whoSheet.on{opacity:1}
+#whoSheet .wbox{background:var(--card);color:var(--fg);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));width:100%;max-width:620px;transform:translateY(30px);transition:transform .25s}
+#whoSheet.on .wbox{transform:none}
+#whoSheet .wk{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nile)}
+#whoSheet h3{font-family:var(--display);font-size:24px;margin:4px 0 6px;line-height:1.1}
+#whoSheet p{margin:0 0 14px;color:var(--muted);font-size:14px}
+#whoSheet .wbtn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#whoSheet .wbtn button{font:700 20px var(--display);padding:18px;border-radius:14px;border:0;background:var(--nile);color:#fff;cursor:pointer}
+#whoSheet .wbtn button:last-child{background:var(--dusk)}
+#whoSheet .wlater{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);font:13px var(--body);cursor:pointer;text-decoration:underline}
+.flights .fl.theirs{opacity:.5}
+.flights .fl.mine .fw{color:var(--nile);font-weight:800}
+[data-list] li.theirs{opacity:.6}
+.check .who.you{background:var(--nile);color:#fff;border-color:transparent}
+
 .fine{margin-top:12px;font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 10px;font-style:italic}
 .fine b{font-style:normal;font-family:var(--display);font-stretch:87.5%;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
 .shots li.stupid{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
@@ -216,7 +236,7 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .lived .lq{margin-top:4px;font-family:var(--display);font-size:15px;line-height:1.35;font-style:italic}
 .dayhead.stamped>.k,.dayhead.stamped>h2,.dayhead.stamped>.place{padding-right:122px}
 html.big .bingo button{font-size:11px}
-.who .nudge{color:var(--dusk);font-size:12.5px;font-weight:600}
+.whome .nudge{color:var(--dusk);font-size:12.5px;font-weight:600}
 
 /* game + passport */
 .dayhead{position:relative}
@@ -240,7 +260,7 @@ html.big .bingo button{font-size:11px}
 .rrow{display:flex;justify-content:space-between;align-items:center;font-size:13.5px}
 .stars button{background:none;border:0;font-size:22px;color:var(--line);cursor:pointer;padding:0 2px;line-height:1}
 .stars button.on{color:#e0a100}
-.who{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
+.whome{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
 .seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--card);padding:7px 14px;font:600 13px var(--body);color:var(--fg);cursor:pointer}
 .seg button.on{background:var(--nile);color:#fff}
@@ -414,7 +434,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 </style>
 
 <header class="top" id="top"><div class="in">
-  <div class="brand">Egypt <small>Brad + Duane</small><span class="pill" id="prog">Oct 10–19</span><span class="pill off" id="offline" hidden>offline</span></div>
+  <div class="brand">Egypt <button type="button" class="pill me" id="meChip" aria-label="Whose phone is this">who?</button><span class="pill" id="prog">Oct 10–19</span><span class="pill off" id="offline" hidden>offline</span></div>
   <div class="clock"><span id="cairoTime">–:––</span><small id="cairoDate">Cairo</small></div>
 </div><nav class="days" id="dayStrip" aria-label="Days"></nav></header>
 
@@ -1115,7 +1135,7 @@ function renderStrip(){
 }
 
 function renderDay(){
-  const d = DAYS[sel]; const now = cairoNow(); const isToday = now.date===d.date;
+  const d = safe(()=>withMe(DAYS[sel])) || DAYS[sel]; const now = cairoNow(); const isToday = now.date===d.date;
   const openCls = [...document.querySelectorAll("#dayCard details[open]")].map(x=>x.className);
   let nextIdx = -1;
   if(isToday){ nextIdx = d.agenda.findIndex(a=>toMins(a.t)>=now.mins); }
@@ -1126,7 +1146,7 @@ function renderDay(){
   }).join("");
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
-    ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> Duane flew home this morning. Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
+    ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> ${safe(me)==="Duane"?"You're home. Follow along, heckle from the couch.":"Duane flew home this morning."} Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
     <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · ${d.emoji} · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
     ${safe(()=>livedLine(d, now))}
     <div class="status">
@@ -1146,7 +1166,7 @@ function renderDay(){
     ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
     ${shotList(d)}
     ${askToday(d)}
-    <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="${["Three lines. Or one honest one.","What would you tell the version of you who booked this?","The bit you'll be telling people about in 2046.","Who said what, and was it Duane.","Best thing eaten. Worst thing said.","The moment. You know the one."][d.num%6]}"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
+    <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="${["Three lines. Or one honest one.","What would you tell the version of you who booked this?","The bit you'll be telling people about in 2046.","Who said what, and was it "+(safe(OTHER)||"Duane")+".","Best thing eaten. Worst thing said.","The moment. You know the one."][d.num%6]}"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
     ${safe(()=>groanBox(d))}
     ${DAYS[sel+1]?`<div class="peek"><b>Tomorrow</b><span>${DAYS[sel+1].dow} ${DAYS[sel+1].num} · ${esc(DAYS[sel+1].title)}</span><span class="al">⏰ ${esc(DAYS[sel+1].alarm)}</span></div>`:""}`;
   openCls.forEach(c=>{ const a=[...document.querySelectorAll("#dayCard details")].find(x=>x.className===c); if(a) a.open=true; });
@@ -1189,6 +1209,7 @@ function renderNow(){
     const done = ni===-1 ? d.agenda.length : ni;
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
     const hon = safe(()=>honorific()); html = (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>`;
+    if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
     if(cur) html += `<div class="sub">Now: ${esc(cur.title)}</div>`;
     if(next){
       html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
@@ -1305,7 +1326,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v23)";
+const BUILD = "Oct 8, 2026 (v24)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1481,7 +1502,7 @@ function gameScore(){
 function scoreText(){ const s=gameScore(); const who=me()||"This phone"; return `${who} · Egypt score: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
 
 function challengeBox(d){
-  const c=CHALLENGES[d.id]; if(!c) return "";
+  const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
   const done=!!GS.get("chal",{})[d.id];
   return `<div class="chal ${done?"done":""}"><b>Today's challenge · 1 pt</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":"primary"}" data-chal="${d.id}">${done?"Done ✓ — undo":"Done ✓"}</button></div>`;
 }
@@ -1498,7 +1519,7 @@ function renderGame(){
   const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
   el.innerHTML = `
   <div class="card">
-    <div class="who"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    <div class="whome"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
     <div class="score"><div><b>${s.bingo}<small>/24</small></b><span>bingo · ${s.lines} line${s.lines===1?"":"s"}</span></div><div><b>${s.chal}</b><span>challenges</span></div><div><b>${s.n?s.best+"%":"—"}</b><span>best haggle</span></div><div><b>${s.saved.toLocaleString()}</b><span>EGP saved</span></div></div>
     <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare on WhatsApp — that's the fun part.</span></div>
   </div>
@@ -1516,7 +1537,7 @@ function renderGame(){
 
   <details class="fold"><summary>Daily challenges <span class="pill">${s.chal}/${Object.keys(CHALLENGES).length}</span></summary><div class="in">
     <p class="muted">One a day, on each day's card. The day's loser buys the evening's tea.</p>
-    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc(CHALLENGES[d.id])}</span><button type="button" class="btn mini" data-chal="${d.id}">${ch[d.id]?"✓":"○"}</button></li>`).join("")}</ul>
+    <ul class="clist">${DAYS.filter(d=>CHALLENGES[d.id]).map(d=>`<li class="${ch[d.id]?"done":""} ${d.who==="brad"?"solo":""}"><b>${d.dow} ${d.num}</b><span>${esc((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id])}</span><button type="button" class="btn mini" data-chal="${d.id}">${ch[d.id]?"✓":"○"}</button></li>`).join("")}</ul>
   </div></details>
 
   <details class="fold"><summary>The Brothers' Awards</summary><div class="in">
@@ -1553,7 +1574,8 @@ function makeAwards(){
 
 function gameWire(){
   document.addEventListener("click", e=>{
-    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); renderPassport(); renderNow(); renderDay(); toast("Salaam, "+m.dataset.me); return; }
+    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
+    if(e.target.id==="meChip"){ whoSheet(true); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before) toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]) toast("Point to "+(me()||"you")); return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
@@ -1787,6 +1809,31 @@ function standaloneShareFiles(){
   }, true);
 }
 
+// ---------- whose phone is this: first-run chooser, header chip, personal overrides ----------
+const OTHER = ()=> me()==="Brad"?"Duane":me()==="Duane"?"Brad":"";
+const PERSONAL = {
+ sat10:{ Brad:{alarm:"none · you land 2:05am", mission:"Land at 2, visa line, Uber to Garden City, let yourself into the room Duane booked. Sleep until the light does it for you.", chal:"Find Duane's room without waking Duane."},
+         Duane:{mission:"Land 5:20, visa, Uber, eat something good, sleep. Tell the desk Brad arrives ≈3:30am so they key him in.", chal:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone."} },
+ sun11:{ Brad:{alarm:"≈8:30 · you landed at 2"}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
+ mon19:{ Brad:{alarm:"7:00 · up at 5 for the hug", mission:"Hug at 5, back to bed, car at 7:30. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
+         Duane:{alarm:"4:30", mission:"Car at 5:00, flight 7:30. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
+};
+function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; return o ? Object.assign({}, d, o) : d; }
+function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.textContent = w ? w : "who?"; el.classList.toggle("unset", !w); }
+function whoSheet(force){
+  if(!force && me()) return; if($("#whoSheet")) return;
+  const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad">Brad</button><button type="button" data-me="Duane">Duane</button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
+  document.body.appendChild(s); requestAnimationFrame(()=>s.classList.add("on"));
+  s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250); } });
+}
+function personalizeStatic(){
+  const w=me(), o=OTHER();
+  document.querySelectorAll(".fl").forEach(f=>{ const fw=f.querySelector(".fw"); if(!fw.dataset.n) fw.dataset.n=fw.textContent.trim(); const n=fw.dataset.n; fw.textContent = (w && n===w) ? "You" : n; f.classList.toggle("mine", !!w && n===w); f.classList.toggle("theirs", !!w && n===o); });
+  document.querySelectorAll("[data-list] li .who").forEach(sp=>{ const n=sp.textContent.trim(); const li=sp.closest("li"); if(w && n===w){ sp.textContent="You"; sp.classList.add("you"); } li.classList.toggle("theirs", !!w && n===o); });
+  const sel=$("#cw"); if(sel && o){ sel.innerHTML=`<option>${o}</option><option>${w}</option>`; }
+  meChip();
+}
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -1870,7 +1917,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
