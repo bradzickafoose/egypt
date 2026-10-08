@@ -283,6 +283,31 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 
 /* four tabs + quick capture */
 .bottom .plus{width:48px;height:48px;border-radius:50%;border:0;background:var(--fg);color:var(--bg);font:300 30px/1 var(--body);cursor:pointer;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.18);transform:translateY(-6px)}
+/* navigator: the guide's front page */
+.navg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.navg button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:9px 8px 8px;font:600 12.5px/1.2 var(--body);color:var(--fg);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:3px;min-height:66px}
+.navg button .qi{font-size:18px;line-height:1}
+.navg button small{display:block;font-weight:500;font-size:10.5px;color:var(--muted);line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.navh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.navh b{font-family:var(--display);font-stretch:87.5%;font-size:18px;letter-spacing:-.01em}
+.navh span{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.brief{margin-top:8px}
+.brief .bh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.brief .bh b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.brief .bh span{font-size:11.5px;color:var(--muted)}
+.brief .br{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.35;cursor:pointer}
+.brief .br:first-of-type{border-top:0}
+.brief .br b{font-family:var(--display);font-stretch:87.5%;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.brief .br i{font-style:normal;color:var(--muted)}
+.brief .br em{font-style:normal;font-weight:600}
+.brief .br a{color:inherit}
+.brief .br .ph{font-family:var(--mono);font-size:12.5px}
+.where .wr{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.where .wr:first-of-type{border-top:0}
+.where .wr .t{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:44px}
+.where .wr .maps{margin-top:4px}
+.where .wr .maps .btn{padding:5px 9px;font-size:11.5px}
+.where .wn{font-weight:600}
 .subnav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin:-2px -16px 0;padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .subnav a{flex:0 0 auto;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .subnav a.on{background:var(--fg);color:var(--bg);border-color:transparent}
@@ -490,7 +515,7 @@ p.muted{margin:0 0 8px}
 .book .cover::after{content:"";position:absolute;inset:10px;border:1px solid rgba(216,178,90,.35);border-radius:6px 12px 12px 6px;pointer-events:none}
 .book .emb{width:74px;height:74px;margin:0 auto 10px;color:#d8b25a;filter:drop-shadow(0 1px 0 rgba(0,0,0,.6)) drop-shadow(0 -1px 0 rgba(255,235,180,.25))}
 .book .emb svg{width:100%;height:100%}
-.book .cv-t{font-family:Georgia,"Times New Roman",serif;font-size:26px;letter-spacing:.42em;text-transform:uppercase;text-indent:.42em;text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,235,180,.2)}
+.book .cv-t{font-family:Georgia,"Times New Roman",serif;font-size:17px;letter-spacing:.4em;text-transform:uppercase;text-indent:.42em;text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,235,180,.2)}
 .book .cv-s{font-family:Georgia,serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;text-indent:.3em;opacity:.8;margin-top:6px}
 .book .cv-n{margin-top:22px;font-family:Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;text-indent:.24em;opacity:.9}
 .book .cv-a{margin-top:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.65}
@@ -711,9 +736,10 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <div class="hint" id="hint"><span id="hintText">Add this to your home screen and it opens like an app, signal or not.</span><button id="hintX" aria-label="Dismiss">✕</button></div>
   <section id="today"><div class="card" id="dayCard"></div></section>
 
-  <section id="kit" class="group">
-    <h2 class="sec">Kit</h2>
-<div class="subnav" aria-label="Kit sections"><a href="#pinned">Hotels</a><a href="#lists">Lists</a><a href="#notes">Notes</a><a href="#tools">Money</a><a href="#more">Flights</a><a href="#reference">Reference</a></div>
+  <section id="guide" class="group">
+    <h2 class="sec">Guide</h2>
+    <div id="navigator"></div>
+    <div id="brief"></div>
   <section id="pinned">
     <h2 class="sec">Hotels &amp; essentials</h2>
     <div class="card">
@@ -723,7 +749,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Early alarms, the whole trip</div>
       <div class="alarms" id="alarms"></div>
     </div>
-    <details class="fold" open><summary>Cash, tips, five words</summary><div class="in">
+    <details class="fold" id="cashFold" open><summary>Cash, tips, five words</summary><div class="in">
       <p><b>≈50 EGP = $1.</b> Pull 3,000–5,000 EGP per ATM run (airport, hotels). Keep 10s, 20s, 50s loose in a pocket for tips. Carry $150+ in small clean USD bills for the visa, the boat crew and guides.</p>
       <h4>Tips</h4>
       <div class="kv"><b>10</b><span>bathroom attendant</span><b>50</b><span>porter, carriage driver</span><b>100</b><span>felucca captain</span><b>200/day</b><span>driver</span><b>$20/day</b><span>guide</span><b>$60 each</b><span>boat crew envelope, last night</span></div>
@@ -738,7 +764,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <h4>Getting around</h4>
       <p>Uber and Careem in Cairo and Luxor. In Aswan the boat arranges cars. Agree every street-taxi price before getting in. Egypt is 7 hours ahead of the East Coast (Norfolk, Orlando) and 1 hour ahead of Cape Town, through Oct 29 when its clocks fall back.</p>
     </div></details>
-    <details class="fold"><summary>Emergency numbers</summary><div class="in">
+    <details class="fold" id="sosFold"><summary>Emergency numbers</summary><div class="in">
       <div class="sos">
         <div><span class="num">126<small>Tourist Police</small></span><button class="btn" data-copy="126">Copy</button></div>
         <div><span class="num">123<small>Ambulance</small></span><button class="btn" data-copy="123">Copy</button></div>
@@ -747,6 +773,13 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <p style="margin-top:10px;color:var(--muted);font-size:12.5px">Tap-to-call may not work from this page. Copy the number into the phone app.</p>
     </div></details>
     <div id="phrasebook"></div>
+  </section>
+
+  <section id="guides">
+    <h2 class="sec">Eat &amp; shop like a local</h2>
+    <div class="card" style="margin-bottom:8px"><div style="font-size:13.5px;color:var(--muted)">For every city: where people who live there eat, the markets worth your evening, and what each place is actually known for — with how to tell the real thing from the airport version. Every line says which day it fits.</div></div>
+    <div id="guideCity" class="gtabs" role="tablist"></div>
+    <div id="guideBody"></div>
   </section>
 
   <section id="lists">
@@ -902,11 +935,10 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   </section>
   </section>
 
-  <section id="guide" class="group">
-    <h2 class="sec">Guide</h2>
-<div class="subnav" aria-label="Guide sections"><a href="#map">Places</a><a href="#guides">Eat &amp; shop</a></div>
-  <section id="map">
-    <h2 class="sec">Places &amp; map</h2>
+  <section id="map" class="group">
+    <h2 class="sec">Map</h2>
+    <div id="whereami"></div>
+    <h2 class="sec" style="margin-top:14px">Places</h2>
     <div class="card">
       <div style="font-size:13.5px;color:var(--muted)">Tap a place for what it is, what to know before you go, what to ask the guide to point out, and a deep dive into its story. The same “About” button sits on every stop in the day cards.</div>
       <div class="pidx" id="pidx"></div>
@@ -916,15 +948,6 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px" id="mapLinks"></div>
       <p style="color:var(--muted);font-size:12.5px;margin:8px 0 0">Every place in the day cards opens turn-by-turn directions from wherever you're standing.</p>
     </div>
-  </section>
-
-  <section id="guides">
-    <h2 class="sec">Eat &amp; shop like a local</h2>
-    <div class="card" style="margin-bottom:8px"><div style="font-size:13.5px;color:var(--muted)">For every city: where people who live there eat, the markets worth your evening, and what each place is actually known for — with how to tell the real thing from the airport version. Every line says which day it fits.</div></div>
-    <div id="guideCity" class="gtabs" role="tablist"></div>
-    <div id="guideBody"></div>
-  </section>
-
   </section>
 
   <section id="game">
@@ -940,9 +963,9 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 
 <nav class="bottom" aria-label="Sections"><div class="in">
   <a href="#today" data-go="today"><span class="i">📍</span>Today</a>
-  <a href="#kit" data-go="kit"><span class="i">🧳</span>Kit</a>
+  <a href="#guide" data-go="guide"><span class="i">🧭</span>Guide</a>
   <button type="button" class="plus" id="qcBtn" aria-label="Quick capture">+</button>
-  <a href="#guide" data-go="guide"><span class="i">🏛️</span>Guide</a>
+  <a href="#map" data-go="map"><span class="i">🗺️</span>Map</a>
   <a href="#game" data-go="game"><span class="i">🏈</span>Game</a>
 </div></nav>
 <div class="lb" id="lb" role="dialog" aria-label="Map, zoomed"><button class="x" id="lbx" aria-label="Close">×</button><img alt="" src=""><div class="hint">Scroll to pan · pinch to zoom</div></div>
@@ -1511,6 +1534,71 @@ function renderClock(){
   $("#offline").hidden = navigator.onLine !== false;
 }
 
+// ---------- GUIDE front page: navigator + the city in one screen ----------
+const CITY_KEY = d => { const p=(d&&d.place||"").toLowerCase(); if(/dahab|sinai|sharm|blue hole/.test(p)) return "sinai"; if(/desert|bahariya/.test(p)) return "desert"; if(/luxor|karnak/.test(p)) return "luxor"; if(/aswan|abu simbel|nile|edfu|kom ombo|esna/.test(p)) return "aswan"; return "cairo"; };
+const AROUND = { cairo:"Uber or Careem, never the man at the kerb. 20–30 min across town off-peak, an hour at 6pm.", aswan:"The boat arranges cars; feluccas and motorboats from the Corniche — agree price, time and the wait before you step on.", luxor:"Uber works. East Bank is walkable along the Corniche; the ferry to the West Bank is 5 EGP, the private boat 50.", sinai:"Taxis and pickups — agree the price first. Dahab itself is a bike or a walk.", desert:"You're with the driver. The car is the plan." };
+function hotelFor(d){ if(!d) return null; const s=(d.sleep||"").toLowerCase(); let h=HOTELS.find(h=>s.includes(h.n.split(" (")[0].toLowerCase())); if(!h&&/dahabiya|boat|river|edfu/.test(s)) h=HOTELS.find(h=>/dahabiya/i.test(h.n)); if(!h&&/desert/.test(s)) h=HOTELS.find(h=>/desert/i.test(h.n)); if(!h&&/m[ée]ridien|airport/.test(s)) h=HOTELS.find(h=>/ridien/i.test(h.n)); if(!h&&/dahab/.test(s)) h=HOTELS.find(h=>/dahab guest/i.test(h.n)); return h||null; }
+function nextFlightLine(){ const n=cairoNow(); const who=(typeof me==="function"&&me())||""; const fl=[["2026-10-10","Sat 10 · Duane lands 17:20","Duane"],["2026-10-11","Sun 11 · Brad lands 02:05","Brad"],["2026-10-13","Tue 13 · MS82 to Aswan 06:30","Both"],["2026-10-18","Sun 18 · Luxor → Cairo ≈17:00","Both"],["2026-10-19","Mon 19 · Duane home 07:30 · Brad to Sharm","Both"],["2026-10-22","Thu 22 · Sharm → Cairo, evening","Brad"],["2026-10-25","Sun 25 · Brad home 10:20","Brad"]]; const f=fl.find(x=>x[0]>=n.date && (x[2]==="Both"||!who||x[2]===who)); return f?f[1]:"all flown"; }
+function renderNavigator(){
+  const el=$("#navigator"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const key=CITY_KEY(d); const g=GUIDES.find(x=>x.id===key)||GUIDES[0]; const h=hotelFor(d);
+  let week=0; try{ const done=JSON.parse(localStorage.getItem("egypt.list.week")||"{}"); const items=document.querySelectorAll('[data-list="week"] li'); week=items.length?[...items].filter(li=>!li.classList.contains("done")).length:0; }catch(e){}
+  const rate=(()=>{ try{ return $("#rate").value||"50"; }catch(e){ return "50"; } })();
+  const tiles=[
+    ["hotel","🏨","Hotel desk", h?h.n.replace(/ \(.*\)/,""):"tonight's bed"],
+    ["eat","🍽️","Eat & shop", g.city],
+    ["money","💵","Money", `1 USD = ${rate} EGP · tips`],
+    ["phrases","🗣️","Phrases", "five words + the tout phrasebook"],
+    ["sos","🆘","SOS", "126 tourist police · 123 ambulance"],
+    ["flights","✈️","Flights", nextFlightLine()],
+    ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
+    ["notes","📝","Notes", "yours, on this phone"],
+    ["reference","📚","Reference", "the boat, book now vs there"],
+  ];
+  el.innerHTML=`<div class="card"><div class="navh"><b>${g.emoji} ${esc(g.city)}</b><span>${d.dow} ${d.num} · ${esc(d.place||"")}</span></div>
+    <div class="navg">${tiles.map(([k,i,l,s])=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span>${l}<small>${esc(s)}</small></button>`).join("")}</div></div>`;
+}
+function cityBrief(){
+  const el=$("#brief"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const key=CITY_KEY(d); const g=GUIDES.find(x=>x.id===key)||GUIDES[0]; const h=hotelFor(d);
+  const cut=(s,n)=>{ s=String(s||""); return s.length>n?s.slice(0,n).replace(/\s+\S*$/,"")+"…":s; };
+  const eat=g.eat.slice(0,3).map(x=>`<em>${esc(x.n)}</em> <i>· ${esc(cut(x.what,70))}</i>`).join("<br>");
+  const shop=g.shop.slice(0,2).map(x=>`<em>${esc(x.n)}</em> <i>· ${esc(cut(x.buy,52))}</i>`).join("<br>");
+  const buy=g.buy.slice(0,2).map(b=>`<em>${esc(b.i)}</em> <i>· ${esc(b.w)}</i>`).join("<br>");
+  const nx=(d.agenda||[]).find(a=>a.t && a.t>=`${String(cairoNow().h).padStart(2,"0")}:${String(cairoNow().m||0).padStart(2,"0")}` && dayIndexFor(cairoNow().date)===sel);
+  el.innerHTML=`<div class="card brief"><div class="bh"><b>${esc(g.city)} in one screen</b><span>tap a row for the full thing</span></div>
+    <div class="br" data-nav="hotel"><b>Tonight</b><div>${h?`<em>${esc(h.n.replace(/ \(.*\)/,""))}</em>${h.telD?` · <a class="ph" href="tel:${h.tel}">${esc(h.telD)}</a>`:""}${h.cin?`<br><i>in ${esc(h.cin)} · out ${esc(h.cout)}</i>`:""}${h.addr?`<br><i>${esc(h.addr)}</i>`:""}`:`<em>${esc(d.sleep||"—")}</em>`}</div></div>
+    ${nx?`<div class="br" data-nav="today"><b>Next</b><div><em>${esc(nx.t)}</em> · ${esc(cut(nx.title,80))}</div></div>`:""}
+    <div class="br" data-nav="eat"><b>Eat</b><div>${eat}</div></div>
+    <div class="br" data-nav="eat"><b>Buy</b><div>${shop}${buy?`<br>${buy}`:""}</div></div>
+    <div class="br" data-nav="around"><b>Around</b><div>${esc(AROUND[key]||AROUND.cairo)}</div></div>
+    <div class="br" data-nav="money"><b>Tips</b><div><em>10</em> bathroom · <em>50</em> porter, carriage · <em>100</em> felucca captain · <em>200/day</em> driver · <em>$20/day</em> guide</div></div>
+    <div class="br" data-nav="phrases"><b>Say</b><div><em>la, shukran</em> <i>· no thanks, keep walking</i> · <em>bikam?</em> <i>· how much</i> · <em>khalas</em> <i>· done</i></div></div>
+  </div>`;
+}
+function renderWhere(){
+  const el=$("#whereami"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const seen=new Set(); const stops=(d.agenda||[]).filter(a=>a.map && !seen.has(a.map) && seen.add(a.map));
+  const h=hotelFor(d); const hq=d.sleepq||(h&&h.q)||"";
+  el.innerHTML=`<div class="card where"><div class="navh"><b>${d.dow} ${d.num} · ${esc(d.title)}</b><span>${esc(d.place||"")}</span></div>
+    ${stops.length?stops.map(a=>`<div class="wr"><span class="t">${esc(a.t||"")}</span><div><div class="wn">${esc(a.map)}</div>${mapBtns(a.map,null,false)}</div></div>`).join(""):`<p class="muted">No pinned stops on this day.</p>`}
+    ${hq?`<div class="wr"><span class="t">night</span><div><div class="wn">${esc(d.sleep)}</div>${mapBtns(hq,null,false)}</div></div>`:""}
+    <p class="muted" style="margin:8px 0 0;font-size:12.5px">Directions open from wherever you're standing. Change the day on the Today tab and this follows.</p></div>`;
+}
+function navGo(k){
+  const open=(id)=>{ const f=document.getElementById(id); if(f&&f.tagName==="DETAILS") f.open=true; return f; };
+  const to=(sel)=>{ const el=typeof sel==="string"?document.querySelector(sel):sel; if(el) scrollToEl(el); };
+  if(k==="hotel"){ const h=hotelFor(DAYS[sel]); const dets=[...document.querySelectorAll("#hotels details.hotel")]; dets.forEach(x=>x.open=false); const i=h?HOTELS.indexOf(h):-1; if(i>=0&&dets[i]){ dets[i].open=true; to(dets[i]); } else to("#pinned"); return; }
+  if(k==="eat"){ const key=CITY_KEY(DAYS[sel]); const i=GUIDES.findIndex(g=>g.id===key); if(i>=0){ gsel=i; renderGuides(); } to("#guides"); return; }
+  if(k==="money"){ to("#tools"); return; }
+  if(k==="phrases"){ open("cashFold"); const pb=document.querySelector("#phrasebook details"); if(pb) pb.open=true; to("#phrasebook"); return; }
+  if(k==="sos"){ const f=open("sosFold"); to(f); return; }
+  if(k==="flights"){ to("#more"); return; }
+  if(k==="lists"){ to("#lists"); return; }
+  if(k==="notes"){ to("#notes"); return; }
+  if(k==="reference"){ to("#reference"); return; }
+  if(k==="around"){ open("cashFold"); to("#cashFold"); return; }
+  if(k==="today"){ to("#today"); return; }
+}
+document.addEventListener("click", e=>{ const n=e.target.closest("[data-nav]"); if(n){ navGo(n.dataset.nav); } });
+function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(); }catch(e){} try{ renderWhere(); }catch(e){} }
 function renderHotels(){
   $("#hotels").innerHTML = HOTELS.map((h,i)=>`<details class="hotel ${h.solo?"solo":""}"><summary><div><div class="n">${esc(h.n)}</div><div class="d">${esc(h.d)}${h.cin?` · in ${h.cin} / out ${h.cout}`:""}</div></div><span class="more">›</span></summary><div class="hin">
       ${h.addr?`<div class="hrow"><b>Where</b><span>${esc(h.addr)}</span></div>`:""}
@@ -1571,7 +1659,7 @@ document.addEventListener("click",e=>{
 });
 function goDay(i, scroll){
   if(i<0||i>=DAYS.length) return; sel=i; const c=$("#dayCard"); c.classList.add("swap");
-  setTimeout(()=>{ renderStrip(); renderDay(); c.classList.remove("swap"); },120);
+  setTimeout(()=>{ renderStrip(); renderDay(); renderGuideFront(); c.classList.remove("swap"); },120);
   try{ history.replaceState(null,"","#"+DAYS[sel].id); }catch(e){}
   if(scroll) scrollToEl(document.querySelector("#today"));
 }
@@ -1603,7 +1691,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v43)";
+const BUILD = "Oct 8, 2026 (v44)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1613,7 +1701,7 @@ function appShell(){
   if(mobile && !standalone && !dismissed && location.protocol.startsWith("http")){
     const ios = /iPhone|iPad/i.test(navigator.userAgent);
     const linked = (()=>{ try{ return (localStorage.getItem("egypt.room")||"").length>=24; }catch(e){ return false; } })(); const whoN = (()=>{ try{ return JSON.parse(localStorage.getItem("egypt.game.me")||'""'); }catch(e){ return ""; } })();
-    $("#hintText").textContent = ios ? `${whoN?"You're "+whoN+". ":""}Add to Home Screen (share button → Add to Home Screen) so this opens like an app, signal or not.${linked?" Then in that copy: Game → paste the room code (Copy button is in Game here).":""}` : "Add to Home screen (browser menu → Add to Home screen) and this opens like an app, signal or not.";
+    $("#hintText").textContent = ios ? `${whoN?"You're "+whoN+". ":""}Add to Home Screen (share button → Add to Home Screen) so this opens like an app, signal or not.` : "Add to Home screen (browser menu → Add to Home screen) and this opens like an app, signal or not.";
     $("#hint").classList.add("show");
     $("#hintX").addEventListener("click",()=>{ $("#hint").classList.remove("show"); try{ localStorage.setItem("egypt.hint","1"); }catch(e){} });
   }
@@ -1803,7 +1891,7 @@ function renderGame(){
     ${safe(colorKey)}
     ${safe(scoreboard)}
     <div class="sbl" style="text-align:left;margin:6px 0 8px"><b>Your line:</b> ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
-    <div class="row"><button type="button" class="btn" id="scoreShare">Share the board</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Not linked yet, so this phone keeps its own score. Link the room above and the boards merge."}</span></div>
+    <div class="row"><button type="button" class="btn" id="scoreShare">Share the board</button><span class="muted">${(typeof liveOK==="function"&&liveOK())?"The two phones sync through the room every minute — whatever either of you logs lands on both boards. Share drops the box score into iMessage for the gloating.":"Pick a name at the top and the two boards link on their own."}</span></div>
   </div>
 
   <details class="fold" open><summary>Egypt Bingo <span class="pill">${s.bingo}/24</span></summary><div class="in">
@@ -2281,9 +2369,10 @@ function rivalryCard(){
 }
 
 // ---------- live scoreboard: both phones, one room ----------
-// DB_URL is the Firebase Realtime Database; the room code lives on the phone (from the link Brad sends), never in the repo.
-const DB_URL = "https://egypt-brothers-default-rtdb.firebaseio.com";
-const room = ()=>{ try{ return localStorage.getItem("egypt.room")||""; }catch(e){ return ""; } };
+// DB_URL is the Firebase Realtime Database. The room is baked into the build so both phones are linked the moment a name is picked —
+// nothing to paste, nothing to activate. (The board holds scores and play-by-play only; the journal never leaves the phone.)
+const DB_URL = "https://egypt-brothers-default-rtdb.firebaseio.com"; const ROOM_DEFAULT = "918d8d0e314d9b0398483da9b1376287";
+const room = ()=>{ try{ return localStorage.getItem("egypt.room")||ROOM_DEFAULT; }catch(e){ return ROOM_DEFAULT; } };
 (function roomFromLink(){ try{ const m=location.hash.match(/room=([a-f0-9]{24,})/); if(m){ localStorage.setItem("egypt.room", m[1]); history.replaceState(null,"",location.pathname+location.search); setTimeout(()=>{ try{ toast("Linked to the live scoreboard"); }catch(e){} }, 1200); } }catch(e){} })();
 const liveOK = ()=> DB_URL.startsWith("https://") && room().length>=24 && !!me();
 function livePayload(){
@@ -2297,7 +2386,7 @@ function livePush(){ if(!liveOK()) return; clearTimeout(pushT); pushT=setTimeout
 async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); return d; }catch(e){ return null; } }
 function renderLive(){
   const el=$("#live"); if(!el) return; setTimeout(()=>safe(()=>nbAnimate(el)),30);
-  if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone first.</p>`:room().length<24?`<p class="muted">Not linked yet. Open the link Brad sent (it has the room code in it), or paste the code:</p><form id="roomForm" class="rform"><input id="roomIn" placeholder="room code" autocapitalize="off"><button class="btn" type="submit">Link</button></form>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
+  if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone (the name chip at the top) and the board links itself.</p>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
   const d=GS.get("live",{})||{}; const mine=d[me()], theirs=d[OTHER()]; const t=team(), o=TEAMS[OTHER()];
   const tm=x=>x?new Date(x.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"}):"—";
   const events=[...(mine&&mine.events||[]),...(theirs&&theirs.events||[])].sort((a,b)=>b.at<a.at?-1:1).slice(0,12); const flagged=new Set([...(GS.get("flags",[])),...((theirs&&theirs.flags)||[])]);
@@ -2308,13 +2397,11 @@ function renderLive(){
     <div class="sbl">${theirs?`${OTHER()}: ${theirs.own?theirs.own.yds:0} yds · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
     ${events.length?`<ul class="feed">${events.map(e=>{ const id=e.at+"|"+e.who; const fl=flagged.has(id); return `<li class="${fl?"flagged":""}"><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span><span>${esc(e.text)}${fl?` <i class="rev">🚩 under review</i>`:""}</span><small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}${e.who!==me()?` <button type="button" class="flagbtn" data-flag="${id}" aria-label="Challenge flag">🚩</button>`:""}</small></li>`; }).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every minute when the app is open.</span></div>
-    <div class="row" style="margin-top:8px"><button type="button" class="btn mini" data-copy="${room()}">Copy room code</button><span class="muted">The home-screen copy of this app keeps its own settings — if it says “not linked,” paste the code there once.</span></div>
   </div>`;
 }
 function liveWire(){
   document.addEventListener("click", e=>{ const fb=e.target.closest("[data-flag]"); if(fb){ const f=GS.get("flags",[]); const i=f.indexOf(fb.dataset.flag); if(i>=0) f.splice(i,1); else f.push(fb.dataset.flag); GS.set("flags",f); renderLive(); livePush(); toast(i>=0?"Flag picked up":"Flag thrown. Under review."); return; }
     if(e.target.id==="liveRefresh"){ livePull().then(d=>toast(d?"Updated":"No signal — try again later")); } });
-  document.addEventListener("submit", e=>{ if(e.target.id!=="roomForm") return; e.preventDefault(); const v=$("#roomIn").value.trim().toLowerCase(); if(!/^[a-f0-9]{24,}$/.test(v)){ toast("That's not a room code"); return; } localStorage.setItem("egypt.room", v); renderLive(); livePush(); livePull(); toast("Linked"); });
   // push whenever game state changes
   const origSet = GS.set; GS.set = function(k,v){ origSet.call(GS,k,v); if(!["live","livePushed","livePulled","events","me","oracle","ms","rival","ppHint","confetti"].includes(k)) livePush(); };
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ livePull(); livePush(); } });
@@ -2673,7 +2760,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); setTimeout(renderGuideFront,0); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
