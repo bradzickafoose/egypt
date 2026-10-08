@@ -185,6 +185,70 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+/* THE NILE BOWL — stadium board */
+.nilebowl{--nbline:rgba(255,255,255,.1);background:linear-gradient(180deg,#171a20,#0a0c0f 60%,#0e1013);color:#fff;border-radius:18px;padding:16px 14px 14px;margin:10px 0 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 34px -18px rgba(0,0,0,.8);position:relative;overflow:hidden;isolation:isolate}
+.nilebowl::before{content:"";position:absolute;inset:-60% -20% auto -20%;height:90%;background:radial-gradient(50% 60% at 30% 0%,rgba(255,215,110,.18),transparent 65%),radial-gradient(40% 50% at 80% 0%,rgba(255,255,255,.08),transparent 70%);pointer-events:none;z-index:-1}
+.nilebowl::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.07) 45%,transparent 60%);background-size:250% 100%;animation:nbsweep 6s linear infinite;pointer-events:none;z-index:-1}
+@keyframes nbsweep{from{background-position:120% 0}to{background-position:-120% 0}}
+.nb-head{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:8px;align-items:center;margin-bottom:12px}
+.nb-crest{width:52px;height:52px;grid-row:1/2;filter:drop-shadow(0 0 10px rgba(255,200,80,.35))}
+.nb-mark{display:flex;flex-direction:column;gap:3px;min-width:0}
+.nb-name{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:.03em;line-height:1;text-transform:uppercase;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.nb-roman{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:24px;line-height:1;color:#ffb612;text-shadow:0 0 14px rgba(255,182,18,.5);padding:0 7px;border:2px solid rgba(255,182,18,.6);border-radius:6px;transform:translateY(-1px)}
+.nb-sub{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);line-height:1.3}
+.nb-status{grid-column:1/3;justify-self:start;font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:5px 10px;border-radius:6px;border:1px solid var(--nbline);color:rgba(255,255,255,.8);white-space:nowrap;display:flex;align-items:center;gap:7px}
+.nb-dot{width:7px;height:7px;border-radius:50%;background:#5ee37a;box-shadow:0 0 8px #5ee37a;animation:nbpulse 1.4s ease-in-out infinite}
+@keyframes nbpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+.nilebowl.live .nb-status{color:#5ee37a;border-color:rgba(94,227,122,.45);box-shadow:0 0 14px rgba(94,227,122,.25)}
+.nilebowl.final .nb-status{color:#ffb612;border-color:rgba(255,182,18,.55);box-shadow:0 0 14px rgba(255,182,18,.3)}
+.nb-grid{display:grid;gap:5px;position:relative}
+.nb-row{display:grid;grid-template-columns:1.6fr repeat(4,1fr) 1.15fr;gap:5px;align-items:center}
+.nb-hdr div{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.45);text-align:center;padding-bottom:1px}
+.nb-hdr div.lit{color:#5ee37a;text-shadow:0 0 8px rgba(94,227,122,.6)}
+.nb-team{position:relative;display:flex;flex-direction:column;justify-content:center;padding:8px 10px;border-radius:10px;background:var(--tc1);color:var(--tc2);min-height:54px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.nb-team.cin::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 11px,rgba(0,0,0,.55) 11px 15px,transparent 15px 26px,rgba(0,0,0,.45) 26px 29px);opacity:.9;pointer-events:none}
+.nb-team.pit::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 5px,rgba(255,182,18,.08) 5px 6px);pointer-events:none}
+.nb-team b,.nb-team small{position:relative}
+.nb-team b{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.05em;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.nb-team small{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.9;margin-top:3px}
+.nb-ribbon{position:absolute;left:0;right:0;bottom:0;background:#ffb612;color:#1a1408;font:800 8px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;padding:3px 0;text-align:center;font-style:normal}
+.nb-row.champ .nb-team{padding-bottom:16px}
+.nb-q,.nb-t{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:center;background:rgba(255,255,255,.05);border-radius:10px;min-height:54px;display:flex;align-items:center;justify-content:center;font-size:19px;color:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.nb-q.lit{background:rgba(94,227,122,.12);color:#5ee37a;box-shadow:inset 0 0 0 1px rgba(94,227,122,.45),0 0 12px rgba(94,227,122,.15)}
+.nb-t{font-size:32px;font-weight:700;color:#fff;background:rgba(255,255,255,.1);text-shadow:0 0 16px rgba(255,255,255,.25)}
+.nb-row.champ .nb-t{color:#ffb612;text-shadow:0 0 18px rgba(255,182,18,.6);box-shadow:inset 0 0 0 1px rgba(255,182,18,.6)}
+.nb-field{position:relative;height:30px;margin:14px 6px 0;border-radius:4px;background:repeating-linear-gradient(90deg,#1f5e35 0 10%,#1a5230 10% 20%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.nb-field .nb-ez{position:absolute;top:0;bottom:0;width:9%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nb-field .nb-ez span{font-family:var(--display);font-weight:800;font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7);writing-mode:vertical-rl;transform:rotate(180deg)}
+.nb-field .nb-ez.r span{transform:none}
+.nb-ticker{margin:12px -14px -14px;padding:7px 0;background:#000;border-top:1px solid rgba(255,255,255,.08);overflow:hidden;white-space:nowrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#ffb612;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.nb-tick{display:inline-block;animation:nbtick 38s linear infinite;padding-left:14px}
+.nb-tick span{display:inline-block}.nb-tick b{color:#fff;font-weight:700}.nb-tick i{display:inline-block;margin:0 14px;color:rgba(255,182,18,.5);font-style:normal}
+@keyframes nbtick{to{transform:translateX(-50%)}}
+.nilebowl.pre .nb-status{color:#ffd86b;border-color:rgba(255,216,107,.4)}
+/* score bug on the day card */
+.sbug{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:stretch;gap:0;margin:-10px -12px 10px;border-radius:13px 13px 0 0;overflow:hidden;background:#0d0f13;color:#fff;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.sbug .sbtm{background:var(--tc1);color:var(--tc2);font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.06em;padding:7px 10px;display:flex;align-items:center}
+.sbug .sbn{padding:7px 10px;font-size:15px;font-weight:700;display:flex;align-items:center;background:rgba(255,255,255,.08)}
+.sbug .sbq{padding:7px 8px;font-size:9.5px;letter-spacing:.12em;color:#5ee37a;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* jumbotron */
+#jumbo{position:fixed;left:0;right:0;top:38%;z-index:70;pointer-events:none;display:flex;justify-content:center;padding:0 16px}
+#jumbo .jb{background:var(--tc1);color:var(--tc2);border-radius:14px;padding:14px 22px;text-align:center;box-shadow:0 20px 50px -10px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.25);animation:jbin 2.3s cubic-bezier(.2,.9,.2,1) forwards;max-width:92vw}
+#jumbo small{display:block;font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+#jumbo b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(26px,9vw,44px);line-height:1;letter-spacing:.02em;text-transform:uppercase;margin:4px 0 2px}
+#jumbo i{display:block;font-style:normal;font-family:var(--mono);font-size:12px;letter-spacing:.06em;opacity:.9}
+@keyframes jbin{0%{opacity:0;transform:translateX(-110vw) skewX(-12deg)}12%{opacity:1;transform:translateX(0) skewX(0)}78%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(110vw) skewX(12deg)}}
+.nb-field .nb-ez.l{left:0;border-radius:4px 0 0 4px}.nb-field .nb-ez.r{right:0;border-radius:0 4px 4px 0}
+.nb-yards span{position:absolute;top:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.55)}
+.nb-ball{position:absolute;top:50%;width:18px;height:11px;border-radius:50%;background:var(--tc1);box-shadow:inset 0 0 0 2px var(--tc2),0 2px 6px rgba(0,0,0,.6);transform:translate(-50%,-50%) rotate(-20deg);transition:left .8s cubic-bezier(.2,.8,.2,1)}
+.nb-ball.theirs{top:28%}.nb-ball.mine{top:72%}
+.nb-fieldlbl{display:flex;justify-content:space-between;gap:8px;margin:5px 6px 0;font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:rgba(255,255,255,.5);white-space:nowrap}
+.nb-fieldlbl span:nth-child(2){overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,.35)}
+.nb-foot{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.6)}
+.nb-foot em{margin-left:auto;font-style:normal;color:#ffb612;font-weight:700;text-shadow:0 0 10px rgba(255,182,18,.35)}
+@media (prefers-reduced-motion:reduce){ .nilebowl::after,.nb-dot,.nb-tick,.bingo button.td{animation:none} }
+#review .nilebowl{margin:14px 0 0}
+
 /* trip in review */
 #review{position:fixed;inset:0;z-index:80;background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--rv1,#101820) 70%, #000) 0%, #0b0b09 70%);color:#fff;opacity:0;transition:opacity .25s;display:flex;flex-direction:column;overflow:hidden}
 #review.on{opacity:1}
@@ -265,7 +329,6 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .convx b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
 .convx .cv{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
 .convx.xp,.convx.two{border-style:solid;background:var(--nile-soft)}
-html.team .convx .btn.primary{background:var(--t1);color:var(--t2);border-color:transparent}
 .feed li.flagged span{color:var(--muted)}
 .feed .rev{font-style:normal;color:#b5322b;font-size:11px}
 .flagbtn{background:none;border:0;cursor:pointer;font-size:13px;padding:0 2px;opacity:.6}
@@ -280,8 +343,15 @@ html.team .convx .btn.primary{background:var(--t1);color:var(--t2);border-color:
 
 /* AFC North */
 /* team colors appear only where points are won or lost */
-html.team .chal .btn.primary,html.team .stampbox .btn.primary,html.team .tout .btn.primary,html.team .fbtn .btn.primary,html.team #hform .btn.primary{background:var(--t1);color:var(--t2);border-color:transparent}
-html.team .chal.done{background:var(--t1);color:var(--t2)}html.team .chal.done b,html.team .chal.done .ct{color:inherit}
+/* the one rule of color: .score = your team scores, .give = his team scores, anything else = no points */
+html.team .btn.score{background:var(--t1);color:var(--t2);border-color:transparent}
+html.team .btn.give{background:var(--o1);color:var(--o2);border-color:transparent}
+.fbtn .btn.on{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px currentColor;font-weight:800}
+html.team .chal.scored{background:var(--t1);color:var(--t2)}html.team .chal.scored b,html.team .chal.scored .ct{color:inherit}
+.ckey{display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;margin:8px 0 6px;font-size:11.5px;color:var(--muted)}
+.ckey .k{display:inline-block;padding:3px 8px;border-radius:6px;background:var(--tc1);color:var(--tc2);font-family:var(--display);font-stretch:87.5%;font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.ckey .k.no{background:var(--bg);color:var(--fg);border:1px solid var(--line)}
+.ckey em{font-style:normal;margin-right:4px}
 html.team .lived{border-left-color:var(--t1)}
 .sb{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin:12px 0 6px}
 .sbt{border-radius:12px;padding:10px 10px 8px;text-align:center;display:flex;flex-direction:column;gap:2px}
@@ -298,7 +368,9 @@ html.team .lived{border-left-color:var(--t1)}
 .riv div{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
 .riv b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
 .whatson li.gameday::marker{content:"🏈 "}
-html.team .bingo button.on{background:var(--t1);color:var(--t2)}
+html.team .bingo button.td{background:var(--t1);color:var(--t2);border-color:transparent;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--star);animation:tdpulse 1.6s ease-in-out infinite}
+html.team .bingo.blackout button.on{background:var(--t1);color:var(--t2)}
+@keyframes tdpulse{50%{box-shadow:0 0 0 2px var(--bg),0 0 0 6px var(--star)}}
 html.team .stars button.on{color:var(--star,#e0a100)}
 #whoSheet .wbtn button small{display:block;font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-top:2px}
 
@@ -345,7 +417,7 @@ html.team .stars button.on{color:var(--star,#e0a100)}
 .flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .flist li{display:grid;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
 .flist li span{display:block;color:var(--muted);font-size:12.5px}
-.fbtn{display:flex;gap:6px}
+.fbtn{display:flex;gap:6px}.fbtn .btn{min-width:84px;justify-content:center}
 .hform select{font:14px var(--body);padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg)}
 
 .lived{margin:8px 0 2px;padding:8px 10px;border-left:3px solid #b5322b;background:var(--bg);border-radius:0 10px 10px 0}
@@ -1452,7 +1524,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v38)";
+const BUILD = "Oct 8, 2026 (v40)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1631,7 +1703,7 @@ function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const f
 function challengeBox(d){
   const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
   const done=!!GS.get("chal",{})[d.id];
-  return `<div class="chal ${done?"done":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":"Done ✓"}</button></div>`;
+  return `<div class="chal ${done?"done":""} ${done&&QUARTER[d.id]?"scored":""}"><b>Today's challenge · ${QUARTER[d.id]?"touchdown, 6":"overtime, no score"}</b><div class="ct">${esc(c)}</div><button type="button" class="btn ${done?"":QUARTER[d.id]?"score":"primary"}" data-chal="${d.id}">${done?"Done ✓ · undo":QUARTER[d.id]?"Done ✓ · +6":"Done ✓"}</button></div>`;
 }
 function rateBox(d){
   const r=GS.get("rate",{})[d.id]||{};
@@ -1640,26 +1712,27 @@ function rateBox(d){
 }
 
 function renderGame(){
-  const el=$("#gameBody"); if(!el) return; safe(checkMilestones); if(typeof renderLive==="function") safe(renderLive);
+  const el=$("#gameBody"); if(!el) return; safe(checkMilestones); if(typeof renderLive==="function") safe(renderLive); setTimeout(()=>safe(()=>nbAnimate(el)),30);
   const who=me(); const s=gameScore(); const bset=new Set(GS.get("bingo",[12])); const hg=GS.get("haggle",[]); const ch=GS.get("chal",{});
   const rows=hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<tr><td>${esc(h.w)}<small>${esc(h.d||"")}</small></td><td>${h.a.toLocaleString()}</td><td>${h.p.toLocaleString()}</td><td class="pct ${pct>=40?"win":""}">${pct}%</td><td><button type="button" class="btn mini" data-hdel="${i}" aria-label="Remove">✕</button></td></tr>`; }).join("");
   const king = hg.length ? hg.reduce((a,b)=> ((1-b.p/b.a)>(1-a.p/a.a)?b:a)) : null;
   el.innerHTML = `
   <div class="card">
     <div class="whome"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    ${safe(colorKey)}
     ${safe(scoreboard)}
     <div class="sbl" style="text-align:left;margin:6px 0 8px">${s.bingo*YDS_PER_SQUARE} yds · ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"} · ${Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0)} “my friends” · ${GS.get("camel",[]).reduce((m,c)=>Math.max(m,c.n),0).toLocaleString()} camels</div>
     <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare over iMessage — that's the fun part.</span></div>
   </div>
 
   <details class="fold" open><summary>Egypt Bingo <span class="pill">${s.bingo}/24</span></summary><div class="in">
-    <p class="muted">Tap when it happens. A line is bragging rights; blackout is legendary.</p>
-    <div class="bingo">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
+    <p class="muted">Tap when it happens. Ten yards a square, a line is bragging rights, and the last square of a blackout is a touchdown — it turns your colors when you get there.</p>
+    <div class="bingo ${bset.size>=25?"blackout":""}">${BINGO.map((t,i)=>`<button type="button" class="${bset.has(i)?"on":""} ${i===12?"free":""} ${!bset.has(i)&&bset.size===24?"td":""}" data-bingo="${i}" ${i===12?"disabled":""}>${esc(t)}</button>`).join("")}</div>
   </div></details>
 
   <details class="fold" open><summary>Haggle Scoreboard <span class="pill">${hg.length}</span></summary><div class="in">
-    <p class="muted">Log every buy: what, asking price, what you paid. Below 40% of the ask is a win. ${king?`<b>Best so far: ${esc(king.w)}, ${Math.round((1-king.p/king.a)*100)}% off.</b>`:""}</p>
-    <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" type="submit">Log it</button></form>
+    <p class="muted">Log every buy: what, asking price, what you paid. Forty percent off or more is a field goal — three points, once a day. The button turns your colors when the numbers add up. ${king?`<b>Best so far: ${esc(king.w)}, ${Math.round((1-king.p/king.a)*100)}% off.</b>`:""}</p>
+    <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>
     ${hg.length?``:`<p class="muted">No haggles yet. The touts are winning.</p>`}${hg.length?`<table class="htab"><thead><tr><th>What</th><th>Asked</th><th>Paid</th><th>Off</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:""}
   </div></details>
 
@@ -1706,9 +1779,9 @@ function gameWire(){
   document.addEventListener("click", e=>{
     const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
     if(e.target.id==="meChip"){ whoSheet(true); return; }
-    const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(after>before){ safe(()=>logEvent(set.size>=25?"BLACKOUT — the whole card. Touchdown.":"a bingo line — bragging rights")); } return; }
-    const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]){ toast(QUARTER[c.dataset.chal]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)"); safe(()=>logEvent("touchdown — challenge done, "+dayLabel(c.dataset.chal))); } return; }
-    const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); s[sp.dataset.stupid]=!s[sp.dataset.stupid]; GS.set("stupid",s); renderDay(); renderGame(); if(s[sp.dataset.stupid]){ toast("Two-point conversion. Good."); safe(()=>logEvent("went for two and got the shot, "+dayLabel(sp.dataset.stupid))); } return; }
+    const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(set.size>=25) jumbo("Blackout · Touchdown", me(), "+6 · the whole card"); if(after>before){ safe(()=>logEvent(set.size>=25?"BLACKOUT — the whole card. Touchdown.":"a bingo line — bragging rights")); } return; }
+    const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]){ toast(QUARTER[c.dataset.chal]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)"); if(QUARTER[c.dataset.chal]) jumbo("Touchdown", me(), "+6 · now the conversion"); safe(()=>logEvent("touchdown — challenge done, "+dayLabel(c.dataset.chal))); } return; }
+    const sp=e.target.closest("[data-stupid]"); if(sp){ const s=GS.get("stupid",{}); s[sp.dataset.stupid]=!s[sp.dataset.stupid]; GS.set("stupid",s); renderDay(); renderGame(); if(s[sp.dataset.stupid]){ toast("Two-point conversion. Good."); jumbo("Two-point conversion", me(), "+2"); safe(()=>logEvent("went for two and got the shot, "+dayLabel(sp.dataset.stupid))); } return; }
     const h=e.target.closest("[data-hdel]"); if(h){ const hg=GS.get("haggle",[]); hg.splice(+h.dataset.hdel,1); GS.set("haggle",hg); renderGame(); return; }
     const st=e.target.closest(".stars button"); if(st){ const w=st.parentElement; const r=GS.get("rate",{}); r[w.dataset.rate]=r[w.dataset.rate]||{}; r[w.dataset.rate][w.dataset.k]= (r[w.dataset.rate][w.dataset.k]===+st.dataset.n)?0:+st.dataset.n; GS.set("rate",r); [...w.children].forEach(x=>x.classList.toggle("on", +x.dataset.n<=r[w.dataset.rate][w.dataset.k])); safe(checkMilestones); return; }
     if(e.target.id==="scoreShare"||e.target.id==="scoreCopy"){ const t=scoreText(); if(e.target.id==="scoreShare"&&navigator.share){ navigator.share({text:t}).catch(()=>{}); } else { (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into Messages")).catch(()=>toast("Couldn't copy here")); } return; }
@@ -1721,7 +1794,7 @@ function gameWire(){
     const h={w:$("#hw").value.trim(), d:$("#hd").value.trim(), a:num($("#ha").value), p:num($("#hp").value), day:(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id};
     if(!h.w||!h.a){ toast("Need the item and the asking price"); return; }
     const hg=GS.get("haggle",[]); hg.unshift(h); GS.set("haggle",hg); renderGame();
-    const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off. Field goal — three points.`:`${pct}% off. Logged.`); if(pct>=40) safe(()=>logEvent(`field goal — ${h.w}, ${pct}% off`));
+    const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off. Field goal — three points.`:`${pct}% off. Logged.`); if(pct>=40){ safe(()=>logEvent(`field goal — ${h.w}, ${pct}% off`)); jumbo("Field goal", me(), `+3 · ${pct}% off`); }
   });
 }
 
@@ -1730,8 +1803,8 @@ const CITY_OF = d => { const p=(d.place||"").toLowerCase(); if(/dahab|sinai|shar
 const stamps = ()=>GS.get("stamp",{});
 function stampHTML(d, s, small){ if(!s) return ""; const t=new Date(s.at); const hh=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0"); return `<div class="stamp ${small?"small":""}" style="--rot:${(parseInt(d.id.replace(/\D/g,""))%7-3)*4}deg"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num} OCT 2026</div><div class="r3">${esc((s.who||"").toUpperCase()||"ENTERED")} · ${hh}</div></div>`; }
 function stampBox(d){
-  const s=stamps()[d.id];
-  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":"🛂 Stamp it"}</button></div></div>`;
+  const s=stamps()[d.id]; const xp = !s && !!QUARTER[d.id] && !!GS.get("chal",{})[d.id] && !GS.get("stupid",{})[d.id];
+  return `<div class="stampbox">${s?stampHTML(d,s):`<div class="stamp ghost"><div class="r1">${CITY_OF(d)}</div><div class="r2">NOT YET</div></div>`}<div><b>${s?"Stamped.":"Stamp this day"}</b><div class="muted">${s?"In the passport. Un-stamp only if it was a mistake.":"Press it tonight, when the day's done. It goes in the passport."}</div><button type="button" class="btn ${s?"":xp?"score":"primary"}" data-stamp="${d.id}">${s?"Undo stamp":xp?"🛂 Stamp it · +1":"🛂 Stamp it"}</button></div></div>`;
 }
 function renderPassport(){
   const el=$("#passport"); if(!el) return; const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
@@ -1754,7 +1827,7 @@ async function loadArchive(){
 }
 function passportWire(){
   document.addEventListener("click", e=>{
-    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}${td&&QUARTER[id]?" — extra point":""}`)); } return; }
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd)); if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]) jumbo("Extra point", me(), "+1 · "+CITY_OF(dd)); safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}${td&&QUARTER[id]?" — extra point":""}`)); } return; }
     if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const f=new File([blob],name,{type:"application/json"}); if(navigator.canShare && navigator.canShare({files:[f]})){ navigator.share({files:[f], title:name, text:"My Egypt passport file"}).then(()=>toast("Sent. Brad puts it in the repo.")).catch(()=>{}); return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
@@ -1806,8 +1879,8 @@ function funBox(){
   const bw=owed("Brad"), dw=owed("Duane"); const verdict = bw===dw?"All square.":(bw>dw?`Brad owes ${bw-dw} tea${bw-dw>1?"s":""}.`:`Duane owes ${dw-bw} tea${dw-bw>1?"s":""}.`);
   return `
   <details class="fold"><summary>House rules &amp; forfeits <span class="pill">${verdict}</span></summary><div class="in">
-    <p class="muted">Tap the name of the guilty party. Settle nightly, in tea.</p>
-    <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>`<button type="button" class="btn ${((ff[i]||{})[w]||0)?"primary":""}" data-ff="${i}" data-w="${w}">${w} ${((ff[i]||{})[w]||0)?"· "+ff[i][w]:""}</button>`).join("")}</div></li>`).join("")}</ul>
+    <p class="muted">Tap the name of the guilty party. A penalty is a safety: two points to the other man — the button wears the colors of whoever collects. Tea ones are just tea.</p>
+    <ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>ffBtn(i,w,ff)).join("")}</div></li>`).join("")}</ul>
     <p class="muted" style="margin-top:8px">Long-press a name to take one back. “My friend” total for the trip so far: <b>${tout}</b>.</p>
   </div></details>
     <details class="fold"><summary>Camel offers <span class="pill">${camels.length}</span></summary><div class="in">
@@ -1829,7 +1902,7 @@ function funWire(){
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
     if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>${TEAMS[other].team} win the toss. ${who} pays.</b>`; },900); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
-    const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
+    const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); const dd=DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); if(isPen){ pl.push({w, i:+i, day:dd.id, at:new Date().toISOString()}); GS.set("penlog",pl); } renderGame(); toast(isPen?`${w}: ${FORFEITS[i][1]}. Safety — two points to ${w==="Brad"?"Duane":"Brad"}.`:`${w}: ${FORFEITS[i][1]}`); if(isPen) jumbo("Safety", w==="Brad"?"Duane":"Brad", `+2 · ${w} flagged: ${FORFEITS[i][0]}`); safe(()=>logEvent(`flagged ${w}: ${FORFEITS[i][0]}${isPen?" — safety":""}`)); return; }
   });
   let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); const pl=GS.get("penlog",[]); for(let k=pl.length-1;k>=0;k--){ if(pl[k].w===w&&pl[k].i===+i){ pl.splice(k,1); break; } } GS.set("penlog",pl); renderGame(); toast("Taken back"); } },650); }, {passive:true});
   document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
@@ -2015,7 +2088,7 @@ let pushT=null, lastPushed="";
 function livePush(){ if(!liveOK()) return; clearTimeout(pushT); pushT=setTimeout(async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); } }catch(e){} }, 1500); }
 async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok) return null; const d=await r.json(); GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); return d; }catch(e){ return null; } }
 function renderLive(){
-  const el=$("#live"); if(!el) return;
+  const el=$("#live"); if(!el) return; setTimeout(()=>safe(()=>nbAnimate(el)),30);
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone first.</p>`:room().length<24?`<p class="muted">Not linked yet. Open the link Brad sent (it has the room code in it), or paste the code:</p><form id="roomForm" class="rform"><input id="roomIn" placeholder="room code" autocapitalize="off"><button class="btn" type="submit">Link</button></form>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
   const d=GS.get("live",{})||{}; const mine=d[me()], theirs=d[OTHER()]; const t=team(), o=TEAMS[OTHER()];
   const tm=x=>x?new Date(x.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"}):"—";
@@ -2024,7 +2097,7 @@ function renderLive(){
   el.innerHTML=`<div class="card">
     <div class="lk">Live scoreboard <span class="muted">· ${pulled?"updated "+new Date(pulled).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):"waiting for signal"}</span></div>
     ${boxScore()}
-    <div class="sbl">${theirs?`${OTHER()}: ${theirs.own?theirs.own.td:0} TD · ${theirs.own?theirs.own.fg:0} FG · ${theirs.own?theirs.own.yds:0} yds · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
+    <div class="sbl">${theirs?`${OTHER()}: ${theirs.own?theirs.own.yds:0} yds · ${theirs.tout||0} “my friends” · last seen ${tm(theirs)}`:`${OTHER()} hasn't linked his phone yet.`}</div>
     ${events.length?`<ul class="feed">${events.map(e=>{ const id=e.at+"|"+e.who; const fl=flagged.has(id); return `<li class="${fl?"flagged":""}"><span class="fw ${e.who===me()?"m":"t"}">${esc(e.who||"")}</span><span>${esc(e.text)}${fl?` <i class="rev">🚩 under review</i>`:""}</span><small>${new Date(e.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}${e.who!==me()?` <button type="button" class="flagbtn" data-flag="${id}" aria-label="Challenge flag">🚩</button>`:""}</small></li>`; }).join("")}</ul>`:`<p class="muted">The feed fills as things happen: stamps, touchdowns, camel offers, penalties.</p>`}
     <div class="row"><button type="button" class="btn" id="liveRefresh">Refresh</button><span class="muted">Syncs on its own every minute when the app is open.</span></div>
     <div class="row" style="margin-top:8px"><button type="button" class="btn mini" data-copy="${room()}">Copy room code</button><span class="muted">The home-screen copy of this app keeps its own settings — if it says “not linked,” paste the code there once.</span></div>
@@ -2040,6 +2113,17 @@ function liveWire(){
   setInterval(()=>{ if(!document.hidden) livePull(); }, 60000);
   livePull(); livePush();
 }
+
+
+// ---------- the one rule of color: a button in your colors scores for you; in his, for him; plain, nobody ----------
+function ffBtn(i,w,ff){ const n=(ff[i]||{})[w]||0; const isPen=!/compulsory|permitted/i.test(FORFEITS[i][1]); const cls=(!isPen||!me())?"":(w===me()?"give":"score"); return `<button type="button" class="btn ${cls} ${n?"on":""}" data-ff="${i}" data-w="${w}">${w}${n?" · "+n:""}</button>`; }
+function colorKey(){ const w=me(); if(!w) return ""; const t=TEAMS[w], o=TEAMS[OTHER()]; const sw=T=>`style="--tc1:${T.c1};--tc2:${T.c2.toLowerCase()==="#000000"?"#fff":T.c2}"`; return `<div class="ckey"><span class="k" ${sw(t)}>${t.team}</span><em>you score</em><span class="k" ${sw(o)}>${o.team}</span><em>he scores</em><span class="k no">plain</span><em>no points</em></div>`; }
+function hagglePreview(form){ const b=form.querySelector("[data-hbtn]"); if(!b) return; const num=s=>+String(s).replace(/[^\d.]/g,"")||0; const ai=form.querySelector("[data-ha]"), pi=form.querySelector("[data-hp]"); const a=num(ai&&ai.value), p=num(pi&&pi.value); const d=todayDay()||DAYS[sel]; const fgToday=GS.get("haggle",[]).some(h=>h.day===d.id && h.a>0 && (1-h.p/h.a)>=0.4); const pct=a>0?Math.round((1-p/a)*100):0; const typed=!!(pi&&pi.value!==""); const fg=a>0 && typed && pct>=40 && !!QUARTER[d.id] && !fgToday && !!me(); b.classList.toggle("score",fg); b.textContent = fg?"Log it · field goal, +3" : (a>0&&typed&&pct>0 ? `Log it · ${pct}% off${pct>=40&&fgToday?" (FG already today)":""}` : "Log it"); }
+document.addEventListener("input", e=>{ const f=e.target.closest("form.hform"); if(f && f.querySelector("[data-hbtn]")) safe(()=>hagglePreview(f)); });
+// jumbotron: a scoring play gets the stadium treatment
+function jumbo(word, who, sub){ try{ if(!who||!TEAMS[who]) return; if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.innerHTML=`<div class="jb"><small>${esc(T.team)}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2300); }catch(e){} }
+function nbTicker(){ const live=GS.get("live",{})||{}; const mine=GS.get("events",[]); const theirs=(live[OTHER()]&&live[OTHER()].events)||[]; const ev=[...mine,...theirs].filter(e=>e&&e.text).sort((a,b)=>b.at<a.at?-1:1).slice(0,8); const items = ev.length ? ev.map(e=>`<span><b>${esc((e.who||"").toUpperCase())}</b> ${esc(e.text)}</span>`) : [`<span>WELCOME TO THE NILE BOWL</span>`,`<span>KICKOFF SAT OCT 10 · GIZA</span>`,`<span>FINAL WHISTLE SUN OCT 18 · 8PM CAIRO</span>`,`<span>LOSER BUYS SUNDAY DINNER</span>`]; const s=items.join(`<i>◆</i>`)+`<i>◆</i>`; return `<div class="nb-ticker" aria-hidden="true"><div class="nb-tick">${s}${s}</div></div>`; }
+function kickoffIn(){ const n=cairoNow(); const ms=Date.UTC(2026,9,10,0,0)-Date.UTC(+n.date.slice(0,4),+n.date.slice(5,7)-1,+n.date.slice(8,10),n.h,n.m||0); if(ms<=0) return ""; const h=Math.floor(ms/36e5); const d=Math.floor(h/24); return d>0?`${d}D ${h%24}H`:`${h}H ${Math.floor((ms%36e5)/6e4)}M`; }
 
 // ---------- THE NILE BOWL: scoring that feels like football ----------
 const dayLabel = id => { const d=DAYS.find(x=>x.id===id); return d?`${d.dow} ${d.num}`:id; };
@@ -2074,33 +2158,51 @@ function nileTotal(name){
   return { own, saf, q:tq, pts:own.pts+saf*2 };
 }
 function quarterNow(){ const d=DAYS[dayIndexFor(cairoNow().date)]; return d?QUARTER[d.id]||0:0; }
-function boxScore(){
-  const w=me(); if(!w) return "";
-  const t=TEAMS[w], o=TEAMS[OTHER()]; const A=nileTotal(w), B=nileTotal(OTHER()); const r=GS.get("rival",null); const live=liveOK();
-  const row=(T,S,cls)=> `<tr class="${cls}"><td><span class="tn">${T.short}</span></td>${[1,2,3,4].map(k=>`<td>${S?S.q[k]:"–"}</td>`).join("")}<td class="tot">${S?S.pts:"?"}</td></tr>`;
-  const qn=quarterNow();
-  return `<div class="box"><table><thead><tr><th></th>${[1,2,3,4].map(k=>`<th class="${k===qn?"qnow":""}">Q${k}</th>`).join("")}<th>T</th></tr></thead><tbody>${row(t,A,"mine")}${row(o,B,"theirs")}</tbody></table>
-  <div class="sbl">${A?`${A.own.td} TD · ${A.own.xp} XP · ${A.own.two} 2-pt · ${A.own.fg} FG · ${A.saf} ${A.saf===1?"safety":"safeties"} · ${A.own.yds} yds`:""}${!live?` · he hasn't linked yet`:""}</div></div>`;
+function bowlStatus(){ const n=cairoNow(); const sun18=DAYS.find(d=>d.id==="sun18"); if(n.date<DAYS[0].date){ const k=kickoffIn(); return {k:"pre",t:k?`KICKOFF IN ${k}`:"PREGAME · KICKOFF SAT OCT 10"}; } if(n.date>sun18.date || (n.date===sun18.date && n.h>=20)) return {k:"final",t:"FINAL"}; const q=quarterNow(); return q?{k:"live",t:`Q${q} · ${QNAME[q].toUpperCase()}`}:{k:"live",t:"HALFTIME"}; }
+const NB_CREST = `<svg class="nb-crest" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="nbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd86b"/><stop offset="1" stop-color="#d99a12"/></linearGradient></defs><circle cx="32" cy="22" r="9" fill="none" stroke="url(#nbg)" stroke-width="2"/><path d="M6 56 L32 12 L58 56 Z" fill="none" stroke="url(#nbg)" stroke-width="3" stroke-linejoin="round"/><path d="M19 56 L32 34 L45 56" fill="none" stroke="url(#nbg)" stroke-width="2" opacity=".7"/><ellipse cx="32" cy="47" rx="9" ry="5.5" transform="rotate(-25 32 47)" fill="url(#nbg)"/><path d="M27 50 L37 44 M30 45 L31.5 47.5 M32.5 43.5 L34 46 M29 47 L30.5 49.5" stroke="#1a1408" stroke-width="1.3" stroke-linecap="round"/><path d="M2 60 Q32 52 62 60" fill="none" stroke="url(#nbg)" stroke-width="2" opacity=".6"/></svg>`;
+function boxScore(opts){
+  const w=me(); if(!w) return ""; opts=opts||{};
+  const t=TEAMS[w], o=TEAMS[OTHER()]; const A=nileTotal(w), B=nileTotal(OTHER()); const live=liveOK(); const st=bowlStatus(); const qn=quarterNow();
+  const lead = (A&&B) ? (A.pts>B.pts?`${t.team} lead by ${A.pts-B.pts}`:A.pts<B.pts?`${o.team} lead by ${B.pts-A.pts}`:"Tied") : "";
+  const winner = st.k==="final" && A && B ? (A.pts>B.pts?w:A.pts<B.pts?OTHER():"tie") : null;
+  const pv=T=>`--tc1:${T.c1};--tc2:${T.c2.toLowerCase()==="#000000"?"#fff":T.c2}`; const plate=T=>`style="${pv(T)}"`;
+  const row=(T,S,cls,name)=> `<div class="nb-row ${cls} ${winner===name?"champ":""}"><div class="nb-team ${T.short.toLowerCase()}" ${plate(T)}><b>${T.short}</b><small>${T.team}</small>${winner===name?`<i class="nb-ribbon">Champion</i>`:""}</div>${[1,2,3,4].map(k=>`<div class="nb-q ${k===qn&&st.k==="live"?"lit":""}">${S?S.q[k]:"–"}</div>`).join("")}<div class="nb-t" data-n="${S?S.pts:""}">${S?S.pts:"?"}</div></div>`;
+  const myY=A?Math.min(100,Math.round(A.own.yds/240*100)):0; const hisY=(B&&B.own)?Math.min(100,Math.round(B.own.yds/240*100)):null;
+  const field=`<div class="nb-field" aria-label="Yardage"><div class="nb-yards">${[0,20,40,60,80,100].map(y=>`<span style="left:${y}%">${y===0?"":y===100?"":y}</span>`).join("")}</div><div class="nb-ball mine" style="left:${myY}%;${pv(t)}" title="${t.team} ${A?A.own.yds:0} yds"></div>${hisY!==null?`<div class="nb-ball theirs" style="left:${hisY}%;${pv(o)}" title="${o.team} ${B.own.yds} yds"></div>`:""}<div class="nb-ez l"><span>Cairo</span></div><div class="nb-ez r"><span>Luxor</span></div></div><div class="nb-fieldlbl"><span>${t.short} ${A?A.own.yds:0} yds</span><span>bingo yardage · 240 to go the length</span><span>${o.short} ${B&&B.own?B.own.yds:"–"} yds</span></div>`;
+  return `<div class="nilebowl ${st.k}" data-winner="${winner||""}">
+    <div class="nb-head">${NB_CREST}<div class="nb-mark"><div class="nb-name">The Nile Bowl <span class="nb-roman">I</span></div><div class="nb-sub">AFC North on the Nile · Cairo → Aswan → Luxor · Oct 10–18, 2026</div></div><div class="nb-status">${st.k==="live"?`<i class="nb-dot"></i>`:""}${st.t}</div></div>
+    <div class="nb-grid"><div class="nb-row nb-hdr"><div></div>${[1,2,3,4].map(k=>`<div class="${k===qn&&st.k==="live"?"lit":""}">Q${k}</div>`).join("")}<div>T</div></div>${row(t,A,"mine",w)}${row(o,B,"theirs",OTHER())}</div>
+    ${field}
+    <div class="nb-foot">${A?`<span>${A.own.td} TD</span><span>${A.own.xp} XP</span><span>${A.own.two} 2PT</span><span>${A.own.fg} FG</span><span>${A.saf} SAF</span>`:""}${winner?`<em>${winner==="tie"?"Tied. Dinner is split; the argument is forever.":TEAMS[winner].team+" win the Nile Bowl. "+(winner===w?OTHER():w)+" buys dinner."}</em>`:lead?`<em>${lead}</em>`:(!live?`<em>he hasn't linked yet</em>`:"")}</div>
+    ${safe(nbTicker)||""}
+  </div>`;
+}
+function nbAnimate(root){
+  (root||document).querySelectorAll(".nilebowl .nb-t[data-n]").forEach(el=>{ const n=+el.dataset.n; if(!(n>0)||el.dataset.done) return; el.dataset.done=1; const t0=performance.now(); const tick=now=>{ const k=Math.min(1,(now-t0)/600); el.textContent=Math.round(n*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
+  const fin=(root||document).querySelector(".nilebowl.final[data-winner]"); if(fin && fin.dataset.winner && fin.dataset.winner!=="tie" && !GS.get("confetti","")){ GS.set("confetti", new Date().toISOString()); const T=TEAMS[fin.dataset.winner]; const w=document.createElement("div"); w.className="scarabs"; w.innerHTML=Array.from({length:60},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*1.5}s;font-size:${10+Math.random()*10}px;color:${i%2?T.c1:T.c2}">■</span>`).join(""); document.body.appendChild(w); setTimeout(()=>w.remove(),5000); }
 }
 function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); const qn=quarterNow(); if(!qn||!A) return ""; const t=TEAMS[w].team, o=TEAMS[OTHER()].team; const bp=B?B.pts:null; const lead = bp===null?`${t} ${A.pts}`:(A.pts>bp?`${t} by ${A.pts-bp}`:A.pts<bp?`${o} by ${bp-A.pts}`:"tied"); return `Q${qn} · ${QNAME[qn]} · ${lead}`; }
 function conversionBox(d){
   if(!QUARTER[d.id]) return ""; const ch=GS.get("chal",{}); if(!ch[d.id]) return "";
   const st=!!stamps()[d.id], sp=!!GS.get("stupid",{})[d.id];
-  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — you got the shot. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the two-point play in the shot list (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn primary" data-stupid="${d.id}">Go for two 📸</button>`}</div></div>`;
+  return `<div class="convx ${sp?"two":st?"xp":""}"><b>After the touchdown</b><div class="cv"><span>${sp?"✓ Two-point conversion — you got the shot. 8 on the day.":st?"✓ Extra point — stamped. 7 on the day.":"Stamp the day tonight for the extra point (+1), or go for two with the two-point play in the shot list (+2)."}</span>${sp?`<button type="button" class="btn mini" data-stupid="${d.id}">undo</button>`:`<button type="button" class="btn score" data-stupid="${d.id}">Go for two 📸 · +2</button>`}</div></div>`;
 }
 
 
 // ---------- helpers shared by forms and quick capture ----------
-function addHaggle(h){ if(!h.w||!h.a){ toast("Need the item and the asking price"); return false; } h.day = h.day || (DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id; const hg=GS.get("haggle",[]); hg.unshift(h); GS.set("haggle",hg); renderGame(); const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off. Field goal — three points.`:`${pct}% off. Logged.`); if(pct>=40) safe(()=>logEvent(`field goal — ${h.w}, ${pct}% off`)); return true; }
+function addHaggle(h){ if(!h.w||!h.a){ toast("Need the item and the asking price"); return false; } h.day = h.day || (DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id; const hg=GS.get("haggle",[]); hg.unshift(h); GS.set("haggle",hg); renderGame(); const pct=Math.round((1-h.p/h.a)*100); toast(pct>=40?`${pct}% off. Field goal — three points.`:`${pct}% off. Logged.`); if(pct>=40){ safe(()=>logEvent(`field goal — ${h.w}, ${pct}% off`)); jumbo("Field goal", me(), `+3 · ${pct}% off`); } return true; }
 function addCamel(n, who, d){ if(!n) return false; const c=GS.get("camel",[]); c.unshift({n, who, d:d||"", day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); safe(()=>logEvent(`logged a camel offer: ${n.toLocaleString()} for ${who}`)); return true; }
 const todayDay = ()=> DAYS[dayIndexFor(cairoNow().date)] || null;
 
+// broadcast score bug: the strip in the corner of every game you've ever watched
+function scoreBug(d){ const w=me(); if(!w||!QUARTER[d.id]) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); if(!A) return ""; const t=TEAMS[w], o=TEAMS[OTHER()]; const sw=T=>`style="--tc1:${T.c1};--tc2:${T.c2.toLowerCase()==="#000000"?"#fff":T.c2}"`; const st=bowlStatus(); const Q=QUARTER[d.id]; return `<div class="sbug"><span class="sbtm" ${sw(t)}>${t.short}</span><span class="sbn">${A.pts}</span><span class="sbq">${st.k==="final"?"FINAL":`Q${Q} · ${QNAME[Q].toUpperCase()}`}</span><span class="sbn">${B?B.pts:"–"}</span><span class="sbtm" ${sw(o)}>${o.short}</span></div>`; }
 // ---------- Nile Bowl block on the day card ----------
 function nbBlock(d, isToday){
   const parts=[safe(()=>challengeBox(d)), safe(()=>conversionBox(d)), safe(()=>toutMeter(d))].filter(Boolean);
   if(!parts.length) return "";
   const closed=!!stamps()[d.id];
-  return `<div class="nb"><b>Nile Bowl · ${QUARTER[d.id]?"Q"+QUARTER[d.id]+" · "+QNAME[QUARTER[d.id]]:"overtime"}</b>${parts.join("")}${isToday&&!closed?`<button type="button" class="btn primary closeday" data-closeday="${d.id}">Close the day</button>`:""}</div>`;
+  const bug=safe(()=>scoreBug(d));
+  return `<div class="nb">${bug||`<b>Nile Bowl · ${QUARTER[d.id]?"Q"+QUARTER[d.id]+" · "+QNAME[QUARTER[d.id]]:"overtime"}</b>`}${parts.join("")}${isToday&&!closed?`<button type="button" class="btn primary closeday" data-closeday="${d.id}">Close the day</button>`:""}</div>`;
 }
 
 // ---------- evening mode on the Now card ----------
@@ -2125,7 +2227,7 @@ function qcHome(){
   return `<div class="qh"><h3>Right now</h3><button type="button" class="x" aria-label="Close">×</button></div>
   <div class="qgrid">
     <button type="button" data-qc="tout"><span class="qi">🗣️</span>“My friend” +1<small>${n} today</small></button>
-    <button type="button" data-qc="haggle"><span class="qi">🤝</span>Log a haggle<small>under 40% = field goal</small></button>
+    <button type="button" data-qc="haggle"><span class="qi">🤝</span>Log a haggle<small>40% off or more = field goal, 3</small></button>
     <button type="button" data-qc="camel"><span class="qi">🐪</span>Camel offer<small>for ${OTHER()||"him"}, usually</small></button>
     <button type="button" data-qc="flag"><span class="qi">🚩</span>Flag a penalty<small>safety, 2 to the other guy</small></button>
     <button type="button" data-qc="line"><span class="qi">✍️</span>One line<small>into today's journal</small></button>
@@ -2134,9 +2236,9 @@ function qcHome(){
 }
 function qcPanel(kind){
   const d=todayDay()||DAYS[sel]; const back=`<button type="button" class="back" data-qc="home">‹ Back</button>`;
-  if(kind==="haggle") return `<div class="qh"><h3>Log a haggle</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<form class="hform" id="qhform"><input id="qhw" placeholder="What (cartouche, scarf…)" required><input id="qhd" placeholder="Where"><input id="qha" inputmode="numeric" placeholder="Asked, EGP" required><input id="qhp" inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" type="submit">Log it</button></form></div>`;
+  if(kind==="haggle") return `<div class="qh"><h3>Log a haggle</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<form class="hform" id="qhform"><input id="qhw" placeholder="What (cartouche, scarf…)" required><input id="qhd" placeholder="Where"><input id="qha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="qhp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form></div>`;
   if(kind==="camel") return `<div class="qh"><h3>Camel offer</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<form class="hform" id="qcform"><input id="qcn" inputmode="numeric" placeholder="How many camels" required><select id="qcw"><option>${OTHER()||"Duane"}</option><option>${me()||"Brad"}</option></select><input id="qcd" placeholder="Where"><button class="btn primary" type="submit">Log the offer</button></form></div>`;
-  if(kind==="flag"){ const ff=GS.get("forfeit",{}); return `<div class="qh"><h3>Flag a penalty</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>`<button type="button" class="btn ${((ff[i]||{})[w]||0)?"primary":""}" data-ff="${i}" data-w="${w}">${w} ${((ff[i]||{})[w]||0)?"· "+ff[i][w]:""}</button>`).join("")}</div></li>`).join("")}</ul></div>`; }
+  if(kind==="flag"){ const ff=GS.get("forfeit",{}); return `<div class="qh"><h3>Flag a penalty</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<ul class="flist">${FORFEITS.map((f,i)=>`<li><div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div><div class="fbtn">${["Brad","Duane"].map(w=>ffBtn(i,w,ff)).join("")}</div></li>`).join("")}</ul></div>`; }
   if(kind==="line") return `<div class="qh"><h3>One line · ${d.dow} ${d.num}</h3><button type="button" class="x">×</button></div><div class="qpanel">${back}<textarea id="qline" placeholder="The thing you'll want to remember."></textarea><div class="row" style="margin-top:8px"><button type="button" class="btn primary" id="qlineSave">Add to the journal</button></div></div>`;
   return qcHome();
 }
