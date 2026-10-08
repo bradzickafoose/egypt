@@ -1286,6 +1286,18 @@ html.bigtext .fr-picks{grid-template-columns:1fr}
 .ex-b>span{font-size:0.7941rem;line-height:1.4;margin-top:2px}
 .ex.dance{border-color:rgba(181,50,43,.25)}
 .excof{opacity:.9}
+.indy .route.other{stroke:#b5322b;opacity:.35;stroke-width:6;stroke-dasharray:6 12}
+.in-key i.r.o{opacity:.4;margin-left:6px}
+
+.ready{margin-top:10px;padding:12px 14px;border-color:rgba(31,107,51,.25)}
+.ready.all{background:#eef7f0}
+.rd-h b{display:block;font-family:var(--display);font-size:1rem}
+.rd-h span{display:block;font-size:0.7647rem;color:var(--muted);margin:2px 0 8px}
+.rd{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:8px 0;font:inherit;color:inherit;cursor:pointer}
+.rd i{font-style:normal;width:1.6em;height:1.6em;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--muted);color:var(--muted);flex:none;font-weight:700}
+.rd.ok i{background:#2f8a4a;border-color:#2f8a4a;color:#fff}
+.rd span b{display:block;font-size:0.8235rem}
+.rd span small{display:block;font-size:0.7353rem;color:var(--muted)}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
@@ -2175,10 +2187,14 @@ const SINAI_GULF = [[32.55,29.96],[32.85,29.4],[33.2,28.8],[33.65,28.3],[33.95,2
 const EG_NILE = [[31.9,31.45],[31.4,30.6],[31.24,30.04],[31.13,29.99],[31.1,29.07],[30.75,28.1],[31.18,27.18],[31.69,26.56],[32.24,26.05],[32.72,26.16],[32.64,25.69],[32.55,25.29],[32.87,24.98],[32.93,24.48],[32.9,24.09]];
 const EG_DELTA = [[31.24,30.04],[30.9,30.7],[30.4,31.4]];
 const EG_NASSER = [[32.9,24.09],[32.85,23.6],[32.6,23.1],[32.4,22.6],[31.9,22.3],[31.4,22.05],[31.3,21.9]];
-const EG_PLACES = { CAI:[31.24,30.04,"Cairo"], GIZA:[31.13,29.99,"Giza"], ASW:[32.9,24.09,"Aswan"], ABU:[31.63,22.34,"Abu Simbel"], KOM:[32.93,24.48,"Kom Ombo"], EDFU:[32.87,24.98,"Edfu"], LXR:[32.64,25.69,"Luxor"], DAHAB:[34.51,28.5,"Dahab"], SSH:[34.33,27.86,"Sharm"], SINAI:[33.95,28.56,"Mt Sinai"], BAH:[28.87,28.35,"Bahariya"], DESERT:[28.1,27.3,"White Desert"], ALEX:[29.9,31.2,"Alexandria"], HUR:[33.8,27.2,"Hurghada"], SUEZ:[32.55,29.96,"Suez"], LHR:[30.0,32.4,"to London"] };
+const EG_PLACES = { CAI:[31.24,30.04,"Cairo"], GIZA:[31.13,29.99,"Giza"], ASW:[32.9,24.09,"Aswan"], ABU:[31.63,22.34,"Abu Simbel"], KOM:[32.93,24.48,"Kom Ombo"], EDFU:[32.87,24.98,"Edfu"], LXR:[32.64,25.69,"Luxor"], DAHAB:[34.51,28.5,"Dahab"], SSH:[34.33,27.86,"Sharm"], SINAI:[33.95,28.56,"Mt Sinai"], BAH:[28.87,28.35,"Bahariya"], DESERT:[28.1,27.3,"White Desert"], ALEX:[29.9,31.2,"Alexandria"], HUR:[33.8,27.2,"Hurghada"], SUEZ:[32.55,29.96,"Suez"], LHR:[30.0,32.4,"to London"], ADD:[36.4,21.8,"from Addis"] };
 const INDY_LEGS = [ // [dayId, from, to, mode]
   ["sat10","LHR","CAI","plane"],["sun11","CAI","GIZA","road"],["mon12","GIZA","CAI","road"],["tue13","CAI","ASW","plane"],["wed14","ASW","ABU","road"],["thu15","ASW","EDFU","boat"],["fri16","EDFU","LXR","boat"],["sat17","LXR","LXR","stay"],["sun18","LXR","CAI","plane"],
   ["mon19","CAI","SSH","plane"],["tue20","SSH","DAHAB","road"],["wed21","DAHAB","SINAI","road"],["thu22","SINAI","CAI","plane"],["fri23","CAI","DESERT","road"],["sat24","DESERT","CAI","road"],["sun25","CAI","LHR","plane"] ];
+// each phone draws its own line: Brad comes up from Addis and carries on to Sinai and the desert; Duane flies in from London and home again on the 19th
+function indyLegsFor(who){ const L=INDY_LEGS.map(l=>l.slice()); if(who==="Brad"){ L[0]=["sat10","ADD","CAI","plane"]; return L; }
+  if(who==="Duane"){ return L.map(l=>{ const d=DAYS.find(x=>x.id===l[0]); if(l[0]==="mon19") return ["mon19","CAI","LHR","plane"]; if((d&&d.who==="brad")||l[0]==="sun25") return [l[0],"LHR","LHR","home"]; return l; }); }
+  return L; }
 const MAPV = { lon0:24.4, lon1:37.2, lat0:21.7, lat1:32.1, k:0.89 };
 const mx = lon => ((lon-MAPV.lon0)*100).toFixed(1);
 const my = lat => ((MAPV.lat1-lat)*100*MAPV.k).toFixed(1);
@@ -2188,12 +2204,14 @@ function smoothPath(pts, close, straightFrom){ let d=`M ${mp(pts[0])}`; for(let 
 function riverBetween(a,b){ const idx=k=>{ const P=EG_PLACES[k]; let best=0,bd=1e9; EG_NILE.forEach((p,i)=>{ const d=Math.hypot(p[0]-P[0],p[1]-P[1]); if(d<bd){ bd=d; best=i; } }); return best; }; const i0=idx(a), i1=idx(b); const step=i1>=i0?1:-1; const pts=[EG_PLACES[a].slice(0,2)]; for(let i=i0;i!==i1;i+=step) pts.push(EG_NILE[i+step]); pts.push(EG_PLACES[b].slice(0,2)); return pts; }
 function legPath(l){ const A=EG_PLACES[l[1]], B=EG_PLACES[l[2]]; if(l[3]==="stay") return ""; if(l[3]==="boat"){ const pts=riverBetween(l[1],l[2]); return smoothPath(pts).replace(/^M [^L]*L /,"L "); } if(l[3]==="plane"){ const m=[(A[0]+B[0])/2,(A[1]+B[1])/2]; const dx=B[0]-A[0], dy=B[1]-A[1]; const len=Math.hypot(dx,dy)||1; const bulge=0.18*len; const c=[m[0]-dy/len*bulge, m[1]+dx/len*bulge]; return ` Q ${mp(c)} ${mp(B)}`; } return ` L ${mp(B)}`; }
 function indyMap(){
-  const d=DAYS[sel]||DAYS[0]; const idx=DAYS.indexOf(d); const legs=preMode?[]:INDY_LEGS.slice(0,idx+1); const cur=legs[legs.length-1];
-  let done=""; legs.slice(0,-1).forEach((l,i)=>{ done += (i?"":`M ${mp(EG_PLACES[l[1]])}`) + legPath(l); });
-  const curPath = cur && cur[3]!=="stay" ? `M ${mp(EG_PLACES[cur[1]])}${legPath(cur)}` : "";
-  const vm={plane:"✈️",road:"🚐",boat:"⛵",stay:"🏨"}; const tip=EG_PLACES[cur?cur[2]:"CAI"]; const veh=preMode?"📍":vm[cur?cur[3]:"stay"];
-  const visited=new Set(); legs.forEach(l=>{ visited.add(l[1]); visited.add(l[2]); }); visited.delete("LHR");
-  const dayAt={}; INDY_LEGS.forEach(l=>{ if(l[3]!=="stay") dayAt[l[2]]=dayAt[l[2]]||l[0]; });
+  const d=DAYS[sel]||DAYS[0]; const idx=DAYS.indexOf(d); const who=me(); const ALL=indyLegsFor(who); const legs=preMode?[]:ALL.slice(0,idx+1); const cur=legs[legs.length-1];
+  const other=(who==="Duane"&&!preMode)?indyLegsFor("Brad").slice(0,idx+1).filter(l=>{ const dd=DAYS.find(x=>x.id===l[0]); return dd&&dd.who==="brad"&&l[3]!=="stay"; }):[];
+  const otherPath=other.length?other.map((l,i)=>(i?"":`M ${mp(EG_PLACES[l[1]])}`)+legPath(l)).join(""):"";
+  let done=""; legs.slice(0,-1).filter(l=>l[3]!=="home").forEach((l,i)=>{ done += (i?"":`M ${mp(EG_PLACES[l[1]])}`) + legPath(l); });
+  const curPath = cur && cur[3]!=="stay" && cur[3]!=="home" ? `M ${mp(EG_PLACES[cur[1]])}${legPath(cur)}` : "";
+  const vm={plane:"✈️",road:"🚐",boat:"⛵",stay:"🏨",home:"🏠"}; const tip=(cur&&cur[3]==="home")?[30.3,31.7]:EG_PLACES[cur?cur[2]:"CAI"]; const veh=preMode?"📍":vm[cur?cur[3]:"stay"];
+  const visited=new Set(); legs.forEach(l=>{ visited.add(l[1]); visited.add(l[2]); }); visited.delete("LHR"); visited.delete("ADD"); other.forEach(l=>{ visited.add(l[1]); visited.add(l[2]); });
+  const dayAt={}; ALL.forEach(l=>{ if(l[3]!=="stay") dayAt[l[2]]=dayAt[l[2]]||l[0]; });
   const lbl=(k,dx,dy,anchor)=>{ const P=EG_PLACES[k]; const on=visited.has(k); const dd=DAYS.find(x=>x.id===dayAt[k]); return `<g class="mp ${on?"on":""} ${k===(cur&&cur[2])?"here":""}"><circle cx="${mx(P[0])}" cy="${my(P[1])}" r="${on?15:10}"/>${k===(cur&&cur[2])?`<circle class="pulse" cx="${mx(P[0])}" cy="${my(P[1])}" r="26"/>`:""}<text x="${(+mx(P[0])+dx).toFixed(1)}" y="${(+my(P[1])+dy).toFixed(1)}" text-anchor="${anchor||"start"}">${P[2]}${on&&dd?`<tspan class="dy"> · ${dd.dow} ${dd.num}</tspan>`:""}</text></g>`; };
   const places=[["CAI",26,-10],["GIZA",-26,34,"end"],["ASW",26,12],["ABU",26,-18],["EDFU",26,12],["KOM",26,12],["LXR",26,12],["DAHAB",26,12],["SSH",26,24],["SINAI",-26,-16,"end"],["DESERT",26,12],["BAH",26,-16],["ALEX",-18,-22,"end"],["HUR",26,12],["SUEZ",26,30]].filter(([k])=>visited.has(k)||["ALEX","HUR","SUEZ","KOM","BAH"].includes(k)===false||true);
   const sea=`<rect x="0" y="0" width="${MAP_W}" height="${MAP_H}" class="sea"/>`;
@@ -2204,7 +2222,7 @@ function indyMap(){
   const seaLabels=`<text x="${mx(27.4)}" y="${my(31.78)}" class="sealbl">MEDITERRANEAN</text><text x="${mx(35.6)}" y="${my(25.6)}" class="sealbl" transform="rotate(62 ${mx(35.6)} ${my(25.6)})">RED SEA</text><text x="${mx(26.2)}" y="${my(25.2)}" class="desertlbl">WESTERN DESERT</text><text x="${mx(33.6)}" y="${my(29.6)}" class="desertlbl" style="font-size:1.2941rem">SINAI</text>`;
   const compass=`<g class="compass" transform="translate(${MAP_W-120} 150)"><circle r="60"/><path d="M0 -54 L13 0 L0 54 L-13 0 Z"/><path d="M-54 0 L0 -13 L54 0 L0 13 Z" opacity=".45"/><text y="-70" text-anchor="middle">N</text></g>`;
   const motion = curPath ? `<path id="curleg" d="${curPath}" class="route cur" pathLength="1"/><g class="veh"><text text-anchor="middle" dy="-18">${veh}</text><animateMotion dur="2.4s" begin="0.1s" fill="freeze" rotate="0"><mpath href="#curleg" xlink:href="#curleg"/></animateMotion></g>` : `<text x="${mx(tip[0])}" y="${(+my(tip[1])-26).toFixed(1)}" class="vehstat" text-anchor="middle">${veh}</text>`;
-  return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><span><b>${preMode?"Before we go":d.dow+" "+d.num}</b> · ${preMode?"the line begins Saturday in Cairo":esc(d.place||"")}</span><span class="in-key"><i class="r"></i> the route so far</span></div></div>`;
+  return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${otherPath?`<path d="${otherPath}" class="route other"/>`:""}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><span><b>${preMode?"Before we go":d.dow+" "+d.num}</b> · ${preMode?"the line begins Saturday in Cairo":(cur&&cur[3]==="home"?"you’re home · Brad’s still out there":(cur&&cur[0]==="mon19"&&who==="Duane"?"Cairo → London, then home":esc(d.place||"")))}</span><span class="in-key"><i class="r"></i> ${who==="Duane"&&other.length?`your route · <i class="r o"></i> Brad’s`:"the route so far"}</span></div></div>`;
 }
 
 function renderWhere(){
@@ -2366,16 +2384,17 @@ function preCard(){
   return `<div class="dayhead"><div class="dh1"><span class="dd">Before we go</span> · <span class="tagpre">${left===1?"tomorrow":left<=0?"today":`${left} days to go`}</span></div><h2>${w?`${esc(w)}, the trip is Saturday.`:"The trip is Saturday."}</h2><div class="sub">Bookings first, bag second, words third. Everything on this card is for this week; the trip itself starts on the Sat 10 chip.</div></div>
   ${f?`<div class="bp mine st-ok" style="margin-top:12px"><div class="bp-top"><span class="bp-who">your flight</span><span class="bp-no">${f.no?`<b>${esc(f.no)}</b>${f.op?` · ${esc(f.op)}`:""}`:esc(f.op||"flight")}</span><span class="st ok">✓</span></div><div class="bp-route"><div><b>${esc(f.from.ap)}</b><small>${esc(f.from.city)}</small><em>${esc(f.from.t)}</em></div><div class="bp-arrow"><i>✈</i><small>${flightDur(f)}</small></div><div><b>${esc(f.to.ap)}</b><small>${esc(f.to.city)}</small><em>${esc(f.to.t)}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div><div class="bp-meta"><span>${f.date==="2026-10-09"?"Fri Oct 9":`${d0.dow} Oct ${d0.num}`}</span><span class="bp-cd">${esc(cd)}</span></div><div class="row bp-acts"><a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>${statusHref(f)?`<a class="btn" target="_blank" rel="noopener" href="${statusHref(f)}">Status</a>`:""}<button type="button" class="btn mini" data-nav="flights">All flights</button></div></div>`:""}
   ${(()=>{ const open=allFlights().filter(x=>x.who===w&&x.status==="tbd"); if(!open.length) return ""; const names=open.map(x=>`${x.from.city.replace(" Heathrow","")} → ${x.to.city.replace(" Heathrow","")} (${x.slot==="out"?"Fri 9":"Mon 19"})`); return `<div class="card ask" style="margin-top:8px"><b>${open.length>1?"Two things":"One thing"} for the app</b><p>${open.length>1?"Your":"Your"} ${names.join(" and ")} ${open.length>1?"legs aren't":"leg isn't"} in here yet. Add ${open.length>1?"them":"it"} under Guide → Flights and ${open.length>1?"they show":"it shows"} on your board with the connection maths, and on Brad's so he can track you.</p><button type="button" class="btn primary" data-nav="flights">Add the flight${open.length>1?"s":""}</button></div>`; })()}
+  ${safe(readyCheck)||""}
   ${safe(listenPre)||""}
   <details class="fold" open style="margin-top:12px"><summary>This week <span class="pill" data-count="week"></span></summary><div class="in"><ul class="check" data-list="week"></ul><p class="muted" style="margin-top:8px;font-size:0.7941rem">Ticks are saved on this phone. The full lists — bag, eSIM, bookings — are under Guide → Lists.</p></div></details>
   <div class="card" style="margin-top:8px;padding:12px 14px"><b style="font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">Worth doing before Saturday</b>
     <div class="navg" style="margin-top:0">
-      <button type="button" data-nav="phrases"><span class="qi">🗣️</span>Practise the words<small>forty phrases, tap to hear</small></button>
-      <button type="button" data-nav="lists"><span class="qi">🎒</span>Pack<small>the bring-or-buy list</small></button>
-      <button type="button" data-nav="hotel"><span class="qi">🏨</span>Hotel desk<small>Hilton Cairo Grand Nile</small></button>
-      <button type="button" data-nav="money"><span class="qi">💵</span>Cash plan<small>USD small bills, ATM runs</small></button>
-      <button type="button" data-go2="game"><span class="qi">🏈</span>The Nile Bowl<small>rules, the coin, kickoff Saturday</small></button>
-      <button type="button" data-go2="guide"><span class="qi">🧭</span>Cairo in one screen<small>eat, buy, say</small></button>
+      <button type="button" data-nav="phrases"><span class="qi">🗣️</span><span class="nl">Practise the words<small>forty phrases, tap to hear</small></span></button>
+      <button type="button" data-nav="lists"><span class="qi">🎒</span><span class="nl">Pack<small>the bring-or-buy list</small></span></button>
+      <button type="button" data-nav="hotel"><span class="qi">🏨</span><span class="nl">Hotel desk<small>Hilton Cairo Grand Nile</small></span></button>
+      <button type="button" data-nav="money"><span class="qi">💵</span><span class="nl">Cash plan<small>USD small bills, ATM runs</small></span></button>
+      <button type="button" data-go2="game"><span class="qi">🏈</span><span class="nl">The Nile Bowl<small>rules, the coin, kickoff Saturday</small></span></button>
+      <button type="button" data-go2="guide"><span class="qi">🧭</span><span class="nl">Cairo in one screen<small>eat, buy, say</small></span></button>
     </div></div>
   <p class="muted" style="margin:12px 0 0;font-size:0.7941rem">The Today tab lands here until Saturday. On the day it switches to Sat 10 on its own.</p>`;
 }
@@ -2484,7 +2503,23 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v86)";
+const BUILD = "Oct 9, 2026 (v87)";
+// ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
+function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
+  const items=[
+    [sa,"On your Home Screen", sa?"opens like an app":"Share ↗ → Add to Home Screen — then open it from there", "home"],
+    [off,"Works with no signal", off?"saved on this phone":"open it once more on wifi, then it's offline-proof", "off"],
+    [!!who,"Knows whose phone it is", who?`${who}'s`:"tap the name chip up top", "who"],
+    [!!bk,"Backed up to the server", bk?`last ${memAgo()}`:"needs a minute online — tap to try", "bk"],
+  ];
+  const n=items.filter(x=>x[0]).length;
+  return `<div class="card ready ${n===4?"all":""}"><div class="rd-h"><b>${n===4?"Ready. Go to bed.":`Ready for the plane? ${n}/4`}</b><span>${n===4?"Everything works offline from here.":"Fix these on wifi tonight."}</span></div>${items.map(([ok,t,s,k])=>`<button type="button" class="rd ${ok?"ok":""}" data-ready="${k}"><i>${ok?"✓":"○"}</i><span><b>${t}</b><small>${esc(s)}</small></span></button>`).join("")}</div>`; }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-ready]"); if(!b) return; const k=b.dataset.ready;
+  if(k==="home") toast("In Safari: the Share button, then ‘Add to Home Screen’. Open it from the icon after.");
+  else if(k==="off") location.reload();
+  else if(k==="who") safe(()=>whoSheet(true));
+  else if(k==="bk") memBackup(true).then(ok=>{ toast(ok?"Backed up.":"Couldn't reach the server — try on wifi."); if(preMode) safe(()=>goPre(false)); }); });
+
 // ---------- the trip on one page: built from DAYS / HOTELS / flights, so it can't go stale; no booking codes
 function planDocData(){ const days=DAYS.map(d=>({d, items:(d.agenda||[]).filter(a=>a.t&&a.title).slice(0,9)})); const fl=allFlights().filter(f=>f.status!=="tbd"&&f.from&&f.from.ap).sort((a,b)=>(a.date+(a.from.t||"")).localeCompare(b.date+(b.from.t||""))); return {days, fl}; }
 const PD_SOS=[["Tourist police","126"],["Ambulance","123"],["Police","122"],["US Embassy Cairo","+20 2 2797 3300"]];
