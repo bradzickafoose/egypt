@@ -1305,7 +1305,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v22)";
+const BUILD = "Oct 8, 2026 (v23)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1586,7 +1586,7 @@ function renderPassport(){
   const n=Object.keys(st).length;
   el.innerHTML=`<div class="pp"><div class="pphead"><div class="ppt">PASSPORT</div><div class="pps">Egypt · October 2026 · ${esc(me()||"traveller")} · ${n}/${DAYS.length} stamps</div></div>
   <div class="ppgrid">${DAYS.map(d=>`<div class="ppd ${st[d.id]?"on":""} ${d.who==="brad"?"solo":""}">${st[d.id]?stampHTML(d,st[d.id],true):`<div class="stamp ghost small"><div class="r1">${CITY_OF(d)}</div><div class="r2">${d.dow.toUpperCase()} ${d.num}</div></div>`}<div class="ppi"><b>${d.dow} ${d.num} · ${esc(d.title)}</b>${rate[d.id]?`<span class="ppr">${["food","sight","sleep"].map(k=>rate[d.id][k]?`${k==="food"?"🍽️":k==="sight"?"🏛️":"😴"}${"★".repeat(rate[d.id][k])}`:"").filter(Boolean).join(" ")}</span>`:""}${ch[d.id]?`<span class="ppc">🏅 challenge done</span>`:""}${j(d.id)?`<p>${esc(j(d.id))}</p>`:""}</div></div>`).join("")}</div>
-  <div class="row" style="margin-top:12px"><button type="button" class="btn primary" id="ppSave">Save my passport file</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
+  <div class="row" style="margin-top:12px"><button type="button" class="btn primary" id="ppSave">Save / send my passport</button><label class="btn" for="ppFile">Restore from file</label><input type="file" id="ppFile" accept=".json,application/json" hidden><button type="button" class="btn" id="ppText">Copy as text</button></div>
   <p class="muted" style="margin-top:8px">The file holds everything on this phone: stamps, journal, ratings, bingo, haggles, notes. After the trip, send it to Brad; it goes into the site's repo as your archived passport and the page shows both of yours, on any device, for good.</p>
   <div id="archive"></div></div>`;
 }
@@ -1602,7 +1602,7 @@ async function loadArchive(){
 function passportWire(){
   document.addEventListener("click", e=>{
     const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]) toast("Stamped · "+CITY_OF(DAYS.find(d=>d.id===id))); return; }
-    if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
+    if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const f=new File([blob],name,{type:"application/json"}); if(navigator.canShare && navigator.canShare({files:[f]})){ navigator.share({files:[f], title:name, text:"My Egypt passport file"}).then(()=>toast("Sent. Brad puts it in the repo.")).catch(()=>{}); return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
   document.addEventListener("change", e=>{
@@ -1768,6 +1768,25 @@ function hiddenChamber(){
   let n=0, t; document.querySelector(".brand").addEventListener("click", ()=>{ n++; clearTimeout(t); t=setTimeout(()=>n=0,1500); if(n===5){ n=0; const w=document.createElement("div"); w.className="scarabs"; w.innerHTML=Array.from({length:24},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*1.2}s;font-size:${18+Math.random()*22}px">${["🪲","🐪","🦅","☥","🏺","🐈"][i%6]}</span>`).join(""); document.body.appendChild(w); toast("You found the hidden chamber. It's empty. Like Khufu's."); setTimeout(()=>w.remove(),4200); } });
 }
 
+// ---------- iOS home-screen mode: downloads don't work there, the share sheet does ----------
+function standaloneShareFiles(){
+  const standalone = (navigator.standalone===true) || matchMedia("(display-mode: standalone)").matches;
+  if(!standalone || !navigator.canShare) return;
+  document.addEventListener("click", async e=>{
+    const a=e.target.closest("a[download]"); if(!a) return;
+    try{
+      let text, mime;
+      if(a.href.startsWith("data:")){ const i=a.href.indexOf(","); mime=a.href.slice(5,i).split(";")[0]; text=decodeURIComponent(a.href.slice(i+1)); }
+      else if(a.href.startsWith("blob:")){ const r=await fetch(a.href); mime=r.headers.get("content-type")||"application/octet-stream"; text=await r.text(); }
+      else return;
+      const f=new File([text], a.download||"file", {type:mime});
+      if(!navigator.canShare({files:[f]})) return;
+      e.preventDefault();
+      await navigator.share({files:[f], title:a.download});
+    }catch(err){ /* user cancelled, or share unsupported: let the link do its thing */ }
+  }, true);
+}
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -1851,7 +1870,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
