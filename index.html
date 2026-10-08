@@ -890,6 +890,38 @@ h3.arch{font-family:Georgia,serif;font-size:10px;letter-spacing:.22em;text-trans
 .xff input{font:13px var(--body);padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);min-width:0;width:100%;box-sizing:border-box}
 .xff-c{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:8px 0}.xff-c input{width:auto;flex:none;margin:0;accent-color:var(--nile)}
 .btn.danger{background:#b3261e;color:#fff;border-color:#b3261e}.fold.reset summary{color:var(--muted)}
+
+/* prepared: look-for lines, eras, who's who, the briefing */
+.look{margin:6px 0 2px;padding:7px 10px 7px 30px;position:relative;font-size:13px;line-height:1.4;color:var(--fg);background:rgba(27,51,40,.07);border-radius:10px}
+.look i{position:absolute;left:9px;top:7px;font-style:normal;font-size:14px}
+:root:not([data-theme="light"]) .look{background:rgba(255,255,255,.06)}
+.dh-acts{margin-top:8px;gap:6px}
+.erachip{font:600 11px var(--mono);letter-spacing:.04em;padding:5px 9px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted)}
+.erachip small{font-size:10px;opacity:.8}
+.erastrip{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 6px;margin:0 -4px;scrollbar-width:none}
+.era{flex:0 0 78%;scroll-snap-align:start;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.era.on{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.era-when{font:600 11px var(--mono);letter-spacing:.06em;color:var(--muted)}
+.era-n{font-family:var(--display);font-weight:800;font-size:20px;margin:2px 0}
+.era-tag{font-size:12px;color:var(--muted);margin-bottom:6px}
+.era-stops{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
+.era-stops span{font-size:11.5px;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.06)}
+:root:not([data-theme="light"]) .era-stops span{background:rgba(255,255,255,.1)}
+.era p{margin:0;font-size:13px;line-height:1.4}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--bg);display:flex;flex-direction:column;gap:3px}
+.pcard b{font-size:15px}.pcard em{font-style:normal;font:600 11px var(--mono);color:var(--nile);line-height:1.3}.pcard span{font-size:12.5px;line-height:1.35;color:var(--fg)}
+.brief .br-k{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brief h3{font-family:var(--display);font-size:24px;margin:2px 0 8px;line-height:1.1}
+.brief .br-era{font-size:12.5px;color:var(--muted);padding:8px 10px;border-left:3px solid var(--line);margin-bottom:8px}
+.brief .br-h{font:700 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.br-stops{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.br-stops li b{display:block;font-size:15px}.br-stops li span{display:block;font-size:13.5px;line-height:1.4}.br-stops li i{display:block;font-style:normal;font-size:12.5px;line-height:1.4;margin-top:3px;color:var(--fg);opacity:.85}
+.br-story,.br-ask,.br-play,.br-shot{margin:0;font-size:14px;line-height:1.45}
+.br-story{font-family:Georgia,serif;font-style:italic;font-size:15px}
+.br-words{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.br-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.br-grid div{background:rgba(0,0,0,.05);border-radius:10px;padding:8px 10px;font-size:13px}.br-grid small{display:block;font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+:root:not([data-theme="light"]) .br-grid div{background:rgba(255,255,255,.07)}
 .card.ask{padding:12px 14px;border-color:var(--dusk)}.card.ask b{display:block;margin-bottom:4px}.card.ask p{margin:0 0 8px;font-size:13.5px}
 .fband{display:flex;align-items:center;gap:10px;margin:-2px 0 12px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.1);font-size:13px}
 .now:not(.solo) .fband{background:rgba(255,255,255,.1)}
@@ -1019,6 +1051,16 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <h2 class="sec">Words</h2>
     <div class="card"><p class="muted" style="margin:0 0 6px">Egyptian Arabic, not the textbook kind. Tap a card to hear it; the phone's own Arabic voice says it. Lead with a greeting before any question — it changes the whole conversation.</p><div id="words"></div><p class="muted" style="font-size:12px;margin-top:6px">First tap can take a second while the voice loads.</p></div>
     <div id="phrasebook"></div>
+  </section>
+
+  <section id="whoSec">
+    <h2 class="sec">Who's who</h2>
+    <div class="card"><p class="muted" style="margin:0 0 6px">The names you'll hear a hundred times, with the one thing to recognise each by. Read the walls before the guide does.</p><div id="who"></div></div>
+  </section>
+
+  <section id="eraSec">
+    <h2 class="sec">How old is this?</h2>
+    <div class="card"><div id="eras"></div></div>
   </section>
 
   <section id="guides">
@@ -1680,12 +1722,12 @@ function renderDay(){
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
     const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${safe(()=>lookLine(d,a))||""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
   }).join("");
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
     ${d.who==="brad" && (sel===0 || DAYS[sel-1].who!=="brad") ? `<div class="solo-banner"><b>Brad's week</b> ${safe(me)==="Duane"?"You're home. Follow along, heckle from the couch.":"Duane flew home this morning."} Oct 19–25: Sinai, then the White Desert, then home.</div>` : ""}
-    <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · <button type="button" class="glyph ${safe(()=>GS.get("relics",{})[d.id])?"dug":""}" data-dig="${d.id}" aria-label="Dig here">${d.emoji}</button> · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":d.id==="sat10"?"Duane lands first":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div></div>
+    <div class="dayhead ${safe(()=>stamps()[d.id]?"stamped":"")}">${safe(()=>stampHTML(d, stamps()[d.id]))}<div class="k">${d.dow} Oct ${d.num} · <button type="button" class="glyph ${safe(()=>GS.get("relics",{})[d.id])?"dug":""}" data-dig="${d.id}" aria-label="Dig here">${d.emoji}</button> · <span class="phase ${d.who}">${d.who==="brad"?"Brad solo":d.id==="sat10"?"Duane lands first":"Together"}</span></div><h2>${esc(d.title)}</h2><div class="place">${esc(d.place)}${d.sleep?` · tonight: ${esc(d.sleep)}`:""}</div><div class="wx" data-wx="${d.id}">${wxLine(d)}</div><div class="sun">${sunLine(d)}</div><div class="row dh-acts"><button type="button" class="btn mini brief" data-brief="${d.id}">📖 Read before you go</button>${safe(()=>eraChip(d))||""}</div></div>
     ${safe(()=>livedLine(d, now))}
     <div class="status">
       <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}${safe(()=>alarmTaunt(d))}</span></div>
@@ -1771,7 +1813,7 @@ function renderClock(){
   $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"});
   const di = dayIndexFor(n.date); const pr=$("#prog");
   if(di>=0) pr.textContent = `Day ${di+1}/${DAYS.length}`; pr.classList.toggle("off", di>=0 && DAYS[di].who==="brad");
-  const bs=document.querySelector(".brand small"); if(bs) bs.textContent = (di>=0 && DAYS[di].who==="brad") ? "Brad · Sinai + the desert" : "Brad + Duane"; else if(n.date<DAYS[0].date) pr.textContent = `${dateDiffDays(n.date,DAYS[0].date)} days to go`; else pr.textContent = "Oct 10–19";
+  const bs=document.querySelector(".brand small"); if(bs) bs.textContent = (di>=0 && DAYS[di].who==="brad") ? "Brad · Sinai + the desert" : "Brad + Duane"; else if(n.date<DAYS[0].date) pr.textContent = (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"tomorrow":`${k} days to go`; })(); else pr.textContent = "Oct 10–19";
   $("#offline").hidden = navigator.onLine !== false;
 }
 
@@ -1789,6 +1831,7 @@ function renderNavigator(){
     ["eat","🍽️","Eat & shop", g.city],
     ["money","💵","Money", `1 USD = ${rate} EGP · tips`],
     ["phrases","🗣️","Words", "forty phrases, tap to hear"],
+    ["who","🏺","Who's who", "gods, kings, reading the walls"],
     ["sos","🆘","SOS", "126 tourist police · 123 ambulance"],
     ["flights","✈️","Flights", nextFlightLine()],
     ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
@@ -1869,6 +1912,8 @@ function navGo(k){
   if(k==="eat"){ const key=CITY_KEY(DAYS[sel]); const i=GUIDES.findIndex(g=>g.id===key); if(i>=0){ gsel=i; renderGuides(); } to("#guides"); return; }
   if(k==="money"){ to("#tools"); return; }
   if(k==="phrases"){ to("#wordsSec"); return; }
+  if(k==="who"){ to("#whoSec"); return; }
+  if(k==="eras"){ safe(renderEras); to("#eraSec"); return; }
   if(k==="sos"){ const f=open("sosFold"); to(f); return; }
   if(k==="flights"){ to("#more"); return; }
   if(k==="lists"){ to("#lists"); return; }
@@ -1878,7 +1923,7 @@ function navGo(k){
   if(k==="today"){ to("#today"); return; }
 }
 document.addEventListener("click", e=>{ const n=e.target.closest("[data-nav]"); if(n){ navGo(n.dataset.nav); } });
-function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(); }catch(e){} try{ renderWhere(); }catch(e){} }
+function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(); }catch(e){} try{ renderEras(); }catch(e){} try{ renderWhere(); }catch(e){} }
 // ---------- FLIGHTS: one table, used everywhere (card, Now banner, navigator, calendar) ----------
 // tz = UTC offset of that airport on that date (Cairo +3 until Oct 29; London +1 until Oct 25 02:00, then 0)
 const FLIGHTS = [
@@ -2109,7 +2154,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v74)";
+const BUILD = "Oct 8, 2026 (v75)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -3191,7 +3236,7 @@ function eveningCard(d, ni, now){
   const over = (ni===-1 && now.h>=15) || now.h>=21; if(!over) return "";
   const closed=!!stamps()[d.id]; const nx=DAYS[dayIndexFor(d.date)+1];
   const hon=safe(honorific); const nl=safe(nileLine);
-  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
+  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span><button type="button" class="btn mini" data-brief="${nx.id}">📖 Tomorrow's briefing</button></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
   const openPlay = QUARTER[d.id] && !GS.get("chal",{})[d.id] && CHALLENGES[d.id] ? ((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]) : "";
   return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div>${openPlay?`<div class="fband"><span class="fb-ic">📋</span><div><b>Today's play is still open</b><span class="prose">${esc(openPlay)}</span></div><button type="button" class="btn mini pts-me" data-chal="${d.id}">Did it · +${ptsFor(6,d.id)}</button></div>`:""}<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
 }
@@ -3238,7 +3283,7 @@ function closeDaySheet(id){
     <div class="journ"><b style="font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Three lines</b><textarea id="cdj" placeholder="Best moment. Funniest moment. The thing you'd tell someone who wasn't there.">${esc(j)}</textarea></div>
     ${safe(()=>stampBox(d))}
     ${safe(()=>photoBox(d))||""}
-    ${nx?`<div class="tmrw"><b>Tomorrow · ${nx.dow} ${nx.num}</b>${esc(nx.title)} · ⏰ ${esc(nx.alarm)} · carry: ${esc(nx.bag)}</div>`:""}
+    ${nx?`<div class="tmrw"><b>Tomorrow · ${nx.dow} ${nx.num}</b>${esc(nx.title)} · ⏰ ${esc(nx.alarm)} · carry: ${esc(nx.bag)}<div class="row" style="margin-top:8px"><button type="button" class="btn primary" data-brief="${nx.id}">📖 Read tomorrow's briefing</button><span class="muted">two minutes, in bed</span></div></div>`:""}
   </div>`);
   const ta=$("#cdj"); if(ta){ let tm; ta.addEventListener("input",()=>{ clearTimeout(tm); tm=setTimeout(()=>{ try{ localStorage.setItem("egypt.journal."+d.id, ta.value); }catch(e){} },300); }); }
 }
@@ -3371,6 +3416,137 @@ function reviewButtons(){
   return b.join("");
 }
 
+// ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
+// one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
+const LOOK = {
+ "sun11|10:30":"The slope is 43° — gentler than Giza — because the Bent Pyramid next door nearly collapsed mid-build at 54° and they learned. Inside, the ceilings step inward in corbels; the smell is bats and 4,600 years.",
+ "sun11|12:00":"Djoser's enclosure wall is carved to look like reed matting and wooden doors — a palace for a dead king, built in stone for the first time anywhere on earth. Some of the stone doors are half open, forever.",
+ "sun11|15:30":"The alabaster on the mosque's lower walls stops at head height; the money ran out. The clock in the courtyard is the one France swapped for the Luxor obelisk in 1845. It has never run.",
+ "sun11|16:30":"The chains hanging from the entrance vault held lamps. Four huge iwans off the courtyard, one for each school of Islamic law. It's the tallest doorway in medieval Cairo — built, in 1356, to overawe the Citadel across the road.",
+ "sun11|17:15":"Real brass is heavy and dull; the shiny stuff is lacquered tin. The stone gate at the Badistan end is 1511, the oldest piece — most of the rest is a 19th-century rebuild. Nothing has a price until you ask.",
+ "sun11|18:15":"Ablaq: the striped red-and-cream stonework on the Qalawun complex. And the corner buildings with a fountain below and a Quran school above — a sabil-kuttab, public water and public schooling in one act of charity.",
+ "mon12|08:00":"Khafre's pyramid still wears a cap of the original polished casing — the whole thing once shone like that. The Sphinx's beard is in the British Museum. The Dream Stele between its paws is a prince's thank-you note for a nap.",
+ "mon12|10:45":"Ramses II in the atrium, 11 metres, stood in a Cairo train-station square until 2006. In the Tutankhamun galleries find the small things: the gold-foil sandals, the walking sticks, the two tiny coffins of his stillborn daughters.",
+ "mon12|17:30":"No engine. Watch the captain read the wind off the water before you feel it. Cairo Tower lights up at dusk; the city noise drops away ten metres from the bank.",
+ "mon12|19:00":"Not a show — a Sufi practice with the lights up. The skirts come off in layers mid-spin and the dancer never stops turning. Watch his face, not the colours.",
+ "tue13|10:15":"The water line on the columns: the temple drowned for half of every year until UNESCO cut it into 40,000 blocks and moved it, 1972–80. Coptic crosses chiselled over the gods near the back of Isis's temple, and by the Gate of Hadrian the last hieroglyphic inscription ever carved — AD 394.",
+ "tue13|16:00":"The terrace table nearest the river is where Agatha Christie wrote Death on the Nile. Elephantine Island opposite was the ancient frontier; the Nilometer steps on its bank measured the flood that set the year's taxes.",
+ "tue13|17:45":"The houses are sky-blue and marigold — Nubian colour, not Egyptian — and the roofs are domed to shed heat. These families were moved here in the 1960s when Lake Nasser took their villages; the paintings on the walls are of the old ones.",
+ "wed14|07:15":"Four Ramses, 20 metres each; the one with the fallen head fell in an earthquake in his own lifetime and was left. Inside, Ramses sits with three gods at the back wall — the sun reaches them on Feb 22 and Oct 22 (you're 8 days early); Ptah, god of the underworld, stays in shadow on purpose. The whole mountain was sawn into 1,036 blocks and lifted 65 metres in 1968. In Nefertari's small temple the queen is carved the same height as the king — almost never done.",
+ "thu15|06:30":"Two temples in one: a double axis, Sobek the crocodile on the left, Horus on the right, two of everything. Behind the sanctuary, the wall of surgical instruments — scalpels, forceps, a birthing chair, 2,000 years old. The crocodile museum at the gate has the mummified ones.",
+ "thu15|12:00":"Quarry marks on the cliffs: the sandstone for Karnak and Luxor was cut here and floated north on barges at the flood. The rock-cut chapels face the river so the boatmen could read them.",
+ "fri16|06:45":"The staircase to the roof, worn into a groove by 2,000 years of priests' feet. On the inner walls, Hathor's boat arriving from Dendera for the annual wedding — she stayed a fortnight. The ceiling soot is from the villagers who lived inside it until 1860.",
+ "fri16|15:30":"Small, cold, dark, perfect. The statue cache found under Luxor Temple in 1989 — Amenhotep III in polished quartzite; the two royal mummies; and a reassembled wall of talatat blocks from Akhenaten's demolished temple, the heretic king's art, oddly modern.",
+ "fri16|18:45":"The mosque on top is 13th century and still in use, its floor four metres above the temple's — the sand was that deep. The obelisk's twin stands in Paris. In the sanctuary, Alexander the Great carved as a pharaoh. Look up in the Roman chapel for a painted fresco of emperors, not gods.",
+ "sat17|04:30":"From the basket the green stops like a knife at the desert edge — the floodplain, and the whole reason there's an Egypt. The Ramesseum's fallen colossus below you is Shelley's Ozymandias.",
+ "sat17|09:00":"Every tomb is the same book: the sun's journey through the twelve hours of night, with the king aboard. Ramses VI's ceiling is the one to lie down under — Nut, the sky, swallowing the sun at dusk and birthing it at dawn. Tutankhamun's is small; look at the walls and the man, not the size.",
+ "sat17|12:00":"Her name chiselled out and her figures hacked away, twenty years after her death, by the stepson she kept from the throne. The Punt reliefs on the middle terrace — incense trees carried in baskets, and the Queen of Punt, drawn exactly as she was.",
+ "sat17|12:45":"The northern one sang at dawn — a crack from an earthquake in 27 BC — and Greeks and Romans travelled to hear it; their graffiti is on its legs. Septimius Severus had it repaired around AD 200 and it never sang again.",
+ "sun18|08:30":"Under the capitals of the Hypostyle Hall the original paint is still there. Hatshepsut's obelisk is the tallest standing in Egypt; the wall around its base was built by Thutmose III to hide it, and it's what preserved the colour. The sacred lake. The scarab: the guides will have you walk round it seven times.",
+ "wed21|01:30":"3,750 stone steps — the Steps of Repentance — laid by a single monk as penance. The camel path is the easier way up; the steps are the way down, after light.",
+ "wed21|09:00":"The bramble in the courtyard is the Burning Bush, by tradition, alive. The library is the oldest continuously running one in the world after the Vatican's. In the basilica apse, a 6th-century Transfiguration mosaic — the oldest surviving one anywhere.",
+ "tue20|10:15":"The arch at 56 metres is for technical divers; the plaques on the cliff are for the ones who tried it on one tank. Stay in the top ten metres, where the colour is, and drift the Bells with the current.",
+ "fri23|16:30":"Chalk, shaped by wind alone: the chicken, the mushroom, the sphinx. The 'ice' crystals are calcite. At night the desert fox comes to the fire; it's fine.",
+};
+function lookLine(d, a){ const k=LOOK[d.id+"|"+a.t]; return k?`<div class="look"><i>👁</i>${esc(k)}</div>`:""; }
+
+// the eras: where each stop sits in 4,600 years
+const ERAS = [
+ {k:"old", n:"Old Kingdom", when:"2686–2181 BC", age:"4,600 years", tag:"the pyramid age", stops:["Saqqara","Dahshur","Giza"], says:"One king, one god-king, one tomb to end all tombs. Everything after is commentary."},
+ {k:"middle", n:"Middle Kingdom", when:"2055–1650 BC", age:"3,900 years", tag:"the quiet one", stops:["Karnak's first stones"], says:"Egypt reunited after a civil war. You'll mostly see it in museum cases."},
+ {k:"new", n:"New Kingdom", when:"1550–1069 BC", age:"3,300 years", tag:"the empire", stops:["Karnak","Luxor Temple","Valley of the Kings","Hatshepsut","the Colossi","Abu Simbel","Tutankhamun"], says:"Thebes is the capital of the world, kings are buried in secret, and Ramses II builds like a man with 100 children to impress."},
+ {k:"ptol", n:"The Ptolemies", when:"305–30 BC", age:"2,200 years", tag:"Greek pharaohs", stops:["Philae","Kom Ombo","Edfu"], says:"Alexander's general and his descendants rule from Alexandria, speak Greek, and build the most Egyptian temples in Egypt to prove they belong. Cleopatra is the last of them."},
+ {k:"rome", n:"Rome & the Christians", when:"30 BC–641 AD", age:"1,700 years", tag:"the gods go quiet", stops:["Philae's last hieroglyph, AD 394","St Catherine's, 6th c."], says:"Temples become churches; the crosses are cut straight over Isis. The old writing is forgotten for 1,400 years."},
+ {k:"islam", n:"Islamic Cairo", when:"969 AD →", age:"1,000 years", tag:"the medieval city", stops:["Al-Muizz Street","Khan el-Khalili","Sultan Hassan, 1356","the Citadel, 1176","Muhammad Ali Mosque, 1848"], says:"Cairo is founded by the Fatimids, Saladin walls it, the Mamluks fill it with the buildings you'll walk under at dusk."},
+ {k:"now", n:"Now", when:"1869 →", age:"", tag:"the rescue", stops:["the High Dam, 1970","Abu Simbel moved, 1968","Philae moved, 1980","the GEM, 2025"], says:"The Nile gets a dam, the temples get moved, and Tutankhamun gets a building the size of an airport."},
+];
+const DAY_ERA = { sun11:["old","islam"], mon12:["old","new"], tue13:["ptol","rome"], wed14:["new"], thu15:["ptol"], fri16:["ptol","new"], sat17:["new"], sun18:["new"], wed21:["rome"], fri23:[], sat24:[] };
+function eraChip(d){ const ks=DAY_ERA[d.id]||[]; if(!ks.length) return ""; const e=ERAS.find(x=>x.k===ks[0]); return `<button type="button" class="erachip" data-nav="eras" title="Where today sits in time">${esc(e.n)}${e.age?` · ${esc(e.age)} old`:""}${ks[1]?` <small>+ ${esc(ERAS.find(x=>x.k===ks[1]).n)}</small>`:""}</button>`; }
+function renderEras(){ const el=$("#eras"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const today=new Set(DAY_ERA[d.id]||[]);
+  el.innerHTML=`<div class="erastrip">${ERAS.map(e=>`<div class="era ${today.has(e.k)?"on":""}"><div class="era-when">${esc(e.when)}</div><div class="era-n">${esc(e.n)}</div><div class="era-tag">${esc(e.tag)}${e.age?` · ${esc(e.age)} old`:""}</div><div class="era-stops">${e.stops.map(s=>`<span>${esc(s)}</span>`).join("")}</div><p>${esc(e.says)}</p></div>`).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:12.5px">The highlighted era is the one the selected day lives in. Rule of thumb: pyramids are 4,600, Luxor is 3,300, the "Greek" temples are 2,000, the Khan is 500.</p>`; const on=el.querySelector('.era.on'); if(on){ const strip=el.querySelector('.erastrip'); strip.scrollLeft=Math.max(0,on.offsetLeft-8); } }
+
+// who's who: gods and kings you'll hear a hundred times, with the one cue to recognise them
+const WHO = [
+ ["Gods", [
+  ["Ra","sun disc on his head, often falcon-headed","The sun. Every king is his son. The boat he sails across the sky at night is on the tomb ceilings."],
+  ["Amun","two tall plumes on a flat crown","The hidden god of Thebes who got promoted to king of the gods. Karnak is his house; Luxor Temple is where he visited his wife once a year."],
+  ["Osiris","green or black face, mummy-wrapped, crook and flail, tall white crown","King of the dead. Murdered by his brother Set, reassembled by Isis, father of Horus. Every dead king becomes him."],
+  ["Isis","a throne on her head (later: horns and a sun disc, same as Hathor)","Magic, motherhood, the wife who put Osiris back together. Philae is hers — the last temple in Egypt still worshipping the old gods, until AD 550."],
+  ["Horus","falcon, or a man with a falcon's head","The living king is Horus; the dead one is Osiris. Edfu is his house. His eye — the wedjat — is the protection symbol on everything."],
+  ["Hathor","cow ears, or cow horns holding a sun disc","Love, music, drunkenness, mothers. The columns with a woman's face and cow ears are hers. The small temple at Abu Simbel is Nefertari-as-Hathor."],
+  ["Anubis","jackal, or jackal-headed man","Embalming and the cemetery. He's the one leading the dead by the hand on tomb walls, and weighing the heart."],
+  ["Thoth","ibis-headed, or a baboon","Writing, counting, the moon. He records the verdict when the heart is weighed."],
+  ["Sobek","crocodile-headed","The Nile's strength and danger. Kom Ombo is half his; the mummified crocodiles at the gate were his temple pets."],
+  ["Khnum","ram-headed","The potter who shapes people on his wheel. Aswan's god; the Nile's source was his cave under Elephantine."],
+  ["Ptah","mummy-wrapped, tight skullcap, straight beard","The craftsman creator-god of Memphis. At Abu Simbel he's the one the sun never reaches — underworld, by design."],
+  ["Sekhmet","lioness","Ra's rage, plague and healing. Amenhotep III made 700 statues of her; you'll see them in every museum."],
+  ["Nut","a woman arched over the whole ceiling, stars on her body","The sky. She swallows the sun at dusk and gives birth to it at dawn — Ramses VI's tomb ceiling."],
+  ["Ma'at","a single ostrich feather on her head","Truth and order. Your heart is weighed against her feather; heavier and the crocodile-lion-hippo Ammit eats it."],
+ ]],
+ ["Kings", [
+  ["Djoser","Saqqara, ~2650 BC","First pyramid, first big stone building on earth. His architect Imhotep was later worshipped as a god — the only commoner ever."],
+  ["Sneferu","Dahshur, ~2600 BC","Built three pyramids learning how: the collapsed one at Meidum, the Bent one, then the Red one — the first true pyramid. Khufu's father."],
+  ["Khufu & Khafre","Giza, ~2560 BC","Great Pyramid and the second one. The Sphinx almost certainly has Khafre's face. We have exactly one statue of Khufu, 7 cm tall."],
+  ["Hatshepsut","Luxor, 1479–1458 BC","A woman who ruled as king — false beard and all — for twenty years. Her stepson erased her name afterwards; her temple is the one carved into the cliff."],
+  ["Thutmose III","1479–1425 BC","The stepson. Egypt's greatest general, seventeen campaigns, the empire to the Euphrates. He's the one who built the wall around her obelisk at Karnak."],
+  ["Amenhotep III","~1390–1350 BC","Egypt at peak wealth. The Colossi are him; most of Luxor Temple is him; the Luxor Museum's best statues are him. Tut's grandfather."],
+  ["Akhenaten","~1350–1334 BC","Abolished all gods but the sun disc, moved the capital, had himself drawn with a long face and a belly. Everything he built was demolished after; the talatat blocks in Luxor Museum are what's left. Tut's father."],
+  ["Tutankhamun","died ~1323 BC, aged about 19","Restored the old gods, died young, was forgotten — which is why his tomb was the one nobody robbed. Howard Carter, 1922. The gold is at the GEM."],
+  ["Ramses II","1279–1213 BC, 66 years","Abu Simbel, half of Karnak, the Ramesseum, a hundred children, and his name carved over everyone else's. The 11-metre statue at the GEM, the mummy with red hair."],
+  ["The Ptolemies & Cleopatra","305–30 BC","Greek kings in Egyptian clothes: Edfu, Kom Ombo and Philae are theirs. Cleopatra VII, the famous one, was the first of them in 300 years to bother learning Egyptian."],
+  ["Saladin","the Citadel, 1176","The Kurdish general who took Jerusalem back from the Crusaders built Cairo's fortress — partly from pyramid casing stones."],
+  ["Muhammad Ali","1805–1848","The Albanian officer who made modern Egypt. His alabaster mosque is the one on the Citadel skyline; the French clock in its courtyard is his, and broken."],
+ ]],
+ ["Reading the walls", [
+  ["Cartouche","an oval rope with a name inside","Always a king or queen. Ramses II's is everywhere — once you can spot his, you'll see how much he stole."],
+  ["Ankh","a cross with a loop","Life. A god holding one to the king's nose is giving him breath."],
+  ["Was & djed","a staff with an animal head · a pillar with four bars","Power and stability. Together with the ankh: life, power, stability — the holy trinity of wall-blessings."],
+  ["The smiting scene","a giant king, mace raised, a fistful of tiny enemies by the hair","On every pylon, for 3,000 years, same pose. Propaganda at the front door."],
+  ["The offering scene","king on one side, god on the other, something small between them","Ninety percent of all temple walls. The king gives (bread, wine, Ma'at); the god gives back (life, years, victory)."],
+  ["The crowns","white tall one = Upper Egypt (south) · red flat one = Lower (north) · both nested = the whole country","Plus the blue war-helmet crown and the striped nemes headcloth (Tut's mask). The cobra on the brow is the uraeus, spitting fire at enemies."],
+  ["Size = importance","the king is always biggest, then gods, then wives, then everyone else","Not perspective — rank. A wife at knee height isn't small; she's a wife."],
+  ["The winged sun","a disc with wings over a doorway","Protection for the threshold. Look up every time you walk through."],
+  ["Counting","a stroke = 1 · an arch = 10 · a coil = 100 · a lotus = 1,000 · a finger = 10,000","Captives and cattle on the walls are tallied like this. Read one and win the day's play."],
+  ["Winged scarab","beetle with wings, often pushing a disc","The sun being rolled across the sky like a dung ball. Rebirth. The giant one at Karnak gets walked around seven times."],
+ ]],
+];
+let whosel=0;
+function renderWho(){ const el=$("#who"); if(!el) return; const [h,items]=WHO[whosel];
+  el.innerHTML=`<div class="wtabs" role="tablist">${WHO.map((w,i)=>`<button type="button" class="wtab ${i===whosel?"on":""}" data-who="${i}" role="tab" aria-selected="${i===whosel}">${esc(w[0])}</button>`).join("")}</div><div class="pgrid">${items.map(([n,cue,txt])=>`<div class="pcard"><b>${esc(n)}</b><em>${esc(cue)}</em><span>${esc(txt)}</span></div>`).join("")}</div>`; }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-who]"); if(b){ whosel=+b.dataset.who; renderWho(); } });
+
+// the briefing: tomorrow (or today) in two minutes
+const SKIP_PLACE = /Hilton|Waldorf|Meridien|Airport|Restaurant|Cafe|Café|Zooba|Felfela|Abou Tarek|Khufu's|Sofra|Sahaby|Ali Baba|Winter Palace|Old Cataract|Kato Dool|Terminal/i;
+function firstSentences(s, n){ const parts=String(s||"").split(/(?<=[.!?])\s+/); return parts.slice(0,n).join(" "); }
+function briefingHTML(d){
+  const stops=d.agenda.filter(a=>a.map && PLACES[a.map] && !SKIP_PLACE.test(a.map)).slice(0,4);
+  const lead=stops[0]?PLACES[stops[0].map]:null;
+  const ks=DAY_ERA[d.id]||[]; const era=ks.length?ERAS.find(x=>x.k===ks[0]):null;
+  const play=CHALLENGES[d.id]?((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]):"";
+  const shot=(d.agenda.find(a=>a.photo)||{}).photo||"";
+  const words=(()=>{ const souk=/Khan|souk|Muizz|Nubian|Dahab/i.test(JSON.stringify(d.agenda)); const want=souk?["la, shukran","bikam"]:["sabah el-kheir","shukran"]; const out=[]; WORDS.forEach(([h,ws])=>ws.forEach(w=>{ if(want.some(x=>w[0].startsWith(x))) out.push(w); })); return out.slice(0,2); })();
+  return `<div class="brief">
+    <div class="br-k">${esc(d.dow)} ${d.num} · read before you go</div>
+    <h3>${esc(d.title)}</h3>
+    ${era?`<div class="br-era">${esc(era.n)} · ${esc(era.when)}${era.age?` · ${esc(era.age)} old`:""} — ${esc(era.says)}</div>`:""}
+    ${stops.length?`<div class="br-h">You'll see</div><ol class="br-stops">${stops.map(a=>{ const P=PLACES[a.map]; const look=LOOK[d.id+"|"+a.t]; return `<li><b>${esc(P.n)}</b><span>${esc(firstSentences(P.what,2))}</span>${look?`<i>👁 ${esc(firstSentences(look,2))}</i>`:""}</li>`; }).join("")}</ol>`:""}
+    ${lead&&lead.story?`<div class="br-h">The story to carry in</div><p class="br-story">${esc(firstSentences(lead.story,3))}</p>`:""}
+    ${lead&&lead.ask&&lead.ask.length?`<div class="br-h">Ask the guide</div><p class="br-ask">${esc(lead.ask[0])}</p>`:""}
+    ${words.length?`<div class="br-h">Say</div><div class="br-words">${words.map(w=>`<button type="button" class="wcard say" data-say="${esc(w[1])}" data-lat="${esc(w[0])}"><b>${esc(w[0])}</b><span>${esc(w[2].split(" · ")[0])}</span></button>`).join("")}</div>`:""}
+    <div class="br-h">The day</div>
+    <div class="br-grid"><div><small>Alarm</small>${esc(d.alarm)}</div><div><small>Carry</small>${esc(d.bag)}</div><div><small>Cash</small>${esc(d.cash)}</div><div><small>Wear</small>${esc(d.dress)}</div></div>
+    ${play?`<div class="br-h">The play</div><p class="br-play">🏈 ${esc(play)}</p>`:""}
+    ${shot?`<div class="br-h">The shot</div><p class="br-shot">📸 ${esc(shot)}</p>`:""}
+    <div class="row" style="margin-top:12px"><button type="button" class="btn" data-brief-who="1">Who's who</button><button type="button" class="btn" data-brief-close="1">Done</button></div>
+  </div>`;
+}
+function openBriefing(id){ const d=DAYS.find(x=>x.id===id); if(!d) return; openSheet("sheetQC", `<div class="qh"><h3>Briefing</h3><button type="button" class="x" data-brief-close="1" aria-label="Close">✕</button></div>${briefingHTML(d)}`); }
+document.addEventListener("click", e=>{
+  const b=e.target.closest("[data-brief]"); if(b){ openBriefing(b.dataset.brief); return; }
+  if(e.target.closest("[data-brief-close]")){ closeSheet("sheetQC"); return; }
+  if(e.target.closest("[data-brief-who]")){ closeSheet("sheetQC"); navGo("who"); return; }
+});
+
 const WHATSON = {
  sat10:[{w:"Starlight Festival at the Pyramids",d:"Sat 10, 5pm–midnight, beside the plateau; electronic headliners, ≈€129. You land at 5:20; only if you arrive with wild energy. The farewell party is Sun 11 at Zed Park."},{w:"Cairo Opera House, 38th anniversary concert",d:"Sat 10, 8pm, Zamalek. Same answer."}],
  sun11:[{w:"Tamer Ashour, Al Qubbah Palace",d:"Sun 11, 8:30pm. Egypt's biggest ballad singer in a royal palace; tickets go fast. We're at dinner in the Khan; now you know what the posters are."}],
@@ -3454,7 +3630,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  if(PRE_TRIP() && !/^#(sat|sun|mon|tue|wed|thu|fri)\d+$/.test(location.hash)) preMode=true; renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); safe(renderFlights); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); setTimeout(renderGuideFront,0); safe(renderWords); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  if(PRE_TRIP() && !/^#(sat|sun|mon|tue|wed|thu|fri)\d+$/.test(location.hash)) preMode=true; renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); safe(renderFlights); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); setTimeout(renderGuideFront,0); safe(renderWords); safe(renderWho); safe(renderEras); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
