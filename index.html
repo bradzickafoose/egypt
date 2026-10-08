@@ -309,18 +309,30 @@ ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 .brief .br em{font-style:normal;font-weight:600}
 .brief .br a{color:inherit}
 .brief .br .ph{font-family:var(--mono);font-size:12.5px}
-.indy{background:#f4ecd8;border:1px solid #d9c39a;border-radius:14px;padding:6px 8px 4px;margin-bottom:8px;color:#2b2420}
-.indy svg{width:100%;height:auto;display:block;max-height:300px}
-.in-nile{fill:none;stroke:#1f3a6e;stroke-width:1.4;stroke-opacity:.6;stroke-linejoin:round}
-.in-nile2{fill:none;stroke:#1f3a6e;stroke-width:.5;stroke-opacity:.3;transform:translate(1.2px,0)}
-.in-dot{fill:#2b2420}
-.in-lbl{font-family:Georgia,serif;font-size:4.6px;letter-spacing:.3px;fill:#2b2420}
-.in-route{fill:none;stroke:#b5322b;stroke-width:1.8;stroke-dasharray:1;stroke-dashoffset:1;stroke-linecap:round;stroke-linejoin:round;animation:draw 2.2s cubic-bezier(.4,0,.2,1) forwards;filter:drop-shadow(0 .4px .3px rgba(0,0,0,.35))}
+.indy{background:#efe4c8;border:1px solid #cdb891;border-radius:14px;padding:4px;margin-bottom:8px;color:#2b2420;overflow:hidden}
+.indy svg{width:100%;height:auto;display:block;border-radius:10px;font-family:Georgia,"Times New Roman",serif}
+.indy .sea{fill:#cfdde0}
+.indy .land{fill:#f1e6c9;stroke:#8b7a56;stroke-width:4;stroke-linejoin:round}
+.indy .coastline{fill:none;stroke:#8b7a56;stroke-width:1}
+.indy .grid{stroke:#8b7a56;stroke-opacity:.14;stroke-width:2}
+.indy .river{fill:none;stroke:#2f5f8f;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+.indy .lake{fill:none;stroke:#2f5f8f;stroke-width:26;stroke-linecap:round;opacity:.45}
+.indy .sealbl{font-size:34px;letter-spacing:10px;fill:#4a6b7a;fill-opacity:.8;font-style:italic}
+.indy .desertlbl{font-size:28px;letter-spacing:10px;fill:#8b7a56;fill-opacity:.7}
+.indy .mp circle{fill:#f1e6c9;stroke:#2b2420;stroke-width:4}
+.indy .mp.on circle{fill:#b5322b;stroke:#f1e6c9;stroke-width:5}
+.indy .mp text{font-size:36px;fill:#2b2420;paint-order:stroke;stroke:#f1e6c9;stroke-width:10px;stroke-linejoin:round}
+.indy .mp .dy{font-size:26px;fill:#8b7a56}
+.indy .mp .pulse{fill:none;stroke:#b5322b;stroke-width:5;animation:mpulse 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes mpulse{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.indy .route{fill:none;stroke:#b5322b;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20 14;filter:drop-shadow(0 .6px .4px rgba(0,0,0,.35))}
+.indy .route.cur{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s .1s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.in-veh{font-size:9px;animation:vehin .3s 2.1s both}
-@keyframes vehin{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
-.in-cap{font-family:Georgia,serif;font-size:11.5px;letter-spacing:.04em;color:#5a4a34;text-align:center;padding:2px 0 2px}
-@media (prefers-reduced-motion:reduce){ .in-route{animation:none;stroke-dashoffset:0} .in-veh{animation:none} }
+.indy .veh text,.indy .vehstat{font-size:64px}
+.indy .compass circle{fill:#f1e6c9;stroke:#8b7a56;stroke-width:3}.indy .compass path{fill:#2b2420}.indy .compass text{font-size:30px;fill:#2b2420}
+.in-cap{font-family:Georgia,serif;font-size:11.5px;letter-spacing:.04em;color:#5a4a34;text-align:center;padding:5px 0 3px;display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap}
+.in-key{font-size:10.5px;color:#8b7a56}.in-key .r{display:inline-block;width:18px;border-top:3px dashed #b5322b;vertical-align:middle;margin-right:4px}
+@media (prefers-reduced-motion:reduce){ .indy .route.cur{animation:none;stroke-dashoffset:0} .indy .mp .pulse{animation:none} }
 .photobox{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
 .photobox>b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
 .photobox .pb-none{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px}
@@ -1780,19 +1792,45 @@ function cityBrief(){
     <div class="br"><b>Say</b><div><button type="button" class="say" data-say="لا، شكراً" data-latin="la, shukran">la, shukran 🔊</button> <i>· no thanks, keep walking</i> · <button type="button" class="say" data-say="بكام؟" data-latin="bikam?">bikam? 🔊</button> <i>· how much</i> · <button type="button" class="say" data-say="خلاص" data-latin="khalas">khalas 🔊</button> <i>· done</i> · <button type="button" class="say" data-say="شكراً" data-latin="shukran">shukran 🔊</button> <i>· thanks</i></div></div>
   </div>`;
 }
-// the red line: a schematic Nile, the route drawn up to the selected day, a vehicle at the tip
-const INDY_NODES = { CAI:[1150,840], GIZA:[1100,980], ASW:[1720,2190], ABU:[1300,2470], NILE:[1480,1650], LXR:[1620,1800], DAHAB:[2000,1060], SINAI:[1900,1300], DESERT:[560,1480] };
+// ---------- THE RED LINE: a real map of Egypt (lon/lat), parchment, the route drawn as it happens ----------
+// coastline and borders, simplified by hand; good enough for a map in a passport
+const EG_COAST = [[25.15,31.62],[26.3,31.5],[27.3,31.38],[28.4,31.12],[29.3,30.9],[29.9,31.2],[30.5,31.46],[31.0,31.56],[31.8,31.52],[32.3,31.28],[32.9,31.1],[33.7,31.12],[34.25,31.3],[34.3,31.2],[34.55,30.5],[34.9,29.5],[34.95,29.15],[34.7,28.7],[34.52,28.5],[34.4,28.1],[34.33,27.86],[34.25,27.73],[33.95,27.9],[33.65,28.3],[33.2,28.8],[32.85,29.4],[32.55,29.96],[32.45,29.9],[32.65,29.2],[32.62,28.6],[33.1,27.9],[33.8,27.2],[34.3,26.5],[34.9,25.9],[35.15,25.2],[35.5,24.5],[35.75,23.9],[36.25,23.0],[36.9,22.0],[25.0,22.0],[25.0,29.2],[24.7,29.2],[24.7,31.62]];
+const SINAI_GULF = [[32.55,29.96],[32.85,29.4],[33.2,28.8],[33.65,28.3],[33.95,27.9],[34.25,27.73]]; // for labels only
+const EG_NILE = [[31.9,31.45],[31.4,30.6],[31.24,30.04],[31.13,29.99],[31.1,29.07],[30.75,28.1],[31.18,27.18],[31.69,26.56],[32.24,26.05],[32.72,26.16],[32.64,25.69],[32.55,25.29],[32.87,24.98],[32.93,24.48],[32.9,24.09]];
+const EG_DELTA = [[31.24,30.04],[30.9,30.7],[30.4,31.4]];
+const EG_NASSER = [[32.9,24.09],[32.85,23.6],[32.6,23.1],[32.4,22.6],[31.9,22.3],[31.4,22.05],[31.3,21.9]];
+const EG_PLACES = { CAI:[31.24,30.04,"Cairo"], GIZA:[31.13,29.99,"Giza"], ASW:[32.9,24.09,"Aswan"], ABU:[31.63,22.34,"Abu Simbel"], KOM:[32.93,24.48,"Kom Ombo"], EDFU:[32.87,24.98,"Edfu"], LXR:[32.64,25.69,"Luxor"], DAHAB:[34.51,28.5,"Dahab"], SSH:[34.33,27.86,"Sharm"], SINAI:[33.95,28.56,"Mt Sinai"], BAH:[28.87,28.35,"Bahariya"], DESERT:[28.1,27.3,"White Desert"], ALEX:[29.9,31.2,"Alexandria"], HUR:[33.8,27.2,"Hurghada"], SUEZ:[32.55,29.96,"Suez"], LHR:[30.0,32.4,"to London"] };
 const INDY_LEGS = [ // [dayId, from, to, mode]
-  ["sat10","LHR","CAI","plane"],["sun11","CAI","GIZA","road"],["mon12","GIZA","CAI","road"],["tue13","CAI","ASW","plane"],["wed14","ASW","ABU","road"],["thu15","ASW","NILE","boat"],["fri16","NILE","LXR","boat"],["sat17","LXR","LXR","stay"],["sun18","LXR","CAI","plane"],
-  ["mon19","CAI","DAHAB","plane"],["tue20","DAHAB","DAHAB","stay"],["wed21","DAHAB","SINAI","road"],["thu22","DAHAB","CAI","plane"],["fri23","CAI","DESERT","road"],["sat24","DESERT","CAI","road"],["sun25","CAI","LHR","plane"] ];
-function indyMap(){ const d=DAYS[sel]||DAYS[0]; const idx=DAYS.indexOf(d); const S=0.1; const P=[[1150,760],[1150,840],[1100,980],[1230,1250],[1350,1480],[1480,1650],[1620,1800],[1660,1930],[1700,2060],[1720,2190],[1600,2340],[1420,2430],[1300,2470]];
-  const pt=k=>{ if(k==="LHR") return [1150,560]; return INDY_NODES[k]||[1150,840]; }; const sx=p=>(p[0]*S).toFixed(1), sy=p=>(p[1]*S).toFixed(1);
-  let nile=""; P.forEach((p,i)=>{ nile+= i? ` Q ${sx(P[i-1])} ${sy(P[i-1])} ${((P[i-1][0]+p[0])/2*S).toFixed(1)} ${((P[i-1][1]+p[1])/2*S).toFixed(1)}`:`M ${sx(p)} ${sy(p)}`; });
-  const legs=INDY_LEGS.filter((l,i)=>i<=idx); let route=""; let vehicle="📍"; let tip=pt("CAI"); const vm={plane:"✈️",road:"🚐",boat:"⛵",stay:"🏨"};
-  const RIVER={ASW:9,NILE:5,LXR:6}; const riverPath=(from,to)=>{ const i0=RIVER[from], i1=RIVER[to]; if(i0===undefined||i1===undefined) return ` L ${sx(pt(to))} ${sy(pt(to))}`; const step=i1>i0?1:-1; let s=""; for(let k=i0;k!==i1;k+=step){ const p=P[k], q=P[k+step]; s+=` Q ${sx(p)} ${sy(p)} ${((p[0]+q[0])/2*S).toFixed(1)} ${((p[1]+q[1])/2*S).toFixed(1)}`; } return s+` L ${sx(pt(to))} ${sy(pt(to))}`; };
-  legs.forEach((l,i)=>{ const a=pt(l[1]), b=pt(l[2]); let seg=""; if(l[3]==="stay") seg=""; else if(l[3]==="boat") seg=riverPath(l[1],l[2]); else if(l[3]==="plane"){ const mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2; const dx=b[0]-a[0], dy=b[1]-a[1]; const len=Math.hypot(dx,dy)||1; const nx=-dy/len, ny=dx/len; const k=len*0.22; seg=` Q ${((mx+nx*k)*S).toFixed(1)} ${((my+ny*k)*S).toFixed(1)} ${sx(b)} ${sy(b)}`; } else seg=` L ${sx(b)} ${sy(b)}`; route+= (i? "":` M ${sx(a)} ${sy(a)}`) + seg; if(i===legs.length-1){ vehicle=vm[l[3]]||"📍"; tip=b; } });
-  const labels=[["CAIRO",1150,840,"r"],["GIZA",1100,980,"l"],["ASWAN",1720,2190,"r"],["ABU SIMBEL",1300,2470,"l"],["LUXOR",1620,1800,"r"],["DAHAB",2000,1060,"l"],["SINAI",1900,1300,"l"],["WHITE DESERT",560,1480,"r"]];
-  return `<div class="indy"><svg viewBox="40 40 200 220" preserveAspectRatio="xMidYMid meet" aria-label="Route so far"><rect x="40" y="40" width="200" height="220" fill="none"/><path d="${nile}" class="in-nile"/><path d="${nile}" class="in-nile2"/>${labels.map(([n,x,y,s])=>`<circle cx="${(x*S).toFixed(1)}" cy="${(y*S).toFixed(1)}" r="1.6" class="in-dot"/><text x="${((x+(s==="l"?-22:22))*S).toFixed(1)}" y="${(y*S+1.2).toFixed(1)}" class="in-lbl" text-anchor="${s==="l"?"end":"start"}">${n}</text>`).join("")}<path d="${route}" class="in-route" pathLength="1"/><text x="${sx(tip)}" y="${(sy(tip)-1)}" class="in-veh" text-anchor="middle">${vehicle}</text></svg><div class="in-cap"><b>${d.dow} ${d.num}</b> · ${esc(d.place||"")}${idx===0?" · the line begins":""}</div></div>`; }
+  ["sat10","LHR","CAI","plane"],["sun11","CAI","GIZA","road"],["mon12","GIZA","CAI","road"],["tue13","CAI","ASW","plane"],["wed14","ASW","ABU","road"],["thu15","ASW","EDFU","boat"],["fri16","EDFU","LXR","boat"],["sat17","LXR","LXR","stay"],["sun18","LXR","CAI","plane"],
+  ["mon19","CAI","SSH","plane"],["tue20","SSH","DAHAB","road"],["wed21","DAHAB","SINAI","road"],["thu22","SINAI","CAI","plane"],["fri23","CAI","DESERT","road"],["sat24","DESERT","CAI","road"],["sun25","CAI","LHR","plane"] ];
+const MAPV = { lon0:24.4, lon1:37.2, lat0:21.7, lat1:32.1, k:0.89 };
+const mx = lon => ((lon-MAPV.lon0)*100).toFixed(1);
+const my = lat => ((MAPV.lat1-lat)*100*MAPV.k).toFixed(1);
+const mp = ll => `${mx(ll[0])} ${my(ll[1])}`;
+const MAP_W = (MAPV.lon1-MAPV.lon0)*100, MAP_H = (MAPV.lat1-MAPV.lat0)*100*MAPV.k;
+function smoothPath(pts, close, straightFrom){ let d=`M ${mp(pts[0])}`; for(let i=1;i<pts.length;i++){ const a=pts[i-1], b=pts[i]; if(straightFrom!==undefined && i>=straightFrom){ d+=` L ${mp(b)}`; continue; } const m=[(a[0]+b[0])/2,(a[1]+b[1])/2]; d+= i===1?` L ${mp(m)}`:` Q ${mp(a)} ${mp(m)}`; } if(straightFrom===undefined) d+=` L ${mp(pts[pts.length-1])}`; return close?d+" Z":d; }
+function riverBetween(a,b){ const idx=k=>{ const P=EG_PLACES[k]; let best=0,bd=1e9; EG_NILE.forEach((p,i)=>{ const d=Math.hypot(p[0]-P[0],p[1]-P[1]); if(d<bd){ bd=d; best=i; } }); return best; }; const i0=idx(a), i1=idx(b); const step=i1>=i0?1:-1; const pts=[EG_PLACES[a].slice(0,2)]; for(let i=i0;i!==i1;i+=step) pts.push(EG_NILE[i+step]); pts.push(EG_PLACES[b].slice(0,2)); return pts; }
+function legPath(l){ const A=EG_PLACES[l[1]], B=EG_PLACES[l[2]]; if(l[3]==="stay") return ""; if(l[3]==="boat"){ const pts=riverBetween(l[1],l[2]); return smoothPath(pts).replace(/^M [^L]*L /,"L "); } if(l[3]==="plane"){ const m=[(A[0]+B[0])/2,(A[1]+B[1])/2]; const dx=B[0]-A[0], dy=B[1]-A[1]; const len=Math.hypot(dx,dy)||1; const bulge=0.18*len; const c=[m[0]-dy/len*bulge, m[1]+dx/len*bulge]; return ` Q ${mp(c)} ${mp(B)}`; } return ` L ${mp(B)}`; }
+function indyMap(){
+  const d=DAYS[sel]||DAYS[0]; const idx=DAYS.indexOf(d); const legs=INDY_LEGS.slice(0,idx+1); const cur=legs[legs.length-1];
+  let done=""; legs.slice(0,-1).forEach((l,i)=>{ done += (i?"":`M ${mp(EG_PLACES[l[1]])}`) + legPath(l); });
+  const curPath = cur && cur[3]!=="stay" ? `M ${mp(EG_PLACES[cur[1]])}${legPath(cur)}` : "";
+  const vm={plane:"✈️",road:"🚐",boat:"⛵",stay:"🏨"}; const tip=EG_PLACES[cur?cur[2]:"CAI"]; const veh=vm[cur?cur[3]:"stay"];
+  const visited=new Set(); legs.forEach(l=>{ visited.add(l[1]); visited.add(l[2]); }); visited.delete("LHR");
+  const dayAt={}; INDY_LEGS.forEach(l=>{ if(l[3]!=="stay") dayAt[l[2]]=dayAt[l[2]]||l[0]; });
+  const lbl=(k,dx,dy,anchor)=>{ const P=EG_PLACES[k]; const on=visited.has(k); const dd=DAYS.find(x=>x.id===dayAt[k]); return `<g class="mp ${on?"on":""} ${k===(cur&&cur[2])?"here":""}"><circle cx="${mx(P[0])}" cy="${my(P[1])}" r="${on?15:10}"/>${k===(cur&&cur[2])?`<circle class="pulse" cx="${mx(P[0])}" cy="${my(P[1])}" r="26"/>`:""}<text x="${(+mx(P[0])+dx).toFixed(1)}" y="${(+my(P[1])+dy).toFixed(1)}" text-anchor="${anchor||"start"}">${P[2]}${on&&dd?`<tspan class="dy"> · ${dd.dow} ${dd.num}</tspan>`:""}</text></g>`; };
+  const places=[["CAI",26,-10],["GIZA",-26,34,"end"],["ASW",26,12],["ABU",26,12],["EDFU",26,12],["KOM",26,12],["LXR",26,12],["DAHAB",26,12],["SSH",26,24],["SINAI",-26,-16,"end"],["DESERT",26,12],["BAH",26,-16],["ALEX",-18,-22,"end"],["HUR",26,12],["SUEZ",26,-16]].filter(([k])=>visited.has(k)||["ALEX","HUR","SUEZ","KOM","BAH"].includes(k)===false||true);
+  const sea=`<rect x="0" y="0" width="${MAP_W}" height="${MAP_H}" class="sea"/>`;
+  const land=`<path d="${smoothPath(EG_COAST,true,EG_COAST.length-4)}" class="land"/>`;
+  const sinai="";
+  const nile=`<path d="${smoothPath(EG_NILE)}" class="river"/><path d="${smoothPath(EG_DELTA)}" class="river"/><path d="${smoothPath(EG_NASSER)}" class="lake"/>`;
+  const grid=(()=>{ let s=""; for(let lon=25;lon<=37;lon+=2) s+=`<line x1="${mx(lon)}" y1="0" x2="${mx(lon)}" y2="${MAP_H}" class="grid"/>`; for(let lat=22;lat<=32;lat+=2) s+=`<line x1="0" y1="${my(lat)}" x2="${MAP_W}" y2="${my(lat)}" class="grid"/>`; return s; })();
+  const seaLabels=`<text x="${mx(27.4)}" y="${my(32.0)}" class="sealbl">MEDITERRANEAN</text><text x="${mx(35.6)}" y="${my(25.6)}" class="sealbl" transform="rotate(62 ${mx(35.6)} ${my(25.6)})">RED SEA</text><text x="${mx(26.2)}" y="${my(25.2)}" class="desertlbl">WESTERN DESERT</text><text x="${mx(33.6)}" y="${my(29.6)}" class="desertlbl" style="font-size:22px">SINAI</text>`;
+  const compass=`<g class="compass" transform="translate(${MAP_W-120} 150)"><circle r="60"/><path d="M0 -54 L13 0 L0 54 L-13 0 Z"/><path d="M-54 0 L0 -13 L54 0 L0 13 Z" opacity=".45"/><text y="-70" text-anchor="middle">N</text></g>`;
+  const motion = curPath ? `<path id="curleg" d="${curPath}" class="route cur" pathLength="1"/><g class="veh"><text text-anchor="middle" dy="-18">${veh}</text><animateMotion dur="2.4s" begin="0.1s" fill="freeze" rotate="0"><mpath href="#curleg"/></animateMotion></g>` : `<text x="${mx(tip[0])}" y="${(+my(tip[1])-26).toFixed(1)}" class="vehstat" text-anchor="middle">${veh}</text>`;
+  return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><b>${d.dow} ${d.num}</b> · ${esc(d.place||"")} <span class="in-key"><i class="r"></i> the route so far</span></div></div>`;
+}
+
 function renderWhere(){
   const el=$("#whereami"); if(!el) return; const d=DAYS[sel]||DAYS[0]; const seen=new Set(); const stops=(d.agenda||[]).filter(a=>a.map && !seen.has(a.map) && seen.add(a.map));
   const h=hotelFor(d); const hq=d.sleepq||(h&&h.q)||"";
@@ -2005,7 +2043,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v53)";
+const BUILD = "Oct 8, 2026 (v54)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2366,8 +2404,8 @@ function sfx(kind){ if(!soundOn()) return; const a=ac(); if(!a) return; const t0
 // a small bronze clink, synthesised — no file, no network
 let _ac=null; function clink(){ try{ _ac=_ac||new (window.AudioContext||window.webkitAudioContext)(); const ac=_ac; if(ac.state==="suspended") ac.resume(); const t0=ac.currentTime; [[2600,.05],[3900,.025],[5200,.015]].forEach(([f,g0],i)=>{ const o=ac.createOscillator(), gn=ac.createGain(); o.type="sine"; o.frequency.setValueAtTime(f*(1+(Math.random()-.5)*.02), t0); gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(g0, t0+.004); gn.gain.exponentialRampToValueAtTime(.0001, t0+.18+i*.05); o.connect(gn).connect(ac.destination); o.start(t0); o.stop(t0+.3); }); }catch(e){} }
 // ---------- the booth, out loud: the phone's English voice reads the call ----------
-function boothVoice(){ try{ const vs=speechSynthesis.getVoices(); return vs.find(v=>/en[-_](US|GB)/i.test(v.lang)&&/Daniel|Aaron|Alex|Fred|Google UK English Male|Microsoft David/i.test(v.name)) || vs.find(v=>/^en/i.test(v.lang)) || null; }catch(e){ return null; } }
-function announce(text){ if(!soundOn()||!text) return; if(!("speechSynthesis" in window)) return; const go=()=>{ try{ const v=boothVoice(); const u=new SpeechSynthesisUtterance(text); if(v){ u.voice=v; u.lang=v.lang; } u.rate=1.05; u.pitch=.9; u.volume=1; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }; if(speechSynthesis.getVoices().length) setTimeout(go,650); else { speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.onvoiceschanged=null; setTimeout(go,650); }; } }
+function boothVoice(){ try{ const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)); const score=v=>(/premium/i.test(v.name)?40:0)+(/enhanced/i.test(v.name)?30:0)+(/Daniel|Aaron|Evan|Nathan|Oliver|Alex|Tom|Arthur/i.test(v.name)?12:0)+(/en[-_](GB|US)/i.test(v.lang)?5:0)+(/Google|Microsoft/i.test(v.name)?-5:0)+(/compact|eloquence|Fred|Albert|Bad News|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Jester|Organ|Trinoids|Whisper|Wobble|Zarvox|Junior|Kathy|Ralph|Rocko|Shelley|Grandma|Grandpa|Sandy|Flo|Eddy|Reed/i.test(v.name)?-50:0); return vs.sort((a,b)=>score(b)-score(a))[0]||null; }catch(e){ return null; } }
+function announce(text){ if(!soundOn()||!text) return; if(!("speechSynthesis" in window)) return; const go=()=>{ try{ const v=boothVoice(); const u=new SpeechSynthesisUtterance(text); if(v){ u.voice=v; u.lang=v.lang; } u.rate=.98; u.pitch=1; u.volume=1; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }; if(speechSynthesis.getVoices().length) setTimeout(go,650); else { speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.onvoiceschanged=null; setTimeout(go,650); }; } }
 // ---------- say it: the phone's Arabic voice ----------
 function arabicVoice(){ try{ const vs=speechSynthesis.getVoices(); return vs.find(v=>/^ar[-_]EG/i.test(v.lang)) || vs.find(v=>/^ar/i.test(v.lang)) || null; }catch(e){ return null; } }
 function sayIt(btn){ const ar=btn.dataset.say, latin=btn.dataset.latin||""; if(!("speechSynthesis" in window)){ toast(`“${latin}” — no voice on this phone; say it like it's spelled.`); return; }
@@ -2842,7 +2880,7 @@ function hagglePreview(form){ const b=form.querySelector("[data-hbtn]"); if(!b) 
 document.addEventListener("input", e=>{ const f=e.target.closest("form.hform"); if(f && f.querySelector("[data-hbtn]")) safe(()=>hagglePreview(f)); });
 // jumbotron: a scoring play gets the stadium treatment
 function burst(who, n){ try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; if(!T) return; const w=document.createElement("div"); w.className="scarabs"; w.innerHTML=Array.from({length:n||24},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*.6}s;font-size:${8+Math.random()*10}px;color:${i%2?T.c1:(T.c2.toLowerCase()==="#000000"?"#fff":T.c2)}">■</span>`).join(""); document.body.appendChild(w); setTimeout(()=>w.remove(),3600); }catch(e){} }
-function jumbo(word, who, sub){ try{ if(!who||!TEAMS[who]) return; if(sub&&/[.!?]/.test(sub)) safe(()=>announce(String(sub).replace(/^\+\d+\s*·\s*/,""))); if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.onclick=()=>el.remove(); el.innerHTML=`<div class="jb"><small>${esc(T.team)}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2300); }catch(e){} }
+function jumbo(word, who, sub){ try{ if(!who||!TEAMS[who]) return; if(sub&&/[.!?]/.test(sub)&&!/trash talk/i.test(word)) safe(()=>announce(String(sub).replace(/^\+\d+\s*·\s*/,""))); if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.onclick=()=>el.remove(); el.innerHTML=`<div class="jb"><small>${esc(T.team)}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2300); }catch(e){} }
 function nbTicker(){ const live=GS.get("live",{})||{}; const mine=GS.get("events",[]); const theirs=(live[OTHER()]&&live[OTHER()].events)||[]; const ev=[...mine,...theirs].filter(e=>e&&e.text).sort((a,b)=>b.at<a.at?-1:1).slice(0,8); const items = ev.length ? ev.map(e=>`<span><b>${esc((e.who||"").toUpperCase())}</b> ${esc(e.text)}</span>`) : [`<span>WELCOME TO THE NILE BOWL</span>`,`<span>KICKOFF SAT OCT 10 · GIZA</span>`,`<span>FINAL WHISTLE SUN OCT 18 · 8PM CAIRO</span>`,`<span>LOSER BUYS SUNDAY DINNER</span>`]; const s=items.join(`<i>◆</i>`)+`<i>◆</i>`; return `<div class="nb-ticker" aria-hidden="true"><div class="nb-tick">${s}${s}</div></div>`; }
 function kickoffIn(){ const n=cairoNow(); const ms=Date.UTC(2026,9,10,0,0)-Date.UTC(+n.date.slice(0,4),+n.date.slice(5,7)-1,+n.date.slice(8,10),n.h,n.m||0); if(ms<=0) return ""; const h=Math.floor(ms/36e5); const d=Math.floor(h/24); return d>0?`${d}D ${h%24}H`:`${h}H ${Math.floor((ms%36e5)/6e4)}M`; }
 
@@ -2912,7 +2950,7 @@ const TAUNTS = ["I've seen better haggling from the camel.","Your extra point lo
 let seenOther = GS.get("seenOther","");
 function noticeTheirPlays(d){ try{ const o=OTHER(); const ev=(d&&d[o]&&d[o].events)||[]; if(!ev.length) return; const latest=ev.map(e=>e.at).sort().pop(); if(!seenOther){ seenOther=latest; GS.set("seenOther",latest); return; } const fresh=ev.filter(e=>e.at>seenOther).sort((a,b)=>a.at<b.at?-1:1); if(!fresh.length) return; seenOther=latest; GS.set("seenOther",latest); const e=fresh[fresh.length-1]; const txt=String(e.text||""); const taunt=txt.startsWith("🗣"); const scored=/touchdown|field goal|extra point|two-point|two point|blackout|safety/i.test(txt); if(taunt){ jumbo("Trash talk", o, txt.replace(/^🗣\s*/,"")); } else if(scored){ jumbo(`${o} scores`, o, txt.length>90?txt.slice(0,88)+"…":txt); } else { toast(`${o}: ${txt}`); } }catch(e){} }
 function tauntSheet(){ const picks=[...TAUNTS].sort(()=>Math.random()-.5).slice(0,4); openSheet("sheetQC", `<div class="qh"><h3>Trash talk</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="qpanel"><p class="muted">Goes to his board and his jumbotron. Pick one, or write your own — the league office reviews everything.</p><div class="taunts">${picks.map(tt=>`<button type="button" class="btn taunt" data-taunt="${esc(tt).replace(/"/g,"&quot;")}">${esc(tt)}</button>`).join("")}</div><form class="hform" id="tauntForm"><input id="tauntIn" placeholder="Your own line (keep it clean, keep it funny)" maxlength="120"><button class="btn primary" type="submit">Send it</button></form></div>`); }
-function sendTaunt(line){ line=(line||"").trim(); if(!line) return; safe(()=>sfx("whip")); safe(()=>logEvent("🗣 "+line)); closeSheet("sheetQC"); toast("Sent to his board."); jumbo("Trash talk", me(), line); }
+function sendTaunt(line){ line=(line||"").trim(); if(!line) return; safe(()=>logEvent("🗣 "+line)); closeSheet("sheetQC"); toast("Sent to his board."); jumbo("Trash talk", me(), line); }
 document.addEventListener("click", e=>{ if(e.target.id==="soundBtn"){ GS.set("sound", soundOn()?0:1); try{ speechSynthesis.cancel(); }catch(x){} renderGame(); toast(soundOn()?"Booth and stadium on.":"Quiet mode — temples, planes, Duane asleep."); return; } if(e.target.id==="tauntBtn"){ tauntSheet(); return; } const tb=e.target.closest("[data-taunt]"); if(tb){ sendTaunt(tb.dataset.taunt); return; } });
 document.addEventListener("submit", e=>{ if(e.target.id==="tauntForm"){ e.preventDefault(); sendTaunt($("#tauntIn").value); } });
 // streaks and titles
