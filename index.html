@@ -187,7 +187,7 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
 /* four tabs + quick capture */
 .bottom .plus{width:48px;height:48px;border-radius:50%;border:0;background:var(--fg);color:var(--bg);font:300 30px/1 var(--body);cursor:pointer;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.18);transform:translateY(-6px)}
-.subnav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin-top:-2px}
+.subnav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin:-2px -16px 0;padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .subnav a{flex:0 0 auto;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .subnav a.on{background:var(--fg);color:var(--bg);border-color:transparent}
 .group>section{margin-top:14px}
@@ -532,7 +532,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <h2 class="sec">Kit</h2>
 <div class="subnav" aria-label="Kit sections"><a href="#pinned">Hotels</a><a href="#lists">Lists</a><a href="#notes">Notes</a><a href="#tools">Money</a><a href="#more">Flights</a><a href="#reference">Reference</a></div>
   <section id="pinned">
-    <h2 class="sec">Pinned</h2>
+    <h2 class="sec">Hotels &amp; essentials</h2>
     <div class="card">
       <div id="hotels"></div>
     </div>
@@ -1419,7 +1419,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v31)";
+const BUILD = "Oct 8, 2026 (v32)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2125,6 +2125,7 @@ function sheetsWire(){
       if(k==="close"){ closeSheet("sheetQC"); setTimeout(()=>closeDaySheet(d.id),150); return; }
       openSheet("sheetQC", qcPanel(k)); if(k==="haggle") setTimeout(()=>{ const i=$("#qhw"); if(i) i.focus(); },250); return; }
     const cdb=e.target.closest("[data-closeday]"); if(cdb){ closeDaySheet(cdb.dataset.closeday); return; }
+    if(e.target.closest("#sheetQC [data-ff]")){ setTimeout(()=>openSheet("sheetQC", qcPanel("flag")), 50); return; }
     if(e.target.id==="qlineSave"){ const v=($("#qline").value||"").trim(); if(!v) return; const d=todayDay()||DAYS[sel]; const key="egypt.journal."+d.id; let cur=""; try{ cur=localStorage.getItem(key)||""; localStorage.setItem(key,(cur.trim()?cur.trim()+"\n":"")+v); }catch(e){} closeSheet("sheetQC"); toast("Added to "+d.dow+" "+d.num); if(DAYS[sel].id===d.id) renderDay(); return; }
     // stamping from inside the close-day sheet: re-render the sheet so it reflects, then close after a beat
     const st=e.target.closest("#sheetCD [data-stamp]"); if(st){ setTimeout(()=>{ const s=$("#sheetCD"); if(s&&s.classList.contains("on")){ closeSheet("sheetCD"); renderNow(); } },700); return; }
