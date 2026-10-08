@@ -1177,6 +1177,9 @@ html.bigtext .book dl dd{margin:0 0 6px}
 .gb-step button:disabled{opacity:.25}
 .lst.watch .lst-go{color:#c4302b}
 .rcard .cart-g{font-size:2.7rem}
+.lst-b{display:flex;flex-direction:column}
+.lst-b span.lst-go{display:inline-block;align-self:flex-start;margin-top:8px;padding:4px 10px;border-radius:999px;border:1px solid currentColor;line-height:1.2;font:700 0.7059rem var(--mono);letter-spacing:.04em}
+.lstl.sm .lst-b span.lst-go{display:inline-block;margin-top:6px}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
@@ -2362,7 +2365,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v83)";
+const BUILD = "Oct 9, 2026 (v84)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -4030,7 +4033,7 @@ const LISTEN_ICON = {pod:"🎙️", music:"🎵", book:"📚", watch:"🎬"};
 // films: YouTube links search YouTube; streaming ones open JustWatch, which says where it's playing in your country today
 function watchHref(q,where){ return where==="YouTube"?"https://www.youtube.com/results?search_query="+encodeURIComponent(q):"https://www.justwatch.com/us/search?q="+encodeURIComponent(q.replace(/ (documentary|IMAX.*|Joann.*|with Alice.*|Bettany.*)$/,"")); }
 function spotifyHref(q){ return "https://open.spotify.com/search/"+encodeURIComponent(q); }
-function listenItem([kind,name,by,why,q,where]){ const w=kind==="watch"; return `<a class="lst ${kind}" href="${w?watchHref(q,where):spotifyHref(q)}" target="_blank" rel="noopener"><span class="lst-i">${LISTEN_ICON[kind]||"🎧"}</span><span class="lst-b"><b>${esc(name)}</b><small>${esc(by)}</small><span>${esc(why)}</span></span><span class="lst-go">${w?(where==="YouTube"?"YouTube ↗":where==="Netflix"?"Netflix ↗":"Where to watch ↗"):"Spotify ↗"}</span></a>`; }
+function listenItem([kind,name,by,why,q,where]){ const w=kind==="watch"; return `<a class="lst ${kind}" href="${w?watchHref(q,where):spotifyHref(q)}" target="_blank" rel="noopener"><span class="lst-i">${LISTEN_ICON[kind]||"🎧"}</span><span class="lst-b"><b>${esc(name)}</b><small>${esc(by)}</small><span>${esc(why)}</span><span class="lst-go">${w?(where==="YouTube"?"YouTube ↗":where==="Netflix"?"Netflix ↗":"Where to watch ↗"):"Spotify ↗"}</span></span></a>`; }
 function listenBlock(d){ const L=LISTEN[d.id]; if(!L||!L.length) return ""; return `<details class="fold listen"><summary>🎧 ${L.some(x=>x[0]==="watch")?"Listen & watch":"Listen today"} <span class="pill">${L.length}</span></summary><div class="in"><div class="lstl">${L.map(listenItem).join("")}</div><p class="muted" style="margin:8px 0 0;font-size:0.7941rem">Audio opens a Spotify search — tap the result, then the download arrow, while you have wifi. Films open YouTube, or a page that shows which service is streaming it now. Titles can differ slightly.</p></div></details>`; }
 function listenForBriefing(d){ const L=(LISTEN[d.id]||[]).filter(x=>x[0]!=="watch"); const W=(LISTEN[d.id]||[]).filter(x=>x[0]==="watch"); if(!L.length&&!W.length) return ""; return `<div class="br-h">On the way</div><div class="lstl sm">${L.slice(0,2).concat(W.slice(0,1)).map(listenItem).join("")}</div>`; }
 function listenPre(){ const seen=new Set(); const all=[]; DAYS.forEach(d=>(LISTEN[d.id]||[]).forEach(it=>{ if(!seen.has(it[1])){ seen.add(it[1]); all.push([d,it]); } }));
