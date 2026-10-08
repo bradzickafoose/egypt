@@ -185,6 +185,37 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+/* trip in review */
+#review{position:fixed;inset:0;z-index:80;background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--rv1,#101820) 70%, #000) 0%, #0b0b09 70%);color:#fff;opacity:0;transition:opacity .25s;display:flex;flex-direction:column;overflow:hidden}
+#review.on{opacity:1}
+#review .rv-top{display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 0}
+#review .rv-prog{flex:1;display:flex;gap:4px}
+#review .rv-prog i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.25)}
+#review .rv-prog i.done{background:#fff}#review .rv-prog i.cur{background:var(--rv2,#fff)}
+#review .rv-x{background:none;border:0;color:#fff;font-size:30px;line-height:1;cursor:pointer;padding:2px 6px;opacity:.8}
+#review .rv-card{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px calc(48px + env(safe-area-inset-bottom,0px));max-width:620px;margin:0 auto;width:100%;box-sizing:border-box;opacity:0;transform:translateY(14px)}
+#review .rv-card.in{animation:rvin .45s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rvin{to{opacity:1;transform:none}}
+#review .rv-eyebrow{font-family:var(--display);font-stretch:87.5%;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--rv2,#ffb612);margin-bottom:14px}
+#review .rv-big{font-family:var(--display);font-weight:800;font-size:clamp(44px,12vw,72px);line-height:.95;letter-spacing:-.02em;margin-bottom:16px;font-variant-numeric:tabular-nums}
+#review .rv-body{font-size:19px;line-height:1.4;max-width:34ch}
+#review .rv-small{margin-top:14px;font-size:15px;color:rgba(255,255,255,.7);line-height:1.45;max-width:36ch}
+#review .rv-quote{margin-top:18px;font-family:var(--display);font-style:italic;font-size:22px;line-height:1.3;color:var(--rv2,#ffb612)}
+#review .rv-tap{margin-top:30px;font-size:14px;color:rgba(255,255,255,.6)}
+#review .rv-stamps{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+#review .rv-stamps span{width:42px;height:42px;border-radius:50%;border:2px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.5)}
+#review .rv-stamps span.on{border:2px solid #ff8a7a;color:#ff8a7a;transform:rotate(-8deg)}
+#review .rv-box{display:flex;gap:10px;margin-top:16px;font-family:var(--mono);font-size:15px}
+#review .rv-box span{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;min-width:54px}
+#review .rv-box i{font-style:normal;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:2px}
+#review .rv-lines p{margin:0 0 10px;font-size:16px;line-height:1.4}
+#review .rv-lines i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--rv2,#ffb612);margin-right:6px}
+#review .rv-final{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+#review .rv-final span{background:rgba(255,255,255,.1);border-radius:999px;padding:7px 12px;font-size:14px}
+#review .btn{background:#fff;color:#111;border-color:transparent}
+#review .btn.rv-again{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+#review .rv-hit{position:absolute;top:60px;bottom:0;width:38%}#review .rv-hit.l{left:0}#review .rv-hit.r{right:0;width:62%}
+
 /* four tabs + quick capture */
 .bottom .plus{width:48px;height:48px;border-radius:50%;border:0;background:var(--fg);color:var(--bg);font:300 30px/1 var(--body);cursor:pointer;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.18);transform:translateY(-6px)}
 .subnav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin:-2px -16px 0;padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
@@ -1421,7 +1452,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v35)";
+const BUILD = "Oct 8, 2026 (v36)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1641,7 +1672,7 @@ function renderGame(){
   <h2 class="sec" style="margin-top:18px">The Nile Bowl</h2>
   <details class="fold"><summary>The Nile Bowl — final</summary><div class="in">
     <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
-    <button type="button" class="btn primary" id="awardsBtn">Make the awards</button>
+    <div class="row"><button type="button" class="btn primary" data-review="together">Trip in review${(()=>{ try{ const n=cairoNow(); return n.date>"2026-10-18"?"":" · so far"; }catch(e){ return ""; } })()}</button><button type="button" class="btn" data-review="solo">Brad's week</button><button type="button" class="btn" id="awardsBtn">The awards</button></div>
     <div id="awards"></div>
   </div></details>
   ${safe(rivalryCard)}`;
@@ -1750,7 +1781,7 @@ function lookingBack(){
   const st=stamps(); const n=Object.keys(st).length; const s=gameScore();
   const lines=[]; DAYS.forEach(d=>{ try{ const v=(localStorage.getItem("egypt.journal."+d.id)||"").trim(); if(v) lines.push([d, v.split("\n")[0]]); }catch(e){} });
   const pick=lines.length?lines[hash(new Date().toISOString().slice(0,13))%lines.length]:null;
-  return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row"><a class="btn" href="#game">Open the passport</a><a class="btn" href="#today">Re-read a day</a></div>`;
+  return `<div class="eyebrow">Looking back</div><div class="big">${n?`${n} stamp${n===1?"":"s"}. ${s.bingo} bingo squares. ${s.chal} challenge${s.chal===1?"":"s"}.`:"Egypt, October 2026."}</div>${pick?`<div class="sub">${pick[0].dow} Oct ${pick[0].num}: “${esc(pick[1])}”</div>`:`<div class="sub">The days are all still here. So is the passport.</div>`}<div class="row">${safe(reviewButtons)}<a class="btn" href="#game">Open the passport</a></div>`;
 }
 
 // ---------- the funny bits ----------
@@ -2082,7 +2113,7 @@ function eveningCard(d, ni, now){
   const over = (ni===-1 && now.h>=15) || now.h>=21; if(!over) return "";
   const closed=!!stamps()[d.id]; const nx=DAYS[dayIndexFor(d.date)+1];
   const hon=safe(honorific); const nl=safe(nileLine);
-  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
+  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
   return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div><div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
 }
 
@@ -2142,6 +2173,111 @@ function sheetsWire(){
 }
 function subnavWire(){
   document.querySelectorAll(".subnav a").forEach(a=>a.addEventListener("click", e=>{ e.preventDefault(); const el=document.querySelector(a.getAttribute("href")); if(el){ scrollToEl(el); } }));
+}
+
+// ======================= TRIP IN REVIEW =======================
+const REVIEW_FACTS = {
+ together:{ title:"Egypt, together", dates:"Oct 10 – 18, 2026", days:["sat10","sun11","mon12","tue13","wed14","thu15","fri16","sat17","sun18"], km:2100,
+   route:"Cairo → Aswan → Abu Simbel → the Nile under sail → Luxor → Cairo", stops:"7 pyramids · 9 temples · a valley of tombs · 1 river · 1 balloon",
+   oldest:"The Step Pyramid of Djoser, 4,650 years old — the oldest stone building on earth.", newest:"The Grand Egyptian Museum, opened 2025.",
+   sunrises:["Abu Simbel, Wed 14 — the one you got up at 3:30 for","From a balloon over the West Bank, Sat 17"], people:"Brad and Duane", who:["Brad","Duane"] },
+ solo:{ title:"Brad's week", dates:"Oct 19 – 25, 2026", days:["mon19","tue20","wed21","thu22","fri23","sat24","sun25"], km:1900,
+   route:"Cairo → Sharm → Dahab → Mount Sinai → Dahab → Cairo → the White Desert → Cairo → home", stops:"1 blue hole · 1 mountain, 2,285 m · 1 monastery with a bush · 1 desert of chalk · more stars than you have ever seen",
+   oldest:"St Catherine's, the oldest continuously working monastery on earth — since 565 AD.", newest:"The chalk of the White Desert, cut by the wind and still being cut.",
+   sunrises:["The summit of Mount Sinai, Wed 21, after a night on the mountain","The White Desert, Sat 24, with a fox"], people:"Brad", who:["Brad"] }
+};
+const alarmMins = s => { const m=String(s||"").match(/(\d{1,2}):(\d{2})/); return m? (+m[1])*60+(+m[2]) : null; };
+function reviewData(kind){
+  const F=REVIEW_FACTS[kind]; const w=me(); const days=F.days.map(id=>DAYS.find(d=>d.id===id)).filter(Boolean);
+  const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{}); const sp=GS.get("stupid",{}); const hg=GS.get("haggle",[]).filter(h=>F.days.includes(h.day)); const tout=GS.get("tout",{}); const camels=GS.get("camel",[]); const pl=GS.get("penlog",[]).filter(p=>F.days.includes(p.day)); const bset=new Set(GS.get("bingo",[12]));
+  const j=id=>{ try{ return (localStorage.getItem("egypt.journal."+id)||"").trim(); }catch(e){ return ""; } };
+  const live=GS.get("live",{})||{}; const other=live[OTHER()]||null;
+  const stamped=days.filter(d=>st[d.id]); const rated=days.filter(d=>rate[d.id]&&(rate[d.id].food||rate[d.id].sight||rate[d.id].sleep));
+  const score=d=>{ const r=rate[d.id]||{}; return (r.food||0)+(r.sight||0)+(r.sleep||0); };
+  const best=rated.length?rated.reduce((a,b)=>score(b)>score(a)?b:a):null;
+  const bestMeal=rated.filter(d=>rate[d.id].food).sort((a,b)=>rate[b.id].food-rate[a.id].food)[0]||null;
+  const worstNight=rated.filter(d=>rate[d.id].sleep).sort((a,b)=>rate[a.id].sleep-rate[b.id].sleep)[0]||null;
+  const toutTotal=F.days.reduce((s,id)=>s+(tout[id]||0),0); const toutPeak=F.days.map(id=>[id,tout[id]||0]).sort((a,b)=>b[1]-a[1])[0];
+  const saved=hg.reduce((s,h)=>s+Math.max(0,h.a-h.p),0); const bestH=hg.length?hg.reduce((a,b)=>(1-b.p/b.a)>(1-a.p/a.a)?b:a):null; const worstH=hg.filter(h=>h.p>=h.a)[0]||null;
+  const camelBest=camels.length?camels.reduce((a,b)=>b.n>a.n?b:a):null;
+  const early=days.map(d=>[d,alarmMins(d.alarm)]).filter(x=>x[1]!==null&&x[1]<300); const earliest=early.length?early.reduce((a,b)=>b[1]<a[1]?b:a):null;
+  const titles=days.map(d=>{ const pool=HONORIFICS.concat(TEAM_HON[w]||[]); return pool[(hash(d.date+"|"+w))%pool.length]; });
+  const lines=days.map(d=>[d,j(d.id)]).filter(x=>x[1]);
+  const missed=BINGO.map((t,i)=>[t,i]).filter(([t,i])=>i!==12&&!bset.has(i));
+  const A=kind==="together"?nileTotal(w):null, B=kind==="together"?nileTotal(OTHER()):null;
+  return {F,w,days,st,rate,ch,sp,hg,stamped,rated,best,bestMeal,worstNight,toutTotal,toutPeak,saved,bestH,worstH,camelBest,pl,early,earliest,titles,lines,missed,bset,A,B,other,j};
+}
+function reviewCards(kind){
+  const R=reviewData(kind); const F=R.F; const w=R.w; const t=TEAMS[w]||TEAMS.Brad; const now=cairoNow().date; const lastDay=DAYS.find(d=>d.id===F.days[F.days.length-1]); const done = now>lastDay.date || (now===lastDay.date && cairoNow().h>=20);
+  const C=[]; const card=(eyebrow, big, body, extra)=>C.push({eyebrow,big,body,extra:extra||""});
+  const dl=d=>`${d.dow} ${d.num}`; const n=x=>Number(x).toLocaleString();
+  card(done?"Trip in review":"Trip in review · so far", F.title, `${F.dates}. ${F.people}.`, `<div class="rv-tap">Tap to begin →</div>`);
+  card("The route", `${n(F.km)} km`, F.route, `<div class="rv-small">${F.stops}</div>`);
+  card("The oldest thing you touched", "4,650 years", F.oldest, `<div class="rv-small">${F.newest}</div>`);
+  if(R.early.length) card("Alarms before five", String(R.early.length), `Earliest: ${R.earliest[0].alarm.replace(/\s*·.*$/,"")} on ${dl(R.earliest[0])} — ${R.earliest[0].title}.`, `<div class="rv-small">You chose this. Nobody made you.</div>`);
+  card("Sunrises you were awake for", String(F.sunrises.length), F.sunrises.join(" · "), "");
+  card("Days stamped", `${R.stamped.length} of ${R.days.length}`, R.stamped.length===R.days.length?"Every one. Frame it.":R.stamped.length?"The ones you closed properly are the ones you'll remember.":"The passport is still blank. There's time.", `<div class="rv-stamps">${R.days.map(d=>`<span class="${R.st[d.id]?"on":""}">${d.num}</span>`).join("")}</div>`);
+  if(R.best) card("Your best day", dl(R.best), R.best.title, R.j(R.best.id)?`<div class="rv-quote">“${esc(R.j(R.best.id).split("\n")[0])}”</div>`:"");
+  if(R.bestMeal||R.worstNight) card("Table and bed", R.bestMeal?`${dl(R.bestMeal)}`:"—", R.bestMeal?`Best meal: ${R.bestMeal.title} — ${"★".repeat(R.rate[R.bestMeal.id].food)}`:"", R.worstNight?`<div class="rv-small">Worst night: ${dl(R.worstNight)}, ${R.worstNight.sleep||R.worstNight.title} — ${"★".repeat(R.rate[R.worstNight.id].sleep)}. Rest is for the mummified.</div>`:"");
+  if(R.toutTotal) card("“My friend”", n(R.toutTotal), `Peak: ${R.toutPeak[1]} on ${dl(DAYS.find(d=>d.id===R.toutPeak[0]))}.`, R.other&&R.other.tout!==undefined?`<div class="rv-small">${OTHER()}: ${n(R.other.tout)}. ${R.toutTotal>R.other.tout?"You have the friendlier face, or the easier one.":R.toutTotal<R.other.tout?"He has the friendlier face, or the easier one.":"A tie. Suspicious."}</div>`:"");
+  if(R.hg.length) card("The souk", `${n(R.saved)} EGP saved`, `${R.hg.length} haggle${R.hg.length>1?"s":""}. Best: ${R.bestH.w}, ${Math.round((1-R.bestH.p/R.bestH.a)*100)}% off${R.bestH.d?" at "+R.bestH.d:""}.`, R.worstH?`<div class="rv-small">The one that got away: ${R.worstH.w}, paid the asking price. They talk about you still.</div>`:`<div class="rv-small">≈ $${Math.round(R.saved/50)} — a dinner, or two balloon tips.</div>`);
+  if(R.camelBest) card("Market value", `${n(R.camelBest.n)} camels`, `For ${R.camelBest.who}${R.camelBest.d?", "+R.camelBest.d:""}. Offer declined.`, "");
+  if(R.pl.length){ const by={}; R.pl.forEach(p=>{ by[p.w]=(by[p.w]||0)+1; }); const common={}; R.pl.forEach(p=>{ common[p.i]=(common[p.i]||0)+1; }); const top=Object.entries(common).sort((a,b)=>b[1]-a[1])[0]; card("Flags thrown", String(R.pl.length), Object.entries(by).map(([k,v])=>`${k} ${v}`).join(" · "), `<div class="rv-small">Most common: ${FORFEITS[top[0]][0]}.</div>`); }
+  if(kind==="together"&&R.A){ const bp=R.B?R.B.pts:null; const win=bp===null?null:(R.A.pts>bp?w:R.A.pts<bp?OTHER():"tie"); card("The Nile Bowl", `${t.short} ${R.A.pts} · ${TEAMS[OTHER()].short} ${bp===null?"?":bp}`, win===null?"Waiting on the other phone.":win==="tie"?"A tie. Dinner is split, and the argument is forever.":`${TEAMS[win].team} win. ${win===w?OTHER():w} bought Sunday's dinner.`, `<div class="rv-box">${[1,2,3,4].map(q=>`<span><i>Q${q}</i>${R.A.q[q]}${R.B?` · ${R.B.q[q]}`:""}</span>`).join("")}</div>`); }
+  if(kind==="together"){ const got=R.bset.size-1; card("Bingo", `${got} of 24`, got>=24?"Blackout. Legendary.":R.missed.length?`The square you never got: “${R.missed[hash(F.dates)%R.missed.length][0]}”`:"", got?`<div class="rv-small">${got*YDS_PER_SQUARE} yards. Next time, the swim.</div>`:""); }
+  card("Titles held", String(R.titles.length), R.titles.slice(0,6).join(" · ")+(R.titles.length>6?" …":""), `<div class="rv-small">${w}, ${R.titles[R.titles.length-1]}.</div>`);
+  if(R.lines.length) card("In your own words", `${R.lines.length} ${R.lines.length===1?"entry":"entries"}`, "", `<div class="rv-lines">${R.lines.slice(0,5).map(([d,l])=>`<p><i>${dl(d)}</i> ${esc(l.split("\n")[0])}</p>`).join("")}</div>`);
+  card("The last card", F.title, `${F.dates} · ${w}`, `<div class="rv-final">${[R.stamped.length+" stamps", R.toutTotal?n(R.toutTotal)+" “my friends”":"", R.saved?n(R.saved)+" EGP saved":"", R.camelBest?n(R.camelBest.n)+" camels":"", R.A?`${t.team} ${R.A.pts}${R.B?" · "+TEAMS[OTHER()].team+" "+R.B.pts:""}`:"", R.best?"best day "+dl(R.best):""].filter(Boolean).map(x=>`<span>${x}</span>`).join("")}</div><div class="row" style="margin-top:14px;justify-content:center"><button type="button" class="btn rv-share" data-rvshare="${kind}">Share the card</button><button type="button" class="btn rv-again" data-review="${kind}">Watch again</button></div>`);
+  return C;
+}
+let rvIdx=0, rvKind="together";
+function openReview(kind){
+  rvKind=kind; rvIdx=0; let el=$("#review"); if(!el){ el=document.createElement("div"); el.id="review"; document.body.appendChild(el); }
+  const cards=reviewCards(kind); el.dataset.n=cards.length; el.__cards=cards;
+  const t=TEAMS[me()]||TEAMS.Brad; el.style.setProperty("--rv1", t.c1); el.style.setProperty("--rv2", t.c2.toLowerCase()==="#000000"?t.c1:t.c2);
+  el.innerHTML=`<div class="rv-top"><div class="rv-prog">${cards.map((c,i)=>`<i data-i="${i}"></i>`).join("")}</div><button type="button" class="rv-x" aria-label="Close">×</button></div><div class="rv-card" id="rvCard"></div><div class="rv-hit l"></div><div class="rv-hit r"></div>`;
+  requestAnimationFrame(()=>el.classList.add("on")); renderReviewCard();
+}
+function renderReviewCard(){
+  const el=$("#review"); if(!el) return; const cards=el.__cards; const c=cards[rvIdx]; const card=$("#rvCard");
+  card.classList.remove("in"); void card.offsetWidth;
+  card.innerHTML=`<div class="rv-eyebrow">${c.eyebrow}</div><div class="rv-big">${c.big}</div><div class="rv-body">${c.body}</div>${c.extra}`; card.classList.add("in");
+  el.querySelectorAll(".rv-prog i").forEach((p,i)=>p.className = i<rvIdx?"done":i===rvIdx?"cur":"");
+  const big=card.querySelector(".rv-big"); const m=big&&big.textContent.match(/^([\d,]+)(.*)$/); if(m && +m[1].replace(/,/g,"")>9){ const target=+m[1].replace(/,/g,""); const rest=m[2]; let s=0; const t0=performance.now(); const tick=now=>{ const k=Math.min(1,(now-t0)/700); const v=Math.round(target*(1-Math.pow(1-k,3))); big.textContent=v.toLocaleString()+rest; if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+}
+function reviewStep(dir){ const el=$("#review"); if(!el) return; const n=el.__cards.length; const i=rvIdx+dir; if(i<0) return; if(i>=n){ closeReview(); return; } rvIdx=i; renderReviewCard(); }
+function closeReview(){ const el=$("#review"); if(el){ el.classList.remove("on"); setTimeout(()=>el.remove(),250); } }
+function reviewShareCard(kind){
+  const R=reviewData(kind); const F=R.F; const w=me(); const t=TEAMS[w]||TEAMS.Brad; const c=document.createElement("canvas"); c.width=1080; c.height=1350; const x=c.getContext("2d");
+  x.fillStyle=t.c1; x.fillRect(0,0,1080,1350); const acc=t.c2.toLowerCase()==="#000000"?"#ffffff":t.c2;
+  x.fillStyle=acc; x.font="600 34px -apple-system, Helvetica, Arial"; x.fillText((kind==="together"?"EGYPT, TOGETHER":"BRAD'S WEEK").toUpperCase(), 80, 140);
+  x.fillStyle="#ffffff"; x.font="800 92px -apple-system, Helvetica, Arial"; x.fillText(F.dates, 80, 250);
+  x.font="500 40px -apple-system, Helvetica, Arial"; x.fillStyle="rgba(255,255,255,.8)"; x.fillText(`${w} · ${F.people}`, 80, 320);
+  const rows=[["Stamps",`${R.stamped.length} / ${R.days.length}`],["“My friend”",R.toutTotal?String(R.toutTotal):"—"],["Saved in the souk",R.saved?R.saved.toLocaleString()+" EGP":"—"],["Peak camel value",R.camelBest?R.camelBest.n.toLocaleString():"—"],["Best day",R.best?`${R.best.dow} ${R.best.num}`:"—"]];
+  if(kind==="together"&&R.A) rows.push(["The Nile Bowl",`${t.team} ${R.A.pts}${R.B?" · "+TEAMS[OTHER()].team+" "+R.B.pts:""}`]);
+  let y=440; rows.forEach(([k,v])=>{ x.fillStyle="rgba(255,255,255,.65)"; x.font="500 34px -apple-system, Helvetica, Arial"; x.fillText(k.toUpperCase(), 80, y); x.fillStyle="#ffffff"; x.font="800 76px -apple-system, Helvetica, Arial"; x.fillText(v, 80, y+78); y+=160; });
+  const q=R.best?R.j(R.best.id).split("\n")[0]:""; if(q){ x.fillStyle=acc; x.font="italic 500 38px -apple-system, Georgia, serif"; const words=q.split(" "); let line="", ly=y+40; words.forEach(wd=>{ const test=line+wd+" "; if(x.measureText(test).width>920){ x.fillText("“"+line.trim(), 80, ly); line=wd+" "; ly+=50; } else line=test; }); x.fillText((ly===y+40?"“":"")+line.trim()+"”", 80, ly); }
+  x.fillStyle="rgba(255,255,255,.5)"; x.font="500 28px -apple-system, Helvetica, Arial"; x.fillText("bradzickafoose.github.io/egypt", 80, 1290);
+  c.toBlob(async blob=>{ const f=new File([blob], `egypt-${kind}-${w.toLowerCase()}.png`, {type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:F.title}); }catch(e){} } else { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=f.name; a.click(); } }, "image/png");
+}
+function reviewWire(){
+  document.addEventListener("click", e=>{
+    const b=e.target.closest("[data-review]"); if(b){ if(!me()){ whoSheet(true); return; } openReview(b.dataset.review); return; }
+    const s=e.target.closest("[data-rvshare]"); if(s){ reviewShareCard(s.dataset.rvshare); return; }
+    const el=$("#review"); if(!el) return;
+    if(e.target.closest(".rv-x")){ closeReview(); return; }
+    if(e.target.closest(".rv-hit.r")||e.target.closest(".rv-tap")){ reviewStep(1); return; }
+    if(e.target.closest(".rv-hit.l")){ reviewStep(-1); return; }
+  });
+  document.addEventListener("keydown", e=>{ if(!$("#review")) return; if(e.key==="ArrowRight"||e.key===" ") reviewStep(1); if(e.key==="ArrowLeft") reviewStep(-1); if(e.key==="Escape") closeReview(); });
+  let x0=0; document.addEventListener("touchstart", e=>{ if($("#review")) x0=e.touches[0].clientX; }, {passive:true});
+  document.addEventListener("touchend", e=>{ if(!$("#review")) return; const dx=e.changedTouches[0].clientX-x0; if(dx<-50) reviewStep(1); else if(dx>50) reviewStep(-1); }, {passive:true});
+}
+function reviewButtons(){
+  const now=cairoNow(); const sun18=DAYS.find(d=>d.id==="sun18"); const sun25=DAYS.find(d=>d.id==="sun25");
+  const togetherDone = now.date>sun18.date || (now.date===sun18.date && now.h>=20); const soloDone = now.date>sun25.date || (now.date===sun25.date && now.h>=12);
+  const b=[]; if(togetherDone) b.push(`<button type="button" class="btn" data-review="together">Egypt, together — in review</button>`); if(soloDone) b.push(`<button type="button" class="btn" data-review="solo">Brad's week — in review</button>`);
+  return b.join("");
 }
 
 const WHATSON = {
@@ -2227,7 +2363,7 @@ function start(){
   const now = cairoNow(); const hash=(location.hash||"").slice(1);
   const hi = DAYS.findIndex(d=>d.id===hash); const ti = dayIndexFor(now.date);
   sel = hi>=0 ? hi : (ti>=0 ? ti : (now.date<DAYS[0].date ? 0 : DAYS.length-1));
-  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
+  renderClock(); renderStrip(); renderDay(); renderNow(); renderHotels(); pickGuideForToday(); renderGuides(); renderGame(); renderPassport(); gameWire(); passportWire(); funWire(); loadArchive(); safe(()=>{ $("#phrasebook").innerHTML=phrasebook(); }); safe(hiddenChamber); safe(standaloneShareFiles); safe(personalizeStatic); safe(renderLive); safe(liveWire); safe(sheetsWire); safe(subnavWire); safe(reviewWire); setTimeout(()=>safe(()=>whoSheet(false)), 900); renderList("week",WEEK); renderList("bag",BAG); money(); bottomNav(); mapLinks(); appShell(); notes(); alarmsStrip(); placesUI(); fetchWx();
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
