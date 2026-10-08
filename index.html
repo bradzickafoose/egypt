@@ -185,6 +185,32 @@ h2.sec{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--m
 .hotel.solo .hfit b{color:var(--dusk)}
 .hotel .hfit ul{margin:0;padding-left:16px;display:grid;gap:3px}
 ol.howto{margin:0;padding-left:18px;display:grid;gap:6px}
+/* AFC North */
+html.team .brand .pill.me{background:var(--t1);color:var(--t2);border-color:transparent}
+html.team .seg button.on{background:var(--t1);color:var(--t2)}
+html.team .gtabs button.on,html.team .btn.primary,html.team .chal .btn.primary,html.team .calopts .btn.primary{background:var(--t1);color:var(--t2)}
+html.team .hon{color:var(--t2)}
+html.team .now .hon{color:inherit}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin:12px 0 6px}
+.sbt{border-radius:12px;padding:10px 10px 8px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.sbt.mine{background:var(--t1);color:var(--t2)}
+.sbt.theirs{background:var(--o1);color:var(--o2)}
+.sbt small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.sbt b{font-family:var(--display);font-stretch:87.5%;font-size:15px;letter-spacing:.02em}
+.sbt .pts{font-family:var(--display);font-size:34px;line-height:1;margin-top:4px}
+.sbv{align-self:center;font-family:var(--display);font-style:italic;color:var(--muted)}
+.sbl{font-size:11.5px;color:var(--muted);text-align:center;letter-spacing:.02em}
+.rform{display:flex;gap:6px;margin:8px 0 4px}
+.rform input{flex:1;font:14px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);min-width:0}
+.riv{display:grid;gap:6px;margin-bottom:10px}
+.riv div{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.riv b{font-family:var(--display);font-stretch:87.5%;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.whatson li.gameday::marker{content:"🏈 "}
+html.team .bingo button.on{background:var(--t1);color:var(--t2)}
+html.team .stars button.on{color:var(--t2)}
+html.team[style*="--t2:#000000"] .stars button.on{color:#FB4F14}
+#whoSheet .wbtn button small{display:block;font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-top:2px}
+
 .brand .pill.me{border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-family:var(--body);font-weight:600;padding:3px 9px}
 .brand .pill.me.unset{border-style:dashed;color:var(--dusk);border-color:var(--dusk)}
 #whoSheet{position:fixed;inset:0;z-index:70;background:rgba(10,10,8,.55);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .25s}
@@ -1163,7 +1189,7 @@ function renderDay(){
     ${d.know.length?`<div class="know"><b>Know</b><ul>${d.know.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
     ${d.planb?`<div class="planb"><b>Plan B</b>${esc(d.planb)}</div>`:""}
     ${safe(()=>fineprint(d))}
-    ${WHATSON[d.id]?`<div class="whatson"><b>What's on in town</b><ul>${WHATSON[d.id].map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}</ul></div>`:""}
+    ${(WHATSON[d.id]||(typeof GAMEDAYS!=="undefined"&&GAMEDAYS[d.id]))?`<div class="whatson"><b>What's on in town</b><ul>${(WHATSON[d.id]||[]).map(e=>`<li><strong>${esc(e.w)}</strong> ${esc(e.d)}</li>`).join("")}${(typeof GAMEDAYS!=="undefined"&&GAMEDAYS[d.id])?`<li class="gameday"><strong>${esc(GAMEDAYS[d.id].w)}</strong> ${esc(GAMEDAYS[d.id].d)}</li>`:""}</ul></div>`:""}
     ${shotList(d)}
     ${askToday(d)}
     <details class="askday journal"><summary>Journal &amp; stamp <span class="pill" id="jpill-${d.id}"></span></summary><div class="in"><p>Three lines before bed. Best moment, funniest moment, the thing you'd tell someone who wasn't there.</p><textarea id="j-${d.id}" data-journal="${d.id}" rows="4" placeholder="${["Three lines. Or one honest one.","What would you tell the version of you who booked this?","The bit you'll be telling people about in 2046.","Who said what, and was it "+(safe(OTHER)||"Duane")+".","Best thing eaten. Worst thing said.","The moment. You know the one."][d.num%6]}"></textarea><div class="jstat" id="js-${d.id}">Saved on this phone.</div>${safe(()=>rateBox(d))}${safe(()=>stampBox(d))}</div></details>
@@ -1326,7 +1352,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v24)";
+const BUILD = "Oct 8, 2026 (v25)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -1499,7 +1525,7 @@ function gameScore(){
   const saved=hg.reduce((s,h)=>s+Math.max(0,h.a-h.p),0);
   return {bingo:b.size-1, lines:bingoLines(b), chal, best, saved, n:hg.length};
 }
-function scoreText(){ const s=gameScore(); const who=me()||"This phone"; return `${who} · Egypt score: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
+function scoreText(){ const s=gameScore(); const who=me()||"This phone"; const f=safe(footballScore); const tm=safe(team); return `${tm?tm.team.toUpperCase()+" "+f.pts+" · ":""}${who} · Egypt score: bingo ${s.bingo}/24 (${s.lines} line${s.lines===1?"":"s"}) · ${s.chal} challenge${s.chal===1?"":"s"} · best haggle ${s.best}% off, ${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`; }
 
 function challengeBox(d){
   const c=(d.chal)||CHALLENGES[d.id]; if(!c) return "";
@@ -1520,6 +1546,7 @@ function renderGame(){
   el.innerHTML = `
   <div class="card">
     <div class="whome"><span>This phone is${who?"":" <span class=\"nudge\">← tap yours</span>"}</span><div class="seg"><button type="button" class="${who==="Brad"?"on":""}" data-me="Brad">Brad</button><button type="button" class="${who==="Duane"?"on":""}" data-me="Duane">Duane</button></div></div>
+    ${safe(scoreboard)}
     <div class="score"><div><b>${s.bingo}<small>/24</small></b><span>bingo · ${s.lines} line${s.lines===1?"":"s"}</span></div><div><b>${s.chal}</b><span>challenges</span></div><div><b>${s.n?s.best+"%":"—"}</b><span>best haggle</span></div><div><b>${s.saved.toLocaleString()}</b><span>EGP saved</span></div></div>
     <div class="row"><button type="button" class="btn" id="scoreShare">Share my score</button><button type="button" class="btn" id="scoreCopy">Copy</button><span class="muted">Each phone keeps its own score. Compare on WhatsApp — that's the fun part.</span></div>
   </div>
@@ -1545,6 +1572,7 @@ function renderGame(){
     <button type="button" class="btn primary" id="awardsBtn">Make the awards</button>
     <div id="awards"></div>
   </div></details>
+  ${safe(rivalryCard)}
   <h2 class="sec" style="margin-top:18px">For the road</h2>
   ${safe(()=>funBox())}`;
 }
@@ -1574,7 +1602,7 @@ function makeAwards(){
 
 function gameWire(){
   document.addEventListener("click", e=>{
-    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
+    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
     if(e.target.id==="meChip"){ whoSheet(true); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); renderGame(); if(after>before) toast(after===12?"BLACKOUT. Legendary.":`Line! ${after} so far`); return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); ch[c.dataset.chal]=!ch[c.dataset.chal]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===c.dataset.chal) renderDay(); if(ch[c.dataset.chal]) toast("Point to "+(me()||"you")); return; }
@@ -1657,10 +1685,10 @@ function lookingBack(){
 const HONORIFICS = ["Lord of the Two Lands","Keeper of the Small Bills","He Who Rises at 4:15","Beloved of the Felucca Captain","Strong Bull of the Corniche","First Prophet of Koshary","Great of Sunscreen","Overseer of the Tip Pocket","Scourge of the Touts","Master of the Eleventh Shukran","He Who Found the Bathroom","Bearer of the Daypack","Admiral of the Dahabiya","Friend of the Cats of Karnak","Holder of the Only Charger","Son of Ra, Wearer of the Hat","Counter of the Steps","He Who Orders the Pigeon","Reader of One Hieroglyph","Horus of the Early Flight"];
 const ORACLE = ["The guide will say “very important” eleven times today. Count them.","A man will offer you a camel. Decline with dignity. Then ask how many.","You will pay 20 pounds for something that costs 5. It will be worth it.","Beware the second cup of karkadeh. It is never free.","Someone will call you Rambo. Answer to it.","Ra favours shade today. Seek it by one o'clock.","A cat will choose you. You have no say in this.","The bathroom attendant knows you are coming. Have the ten ready.","You will take 140 photos. Three will be good. One will be of a thumb.","A stranger will know your football team better than you do.","Ra rises at 6:14. You will rise at 6:40 and call it sunrise.","Your brother will say “we should have done this years ago.” He is right.","The Nile will be exactly the colour you expected and still surprise you.","Do not trust the man who says “no charge.”","Tonight you will be tired in the good way.","Someone will sell papyrus made of banana. Smile — you know things now.","The guide's cousin has a shop. It is a very nice shop. You are not going.","Order the thing you cannot pronounce.","The pharaohs built for eternity. You will build a sunburn in forty minutes. Hat.","Your step count will embarrass your watch's expectations.","You will haggle brilliantly and then tip it all back. This is correct.","Someone will say the pyramids were built by aliens. Let it go.","The best meal today costs less than the worst coffee at home."];
 const GROANS = ["Why don't mummies take holidays? They're afraid they'll relax and unwind.","What did the pharaoh say when he got home? “Mummy, I'm back.”","Why was the pharaoh so confident? He Sphinx he's the best.","What do you call a pharaoh who plays trumpet? Tootin' Khamun.","Old pharaohs never die. They just get a little crusty.","A mummy's favourite music? Wrap.","Where do pharaohs keep their money? In the river bank.","Why did the mummy go to the doctor? He was coffin.","What's a pharaoh's favourite exercise? Pyramid schemes.","How does a pharaoh answer the phone? “Tut, who's this?”","What did the Nile say to the delta? Nothing. It just went with the flow.","Why don't pyramids ever get lost? They've got a point.","What do you call an Egyptian who's good at maths? Sum-set.","Why was Cleopatra bad at tennis? She was in de-Nile about her backhand.","What did Duane say at the top of the Great Pyramid? Nothing. He's not allowed up there.","How many touts does it take to change a lightbulb? One, my friend, special price."];
-const FORFEITS = [["Checked work email","buys dinner"],["Fell asleep in the car","gets photographed for the passport"],["Said “back in my day”","one tea"],["Paid asking price without trying","one tea"],["Took a phone call inside a temple","one tea"],["Complained about the heat before 10am","one tea"],["Lost the group's only charger","all the teas"],["Posed Walk-Like-an-Egyptian at a monument","compulsory — no fine"]];
+const FORFEITS = [["Checked work email","buys dinner"],["Fell asleep in the car","gets photographed for the passport"],["Said “back in my day”","one tea"],["Paid asking price without trying","one tea"],["Took a phone call inside a temple","one tea"],["Complained about the heat before 10am","one tea"],["Lost the group's only charger","all the teas"],["Posed Walk-Like-an-Egyptian at a monument","compulsory — no fine"],["Delay of game — late to the lobby","one tea, 5 yards"],["Illegal use of hands — touched the merchandise before agreeing a price","one tea"],["Unsportsmanlike conduct — wore the other guy's colors","two teas, loss of down"],["Taunting","permitted. Encouraged."]];
 const hash = s => { let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0); };
 const pickDaily = (arr, salt, roll) => arr[(hash(cairoNow().date+"|"+salt)+(roll||0))%arr.length];
-function honorific(){ const w=me(); if(!w) return ""; return `${w}, ${pickDaily(HONORIFICS, w)}`; }
+function honorific(){ const w=me(); if(!w) return ""; const pool=HONORIFICS.concat(TEAM_HON[w]||[]); return `${w}, ${pickDaily(pool, w)}`; }
 function groanBox(d){ const g=GROANS[(hash(d.date+"groan"))%GROANS.length]; return `<div class="groan"><b>Groan of the day</b>${esc(g)}</div>`; }
 function toutMeter(d){
   const n=(GS.get("tout",{})[d.id])||0;
@@ -1696,13 +1724,14 @@ function funWire(){
   document.addEventListener("click", e=>{
     const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
-    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>Ra has spoken: ${who} pays.</b>`; },900); return; }
+    if(e.target.id==="coin"){ const r=$("#coinr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; r.innerHTML=`<span class="spin">🪙</span>`; setTimeout(()=>{ r.innerHTML=`<b>${TEAMS[other].team} win the toss. ${who} pays.</b>`; },900); return; }
     const cd=e.target.closest("[data-cdel]"); if(cd){ const c=GS.get("camel",[]); c.splice(+cd.dataset.cdel,1); GS.set("camel",c); renderGame(); return; }
     const f=e.target.closest("[data-ff]"); if(f){ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; ff[i]=ff[i]||{}; ff[i][w]=(ff[i][w]||0)+1; GS.set("forfeit",ff); renderGame(); toast(`${w}: ${FORFEITS[i][1]}`); return; }
   });
   let pressT; document.addEventListener("touchstart", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; pressT=setTimeout(()=>{ const ff=GS.get("forfeit",{}); const i=f.dataset.ff, w=f.dataset.w; if(ff[i]&&ff[i][w]){ ff[i][w]--; GS.set("forfeit",ff); renderGame(); toast("Taken back"); } },650); }, {passive:true});
   document.addEventListener("touchend", ()=>clearTimeout(pressT), {passive:true});
-  document.addEventListener("submit", e=>{ if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); });
+  document.addEventListener("submit", e=>{ if(e.target.id==="rform"){ e.preventDefault(); const n=+String($("#rn").value).replace(/[^\d]/g,""); if(isNaN(n)) return; GS.set("rival",{n, at:new Date().toISOString()}); renderGame(); const f=footballScore(); toast(f.pts>n?`${team().team} lead by ${f.pts-n}.`:f.pts<n?`${TEAMS[OTHER()].team} lead by ${n-f.pts}. Fix it.`:"Tied. Suspicious."); return; }
+    if(e.target.id!=="cform") return; e.preventDefault(); const n=+String($("#cn").value).replace(/[^\d]/g,"")||0; if(!n) return; const c=GS.get("camel",[]); c.unshift({n, who:$("#cw").value, d:$("#cd").value.trim(), day:cairoNow().date}); GS.set("camel",c); renderGame(); toast(n>=1000?`${n.toLocaleString()} camels. Flattering.`:`${n} camels. Insulting, frankly.`); });
 }
 
 // ---------- make them laugh ----------
@@ -1775,10 +1804,10 @@ function checkMilestones(){
   if(st===10) milestone("stamp10","Ten stamps. You could get a job at the border.");
   if(st>=16) milestone("stamp16","Every day stamped. Frame it.");
   if(hg.length===1) milestone("hag1","First haggle logged. The souq has noticed you.");
-  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Somewhere a shopkeeper is telling his wife about you.");
+  if(s.best>=40 && !GS.get("ms",{}).win) milestone("win","Under 40%. Two-point conversion. Somewhere a shopkeeper is telling his wife about you.");
   if(s.best>=60) milestone("win60","Sixty percent off. Are you sure you didn't just steal it?");
   if(s.bingo>=12) milestone("bingo12","Half the bingo card. The other half involves a camel.");
-  if(s.lines>=1) milestone("line1","BINGO. Say it out loud wherever you are.");
+  if(s.lines>=1) milestone("line1","TOUCHDOWN. Seven points. Say BINGO out loud wherever you are.");
   if(camels.some(c=>c.n>=1000)) milestone("camel1k","A four-figure camel offer. Someone is now worth more than the rental car.");
   if(camels.some(c=>c.n>=5000)) milestone("camel5k","Five thousand camels. Sell. Sell now.");
   if(tout>=50) milestone("tout50","Fifty 'my friends'. You have more friends in Egypt than at home.");
@@ -1822,16 +1851,50 @@ function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; return o ? O
 function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.textContent = w ? w : "who?"; el.classList.toggle("unset", !w); }
 function whoSheet(force){
   if(!force && me()) return; if($("#whoSheet")) return;
-  const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad">Brad</button><button type="button" data-me="Duane">Duane</button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
+  const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad" style="background:#101820;color:#FFB612">Brad<small>Steelers</small></button><button type="button" data-me="Duane" style="background:#FB4F14;color:#000">Duane<small>Bengals</small></button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
   document.body.appendChild(s); requestAnimationFrame(()=>s.classList.add("on"));
   s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250); } });
 }
 function personalizeStatic(){
-  const w=me(), o=OTHER();
+  const w=me(), o=OTHER(); safe(teamCSS);
   document.querySelectorAll(".fl").forEach(f=>{ const fw=f.querySelector(".fw"); if(!fw.dataset.n) fw.dataset.n=fw.textContent.trim(); const n=fw.dataset.n; fw.textContent = (w && n===w) ? "You" : n; f.classList.toggle("mine", !!w && n===w); f.classList.toggle("theirs", !!w && n===o); });
   document.querySelectorAll("[data-list] li .who").forEach(sp=>{ const n=sp.textContent.trim(); const li=sp.closest("li"); if(w && n===w){ sp.textContent="You"; sp.classList.add("you"); } li.classList.toggle("theirs", !!w && n===o); });
   const sel=$("#cw"); if(sel && o){ sel.innerHTML=`<option>${o}</option><option>${w}</option>`; }
   meChip();
+}
+
+// ---------- AFC North on the Nile ----------
+const TEAMS = { Brad:{team:"Steelers", city:"Pittsburgh", c1:"#101820", c2:"#FFB612", chant:"Here we go", short:"PIT"}, Duane:{team:"Bengals", city:"Cincinnati", c1:"#FB4F14", c2:"#000000", chant:"Who Dey", short:"CIN"} };
+const TEAM_HON = { Brad:["Keeper of the Terrible Towel","Sixth Ring Pending","Black and Gold of the Two Lands","He Who Beat the Bengals 30–27"], Duane:["Who Dey of the Nile","Striped Son of Cincinnati","Lord of the Bye Week","He Who Lost 30–27 and Came Anyway"] };
+const RIVALRY = { last:"Steelers 30, Bengals 27 · Sep 27, Pittsburgh", next:"Sunday Night Football, Nov 15, Cincinnati", standings:"Both 2–2 as of Oct 8" };
+const GAMEDAYS = {
+ sun11:{ w:"NFL Sunday · 8:00pm Cairo", d:"Steelers–Colts and Bengals–Dolphins kick off at the same minute. Two phones, the VPN, dinner. Whoever's team loses buys it." },
+ sun18:{ w:"Steelers at Tampa Bay · 8:00pm Cairo", d:"Last night together, and the Bengals are on a bye. Duane heckles with nothing at stake. The Waldorf's jazz bar has screens; Hagouga does not." },
+ sun25:{ w:"Steelers at Saints · 4:30pm Cairo", d:"Brad's somewhere over the Atlantic. Bengals at Ravens at 8pm Cairo — Duane's been home a week and watches it properly." }
+};
+function team(w){ return TEAMS[w||me()]; }
+function teamCSS(){
+  const w=me(); const t=TEAMS[w]; const o=TEAMS[OTHER()];
+  document.documentElement.style.setProperty("--t1", t?t.c1:"var(--nile)"); document.documentElement.style.setProperty("--t2", t?t.c2:"#fff");
+  document.documentElement.style.setProperty("--o1", o?o.c1:"var(--dusk)"); document.documentElement.style.setProperty("--o2", o?o.c2:"#fff");
+  document.documentElement.classList.toggle("team", !!t);
+}
+// points: bingo square 1 (extra point), line 7 (touchdown), challenge 3 (field goal), haggle win 2 (two-point conversion), stamp 1
+function footballScore(){ const s=gameScore(); const st=Object.keys(stamps()).length; const hg=GS.get("haggle",[]); const wins=hg.filter(h=>h.a>0&&(1-h.p/h.a)>=0.4).length; const pts=s.bingo*1 + s.lines*7 + s.chal*3 + wins*2 + st*1; return {pts, td:s.lines, fg:s.chal, xp:s.bingo+st, tpc:wins}; }
+function scoreboard(){
+  const w=me(); if(!w) return "";
+  const t=TEAMS[w], o=TEAMS[OTHER()]; const f=footballScore(); const r=GS.get("rival",null);
+  return `<div class="sb"><div class="sbt mine"><small>${t.city}</small><b>${t.team}</b><span class="pts">${f.pts}</span></div><div class="sbv">vs</div><div class="sbt theirs"><small>${o.city}</small><b>${o.team}</b><span class="pts">${r?r.n:"?"}</span></div></div>
+  <div class="sbl">TD ${f.td} × 7 · FG ${f.fg} × 3 · 2-pt ${f.tpc} × 2 · XP ${f.xp} × 1${r?` · ${OTHER()} reported ${r.n} at ${new Date(r.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`:""}</div>
+  <form class="rform" id="rform"><input id="rn" inputmode="numeric" placeholder="${OTHER()}'s score, from WhatsApp"><button class="btn" type="submit">Post it</button></form>`;
+}
+function rivalryCard(){
+  const w=me(); const t=TEAMS[w]||TEAMS.Brad, o=TEAMS[OTHER()]||TEAMS.Duane;
+  return `<details class="fold"><summary>AFC North on the Nile</summary><div class="in">
+    <div class="riv"><div><b>Last meeting</b><span>${RIVALRY.last}</span></div><div><b>Rematch</b><span>${RIVALRY.next}</span></div><div><b>Standings</b><span>${RIVALRY.standings}</span></div></div>
+    <p class="muted">Scoring on this trip: bingo line = touchdown (7), challenge = field goal (3), haggle under 40% = two-point conversion (2), bingo square or passport stamp = extra point (1). Post the other guy's score when he sends it. Final whistle is the plane home.</p>
+    <p class="muted">Game days are on the Sun 11 and Sun 18 cards under “What's on.” ${w?`${t.chant}, ${w}.`:""}</p>
+  </div></details>`;
 }
 
 const WHATSON = {
