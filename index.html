@@ -1182,7 +1182,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     <div id="gameBody"></div>
   </section>
 
-  <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p></section>
+  <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p><p class="foot" style="margin-top:6px"><button class="pill" id="updChk" type="button">Check for a newer version</button></p></section>
 <button type="button" id="ppTab" class="pptab" aria-label="Open the passport"><span class="ppt-s">Passport</span><i class="ppt-n" hidden></i></button>
 <div id="ppOverlay" class="ppov" aria-hidden="true"><div class="ppov-top"><span class="ppov-h">Tap the cover to open · tap a stamp day to jump to it</span><button type="button" class="ppov-x" aria-label="Close the passport">×</button></div><div class="ppov-scroll"><div id="passport" class="ppwrap"></div></div></div>
 </div>
@@ -2085,7 +2085,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 8, 2026 (v61)";
+const BUILD = "Oct 8, 2026 (v62)";
 function appShell(){
   $("#build").textContent = "Plan updated " + BUILD + (navigator.serviceWorker ? " · works offline once opened" : "");
   // home-screen hint: phones, browser tab (not already installed), not dismissed
@@ -2101,10 +2101,22 @@ function appShell(){
   }
   // offline cache + update prompt (only on real hosting; harmless elsewhere)
   if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    navigator.serviceWorker.register("sw.js").then(reg=>{
+    // self-updating: check on every open and every return to the app; when a new build takes over, reload on its own
+    // (unless you're mid-typing — then the banner waits for you). Nothing is lost: everything lives in the phone's storage.
+    let swReg=null, refreshing=false;
+    const typing=()=>{ const a=document.activeElement; return !!(a && (a.tagName==="INPUT"||a.tagName==="TEXTAREA")); };
+    const applyNow=()=>{ if(refreshing) return; if(typing()){ $("#upd").classList.add("show"); return; } refreshing=true; location.reload(); };
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(navigator.serviceWorker.controller) applyNow(); });
+    navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
+      swReg=reg;
       reg.addEventListener("updatefound",()=>{ const w=reg.installing; if(!w) return; w.addEventListener("statechange",()=>{ if(w.state==="installed" && navigator.serviceWorker.controller){ $("#upd").classList.add("show"); } }); });
+      if(reg.waiting && navigator.serviceWorker.controller){ reg.waiting.postMessage({type:"SKIP"}); $("#upd").classList.add("show"); }
+      setTimeout(()=>reg.update().catch(()=>{}), 1500);
+      document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) reg.update().catch(()=>{}); });
+      setInterval(()=>reg.update().catch(()=>{}), 30*60*1000);
     }).catch(()=>{});
-    $("#updBtn").addEventListener("click",()=>location.reload());
+    $("#updBtn").addEventListener("click",()=>{ refreshing=true; location.reload(); });
+    const chk=$("#updChk"); if(chk) chk.addEventListener("click", async ()=>{ chk.disabled=true; chk.textContent="Checking…"; try{ if(swReg){ await swReg.update(); await new Promise(r=>setTimeout(r,2500)); if(swReg.waiting||swReg.installing){ (swReg.waiting||swReg.installing).postMessage({type:"SKIP"}); chk.textContent="Updating…"; setTimeout(()=>{ refreshing=true; location.reload(); }, 1500); return; } } }catch(e){} chk.textContent="This is the latest — "+BUILD; setTimeout(()=>{ chk.disabled=false; chk.textContent="Check for a newer version"; }, 4000); });
   }
 }
 function alarmsStrip(){

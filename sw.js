@@ -1,6 +1,7 @@
 // Egypt companion — offline cache. Network first so updates arrive immediately; cache when the signal is gone.
-const V = "egypt-v56";
+const V = "egypt-v57";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+self.addEventListener("message", e => { if (e.data && e.data.type === "SKIP") self.skipWaiting(); });
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
@@ -11,7 +12,9 @@ self.addEventListener("fetch", e => {
       const cache = await caches.open(V);
       try {
         const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 4000);
-        const res = await fetch(req, { signal: ctrl.signal }); clearTimeout(t);
+        const fresh = req.mode === "navigate" || /index\.html$|\/$/.test(url.pathname);
+        let r2 = req; if (fresh) { try { r2 = new Request(req.url, { cache: "no-cache", credentials: "same-origin" }); } catch (x) {} }
+        const res = await fetch(r2, { signal: ctrl.signal }); clearTimeout(t);
         if (res && res.ok) cache.put(req, res.clone());
         return res;
       } catch (err) {
