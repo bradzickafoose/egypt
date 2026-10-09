@@ -2345,11 +2345,11 @@ function renderFlights(){
 }
 // the Now card: a flight band on the day of (and the evening before)
 function flightBand(now){ try{ const w=me(); if(!w) return ""; const mine=allFlights().filter(f=>(f.who===w||f.who==="Both")&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
-  const today=mine.filter(f=>(f.date===now.date && (flightDep(f)-nowUTC())>-2*3600000) || ((f.to.date||f.date)===now.date && f.date!==now.date && flightArr(f)!==null && flightArr(f)>nowUTC()-3600000)); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
+  const today=mine.filter(f=>(f.date===now.date && ((flightDep(f)-nowUTC())>-2*3600000 || (flightArr(f)!==null && flightArr(f)>nowUTC()-3600000))) || ((f.to.date||f.date)===now.date && f.date!==now.date && flightArr(f)!==null && flightArr(f)>nowUTC()-3600000)); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
   const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const overnight=f.date!==now.date&&(f.to.date||f.date)===now.date; const isT=f.date===now.date||overnight;
   return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${overnight?"Overnight":isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(isT?flightStage(f,now,plan):(plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""))}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
 // once you're past the airport time the agenda's "Uber to the airport" is stale; the flight itself says where you are
-function flightNowLine(now){ const w=me(); if(!w) return ""; const f=allFlights().find(x=>(x.who===w||x.who==="Both")&&x.from.t&&x.status!=="tbd"&&x.date===now.date&&(flightDep(x)-nowUTC())>-2*3600000); if(!f) return ""; const plan=flightPlan(f); const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=(dep-n)/60000;
+function flightNowLine(now){ const w=me(); if(!w) return ""; const f=allFlights().find(x=>(x.who===w||x.who==="Both")&&x.from.t&&x.status!=="tbd"&&x.date===now.date&&((flightDep(x)-nowUTC())>-2*3600000||(flightArr(x)!==null&&flightArr(x)>nowUTC()))); if(!f) return ""; const plan=flightPlan(f); const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=(dep-n)/60000;
   if(arr!==null&&n>=arr) return ""; if(left<=0) return `In the air to ${f.to.city||f.to.ap} · lands ${f.to.t||"soon"}`; if(left<=40) return `At the gate · ${f.no||f.op} boarding`; if(plan&&(now.mins-(3-(f.from.tz??3))*60)>=hm(plan.at)) return `At ${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} airport · ${f.no||f.op} boards ${plan.board}${(f.from.tz??3)!==3?" local":""}`; return ""; }
 // on the day itself the line only shows what is still ahead: the steps already done fall away, the next one leads
 function flightStage(f,now,plan){ const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=Math.round((dep-n)/60000);
@@ -2543,7 +2543,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v120)";
+const BUILD = "Oct 9, 2026 (v121)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4420,6 +4420,7 @@ function boatOpen(){ renderBoatSheet(false); boatPull().then(ch=>{ if(ch){ rende
 const BOAT_AGENDA=[
  ["tue13","09:25","Land. A car takes the bags to the hotel; we go on to Philae.","Basma or the Old Cataract (whichever we booked) — 15 min from the airport, on the way to Philae. Check-in is later; they'll hold the bags."],
  ["tue13","12:30","Hotel: check in, lunch","The bags are already here. Ask the desk to confirm tomorrow's 4am car and a breakfast box."],
+ ["tue13","14:00","Hotel: pool, nap, the hot hours.",""],
  ["wed14","04:00",b=>`Private car from the hotel — bags in the trunk`,b=>`Check out at 3:45. The driver waits at Abu Simbel, then takes us and the bags ${b&&b.id==="orient"?"to Kom Ombo to join The Orient (≈50 min past Aswan)":"straight to the boat"}. ≈$180–250 for both; arrange it with the boat or the hotel.`],
  ["wed14","12:30",b=>b?`Board ${b.name}. Lunch. We sail.`:"Board the boat. Lunch. We sail.",b=>b&&b.id==="orient"?"At Kom Ombo, if Djed has agreed the join — otherwise in Aswan at their pickup point.":"The car drops us at the gangway; the crew takes the bags."]
 ];
@@ -4485,7 +4486,7 @@ function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0)
     const f=day("fri16"); if(f){ f.sleep=f._sleep0; f.sleepq=f._sleepq0; if(!f._o) f._o={title:f.title,place:f.place,emoji:f.emoji,alarm:f.alarm,bag:f.bag,dress:f.dress,cash:f.cash,mission:f.mission,agenda:f.agenda};
       Object.assign(f,{ title:"A Luxor day: pool, museum, the temple lit up", place:"Luxor", emoji:"🏨", alarm:"8:00", bag:"daypack", dress:"anything; collared shirt tonight", cash:"≈$30 entries + dinner", mission:"A slow morning at last, then Luxor's best museum and its temple lit up at night.",
         agenda:[{t:"08:00",title:"Up. Breakfast, pool, the hot hours indoors",alarm:true}, ...f._o.agenda.filter(x=>x.t>="17:00")] }); }
-    BOAT_AGENDA.slice(0,2).forEach(([id,tm,title,note])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(!it) return; if(it._t0===undefined){ it._t0=it.title; it._n0=it.note; } it.title=title; it.note=note; });
+    BOAT_AGENDA.slice(0,3).forEach(([id,tm,title,note])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(!it) return; if(it._t0===undefined){ it._t0=it.title; it._n0=it.note; } it.title=title; it.note=note; });
     const w4=w&&w.agenda.find(x=>x.t==="04:00"); if(w4){ if(w4._t0===undefined){ w4._t0=w4.title; w4._n0=w4.note; } w4.title="Private car from the hotel to Abu Simbel"; w4.note="Back at the hotel ≈12:30. ≈$180–250 for both."; }
     const w12=w&&w.agenda.find(x=>x.t==="12:30"); if(w12){ if(w12._t0===undefined){ w12._t0=w12.title; w12._n0=w12.note; } w12.title="Back at the hotel. Lunch, nap, then a sunset felucca sail from the Corniche"; w12.note="A daytime sail only — ≈$15–20 for the boat for an hour, agreed first."; }
   } else {
