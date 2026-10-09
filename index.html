@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v151)";
+const BUILD = "Oct 9, 2026 (v152)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5983,17 +5983,29 @@ let mascotTeam=null, mascotTeamAt=0;
 const MS_CHEERS=["WELCOME TO THE NILE BOWL!","GO TEAM! (WHICHEVER ONE IS WINNING)","DE-FENSE! DE-FENSE! (my knees)","I HAVEN'T BEEN THIS EXCITED SINCE MY EMBALMING","WRAP IT UP! WRAP IT UP!","WALK LIKE A—no. Too on the nose.","MY LEG FELL OFF. WE GO AGAIN.","RA RA RA! (the sun god, also a cheer)","GIMME AN M! GIMME AN U! …I forgot the rest. Brain's in a jar.","THREE THOUSAND YEARS IN A BOX FOR THIS? WORTH IT!"];
 const MS_MOVES=["roof","walk","spin","leg"];
 let msLast=0;
-function mascotCelebrate(){ if(RM()) return; if(document.querySelector(".mummy,.ms-cele")) return; if(document.querySelector(".qs.on, .sheet.on, #sheetCD.on")) return; if(Date.now()-msLast<4000) return; msLast=Date.now();
-  const S=petSide(); const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"]; const mv=mumPick(MS_MOVES);
+// every tab in the bottom bar gets its own bit: he pops up out of the tab you tapped
+const MS_TAB={
+ today:{props:'<i class="p-sun"></i><i class="p-mug"></i>', lines:()=>{ const h=cairoNow().h; const t=h<5?["It's the middle of the night. I'm undead, what's your excuse?","3am. Prime haunting hours. Go to sleep."]:h<11?["Good morning! I've been up since 1323 BC.","Coffee? I'll have mine embalmed.","Rise and shine. Mostly rise. I don't shine, I'm linen."]:h<17?["Afternoon. The sun's out, I'm out, my linen's chafing.","Lunch? I had one in 1320 BC. Still full."]:["Evening. Is it bedtime? It's always bedtime in a tomb.","Golden hour. I look great in it. Everyone looks great next to me."]; return t.concat(["Today's plan: exist. Nailed it.","Today! My favourite day. Tied with every other day since the Bronze Age."]); }},
+ guide:{props:'<i class="p-specs"></i><i class="p-scroll"></i>', lines:()=>["Per my scroll: Egypt is very old. Source: me.","Fun fact: I used to be a fun fact.","Chapter one: don't touch the merchandise. Chapter two: Brad touched the merchandise.","I'd have written it all in birds, but they said no.","Hang on, this scroll keeps going. Like the Nile. Like my nap."]},
+ map:{props:'<i class="p-map"></i>', lines:()=>["We are… here. Probably. The Nile's the wet bit.","North is up. Unless you're a mummy. Then it's whichever way they carry you.","Hold on, this is upside down. Or Egypt is.","I don't need a map. I know exactly where I'm going. Down. Into a tomb.","Left at the pyramid. No, the other pyramid. They're all pyramids."]},
+ game:{props:'', lines:()=>MS_CHEERS}};
+let msLastK={};
+function msPop(kind, anchor){ if(RM()) return; if(document.querySelector(".mummy,.ms-cele")) return; if(document.querySelector(".qs.on, .sheet.on, #sheetCD.on")) return; if(Date.now()-(msLastK[kind]||0)<12000) return; msLastK[kind]=Date.now();
+  const K=MS_TAB[kind]; if(!K) return; const isG=kind==="game";
+  const S=petSide(); const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"]; const mv=isG?mumPick(MS_MOVES):kind;
   const nav=document.querySelector(".bottom"); const nb=nav?Math.max(0,Math.round(innerHeight-nav.getBoundingClientRect().top)):0;
-  const w=document.createElement("div"); w.className="ms-cele"; w.setAttribute("aria-hidden","true"); w.style.setProperty("--nb",nb+"px");
-  w.innerHTML=`<div class="ms-up"><div class="ms-fig" style="--j1:${c1};--j2:${c2}"><div class="am-m ${S.who?"":"split"}"><i class="mb"></i><i class="ms-j"></i><i class="me l"></i><i class="me r"></i></div></div></div>`;
+  const a=anchor||document.querySelector(`.bottom a[data-go="${kind}"]`); const ar=a?a.getBoundingClientRect():{left:62,width:52}; const x=Math.max(8,Math.min(innerWidth-60,Math.round(ar.left+ar.width/2-26))); const flip=x>innerWidth/2;
+  const w=document.createElement("div"); w.className="ms-cele k-"+kind+(flip?" flip":""); w.setAttribute("aria-hidden","true"); w.style.setProperty("--nb",nb+"px"); w.style.left=x+"px"; w.style.setProperty("--mw",Math.round(flip?(x+20)/1.6-16:(innerWidth-x-80)/1.6-16)+"px");
+  w.innerHTML=`<div class="ms-up"><div class="ms-fig" style="--j1:${c1};--j2:${c2}"><div class="am-m ${isG&&!S.who?"split":""}"><i class="mb"></i>${isG?'<i class="ms-j"></i>':""}<i class="me l"></i><i class="me r"></i>${K.props}</div></div></div>`;
   document.body.appendChild(w); const fig=w.querySelector(".ms-fig");
-  setTimeout(()=>{ if(!w.isConnected) return; w.classList.add("cel-"+mv); const fx=document.createElement("div"); fx.className="ms-fx"; fx.innerHTML=Array.from({length:16},(_,i)=>`<i style="--dx:${Math.round(Math.random()*180-90)}px;--dy:${Math.round(-50-Math.random()*110)}px;--r:${Math.round(Math.random()*720-360)}deg;animation-delay:${(i*0.04).toFixed(2)}s"></i>`).join("")+`<b>${esc(mumPick(MS_CHEERS))}</b>`; fig.appendChild(fx); safe(()=>sfx(mv==="leg"?"saf":"td")); }, 520);
-  setTimeout(()=>w.classList.add("down"), 3300); setTimeout(()=>w.remove(), 3900);
+  setTimeout(()=>{ if(!w.isConnected) return; w.classList.add("cel-"+mv); const fx=document.createElement("div"); fx.className="ms-fx"; fx.innerHTML=(isG?Array.from({length:16},(_,i)=>`<i style="--dx:${Math.round(Math.random()*180-90)}px;--dy:${Math.round(-50-Math.random()*110)}px;--r:${Math.round(Math.random()*720-360)}deg;animation-delay:${(i*0.04).toFixed(2)}s"></i>`).join(""):"")+`<b>${esc(mumPick(K.lines()))}</b>`; fig.appendChild(fx); safe(()=>sfx(isG?(mv==="leg"?"saf":"td"):"stamp")); }, 520);
+  setTimeout(()=>w.classList.add("down"), isG?3300:3100); setTimeout(()=>w.remove(), isG?3900:3700);
   w.addEventListener("click", ()=>w.classList.add("down")); }
-// fire when the scroll to the Games tab has settled with the scoreboard on screen (smooth scroll takes its own sweet time)
-document.addEventListener("click", e=>{ if(!e.target.closest('.bottom a[data-go="game"], [data-go2="game"]')) return; const t0=Date.now(); let last=null, still=0;
+function mascotCelebrate(){ msPop("game"); }
+document.addEventListener("click", e=>{ const a=e.target.closest(".bottom a[data-go]"); const g2=e.target.closest('[data-go2="game"]'); if(!a&&!g2) return; const kind=g2?"game":a.dataset.go; if(!MS_TAB[kind]) return;
+  if(kind!=="game"){ setTimeout(()=>safe(()=>msPop(kind,a)),250); return; }
+  // Games: wait until the scroll has settled with the scoreboard on screen (smooth scroll takes its own sweet time)
+  const t0=Date.now(); let last=null, still=0;
   const tick=()=>{ const el=document.querySelector("#live .nilebowl")||document.querySelector("#live"); if(!el) return; const r=el.getBoundingClientRect(); const top=Math.round(r.top);
     if(last!==null&&Math.abs(top-last)<2) still++; else still=0; last=top;
     if(still>=2&&r.top<innerHeight*0.7&&r.bottom>0){ safe(mascotCelebrate); return; }
@@ -6009,11 +6021,26 @@ document.addEventListener("click", e=>{ if(!e.target.closest('.bottom a[data-go=
 .ms-cele .ms-fig{position:absolute;inset:0}
 .ms-cele .ms-fig .am-m{left:10px;top:6px;width:32px;height:58px}
 .ms-cele .ms-fig .ms-j{position:absolute;left:1px;right:1px;bottom:3px;height:22px;border-radius:2px 2px 8px 8px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.ms-cele .split .ms-j{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
-html:has(.ms-cele) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
+html:has(.ms-cele) .pptab{opacity:0;pointer-events:none;transition:opacity .2s}html:has(.ms-cele) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
 .ms-fx{position:absolute;left:26px;top:20px;pointer-events:none}
+.ms-cele.flip .ms-fx b{left:auto;right:6px;transform-origin:right bottom}
+.ms-cele .am-m > i[class^="p-"]{position:absolute;pointer-events:none}
+.k-today .p-sun{left:14px;top:-10px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,#ffd86b 0 45%,rgba(255,200,80,.35) 46% 70%,transparent 71%);z-index:-1;animation:psun 2.4s ease-out .4s both}@keyframes psun{from{transform:translateY(30px);opacity:0}to{transform:translateY(-18px);opacity:1}}
+.k-today .p-mug{left:26px;top:30px;width:9px;height:10px;border-radius:1px 1px 3px 3px;background:#c0392b;box-shadow:3px 2px 0 -1px transparent,inset 0 2px 0 #3b2414}.k-today .p-mug::after{content:"";position:absolute;left:1px;top:-9px;width:6px;height:8px;border-left:2px dotted rgba(255,255,255,.7);border-radius:50%;animation:psteam 1s ease-in-out infinite}@keyframes psteam{50%{transform:translateY(-3px) skewX(10deg);opacity:.4}}
+.cel-today .ms-fig .am-m{animation:pyawn 2.4s ease-in-out both}@keyframes pyawn{0%{transform:none}25%{transform:scaleY(1.12) scaleX(.94)}40%{transform:scaleY(.94) rotate(-4deg)}55%,100%{transform:none}}
+.cel-today .ms-fig .me{animation:pwake 2.4s steps(1) both}@keyframes pwake{0%,35%{height:2px;top:18px}36%,100%{height:7px;top:15px}}
+.k-guide .p-specs{left:3px;top:13px;width:24px;height:10px;background:radial-gradient(circle at 25% 50%,transparent 0 3.5px,#222 3.5px 5px,transparent 5px),radial-gradient(circle at 75% 50%,transparent 0 3.5px,#222 3.5px 5px,transparent 5px),linear-gradient(#222,#222) 50% 50%/4px 1.5px no-repeat}
+.k-guide .p-scroll{left:-4px;top:34px;width:40px;height:6px;border-radius:3px;background:#e9d9a8;box-shadow:inset 0 0 0 1px #b39b5e;transform-origin:top center}
+.cel-guide .p-scroll{animation:punroll 2.2s cubic-bezier(.3,.6,.4,1) .2s both}@keyframes punroll{0%{height:6px}70%{height:120px}100%{height:150px}}
+.cel-guide .p-scroll::after{content:"";position:absolute;left:5px;right:5px;top:8px;bottom:6px;background:repeating-linear-gradient(180deg,rgba(80,60,30,.45) 0 1px,transparent 1px 5px)}
+.cel-guide .ms-fig .am-m{animation:pread 2.4s ease-in-out both}@keyframes pread{30%,70%{transform:rotate(-6deg) translateY(2px)}}
+.k-map .p-map{left:-6px;top:28px;width:42px;height:22px;border-radius:2px;background:linear-gradient(90deg,#e8d9a6 0 33%,#dccb94 33% 66%,#e8d9a6 66%);box-shadow:inset 0 0 0 1px #9c8350}.k-map .p-map::before{content:"";position:absolute;left:14px;top:2px;width:3px;height:18px;border-radius:2px;background:#4a90c8;transform:rotate(8deg)}.k-map .p-map::after{content:"✕";position:absolute;right:5px;top:3px;font:900 8px var(--body);color:#c0392b}
+.cel-map .p-map{animation:pflip 2.4s cubic-bezier(.3,1.4,.4,1) both}@keyframes pflip{0%,15%{transform:none}35%,60%{transform:rotate(180deg)}80%,100%{transform:rotate(360deg)}}
+.cel-map .ms-fig .am-m{animation:ptilt 2.4s ease-in-out both}@keyframes ptilt{20%,45%{transform:rotate(-14deg)}55%,75%{transform:rotate(12deg)}100%{transform:none}}
+
 .ms-fx i{position:absolute;width:12px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,#efe6cf 0 4px,#c9bc9a 4px 5px);animation:msconf 1.6s cubic-bezier(.2,.7,.4,1) both}
 @keyframes msconf{0%{transform:translate(0,0) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 120px)) rotate(var(--r));opacity:0}}
-.ms-fx b{position:absolute;left:34px;bottom:52px;width:max-content;max-width:calc((100vw - 164px) / 1.6);font:900 0.55rem/1.25 var(--display);letter-spacing:.02em;color:var(--fg);background:var(--card);border:1.5px solid var(--fg);border-radius:9px;padding:3px 7px;transform-origin:left bottom;animation:mscheer 2.6s cubic-bezier(.2,1.4,.4,1) both;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.ms-fx b{position:absolute;left:34px;bottom:52px;width:max-content;max-width:var(--mw,140px);font:900 0.55rem/1.25 var(--display);letter-spacing:.02em;color:var(--fg);background:var(--card);border:1.5px solid var(--fg);border-radius:9px;padding:3px 7px;transform-origin:left bottom;animation:mscheer 2.6s cubic-bezier(.2,1.4,.4,1) both;box-shadow:0 4px 10px rgba(0,0,0,.25)}
 @keyframes mscheer{0%{transform:scale(0) rotate(-12deg);opacity:1}15%{transform:scale(1.1) rotate(3deg)}25%,88%{transform:none;opacity:1}100%{transform:scale(.9);opacity:0}}
 .cel-roof .ms-fig .am-m{animation:msroof .28s ease-in-out 8 alternate}@keyframes msroof{from{transform:translateY(0)}to{transform:translateY(-12px) rotate(4deg)}}
 .cel-walk .ms-fig .am-m{animation:mswalk .3s steps(2) 8 alternate}@keyframes mswalk{from{transform:translateX(-8px) skewX(10deg)}to{transform:translateX(8px) skewX(-10deg)}}
