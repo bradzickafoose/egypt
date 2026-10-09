@@ -1947,7 +1947,7 @@ const WEEK = [
  {k:"w1",who:"Both",t:"Booking details for the boat: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
  {k:"w3",who:"Either",t:"The boat: vote and choose on the Today screen (Decide the boat), then send the message from its card.",s:"Published prices $899–1,815 each for 3 nights. Get the boat's name, twin beds and the terms in writing."},
- {k:"w4",who:"Brad",t:"Domestic flights ✓ booked — NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Tick when the codes are in the app."},
+ {k:"w4",who:"Brad",t:"Domestic flights are booked: NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Type each booking code into Guide → Flights so it's on your phone offline, then tick this.",s:"The codes stay on this phone only; they're never synced or shared."},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)'},
  {k:"w6",who:"Both",t:"e-Visa, or $30 USD cash on arrival, exact bills",h:'<a href="https://visa2egypt.gov.eg" target="_blank" rel="noopener">e-Visa</a>, or $30 USD cash on arrival, exact bills'},
  {k:"w7",who:"Both",t:"USD small bills, $300+ each. Get them before you fly."},
@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v154)";
+const BUILD = "Oct 9, 2026 (v155)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
