@@ -2190,7 +2190,7 @@ function renderClock(){
   pr.textContent = !hg ? full : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${di+1}/${DAYS.length}` : `Day ${di+1}/${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
   pr.title=full;
   // still at home after Cairo's midnight: say whose clock the day is following
-  if(n.home&&!hg){ const ln=new Date(); pr.textContent=`${pr.textContent} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} your time`; }
+  if(n.home&&!hg){ const ln=new Date(); pr.textContent=`${pr.textContent.replace(/^Starts /,"")} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} here`; }
   if(document.documentElement.classList.contains("hugetext")) $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"});
   $("#offline").hidden = navigator.onLine !== false;
 }
@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v159)";
+const BUILD = "Oct 9, 2026 (v160)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5278,7 +5278,7 @@ document.addEventListener("click", async e=>{ const b=e.target.closest("[data-ta
 // Light: for a 7-hour eastward jump, bright light before ≈11am Cairo on the first two mornings lands in his body's
 // "pre-dawn" and pushes the clock the wrong way; light from late morning on pulls it the right way.
 function bodyClock(){ try{ if(me()!=="Duane") return null; const n=cairoNow(); const t=n.date+" "+String(n.h).padStart(2,"0")+":"+String(n.m||0).padStart(2,"0");
-  const ct=`${((n.h+11)%12)+1}:${String(n.m||0).padStart(2,"0")}${n.h<12?"am":"pm"}`;   // Cairo clock, for the line
+  const nr=(typeof cairoNowRaw==="function")?cairoNowRaw():n; const ct=`${((nr.h+11)%12)+1}:${String(nr.m||0).padStart(2,"0")}${nr.h<12?"am":"pm"}`;   // Cairo clock, for the line
   const P=[
    ["2026-10-09 12:00","2026-10-09 22:34","🕰️","Your Cairo night is tonight's flight",`Cairo is 7 hours ahead (it's ${ct} there now). The Philadelphia → London flight leaves at 1:45am Cairo time — so eat dinner in Philadelphia, skip the meal on board, and sleep from wheels-up. Set your watch to Cairo time when you board.`],
    ["2026-10-09 22:34","2026-10-10 01:45","🍽️","Eat now, sleep next",`It's ${ct} in Cairo. Dinner in Philadelphia before you board. On the London flight: no coffee, no wine, eye mask and earplugs, sleep from takeoff. Breakfast before landing is Cairo breakfast.`],
