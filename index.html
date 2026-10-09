@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v155)";
+const BUILD = "Oct 9, 2026 (v156)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4396,7 +4396,8 @@ function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { m
 // ---------- the slot on Today: one line of status, one button
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
-  const dl=dateDiffDays(now.date,"2026-10-11"); const urg = dl>0?`decide by Sunday night`:dl===0?"decide tonight":"boards Wednesday";
+  const dl=dateDiffDays(now.date,"2026-10-11"); if(now.date>="2026-10-14") return ""; // boarding day: an undecided vote card is just noise by now
+  const urg = dl>0?`decide by Sunday night`:dl===0?"decide tonight":dl===-1?"book today · boards Wednesday":"boards tomorrow";
   const seenOther=lsGet(BOAT_LS.seen,""), curOther=lsGet(BOAT_LS.other,""); const fresh = curOther && curOther!==seenOther && Object.keys((boatOther().votes)||{}).length;
   const top=[...BOATS].sort((x,y)=>x.rank-y.rank)[0]; const line = !t.mine&&!t.theirs ? `Our pick: ${esc(top.name)} · vote 👍 or 👎 on ${BOATS.filter(x=>!x.out).length} options` : `You ${t.mine?`voted on ${t.mine}`:"haven't voted"} · ${esc(o)} ${t.theirs?`voted on ${t.theirs}`:"hasn't voted yet"}${t.both?` · <b>${t.both} you both like</b>`:""}`;
   return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The Nile boat · ${urg}</span><b>Pick our Nile boat</b><small>${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
