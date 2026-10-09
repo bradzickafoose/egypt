@@ -1695,10 +1695,10 @@ const DAYS = [
   know:["Touts at Giza are relentless; the guide is the shield","Don't hand your phone to anyone for a photo","The GEM café is fine if Khufu's falls through"],
   planb:"GEM timed tickets sold out → the old Egyptian Museum on Tahrir (10 min from the hotel; the royal mummies and Tut's treasures moved out, most else is still there, 550 EGP (≈$11)). Khufu's full → 9 Pyramids Lounge, same view, simpler food, no booking. Guide no-shows → Uber to the Great Gate visitor centre on the Fayoum road (the old Mena House entrance is closed to visitors); licensed guides wait there, ≈$40 for the morning."},
  {id:"tue13",who:"both",sleep:"the dahabiya, moored in Aswan",sleepq:"",date:"2026-10-13",dow:"Tue",num:13,title:"Fly south, board the boat",place:"Aswan",emoji:"⛵",
-  alarm:"5:30",bag:"everything (checkout)",dress:"anything; something smart-casual for tea",cash:"≈$110 for tea, boats, dinner",
+  alarm:"5:20",bag:"everything (checkout)",dress:"anything; something smart-casual for tea",cash:"≈$110 for tea, boats, dinner",
   mission:"Get to the most beautiful stretch of the Nile, hand our bags to a crew, then do Aswan properly: Philae, high tea on Agatha Christie's terrace, a motorboat through sunset to a Nubian village for dinner.",
   agenda:[
-   {t:"05:30",title:"Up. Check out.",alarm:true},
+   {t:"05:20",title:"Up. Check out.",alarm:true},
    {t:"06:00",title:"Uber to CAI — not Terminal 3 (check the ticket)",note:"45 min at this hour. Nile Air uses the older terminals (listed at T1) — read the terminal off the ticket before you tell the driver. At the desk by 6:45.",map:"Cairo International Airport"},
    {t:"08:00",title:"Nile Air NP 81 to Aswan (1h25, Airbus)"},
    {t:"09:25",title:"Land. The boat's rep meets us; bags go to the boat, we go to the temple.",map:"Aswan International Airport"},
@@ -2543,7 +2543,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v121)";
+const BUILD = "Oct 9, 2026 (v122)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
