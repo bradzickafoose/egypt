@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v152)";
+const BUILD = "Oct 9, 2026 (v153)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4727,7 +4727,7 @@ function tabSheetHTML(){ const w=me(); const o=OTHER_OF(w)||"him"; const L=tabLi
   const n=tabNet(w);
   return `<div class="qh"><h3>The tab</h3><button type="button" class="x" aria-label="Close">×</button></div>
   <div class="tab">${tabBalanceHTML()}${tabCurSeg()}
-    <form class="tb-form" id="tbForm"><input id="tbW" placeholder="What (dinner at Abou Tarek, the guide…)" maxlength="60" autocomplete="off"><div class="tb-amt"><input id="tbA" inputmode="decimal" placeholder="Amount" autocomplete="off">${seg("cur",[["EGP","EGP"],["USD","$"]])}</div>
+    <form class="tb-form" id="tbForm"><input id="tbW" placeholder="What (dinner at Abou Tarek, the guide…)" maxlength="60" autocomplete="off"><div class="tb-amt"><input id="tbA" inputmode="decimal" placeholder="${tabForm.cur==="USD"?"Amount in dollars":"Amount in pounds (EGP)"}" autocomplete="off">${seg("cur",[["EGP","EGP"],["USD","$"]])}</div>
       <div class="tb-row"><span>Paid by</span>${seg("payer",[["me","Me"],["them",esc(o)]])}</div>
       <div class="tb-row"><span>Split</span>${seg("split",splitLbl)}</div>
       <button class="btn primary" type="submit">Add to the tab</button></form>
@@ -5880,7 +5880,7 @@ function petSide(){ try{ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const liv
 function petSideLine(){ const S=petSide(); const w=me()||"Brad"; const T=x=>(TEAMS[x]||{}).team||x;
   if(S.why==="talk") return S.who===w?`He's in your jersey for the next hour — your trash talk landed. He's easily impressed.`:`${S.who}'s trash talk got him: he's in a ${T(S.who)} jersey for the next hour. Say something back.`;
   if(S.why==="lead") return S.who===w?`He's wearing ${T(w)} colours — you lead the Nile Bowl ${S.sc}. Mascots follow the money.`:`He's wearing ${T(S.who)} colours: ${S.who} leads the Nile Bowl ${S.sc}. Traitor. Win something, or trash-talk him back.`;
-  return "Half Steelers, half Bengals until somebody scores or says something cruel."; }
+  return "Officially neutral until somebody scores or says something cruel. Wearing both jerseys at once. Very warm."; }
 // ---------- doing things to him ----------
 let petBusy=false;
 async function petDo(id){ if(petBusy) return; petBusy=true; try{ await petPull(); const a=PET_ACTS[id]; const p=petNow(); const w=me()||"Brad", o=OTHER_OF(w)||"Duane";
@@ -5952,7 +5952,7 @@ setInterval(()=>{ petPull().then(()=>safe(mumTabRender)); }, 5*60000); setTimeou
 html:has(.qs.on) #petSand,html:has(.mummy) #petSand,html.pp-open #petSand,html:has(#sheet.show) #petSand,html.scrolling-down #petSand{display:none}
 .mumtab .pt-acc{position:absolute;pointer-events:none}.mumtab:not(.pt-mascot) .pt-jersey,.mumtab:not(.pt-mascot) .pt-num,.mumtab:not(.pt-mascot) .pt-foam{display:none}
 .mumtab .pt-num{position:absolute;left:0;right:0;bottom:8px;text-align:center;font:900 11px var(--display);font-style:normal;color:#fff;text-shadow:0 1px 0 #000;pointer-events:none}
-.mumtab .pt-foam{position:absolute;right:-12px;top:-4px;padding:9px 3px 3px;border-radius:7px 7px 3px 3px;background:#f5c518;color:#111;font:900 8px/1 var(--display);font-style:normal;transform:rotate(14deg);box-shadow:0 2px 4px rgba(0,0,0,.3);pointer-events:none;animation:ptfoam 1.4s ease-in-out infinite}
+.mumtab .pt-foam{position:absolute;right:-13px;top:30px;padding:9px 3px 3px;border-radius:7px 7px 3px 3px;background:#f5c518;color:#111;font:900 8px/1 var(--display);font-style:normal;transform:rotate(14deg);box-shadow:0 2px 4px rgba(0,0,0,.3);pointer-events:none;animation:ptfoam 1.4s ease-in-out infinite}
 .mumtab .pt-foam::before{content:"";position:absolute;left:5px;top:-6px;width:5px;height:9px;border-radius:3px 3px 0 0;background:#f5c518}
 @keyframes ptfoam{50%{transform:rotate(-6deg) translateY(-2px)}}.mumtab .pt-jersey{position:absolute;left:2px;right:2px;bottom:4px;height:24px;border-radius:2px 8px 8px 2px;opacity:.92;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
 .mumtab.pt-baby .pt-acc{left:30px;top:33px;width:9px;height:9px;border-radius:50%;background:#7fc3ff;box-shadow:0 0 0 2px #fff}
