@@ -2117,10 +2117,11 @@ function renderNow(){
     let next = ni===-1 ? null : d.agenda[ni]; let nextDay = d; let nextMins = next?toMins(next.t)-now.mins:0;
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
-    const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"") + evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
+    const inTransit = safe(()=>{ const w=me(); const n=nowUTC(); return allFlights().some(f=>(f.who===w||f.who==="Both")&&f.from.t&&f.status!=="tbd"&&flightDep(f)-n<3*3600000&&(flightArr(f)??flightDep(f)+3*3600000)>n); });
+    const evening = inTransit ? "" : safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"") + evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
-    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":d.id==="sat10"?"Travel day":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
+    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">${now.h<5?"Late one":`Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}`}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":d.id==="sat10"?"Travel day":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
     const exm = safe(()=>extrasMorning(d, now)); const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${next.lt?fmt12(next.lt)+" "+(next.ltz||"Cape Town"):fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur){ const ago=now.mins-toMins(cur.t); if(ago>150 && next && nextDay===d) html += `<div class="sub">Now: nothing until ${next.lt?fmt12(next.lt)+" "+(next.ltz||"Cape Town"):fmt12(next.t)}</div>`; else html += `<div class="sub">Now: ${esc(cur.title)}</div>`; } if(exm) html += `<div class="sub excof">${esc(exm)}</div>`;
     if(next){
@@ -2344,9 +2345,9 @@ function renderFlights(){
 }
 // the Now card: a flight band on the day of (and the evening before)
 function flightBand(now){ try{ const w=me(); if(!w) return ""; const mine=allFlights().filter(f=>(f.who===w||f.who==="Both")&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
-  const today=mine.filter(f=>f.date===now.date && (flightDep(f)-nowUTC())>-2*3600000); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
-  const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const isT=f.date===now.date;
-  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(isT?flightStage(f,now,plan):(plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""))}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
+  const today=mine.filter(f=>(f.date===now.date && (flightDep(f)-nowUTC())>-2*3600000) || ((f.to.date||f.date)===now.date && f.date!==now.date && flightArr(f)!==null && flightArr(f)>nowUTC()-3600000)); const tomorrow=now.h>=15?mine.filter(f=>f.date===tmr):[];
+  const f=today[0]||tomorrow[0]; if(!f) return ""; const plan=flightPlan(f); const overnight=f.date!==now.date&&(f.to.date||f.date)===now.date; const isT=f.date===now.date||overnight;
+  return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${overnight?"Overnight":isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(isT?flightStage(f,now,plan):(plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""))}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
 // once you're past the airport time the agenda's "Uber to the airport" is stale; the flight itself says where you are
 function flightNowLine(now){ const w=me(); if(!w) return ""; const f=allFlights().find(x=>(x.who===w||x.who==="Both")&&x.from.t&&x.status!=="tbd"&&x.date===now.date&&(flightDep(x)-nowUTC())>-2*3600000); if(!f) return ""; const plan=flightPlan(f); const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=(dep-n)/60000;
   if(arr!==null&&n>=arr) return ""; if(left<=0) return `In the air to ${f.to.city||f.to.ap} · lands ${f.to.t||"soon"}`; if(left<=40) return `At the gate · ${f.no||f.op} boarding`; if(plan&&(now.mins-(3-(f.from.tz??3))*60)>=hm(plan.at)) return `At ${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} airport · ${f.no||f.op} boards ${plan.board}${(f.from.tz??3)!==3?" local":""}`; return ""; }
@@ -2542,7 +2543,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v119)";
+const BUILD = "Oct 9, 2026 (v120)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
