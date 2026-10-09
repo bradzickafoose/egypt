@@ -1064,7 +1064,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 .bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:0.7059rem;font-weight:600;letter-spacing:.02em;padding:6px 2px;border-radius:10px;white-space:nowrap}
 .bottom a span.i{font-size:1.0588rem;line-height:1}
 .bottom a.on{color:var(--nile-ink);background:var(--nile-soft)}
-.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:0.7941rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100vw - 32px);box-sizing:border-box}
+.toast{position:fixed;z-index:60;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:0.7941rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100vw - 32px);box-sizing:border-box}
 .toast.undo{display:flex;align-items:center;gap:10px;pointer-events:auto;padding:6px 6px 6px 14px;width:calc(100vw - 32px);max-width:420px;border-radius:18px;text-align:left}.toast.undo span{min-width:0;flex:1}.toast .tundo{font:700 0.7647rem var(--body);letter-spacing:.04em;text-transform:uppercase;background:var(--bg);color:var(--fg);border:0;border-radius:999px;padding:6px 11px;flex:none}.toast.show.undo{pointer-events:auto}
 .toast.show{opacity:1}
 .foot{color:var(--muted);font-size:0.7647rem;margin-top:22px;text-align:center}
@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v156)";
+const BUILD = "Oct 9, 2026 (v157)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6124,6 +6124,60 @@ document.addEventListener("click", e=>{ const f=e.target.closest("[data-ff]"); i
 @keyframes mwhis{to{transform:translateY(-2px) rotate(-8deg)}}
 .mummy.ref{z-index:72}
 .mummy.ref .ma.a1{transform:rotate(-80deg)!important;animation:none}
+`; document.head.appendChild(st); })();
+
+// ---------- archive.js: the trip so far — every finished day in one place, newest first ----------
+// Reachable from a "Past" chip at the front of the day strip and a Guide tile. Tap a day to open it as it was.
+function archDays(){ const n=cairoNow(); const w=me(); let idx=DAYS.map((d,i)=>i).filter(i=>DAYS[i].date<n.date);
+  if(w==="Duane") idx=idx.filter(i=>DAYS[i].who!=="brad"); return idx.reverse(); }
+function archStars(v){ v=+v||0; return v?"★".repeat(v)+"<i>"+"★".repeat(5-v)+"</i>":""; }
+function archRow(i){ const d=DAYS[i]; const st=stamps()[d.id]; const rate=(GS.get("rate",{})||{})[d.id]||{}; const w=me()||"Brad", o=OTHER_OF(w)||"Duane";
+  const j=(()=>{ try{ return (localStorage.getItem("egypt.journal."+d.id)||"").trim(); }catch(e){ return ""; } })();
+  const pic=safe(()=>photoOf(d.id))||""; const mine=safe(()=>pickOf(d.id,w)); const both=safe(()=>pickBoth(d.id)); const theirs=both?safe(()=>pickOf(d.id,o)):null;
+  const steps=safe(()=>hlOf(w,d.date)); const td=!!(GS.get("chal",{})||{})[d.id];
+  const bits=[];
+  if(rate.food||rate.sight||rate.sleep) bits.push(`<span class="ar-r">${rate.food?`🍽 ${archStars(rate.food)}`:""}${rate.sight?` 👁 ${archStars(rate.sight)}`:""}${rate.sleep?` 🛏 ${archStars(rate.sleep)}`:""}</span>`);
+  const tags=[]; if(td) tags.push("🏈 touchdown"); if(steps&&steps.steps) tags.push(`👟 ${fmtE(steps.steps)}`); if(mine&&mine.r) tags.push(`${mine.r}/5`);
+  return `<button type="button" class="ar-day ${st?"ar-st":""}" data-archgo="${i}">
+    <div class="ar-d"><small>${d.dow}</small><b>${d.num}</b>${st?`<i class="ar-stamp" title="stamped">✓</i>`:""}</div>
+    <div class="ar-b"><b>${esc(d.title)}</b><small>${esc(d.place||"")}${st?` · stamped in ${esc(String(CITY_OF(d)).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()))}`:""}</small>
+      ${mine&&mine.m?`<p class="ar-m">“${esc(mine.m)}”${theirs&&theirs.m?`<span>${esc(o)}: “${esc(theirs.m)}”</span>`:""}</p>`:""}
+      ${j?`<p class="ar-j">${esc(j.split(/\n/)[0].slice(0,140))}${j.length>140?"…":""}</p>`:""}
+      ${bits.join("")}${tags.length?`<span class="ar-t">${tags.map(esc).join(" · ")}</span>`:""}
+      ${!st&&!j&&!(mine&&mine.m)?`<span class="ar-open">Not closed yet · tap to stamp it and write it up</span>`:""}
+    </div>${pic?`<img class="ar-pic" src="${pic}" alt="">`:""}</button>`; }
+function archSheetHTML(){ const L=archDays(); const n=L.length; const st=stamps(); const done=L.filter(i=>st[DAYS[i].id]).length;
+  return `<div class="qh"><h3>The trip so far</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="arch">
+   ${n?`<p class="muted ar-sum">${n} day${n>1?"s":""} behind you · ${done} stamped${n-done?` · ${n-done} still open — tap one to close it`:""}</p>${L.map(archRow).join("")}
+   <button type="button" class="btn ar-pp" data-pp="1">Open the passport</button>`:`<p class="muted">Nothing here yet. Each day lands here once it's over — with your stamp, ratings, best moment, three lines and the day's photo. Tap one to open it as it was.</p>`}</div>`; }
+function openArchive(){ openSheet("sheetQC", archSheetHTML()); }
+// capture: the strip's own chip handler must never see the Past chip (it has no day index)
+document.addEventListener("click", e=>{ if(e.target.closest("[data-arch]")){ e.stopPropagation(); e.preventDefault(); openArchive(); } }, true);
+document.addEventListener("click", e=>{
+  const g=e.target.closest("[data-archgo]"); if(g){ const i=+g.dataset.archgo; closeSheet("sheetQC"); goDay(i,false); safe(renderNow); window.scrollTo({top:0}); return; }
+  if(e.target.closest("#sheetQC .ar-pp")) closeSheet("sheetQC");
+});
+// the strip: a "Past" chip in front of today, so yesterday is one tap away instead of at the far end
+(function(){ if(typeof renderStrip!=="function") return; const R=renderStrip; renderStrip=function(){ const r=R.apply(this,arguments); try{ const n=archDays().length; const s=$("#dayStrip"); if(n&&s&&!s.querySelector(".chip.arch")){ s.insertAdjacentHTML("afterbegin",`<button class="chip arch" data-arch="1" aria-label="Past days"><small>past</small>${n}</button><span class="gap" aria-hidden="true"></span>`);
+  const ti=dayIndexFor(cairoNow().date); const on=s.querySelector(".chip.on"); if(on){ s.scrollLeft = (sel===ti) ? 0 : Math.max(0, on.offsetLeft-(s.clientWidth-on.offsetWidth)/2); } } }catch(e){} return r; }; })();
+// the Guide: a tile under Trip admin
+(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const n=archDays().length; const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/trip admin/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-nav="past"]')) g.insertAdjacentHTML("beforeend",`<button type="button" data-nav="past"><span class="qi">📜</span><span class="nl">Past days<small>${n?`${n} behind you · tap to reread`:"fills in as you go"}</small></span></button>`); }catch(e){} return r; }; })();
+(function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="past"){ safe(()=>closeSheet("sheetQC")); openArchive(); return; } return N.apply(this,arguments); }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+#dayStrip .chip.arch{background:var(--sand);color:var(--muted);border-style:dashed}#dayStrip .chip.arch small{letter-spacing:.08em}
+.arch .ar-sum{margin:0 0 10px;font-size:0.7941rem}
+.ar-day{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:start;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 8px;cursor:pointer}
+.ar-day:active{transform:scale(.99)}
+.ar-d{position:relative;text-align:center;border-radius:10px;background:var(--sand);padding:5px 0 6px}.ar-d small{display:block;font:700 0.6176rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ar-d b{font:800 1.15rem/1 var(--display)}
+.ar-stamp{position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;background:#b5322b;color:#fff;font:900 10px/18px var(--body);font-style:normal;box-shadow:0 0 0 2px var(--card)}
+.ar-b{min-width:0}.ar-b>b{display:block;font:700 0.9412rem/1.25 var(--display)}.ar-b>small{display:block;color:var(--muted);font-size:0.7353rem;margin-top:1px}
+.ar-m{margin:6px 0 0;font-size:0.8235rem;font-style:italic;line-height:1.35}.ar-m span{display:block;color:var(--muted);font-size:0.7647rem;margin-top:2px}
+.ar-j{margin:5px 0 0;font-size:0.7941rem;line-height:1.35;color:var(--fg);opacity:.85}
+.ar-r{display:block;margin-top:5px;font-size:0.7059rem;color:#c99a2e;letter-spacing:.02em}.ar-r i{font-style:normal;opacity:.25}
+.ar-t{display:block;margin-top:4px;font:600 0.6471rem var(--mono);color:var(--muted);letter-spacing:.04em}
+.ar-open{display:block;margin-top:6px;font-size:0.7353rem;color:var(--dusk)}
+.ar-pic{width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.arch .ar-pp{width:100%;margin-top:4px;justify-content:center;text-align:center}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
