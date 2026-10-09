@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v157)";
+const BUILD = "Oct 9, 2026 (v158)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5979,8 +5979,65 @@ function mascotCardHTML(){ const p=petNow(); const S=petSide(); const st=petStag
     <div class="ms-t"><small>Official mascot · ${esc(PET_NAME)}</small><b>${esc(head)}</b><span>${esc(sub)}</span>
     <div class="ms-n">${lo.lo<25?`<em>${PET_NEED[lo.k][0]} ${esc(PET_NEED[lo.k][1].split(".")[0])}.</em>`:`<em>${esc(st[1])} · snack ${p.belly}% · will to unlive ${p.mood}%</em>`}<button type="button" class="btn mini" data-mascotcare="1">Care for him</button></div></div></div>`; }
 document.addEventListener("click", e=>{ if(e.target.closest("[data-mascotcare]")){ openAskMummy(); setTimeout(()=>{ if(!$("#petBox")) petToggle(); },200); } });
-(function(){ if(typeof renderGame!=="function") return; const R=renderGame; renderGame=function(){ const r=R.apply(this,arguments); try{ const g=$("#gameBody"); if(g&&!g.querySelector(".card.mascot")){ const h=g.querySelector("h2.sec"); const t=document.createElement("div"); t.innerHTML=mascotCardHTML(); if(h) h.before(t.firstChild); else g.prepend(t.firstChild); } }catch(e){} return r; }; })();
-setInterval(()=>{ try{ const c=document.querySelector("#gameBody .card.mascot"); if(c){ const t=document.createElement("div"); t.innerHTML=mascotCardHTML(); c.replaceWith(t.firstChild); } }catch(e){} }, 60000);
+// ---------- THE BENCH: he sits on the scoreboard's edge, legs dangling; his report sits right under it ----------
+// One mummy at a time: while he's on the board, the side tab steps away; when he runs off to cheer, his seat is empty.
+function benchHTML(){ const p=petNow(); const S=petSide(); const st=petStage(p); const lo=petMood(p); const w=me()||"Brad", o=OTHER_OF(w)||"Duane";
+  const dead=(p.belly+p.mood+p.wraps)===0; const need=dead?["💀","He has died. He was already dead. Feed him something."]:lo.lo<25?PET_NEED[lo.k]:null;
+  let head=S.who?`In ${(TEAMS[S.who]||{}).team||S.who} colours`:"Refusing to pick a side", sub=petSideLine();
+  if(petFinal()){ const a=safe(()=>nileTotal(w)), b=safe(()=>nileTotal(o)); if(a&&b&&a.pts!==b.pts){ const win=a.pts>b.pts?w:o; head=`Going home with ${win}`; sub=win===w?`Final whistle. He's coming home in your carry-on, legally ambiguous. ${o} gets visitation on Thanksgiving.`:`Final whistle. He's leaving with ${o}. He didn't even look back. He doesn't have a neck.`; } }
+  if(need) sub=need[1];
+  const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"];
+  const bar=(k,lbl)=>`<span class="bm ${p[k]<25?"low":""}" title="${lbl} ${p[k]}%"><i>${PET_NEED[k][0]}</i><b><u style="width:${p[k]}%"></u></b></span>`;
+  return `<div class="nb-bench ${need?"needy":""}">
+    <button type="button" class="nb-ram ${S.who?"":"split"} rs-${st[2]} ${need?"sad":""} ${Date.now()-mascotTeamAt<12000?"cheer":""}" data-mascotcare="1" aria-label="${escA(PET_NAME)}, the mascot. ${need?escA(need[1]):"Care for him."}" style="--j1:${c1};--j2:${c2}">
+      <span class="rb"><i class="mb"></i><i class="rj"></i><i class="rn">${S.who==="Brad"?7:S.who==="Duane"?9:"½"}</i><i class="me l"></i><i class="me r"></i><i class="racc"></i></span><i class="rleg l"></i><i class="rleg r"></i>${need?`<i class="rneed" aria-hidden="true">${need[0]}</i>`:""}</button>
+    <div class="nbb-t"><small>Mascot · ${esc(PET_NAME)}</small><b>${esc(head)}</b><span>${esc(sub)}</span>
+      <div class="nbb-m">${bar("belly","Snack level")}${bar("mood","Will to unlive")}${bar("wraps","Structural integrity")}<button type="button" class="btn mini ${need?"primary":""}" data-mascotcare="1">${dead?"Revive him":need?({belly:"Feed him",mood:"Cheer him up",wraps:"Re-wrap him"})[lo.k]:"Care"}</button></div></div></div>`; }
+function benchRender(){ const L=document.getElementById("live"); if(!L) return; const nb=L.querySelector(".nilebowl"); if(!nb) return; const t=document.createElement("div"); t.innerHTML=safe(benchHTML)||""; const fresh=t.firstElementChild; if(!fresh) return;
+  const old=L.querySelector(".nb-bench"); if(old){ if(old.outerHTML===fresh.outerHTML) return; old.replaceWith(fresh); } else nb.after(fresh); safe(benchSeen); }
+(function(){ if(typeof renderLive!=="function") return; const R=renderLive; renderLive=function(){ const r=R.apply(this,arguments); safe(benchRender); return r; }; })();
+(function(){ if(typeof mumTabRender!=="function") return; const R=mumTabRender; mumTabRender=function(){ const r=R.apply(this,arguments); safe(benchRender); return r; }; })();
+setInterval(()=>safe(benchRender), 60000);
+// is he on screen? then the side tab doesn't need to be
+function benchSeen(){ const r=document.querySelector("#live .nb-ram"); let on=false; if(r&&r.offsetParent){ const b=r.getBoundingClientRect(); on=b.bottom>60&&b.top<innerHeight-90; } document.documentElement.classList.toggle("ram-seen", on); }
+addEventListener("scroll", ()=>{ if(benchSeen.q) return; benchSeen.q=1; requestAnimationFrame(()=>{ benchSeen.q=0; safe(benchSeen); }); }, {passive:true});
+// a score: he fist-pumps from his seat
+(function(){ if(typeof jumbo!=="function") return; const J=jumbo; jumbo=function(word){ const r=J.apply(this,arguments); try{ if(/field goal|touchdown|two-point|extra point|safety|blackout/i.test(String(word||""))){ setTimeout(()=>{ const ram=document.querySelector("#live .nb-ram"); if(ram){ ram.classList.remove("cheer"); void ram.offsetWidth; ram.classList.add("cheer"); } safe(benchRender); },400); } }catch(e){} return r; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.nb-bench{position:relative;display:block;margin:-2px 0 12px;padding:10px 12px;border-radius:0 0 14px 14px;background:var(--sand);border:1px solid var(--line);border-top:0;min-height:58px}.nb-bench::before{content:"";float:right;width:78px;height:52px}.nb-bench::after{content:"";display:block;clear:both}
+.nb-bench.needy{background:color-mix(in srgb,var(--dusk) 12%,var(--sand))}
+.nbb-t small{display:block;font:700 0.5882rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.nbb-t b{display:block;font:800 0.9412rem/1.2 var(--display);margin-top:2px}
+.nbb-t>span{display:block;font-size:0.7647rem;line-height:1.35;margin-top:2px;color:var(--fg);opacity:.85}
+.nbb-m{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.nbb-m .bm{display:inline-flex;align-items:center;gap:3px}.nbb-m .bm i{font-style:normal;font-size:11px}.nbb-m .bm b{display:block;width:30px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--fg) 14%,transparent);overflow:hidden}.nbb-m .bm u{display:block;height:100%;background:var(--ok);text-decoration:none;border-radius:3px}.nbb-m .bm.low u{background:#d0442f}
+.nbb-m .btn{margin-left:auto}
+.nb-ram{position:absolute;right:28px;top:-44px;scale:1.2;transform-origin:50% 100%;width:46px;height:86px;border:0;padding:0;background:none;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent;transition:opacity .25s,transform .3s cubic-bezier(.2,1.4,.4,1)}
+.nb-ram .rb{position:absolute;left:7px;top:0;width:32px;height:52px;animation:rbob 3.2s ease-in-out infinite;transform-origin:50% 100%}
+.nb-ram .mb{position:absolute;inset:0;border-radius:16px 16px 10px 10px;background:repeating-linear-gradient(-28deg,#efe6cf 0 5px,#d9cfb3 5px 7px,#efe6cf 7px 11px,#c9bc9a 11px 12px);box-shadow:inset 0 0 0 1px rgba(90,70,40,.35),0 4px 10px -4px rgba(0,0,0,.5)}
+.nb-ram .rj{position:absolute;left:1px;right:1px;bottom:2px;height:22px;border-radius:2px 2px 9px 9px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.nb-ram.split .rj{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
+.nb-ram .rn{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:900 10px var(--display);font-style:normal;color:#fff;text-shadow:0 1px 0 #000}
+.nb-ram .me{position:absolute;top:15px;width:7px;height:7px;border-radius:50%;background:#1a1410;box-shadow:inset 0 0 0 1.5px #ffe08a;animation:rblink 5s infinite}.nb-ram .me.l{left:7px}.nb-ram .me.r{left:18px}
+@keyframes rblink{0%,94%,100%{transform:none}96%{transform:scaleY(.1)}}
+@keyframes rbob{50%{transform:translateY(-2px) rotate(-2deg)}}
+.nb-ram .rleg{position:absolute;top:48px;width:8px;height:22px;border-radius:4px;background:repeating-linear-gradient(0deg,#efe6cf 0 5px,#c9bc9a 5px 6px);box-shadow:inset 0 0 0 1px rgba(90,70,40,.3);transform-origin:50% 0;animation:rswing 1.6s ease-in-out infinite}
+.nb-ram .rleg.l{left:13px}.nb-ram .rleg.r{left:25px;animation-delay:-.8s}
+@keyframes rswing{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}}
+.nb-ram .rneed{position:absolute;left:-10px;top:-6px;width:22px;height:22px;border-radius:50%;background:var(--card);box-shadow:0 0 0 2px #d0442f;font-style:normal;font-size:12px;line-height:22px;text-align:center;animation:rneed 1.4s ease-in-out infinite}
+@keyframes rneed{50%{transform:scale(1.15)}}
+.nb-ram.sad .rb{animation:none;transform:translateY(4px) scaleY(.9)}.nb-ram.sad .me{top:18px;height:4px;border-radius:0 0 4px 4px}.nb-ram.sad .rleg{animation-duration:4s}
+.nb-ram.cheer .rb{animation:rcheer .32s ease-in-out 6 alternate}@keyframes rcheer{from{transform:translateY(0)}to{transform:translateY(-12px) rotate(5deg)}}
+.nb-ram:active .rb{transform:scale(.94)}
+.nb-ram .racc{position:absolute;pointer-events:none}
+.nb-ram.rs-baby .racc{left:12px;top:25px;width:8px;height:8px;border-radius:50%;background:#7fc3ff;box-shadow:0 0 0 2px #fff}
+.nb-ram.rs-kid .racc{left:4px;top:-9px;width:24px;height:11px;border-radius:12px 12px 0 0;background:conic-gradient(#e33 0 25%,#fd3 0 50%,#3b5 0 75%,#39f 0)}.nb-ram.rs-kid .racc::after{content:"";position:absolute;left:4px;top:-4px;width:16px;height:3px;background:#555;border-radius:2px;animation:ptprop .3s linear infinite}
+.nb-ram.rs-teen .racc{left:3px;top:13px;width:26px;height:9px;border-radius:2px 2px 6px 6px;background:#111}
+.nb-ram.rs-pharaoh .racc{left:-4px;top:-6px;width:40px;height:30px;border-radius:18px 18px 4px 4px;background:repeating-linear-gradient(180deg,#1f4fa8 0 4px,#e2be67 4px 8px);z-index:-1}
+.nb-ram.rs-elder .racc{left:9px;top:26px;width:14px;height:18px;background:#eee;border-radius:0 0 50% 50%}
+html:has(.ms-cele) .nb-ram,html:has(.mummy) .nb-ram{opacity:0;transform:translateY(24px);pointer-events:none}
+html.ram-seen .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
+@media (prefers-reduced-motion:reduce){.nb-ram .rb,.nb-ram .rleg,.nb-ram .me,.nb-ram .rneed{animation:none}}
+`; document.head.appendChild(st); })();
 // the stadium ticker plugs the mascot
 (function(){ if(typeof nbTicker!=="function") return; const N=nbTicker; nbTicker=function(){ let h=N.apply(this,arguments); try{ const p=petNow(); const S=petSide(); const lo=petMood(p); const msg=lo.lo<25?`MASCOT UPDATE: ${PET_NAME.toUpperCase()} IS ${lo.k==="belly"?"EATING HIS OWN BANDAGES":lo.k==="mood"?"SULKING IN A SARCOPHAGUS":"COMING APART AT THE SEAMS"} — SOMEBODY HELP HIM`:S.who?`MASCOT ${PET_NAME.toUpperCase()} NOW IN ${String((TEAMS[S.who]||{}).team||S.who).toUpperCase()} COLOURS${S.why==="talk"?" (BRIBED BY TRASH TALK)":""}`:`MASCOT ${PET_NAME.toUpperCase()} REFUSES TO PICK A SIDE`; h=h.replace('<div class="nb-tick">',`<div class="nb-tick"><span>🧻 ${esc(msg)}</span><i>◆</i>`).replace(/(<\/span><i>◆<\/i>)(?![\s\S]*<span>🧻)/,"$1"); }catch(e){} return h; }; })();
 // when he runs out to celebrate a score, he's in the scorer's jersey — but only while you're looking at the Games section
@@ -6125,6 +6182,8 @@ document.addEventListener("click", e=>{ const f=e.target.closest("[data-ff]"); i
 .mummy.ref{z-index:72}
 .mummy.ref .ma.a1{transform:rotate(-80deg)!important;animation:none}
 `; document.head.appendChild(st); })();
+// one mummy at a time, both ways: no walking act starts while the mascot is out cheering
+(function(){ if(typeof mumAct!=="function") return; const A=mumAct; mumAct=function(){ if(document.querySelector(".ms-cele")){ const args=arguments; setTimeout(()=>{ if(!document.querySelector(".ms-cele,.mummy")) A.apply(null,args); }, 4500); return Promise.resolve(); } return A.apply(this,arguments); }; })();
 
 // ---------- archive.js: the trip so far — every finished day in one place, newest first ----------
 // Reachable from a "Past" chip at the front of the day strip and a Guide tile. Tap a day to open it as it was.
