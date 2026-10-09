@@ -2533,7 +2533,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v96)";
+const BUILD = "Oct 9, 2026 (v97)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3331,14 +3331,15 @@ function standaloneShareFiles(){
 // ---------- whose phone is this: first-run chooser, header chip, personal overrides ----------
 const OTHER = ()=> me()==="Brad"?"Duane":me()==="Duane"?"Brad":"";
 const PERSONAL = {
- sat10:{ Brad:{alarm:"7:00 Cape Town", title:"Cape Town, then up the continent", place:"Cape Town → Addis Ababa → Cairo (lands 2:05am)", sleep:"the plane, then the Hilton at ≈3am", bag:"passport, $30 cash for the visa, charger, the rand for the market", dress:"the Red Wings — they're heavy to pack", cash:"rand for the Mill · $30 visa · ≈$15 Uber in Cairo",
-           mission:"Coffee and the market at the Old Biscuit Mill, then two flights and a visa line. Land at 2, Uber to Garden City, let yourself into the room Duane booked. Sleep until the light does it for you.", chal:"Find Duane's room without waking Duane.",
+ sat10:{ Brad:{alarm:"6:45 Cape Town", title:"Cape Town, then up the continent", place:"Cape Town → Addis Ababa → Cairo (lands 2:05am)", sleep:"the plane, then the Hilton at ≈3am", bag:"passport, $30 cash for the visa, charger, the rand for the markets", dress:"the Red Wings — they're heavy to pack", cash:"rand for the two markets · $30 visa · ≈$15 Uber in Cairo",
+           mission:"Two markets — the farm at 8, the Mill at 9:15 — then two flights and a visa line. Land at 2, Uber to Garden City, let yourself into the room Duane booked. Sleep until the light does it for you.", chal:"Find Duane's room without waking Duane.",
            // times are Cairo time (Cape Town is an hour behind); lt is the Cape Town clock, shown in the list
            agenda:[
-            {t:"08:00",lt:"07:00",title:"Up. Coffee, finish packing",note:"Passport, $30 cash for the Cairo visa, phone charger, the boots if you bought them."},
-            {t:"09:00",lt:"08:00",title:"Check out",note:"Take the bags in the Uber — the Mill has no luggage room. If your hotel will hold them and it's on the way to the airport, leave them and grab them on the way at ≈10:45 instead."},
-            {t:"09:20",lt:"08:20",title:"Espresso Lab Microroasters, Old Biscuit Mill",note:"Opens 8am on Saturdays: single-origin pour-overs and the lab-coat baristas. Breakfast here before the crowds.",map:"Espresso Lab Microroasters Woodstock Cape Town"},
-            {t:"10:00",lt:"09:00",title:"Neighbourgoods Market opens",note:"Saturdays only, 9–3: food stalls, makers, the design shops in the Mill (also open from 9). Cards everywhere. Out by 10:45.",map:"The Old Biscuit Mill Woodstock Cape Town"},
+            {t:"07:45",lt:"06:45",title:"Up. Finish packing",note:"Passport, $30 cash for the Cairo visa, phone charger, the boots if you bought them. Coffee waits for the farm."},
+            {t:"08:30",lt:"07:30",title:"Check out, Uber to the Waterfront",note:"Bags come with you all morning — two markets, no luggage room at either. If the hotel will hold them and it's on the way to the airport, leave them and grab them at ≈10:45 instead."},
+            {t:"09:00",lt:"08:00",title:"Oranjezicht City Farm Market opens",note:"The new timber barn on the Breakwater parking garage, corner of Dock Rd and Granger Bay Blvd. Saturdays 8–2:30. Coffee, breakfast, the farm's own veg, the harbour out the windows. Out by 9.",map:"Oranjezicht City Farm Market V&A Waterfront"},
+            {t:"10:00",lt:"09:00",title:"Uber to the Old Biscuit Mill",note:"≈10–15 min to Woodstock. Pickup on Dock Rd."},
+            {t:"10:15",lt:"09:15",title:"Neighbourgoods Market at the Old Biscuit Mill",note:"Saturdays 9–3: food stalls, makers, the design shops. An espresso at Espresso Lab on the way in if the farm's didn't do it. Cards everywhere. Out by 10:45.",map:"The Old Biscuit Mill Woodstock Cape Town"},
             {t:"11:50",lt:"10:50",title:"Uber to Cape Town International",note:"≈20–30 min from Woodstock on the N2. No parking at the Mill on Saturdays, so pickup is on Albert Road.",map:"Cape Town International Airport"},
             {t:"12:20",lt:"11:20",title:"Check in for ET 844 — bag tagged through to Cairo",note:"International departures. Ask them to check the bag all the way to CAI so you don't touch it in Addis. On wifi, open this app once so it's current."},
             {t:"14:50",lt:"13:50",title:"✈ ET 844 to Addis Ababa, lands 21:15",note:"Left-side window for Table Mountain on the climb-out, if it's clear."},
