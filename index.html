@@ -1301,6 +1301,14 @@ html.bigtext .fr-picks{grid-template-columns:1fr}
 .ppov.open .ppov-h{opacity:0;transition:opacity .4s}
 .ppov.open .ppov-top{background:none;pointer-events:none}
 .ppov.open .ppov-x{pointer-events:auto}
+
+.bp-on{display:grid;gap:6px;margin:10px 0 2px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.035);font-size:0.7647rem;line-height:1.35}
+.bp-on>div{display:grid;grid-template-columns:1.4em 3.4em 1fr;gap:6px;align-items:baseline}
+.bp-on b{font-weight:700}
+.bp-on em{font-style:normal;color:var(--muted)}
+.bp-on strong{color:var(--fg)}
+html.hugetext .bp-on>div{grid-template-columns:1.4em 1fr}
+html.hugetext .bp-on em{grid-column:2}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
@@ -2320,7 +2328,7 @@ function renderFlights(){
       <div class="bp-route"><div><b>${esc(f.from.ap||"—")}</b><small>${esc(f.from.city)}</small><em>${f.from.t?(f.from.approx?"≈":"")+f.from.t:"—"}</em></div><div class="bp-arrow"><i>✈</i>${dur?`<small>${dur}</small>`:""}</div><div><b>${esc(f.to.ap||"—")}</b><small>${esc(f.to.city)}</small><em>${f.to.t?(f.to.approx?"≈":"")+f.to.t:"—"}${f.to.date&&f.to.date!==f.date?"<sup>+1</sup>":""}</em></div></div>
       <div class="bp-meta"><span>${dlab(f.date)}</span>${cd?`<span class="bp-cd">${esc(cd)}</span>`:""}</div>
       ${plan?`<div class="bp-plan">${plan.up?`<span>⏰ up <b>${plan.up}</b></span>`:""}<span>🚗 leave ${esc(f.leave.from.split(" ")[0])} <b>${plan.go}</b></span><span>🛂 airport <b>${plan.at}</b></span><span>🛫 boards <b>≈${plan.board}</b></span></div>`:""}
-      ${f.note?`<div class="bp-note">${esc(f.note)}</div>`:""}${f.arrive?`<div class="bp-note"><b>On landing:</b> ${esc(f.arrive)}</div>`:""}
+      ${f.note?`<div class="bp-note">${esc(f.note)}</div>`:""}${safe(()=>onboardHTML(f))||""}${f.arrive?`<div class="bp-note"><b>On landing:</b> ${esc(f.arrive)}</div>`:""}
       ${f.status==="tbd"&&mine?xFlightForm(f):""}
       ${mine&&f.status==="ok"&&airlineOf(f)?`<form class="pnrf" data-f="${f.id}"><label>Confirmation code</label><input value="${esc(pnrOf(f))}" placeholder="e.g. ABC123" maxlength="8" autocapitalize="characters" autocomplete="off"><button class="btn mini" type="submit">Save</button>${pnrOf(f)?`<button type="button" class="btn mini" data-copy="${esc(pnrOf(f))}">Copy</button>`:""}</form>`:""}
       ${f.from.t?`<div class="row bp-acts">${mine?`<a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>`:""}${mine?airlineLinks(f):""}${statusHref(f)?`<a class="btn ${mine?"":"primary"}" target="_blank" rel="noopener" href="${statusHref(f)}">${mine?"Status":"Track "+esc(f.who)}</a>`:""}${f.x&&mine?`<button type="button" class="btn mini" data-xdel="${f.id}">Remove</button>`:""}<button type="button" class="btn send" data-sendtext="${esc(`✈️ ${f.who}: ${f.no||f.op} ${f.from.ap} ${f.from.t} → ${f.to.ap} ${f.to.t||""} · ${dlab(f.date)}${plan?` · leave ${plan.go}, airport ${plan.at}`:""}`).replace(/"/g,"&quot;")}">Send ↗</button></div>`:""}
@@ -2506,7 +2514,24 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v92)";
+
+// ---------- on board: Wi-Fi, food, and when the bag desk closes (checked Oct 9, 2026; most cut-offs are airline guidance, not airport-specific)
+const ONBOARD = {
+ "brad-out1":{wifi:"Maybe — Ethiopian is still fitting its 787s; the crew says so after take-off. $5/hr, $25 whole flight", food:"Free hot meal and drinks", bag:60, bagNote:"Ethiopian advises 60 min; online check-in closes 2 h before"},
+ "brad-out2":{wifi:"Yes — all Ethiopian A350s. $5/hr, $25 whole flight", food:"Free meal and drinks", bag:null, bagNote:"Your bag is checked through from Cape Town"},
+ "dua-out":{wifi:"Yes — messaging free for BA Executive Club members (else ≈£2–3), streaming £5–12", food:"Free light meal, snacks and bar on the Cairo route", bag:45, bagNote:"BA short-haul at Heathrow; the exact time is in Manage My Booking"},
+ "asw":{wifi:"None", food:"Probably a snack and a drink", bag:60, bagNote:"Domestic counters close 60 min before; boarding closes 25"},
+ "lxr":{wifi:"Maybe — EgyptAir's free messaging + 2 h browsing is on its newer planes only", food:"Light snack and a drink", bag:60, bagNote:"45–60 min quoted; use 60"},
+ "dua-home":{wifi:"Yes — as on the way out", food:"Free light meal, snacks and bar", bag:60, bagNote:"No published Cairo time; be at the BA desk 60 min before"},
+ "brad-ssh":{wifi:"EgyptAir maybe; Air Cairo no", food:"EgyptAir a snack; Air Cairo water free, the rest for cash", bag:60, bagNote:"Use 60 min either way"},
+ "brad-cai":{wifi:"EgyptAir maybe; Air Cairo no", food:"EgyptAir a snack; Air Cairo water free, the rest for cash", bag:60, bagNote:"Use 60 min either way"},
+ "brad-home1":{wifi:"Yes — 787-9: free messaging + 2 h browsing", food:"Free hot meal; no alcohol on EgyptAir", bag:60, bagNote:"⚠ EgyptAir's winter schedule may move this to 09:20 from Oct 25 — check the United or EgyptAir app"},
+ "brad-home2":{wifi:"Free Starlink only if this 767 has been upgraded; otherwise the older paid Wi-Fi", food:"Free meals and drinks, beer and wine included", bag:null, bagNote:"Bag checked through from Cairo; boarding gates close ≈30 min before"},
+ "brad-home3":{wifi:"Free Starlink if fitted, else $8–10", food:"Free soft drinks and a snack; meals and alcohol to buy", bag:null, bagNote:"Re-drop the bag in Chicago after customs; United's domestic cut-off is 45 min"},
+};
+function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
+  return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
+const BUILD = "Oct 9, 2026 (v93)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
