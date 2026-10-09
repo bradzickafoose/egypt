@@ -1043,6 +1043,7 @@ h3.arch{font-family:Georgia,serif;font-size:0.6471rem;letter-spacing:.22em;text-
 .now:not(.solo) .fband{background:rgba(255,255,255,.1)}
 .fband .fb-ic{font-size:1.0588rem}.fband>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.fband b{font-size:0.7941rem}.fband span{font-size:0.7647rem;opacity:.85;font-family:var(--mono)}
 .fband .btn{flex:none}.fband span.prose{font-family:var(--body);font-size:0.7941rem;opacity:.9}
+.fband b small.tzl{font-weight:500;opacity:.7;font-size:0.7059rem;white-space:nowrap}
 .fband.theirs{background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.25)}
 .fl{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
 .fl:first-child{border-top:0}
@@ -2141,7 +2142,11 @@ function renderClock(){
   const d = new Date(n.date+"T12:00:00Z");
   $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"});
   const di = dayIndexFor(n.date); const pr=$("#prog");
-  pr.textContent = di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${di+1} of ${DAYS.length}` : `Day ${di+1} of ${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home · Oct 10–25";
+  // huge text: the short form, so it never ends in "…"
+  const hg=document.documentElement.classList.contains("hugetext");
+  const full = di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${di+1} of ${DAYS.length}` : `Day ${di+1} of ${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home · Oct 10–25";
+  pr.textContent = !hg ? full : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${di+1}/${DAYS.length}` : `Day ${di+1}/${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
+  pr.title=full;
   if(document.documentElement.classList.contains("hugetext")) $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"});
   $("#offline").hidden = navigator.onLine !== false;
 }
@@ -2361,7 +2366,7 @@ function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHE
   const then=onward?` · then ${onward.no||onward.op} → ${onward.to.ap} ${onward.to.t}${onward.to.date&&onward.to.date!==now.date?" "+dowS(onward.to.date):""}`:"";
   const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); let state; if(n<dep){ const m=Math.round((dep-n)/60000); state=m<=40?`boarding · departs in ${m} min`:m<60?`boards in ${m-40} min`:`departs in ${Math.floor(m/60)}h ${pad2(m%60)}m`; } else if(arr&&n<arr){ const m=Math.round((arr-n)/60000); state=`in the air · lands ${f.to.t} ${f.to.ap} (${Math.floor(m/60)}h ${pad2(m%60)}m)`; } else if(arr){ state=`landed ${f.to.ap} ${f.to.t}${f.to.tz===3?"":" local"}`; } else state="in the air";
   const cairoArr = arr? (()=>{ const d=new Date(arr+3*3600000); return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}`; })():"";
-  return `<div class="fband theirs"><span class="fb-ic">🛫</span><div><b>${esc(o)} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(state)}${cairoArr&&f.to.tz!==3?` · ${cairoArr} Cairo time`:""}${esc(then)}</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Track</a>`:""}</div>`; }catch(e){ return ""; } }
+  return `<div class="fband theirs"><span class="fb-ic">🛫</span><div><b>${esc(o)} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}${f.from.tz!==3?` <small class="tzl">${esc(f.from.city.replace(/ (Heathrow|International)$/,""))} time</small>`:""}</b><span>${esc(state)}${cairoArr&&f.to.tz!==3?` · ${cairoArr} Cairo time`:""}${esc(then)}</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Track</a>`:""}</div>`; }catch(e){ return ""; } }
 // the Now card before the trip: my flight first, his second, the handshake last
 function cdLong(ms){ if(ms<=0) return "now"; const m=Math.round(ms/60000); if(m<60) return `${m} min`; const h=Math.floor(m/60), mm=m%60; if(h<48) return `${h}h ${pad2(mm)}m`; const d=Math.floor(h/24); return `${d} day${d>1?"s":""} ${h%24}h`; }
 function arrDow(f){ const d=f.to.date||f.date; const x=DAYS.find(y=>y.date===d); return x?x.dow:"Sat"; }
@@ -2383,7 +2388,9 @@ function preNow(now, days){
         : `<div class="fband"><span class="fb-ic">🛂</span><div><b>At ${esc(ap(first))} by ${at(first)}</b><span>${early(first)}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`);
     const hisLast=last(his); const whenHe = hisLast ? `${hisLast.who} lands <b>${esc(hisLast.to.t)}</b> ${arrDow(hisLast)} from ${esc(viaTxt(hisLast))}${hisLast.who==="Brad"?" — the Hilton is yours Saturday night; he tiptoes in at 2am.":" — he'll be asleep by the time you get in."}` : "";
     const eyebrow = connecting ? "You fly Friday night · via London" : `You fly ${days===1?"tomorrow":first.date==="2026-10-09"?"Friday":"Saturday"}${first.no||first.op?` · ${esc(first.no||first.op)}`:""}`;
-    return `<div class="eyebrow">${eyebrow}</div><div class="big">${connecting?`LHR 10:10 → CAI ${landTxt}`:`${chain} ${landTxt}`}</div><div class="row"><span class="cd">${connecting?"Cairo leg in":"wheels up in"} ${left}</span></div>${band}${whenHe?`<div class="fband theirs"><span class="fb-ic">🛬</span><div><b>${whenHe}</b><span>Kickoff: Sunday breakfast, Hilton Cairo Grand Nile.</span></div>${statusHref(hisLast)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(hisLast)}">Track</a>`:""}</div>`:""}`;
+    // the night before: tomorrow morning's shape, from my own agenda (Cape Town / London clock)
+    const morn = days===1 ? (()=>{ try{ const A=((PERSONAL.sat10||{})[w]||{}).agenda||[]; const it=A.filter(a=>a.lt&&!/^(Uber|Bags|✈)/.test(a.title)&&!/airport|check in/i.test(a.title)).slice(0,5); if(it.length<2) return ""; const clk=s=>s.replace(/^0/,""); const nm=s=>s.split(/[.,—]/)[0].replace(/ opens$/,"").replace(/ at the Old Biscuit Mill/," (Old Biscuit Mill)").trim(); return `<div class="fband morn"><span class="fb-ic">🌅</span><div><b>Tomorrow morning</b><span>${it.map(a=>`${clk(a.lt)} ${esc(nm(a.title))}`).join(" · ")}</span><span class="prose">${esc(it[0].ltz||"Cape Town")} time. Pack tonight; the morning is yours.</span></div></div>`; }catch(e){ return ""; } })() : "";
+    return `<div class="eyebrow">${eyebrow}</div><div class="big">${connecting?`LHR 10:10 → CAI ${landTxt}`:`${chain} ${landTxt}`}</div><div class="row"><span class="cd">${connecting?"Cairo leg in":"wheels up in"} ${left}</span></div>${morn}${band}${whenHe?`<div class="fband theirs"><span class="fb-ic">🛬</span><div><b>${whenHe}</b><span>Kickoff: Sunday breakfast, Hilton Cairo Grand Nile.</span></div>${statusHref(hisLast)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(hisLast)}">Track</a>`:""}</div>`:""}`;
   }
   // nobody has said who's holding the phone yet
   const lastOf=who=>last(all.filter(f=>f.who===who)); const ends=["Duane","Brad"].map(lastOf).filter(Boolean).sort((a,b)=>flightArr(a)-flightArr(b));
@@ -2533,7 +2540,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v100)";
+const BUILD = "Oct 9, 2026 (v101)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3646,7 +3653,7 @@ function nbAnimate(root){
   (root||document).querySelectorAll(".nilebowl .nb-t[data-n]").forEach(el=>{ const n=+el.dataset.n; if(!(n>0)||el.dataset.done) return; el.dataset.done=1; const t0=performance.now(); const tick=now=>{ const k=Math.min(1,(now-t0)/600); el.textContent=Math.round(n*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
   const fin=(root||document).querySelector(".nilebowl.final[data-winner]"); if(fin && fin.dataset.winner && fin.dataset.winner!=="tie" && !GS.get("confetti","")){ GS.set("confetti", new Date().toISOString()); const T=TEAMS[fin.dataset.winner]; const w=document.createElement("div"); w.className="scarabs"; w.innerHTML=Array.from({length:60},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*1.5}s;font-size:${10+Math.random()*10}px;color:${i%2?T.c1:T.c2}">■</span>`).join(""); document.body.appendChild(w); setTimeout(()=>w.remove(),5000); }
 }
-function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); const qn=quarterNow(); if(!qn||!A) return ""; const t=TEAMS[w].team, o=TEAMS[OTHER()].team; const bp=B?B.pts:null; const lead = bp===null?`${t} ${A.pts}`:(A.pts>bp?`${t} by ${A.pts-bp}`:A.pts<bp?`${o} by ${bp-A.pts}`:"tied"); return `Q${qn} · ${QNAME[qn]} · ${lead}`; }
+function nileLine(){ const w=me(); if(!w) return ""; const A=nileTotal(w), B=nileTotal(OTHER()); const qn=quarterNow(); if(!qn||!A) return ""; if(!A.pts&&!(B&&B.pts)) return ""; /* 0–0 before kickoff says nothing */ const t=TEAMS[w].team, o=TEAMS[OTHER()].team; const bp=B?B.pts:null; const lead = bp===null?`${t} ${A.pts}`:(A.pts>bp?`${t} by ${A.pts-bp}`:A.pts<bp?`${o} by ${bp-A.pts}`:"tied"); return `Q${qn} · ${QNAME[qn]} · ${lead}`; }
 function conversionBox(d){
   if(!QUARTER[d.id]) return ""; const ch=GS.get("chal",{}); if(!ch[d.id]) return "";
   const st=!!stamps()[d.id], sp=!!GS.get("stupid",{})[d.id];
