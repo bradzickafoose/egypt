@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v162)";
+const BUILD = "Oct 9, 2026 (v163)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5518,6 +5518,7 @@ MUM_EV.delay=["Delayed? I've waited three thousand years. You'll survive.","A de
 // the line on the Now card: what the last check said
 function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&&f.from&&f.from.t&&fsWindow(f)&&(f.who===me()||f.who===OTHER_OF(me()))).sort((a,b)=>flightDep(a)-flightDep(b)); const n=nowUTC(); [me(),OTHER_OF(me())].forEach(w=>{ const x=all.find(f=>f.who===w&&(flightArr(f)??flightDep(f)+3*3600000)>n); if(!x) return; /* you're on it with no key: the in-flight card already says everything this band could */ if(w===me()&&!mumKey()&&typeof myAirFlight==="function"){ const a=myAirFlight(); if(a&&a.id===x.id) return; } L.push(x); }); }catch(e){} if(!L.length) return "";
   const n=nowUTC(); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; }; const dur=m=>m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`:`${m} min`;
+  let offSaid=false; // no key: say it once, not once per flight
   return L.slice(0,2).map(f=>{ const s=f.live||null; const mine=f.who===me(); const who=mine?"":`${f.who} · `; const city=c=>String(c||"").replace(" Heathrow","");
     const dep=flightDep(f), arr=flightArr(f)??(dep+3*3600000); const toDep=Math.round((dep-n)/60000), toArr=Math.round((arr-n)/60000);
     // line 1: where the flight is in its life, from the (possibly delayed) times
@@ -5534,9 +5535,9 @@ function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&
     else if(fsErr[f.id]&&mumKey()){ const e=fsErr[f.id]; ic="⚠️"; cls="warn"; st=e.kind==="auth"?"Live check failed: the key was refused":e.kind==="credit"?"Live check failed: the key's account is out of credit":e.kind==="offline"?"No signal — will check when you're back online":/web.?search/i.test(e.msg||"")?"Live check failed: web search isn't switched on for this key (Anthropic Console → Settings → Privacy)":e.kind==="busy"?"Anthropic is busy — retrying in a few minutes":e.kind==="parse"?"No clear status found online yet":`Live check failed${e.msg?": "+e.msg:""}`; act=`<button type="button" class="btn mini" data-fscheck="1">Retry</button>`; }
     else if(s&&s.nf){ ic="📡"; st=`No live status published yet · checked ${when}`; act=`<button type="button" class="btn mini" data-fscheck="1">Check now</button>`; }
     else if(mumKey()){ ic="📡"; st="Live status: first check coming up"; act=`<button type="button" class="btn mini" data-fscheck="1">Check now</button>`; }
-    else { ic="📡"; cls="off"; st=`Live delays off — one phone with the Mummy's key checks ${mine?"both of you":"his flights too"}`; act=`<button type="button" class="btn mini" data-askmum="1">Add key</button>`; }
+    else { ic="📡"; cls="off"; if(!offSaid){ offSaid=true; st=`Live delays off — one phone with the Mummy's key checks ${L.length>1?"both flights":mine?"both of you":"his flights too"}`; act=`<button type="button" class="btn mini" data-askmum="1">Add key</button>`; } }
     if(!act&&statusHref(f)) act=`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Verify</a>`;
-    return `<div class="fband flive ${cls}"><span class="fb-ic">${ic}</span><div><b>${esc(who+f.no)} ${esc(f.from.ap)}→${esc(f.to.ap)} · ${esc(phase)}${gate&&n<dep?` · gate ${esc(gate)}`:""}</b><span class="prose">${esc(st)}</span></div>${act}</div>`; }).join(""); }
+    return `<div class="fband flive ${cls}"><span class="fb-ic">${ic}</span><div><b>${esc(who+f.no)} ${esc(f.from.ap)}→${esc(f.to.ap)} · ${esc(phase)}${gate&&n<dep?` · gate ${esc(gate)}`:""}</b>${st?`<span class="prose">${esc(st)}</span>`:""}</div>${act}</div>`; }).join(""); }
 document.addEventListener("click", e=>{ if(!e.target.closest("[data-fscheck]")) return; const b=e.target.closest("[data-fscheck]"); b.disabled=true; b.textContent="Checking…"; Object.keys(fsErr).forEach(k=>delete fsErr[k]); safe(()=>flightWatch(true).then(()=>safe(renderNow))); setTimeout(()=>safe(renderNow),300); });
 (function(){ if(typeof renderNow!=="function"||renderNow.__fs) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("flive", flightLiveBand(), [".sky",".bclock",".fmode"]); }catch(e){} return r; }; renderNow.__fs=true; })();
 (function(){ setTimeout(()=>safe(()=>flightWatch(false)), 6000); setInterval(()=>{ if(!document.hidden) safe(()=>flightWatch(false)); }, 5*60000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) safe(()=>flightWatch(false)); }); })();
