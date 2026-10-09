@@ -2190,7 +2190,7 @@ function renderClock(){
   pr.textContent = !hg ? full : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${di+1}/${DAYS.length}` : `Day ${di+1}/${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
   pr.title=full;
   // still at home after Cairo's midnight: say whose clock the day is following
-  if(n.home&&!hg){ const ln=new Date(); pr.textContent=`${pr.textContent.replace(/^Starts /,"")} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} here`; }
+  if(n.home&&!hg&&navigator.onLine!==false){ const ln=new Date(); pr.textContent=`${pr.textContent.replace(/^Starts /,"")} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} here`; }
   if(document.documentElement.classList.contains("hugetext")) $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"});
   $("#offline").hidden = navigator.onLine !== false;
 }
@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v163)";
+const BUILD = "Oct 9, 2026 (v164)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6248,6 +6248,69 @@ document.addEventListener("click", e=>{
 .ar-open{display:block;margin-top:6px;font-size:0.7353rem;color:var(--dusk)}
 .ar-pic{width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .arch .ar-pp{width:100%;margin-top:4px;justify-content:center;text-align:center}
+`; document.head.appendChild(st); })();
+
+// ---------- outbox.js: nothing you do without signal gets lost ----------
+// Everything shared is saved on the phone first. This keeps a list of what the server hasn't confirmed yet,
+// retries it the moment there's signal (and every 30 s while anything is waiting), and shows "⏳ 3 to send" up top.
+const OB_TOG="egypt.ob.tog", OB_BOAT="egypt.ob.boat", OB_LIVE="egypt.ob.live";
+const obJ=(k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)||"null")??d; }catch(e){ return d; } };
+const obSet=(k,v)=>{ try{ if(v==null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+const obHash=s=>{ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return s.length+":"+h; };
+// the live board: what this phone last got the server to accept (the payload's own timestamp aside)
+function obLiveBody(){ try{ const p=livePayload(); delete p.at; return obHash(JSON.stringify(p)); }catch(e){ return ""; } }
+function obLivePending(){ if(!me()||typeof liveOK!=="function"||!liveOK()) return 0; const h=obLiveBody(); return h&&h!==obJ(OB_LIVE,"")?1:0; }
+(function(){ if(typeof livePush!=="function") return; const L=livePush; livePush=function(now){ const r=L.apply(this,arguments);
+  // livePush fires and forgets; confirm by reading back our own record a moment later
+  setTimeout(()=>safe(obLiveConfirm), now?2500:4500); return r; }; })();
+async function obLiveConfirm(){ if(!navigator.onLine||!me()) return; try{ const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{cache:"no-store"}); if(!r.ok) return; const d=await r.json(); if(!d) return; delete d.at; const mine=livePayload(); delete mine.at;
+  // the server copy round-trips through JSON; compare what matters: our plays and stamps
+  const same=JSON.stringify(d.events||[])===JSON.stringify(mine.events||[]) && JSON.stringify(d.stamps||{})===JSON.stringify(mine.stamps||{}) && (d.pts||0)===(mine.pts||0);
+  if(same) obSet(OB_LIVE, obLiveBody()); obPill(); }catch(e){} }
+// health and Ramses: one-shot writes — keep the latest value for each until the server takes it
+(function(){ if(typeof togPut!=="function") return; const T=togPut; togPut=async function(k,p,v){ const ok=await T.apply(this,arguments); if(k==="health"||k==="pet"){ const q=obJ(OB_TOG,{}); const key=k+"|"+(p||""); if(ok) delete q[key]; else q[key]={k,p:p||"",v}; obSet(OB_TOG,q); obPill(); } return ok; }; togPut.raw=T; })();
+// the boat: votes, booking ticks and the choice
+(function(){ if(typeof boatPushVotes==="function"){ const V=boatPushVotes; boatPushVotes=async function(){ const ok=await V.apply(this,arguments); const q=obJ(OB_BOAT,{}); if(ok) delete q.votes; else q.votes=1; obSet(OB_BOAT,q); obPill(); return ok; }; }
+  if(typeof boatPushStep==="function"){ const S=boatPushStep; boatPushStep=async function(k,v){ const ok=await S.apply(this,arguments); const q=obJ(OB_BOAT,{}); q.steps=q.steps||{}; if(ok) delete q.steps[k]; else q.steps[k]=v||0; if(!Object.keys(q.steps).length) delete q.steps; obSet(OB_BOAT,q); obPill(); return ok; }; }
+  // a pull must never wipe a tick made offline: send the waiting ones first
+  if(typeof boatPull1==="function"){ const P=boatPull1; boatPull1=async function(){ await obBoatSteps(); return P.apply(this,arguments); }; } })();
+async function obBoatSteps(){ const q=obJ(OB_BOAT,{}); if(!q.steps||!navigator.onLine) return; for(const [k,v] of Object.entries(q.steps)){ await boatPushStep(k, v||null); } }
+function obBoatPending(){ const q=obJ(OB_BOAT,{}); let n=(q.votes?1:0)+Object.keys(q.steps||{}).length; try{ const L=boatRec(); if(L&&!L.pushed) n++; }catch(e){} return n; }
+// the count
+function obPending(){ let n=0; try{ n+=Object.keys(tabState().pend||{}).length; }catch(e){} try{ n+=Object.keys(pickState().pend||{}).length; }catch(e){} n+=Object.keys(obJ(OB_TOG,{})).length; n+=obBoatPending(); n+=obLivePending(); return n; }
+// the flush: everything, in order, once at a time
+let obBusy=false;
+async function obFlush(){ if(obBusy||!navigator.onLine||typeof liveOK!=="function"||!liveOK()||!me()) return; obBusy=true; try{
+  if(obLivePending()) livePush(true);
+  try{ if(Object.keys(tabState().pend||{}).length) await tabSync(); }catch(e){}
+  try{ if(Object.keys(pickState().pend||{}).length) await pickSync(true); }catch(e){}
+  const q=obJ(OB_TOG,{}); for(const x of Object.values(q)){ try{
+    if(x.k==="pet"){ // Ramses is shared: only send ours if nobody has looked after him since
+      const s=await togGet("pet"); const L=petLocal(); if(s&&s.at&&L&&String(s.at)>String(L.at)){ const q2=obJ(OB_TOG,{}); delete q2["pet|"]; obSet(OB_TOG,q2); continue; } await togPut("pet","",L||x.v); }
+    else if(x.k==="health"){ const [w,d]=String(x.p).split("/"); const cur=((obJ("egypt.health",{})[w]||{})[d])||x.v; await togPut("health",x.p,cur); }
+  }catch(e){} }
+  const b=obJ(OB_BOAT,{}); if(b.votes) await boatPushVotes(); await obBoatSteps(); try{ const L=boatRec(); if(L&&!L.pushed) await boatPushChoice(); }catch(e){}
+}catch(e){} finally{ obBusy=false; obPill(); } }
+// the pill next to the clock: quiet when there's nothing to say
+let obWas=0, obHideT=0;
+function obPill(){ let el=document.getElementById("obPill"); if(!el){ const top=document.getElementById("top"); if(!top) return; el=document.createElement("button"); el.type="button"; el.id="obPill"; el.hidden=true; top.appendChild(el); }
+  const n=obPending(); clearTimeout(obHideT);
+  if(n>0){ el.hidden=false; el.className="ob-wait"; el.textContent=`⏳ ${n} waiting to send`; el.setAttribute("aria-label",`${n} change${n>1?"s":""} saved on this phone, waiting for signal to send`); }
+  else if(obWas>0){ el.hidden=false; el.className="ob-done"; el.textContent="✓ all sent"; obHideT=setTimeout(()=>{ el.hidden=true; },3500); }
+  else el.hidden=true;
+  obWas=n; }
+document.addEventListener("click", e=>{ if(!e.target.closest("#obPill")) return; const n=obPending(); if(n){ toast(navigator.onLine?"Sending now…":`Saved on this phone. ${n===1?"It sends":"They send"} itself the moment there's signal — nothing to redo.`); if(navigator.onLine) safe(obFlush); } });
+addEventListener("online", ()=>setTimeout(()=>safe(obFlush), 1200));
+addEventListener("offline", ()=>safe(obPill));
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) setTimeout(()=>safe(obFlush), 800); });
+setInterval(()=>{ safe(obPill); if(obPending()&&navigator.onLine) safe(obFlush); }, 30000);
+setTimeout(()=>{ safe(obPill); safe(obFlush); }, 3000);
+(function(){ const st=document.createElement("style"); st.textContent=`
+#obPill{position:absolute;right:12px;bottom:-15px;z-index:21;border:1px solid color-mix(in srgb,#c98a1a 45%,var(--line));background:var(--card);color:#b07612;border-radius:999px;padding:3px 10px;font:700 0.6471rem var(--mono);letter-spacing:.04em;box-shadow:0 4px 10px -6px rgba(0,0,0,.4);cursor:pointer;animation:obin .3s cubic-bezier(.2,1.4,.4,1) both}
+#obPill[hidden]{display:none}
+#obPill.ob-done{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
+@keyframes obin{from{transform:translateY(-6px);opacity:0}}
+@media (prefers-color-scheme:dark){#obPill{color:#e2a840}}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
