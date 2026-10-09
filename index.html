@@ -2542,7 +2542,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v116)";
+const BUILD = "Oct 9, 2026 (v117)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4329,7 +4329,7 @@ function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return 
   return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The Nile boat · ${urg}</span><b>Pick our Nile boat</b><small>${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
 // undecided and still time to book: it goes above the Now card; once decided (or from Monday) it sits quietly below it
 function renderBoatSlot(){ const el=document.getElementById("boatSlot"); if(!el) return; el.innerHTML=safe(boatSlotHTML)||""; const now=document.getElementById("now"); if(!now) return;
-  const top=!boatChoice() && cairoNow().date<="2026-10-11"; const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("attop", top); }
+  const dNow=cairoNow().date; const top=!boatChoice() && dNow<="2026-10-11" && dNow!=="2026-10-10"; /* travel day: flights first */ const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("attop", top); }
 // ---------- the sheet
 const boatDots=n=>`<span class="cdots" aria-label="Comfort ${n} of 5">${[1,2,3,4,5].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`;
 const boatPhotos=b=>`${b.photoq?`<a class="btn mini" target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(b.photoq)}">📷 Photos ↗</a>`:""}${b.ta?`<a class="btn mini" target="_blank" rel="noopener" href="${b.ta}">⭐ Reviews ↗</a>`:""}`;
