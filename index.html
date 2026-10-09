@@ -2197,7 +2197,9 @@ function renderNavigator(){
       ["hotel","🏨","Hotel desk", h?h.n.replace(/ \(.*\)/,""):"tonight's bed"],
       ["money","💵","Money", `$1 = ${rate} EGP · tips`],
       ["phrases","🗣️","Words", "40 phrases, spoken"],
-      ["eat","🍽️","Eat & shop", g.city]]],
+      ["eat","🍽️","Eat & shop", g.city],
+      ["tab","🧾","The tab", safe(tabTileLine)||"who paid, who owes"],
+      ["numbers","٣","Numbers", "read a price tag"]]],
     ["What you're looking at",[
       ["arc","📖","The story", "9 chapters, one thread"],
       ["who","🏺","Who's who", "gods, kings, walls"],
@@ -2290,6 +2292,8 @@ function navGo(k){
   if(k==="hotel"){ const h=hotelFor(DAYS[sel]); const dets=[...document.querySelectorAll("#hotels details.hotel")]; dets.forEach(x=>x.open=false); const i=h?HOTELS.indexOf(h):-1; if(i>=0&&dets[i]){ dets[i].open=true; to(dets[i]); } else to("#pinned"); return; }
   if(k==="eat"){ const key=CITY_KEY(DAYS[sel]); const i=GUIDES.findIndex(g=>g.id===key); if(i>=0){ gsel=i; renderGuides(); } to("#guides"); return; }
   if(k==="money"){ to("#tools"); return; }
+  if(k==="tab"){ closeSheet("sheetQC"); safe(()=>openTab(false)); return; }
+  if(k==="numbers"){ closeSheet("sheetQC"); safe(openNums); return; }
   if(k==="phrases"){ to("#wordsSec"); return; }
   if(k==="who"){ to("#whoSec"); return; }
   if(k==="signs"){ safe(renderSigns); to("#signsSec"); return; }
@@ -2573,7 +2577,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v127)";
+const BUILD = "Oct 9, 2026 (v128)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -2835,8 +2839,8 @@ function renderGame(){
 
   <details class="fold sg souk" open><summary><span class="sg-i">🏷️</span><span class="sg-t"><span class="sg-n">The Souk Exchange <i class="sg-pts">FG · 3</i></span><small>${s.n?`${s.saved.toLocaleString()} EGP saved over ${s.n} buy${s.n===1?"":"s"}`:"every buy, asked vs paid"}</small></span><span class="pill">${hg.length}</span></summary><div class="in">
     <p class="muted">Log every buy: what, asking price, what you paid. <b>Forty percent off or more is a field goal</b> — three points, once a day. The button turns your colors when the numbers add up.</p>
-    <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>
-    ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span><button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button>${sendBtn(`🏷️ ${h.w}${h.d?" at "+h.d:""}: asked ${h.a.toLocaleString()}, paid ${h.p.toLocaleString()} — ${pct}% off.${pct>=40?" Field goal.":""}`, SEND_ICON, "mini tagsend")}</div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
+    <form class="hform" id="hform"><input id="hw" placeholder="What (cartouche, scarf…)" required><input id="hd" placeholder="Where" ><input id="ha" data-ha inputmode="numeric" placeholder="Asked, EGP" required><input id="hp" data-hp inputmode="numeric" placeholder="Paid, EGP" required><button class="btn primary" data-hbtn type="submit">Log it</button></form>${safe(fairTableHTML)||""}
+    ${hg.length?`<div class="tags">${hg.map((h,i)=>{ const pct=h.a>0?Math.round((1-h.p/h.a)*100):0; return `<div class="tag ${pct>=40?"fg":""}" style="--r:${((i*37)%7)-3}deg"><i class="hole"></i><b>${esc(h.w)}</b>${h.d?`<small>${esc(h.d)}</small>`:""}<div class="px"><s>${h.a.toLocaleString()}</s><em>${h.p.toLocaleString()}</em></div><span class="off">${pct}% off${pct>=40?" · FG":""}</span>${safe(()=>fairVerdict(h))||""}<button type="button" class="x" data-hdel="${i}" aria-label="Remove">✕</button>${sendBtn(`🏷️ ${h.w}${h.d?" at "+h.d:""}: asked ${h.a.toLocaleString()}, paid ${h.p.toLocaleString()} — ${pct}% off.${pct>=40?" Field goal.":""}`, SEND_ICON, "mini tagsend")}</div>`; }).join("")}</div>${king?`<p class="muted" style="margin-top:10px">Haggle of the trip: <b>${esc(king.w)}</b>, ${Math.round((1-king.p/king.a)*100)}% off.</p>`:""}`:`<p class="muted">No tags yet. The touts are winning.</p>`}
   </div></details>
 
   ${safe(flagsBox)}
@@ -3124,7 +3128,7 @@ function passportBook(o){
   const entry=d=>{ const s=st[d.id]; const r=rate[d.id]; const L=stampLook(d);
     const marks=r?["food","sight","sleep"].map(k=>r[k]?`<i>${k==="food"?"food":k==="sight"?"sight":"sleep"} ${"|".repeat(r[k])}</i>`:"").filter(Boolean).join(""):"";
     return `<div class="ent ${s?"on":""} ${d.who==="brad"?"solo":""}" data-day="${d.id}" role="link" tabindex="0"><div class="vs">${s?stampHTML(d,s,true):`<div class="visa-ghost" style="--ink:${L[0]}"><span>VISA</span><b>${CITY_OF(d)}</b><small>${d.dow.toUpperCase()} ${d.num} OCT</small></div>`}</div>
-      <div class="et"><b>${d.dow} ${d.num}</b><span>${esc(d.title)}</span>${marks?`<div class="marks" style="--ink:${L[0]}">${marks}</div>`:""}${ch[d.id]&&QUARTER[d.id]?`<em class="td" style="--ink:${L[0]}">TOUCHDOWN</em>`:""}${j(d.id)?`<p class="hand">${esc(j(d.id))}</p>`:""}${(!o.archived&&photoOf(d.id))?`<div class="polaroid" style="--rot:${((hash(d.id+"p")%7)-3)}deg"><img src="${photoOf(d.id)}" alt=""></div>`:""}</div></div>`; };
+      <div class="et"><b>${d.dow} ${d.num}</b><span>${esc(d.title)}</span>${marks?`<div class="marks" style="--ink:${L[0]}">${marks}</div>`:""}${ch[d.id]&&QUARTER[d.id]?`<em class="td" style="--ink:${L[0]}">TOUCHDOWN</em>`:""}${j(d.id)?`<p class="hand">${esc(j(d.id))}</p>`:""}${!o.archived?(safe(()=>pickPassLine(d))||""):""}${(!o.archived&&photoOf(d.id))?`<div class="polaroid" style="--rot:${((hash(d.id+"p")%7)-3)}deg"><img src="${photoOf(d.id)}" alt=""></div>`:""}</div></div>`; };
   const pages=[]; for(let i=0;i<DAYS.length;i+=2) pages.push(DAYS.slice(i,i+2));
   const crest=`<svg viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><circle cx="40" cy="40" r="34" opacity=".55"/><circle cx="40" cy="40" r="29"/><path d="M14 56 L40 18 L66 56 Z"/><path d="M27 56 L40 36 L53 56"/><path d="M8 62 Q40 54 72 62"/><circle cx="40" cy="12" r="3.5" fill="currentColor"/></g></svg>`;
   return `<div class="book ${o.archived?"archived":""}"><div class="spread">
@@ -3727,9 +3731,9 @@ function eveningCard(d, ni, now){
   const over = (ni===-1 && now.h>=15) || now.h>=21; if(!over) return "";
   const closed=!!stamps()[d.id]; const nx0=DAYS[dayIndexFor(d.date)+1]; const nx=nx0?(safe(()=>withMe(nx0))||nx0):null;   // my alarm, not the shared one
   const hon=safe(honorific); const nl=safe(nileLine);
-  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span><button type="button" class="btn mini" data-brief="${nx.id}">📖 Tomorrow's briefing</button></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}`; }
+  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span><button type="button" class="btn mini" data-brief="${nx.id}">📖 Tomorrow's briefing</button></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}${safe(()=>pickBand(d))||""}`; }
   const openPlay = QUARTER[d.id] && !GS.get("chal",{})[d.id] && CHALLENGES[d.id] ? ((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]) : "";
-  return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div>${openPlay?`<div class="fband"><span class="fb-ic">📋</span><div><b>Today's play is still open</b><span class="prose">${esc(openPlay)}</span></div><button type="button" class="btn mini pts-me" data-chal="${d.id}">Did it · +${ptsFor(6,d.id)}</button></div>`:""}<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
+  return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div>${openPlay?`<div class="fband"><span class="fb-ic">📋</span><div><b>Today's play is still open</b><span class="prose">${esc(openPlay)}</span></div><button type="button" class="btn mini pts-me" data-chal="${d.id}">Did it · +${ptsFor(6,d.id)}</button></div>`:""}${safe(()=>pickBand(d))||""}<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
 }
 
 // ---------- sheets: quick capture (+) and close-the-day ----------
@@ -3746,6 +3750,7 @@ function qcHome(){
     <button type="button" data-qc="flag"><span class="qi">🚩</span>Flag a penalty<small>safety, 2 to the other guy</small></button>
     <button type="button" data-qc="taunt"><span class="qi">🗣</span>Trash talk<small>to his jumbotron</small></button>
     <button type="button" data-qc="line"><span class="qi">✍️</span>One line<small>into today's journal</small></button>
+    <button type="button" data-nav="tab"><span class="qi">🧾</span>Paid for something<small>${esc(safe(tabTileLine)||"on the tab")}</small></button>
     <button type="button" data-qc="close" ${closed||!inTrip?"disabled style=\"opacity:.5\"":""}><span class="qi">🛂</span>Close the day<small>${closed?"already stamped":inTrip?"stamp, rate, write":"not on the trip yet"}</small></button>
   </div>`;
 }
@@ -3778,11 +3783,13 @@ function closeDaySheet(id){
     ${QUARTER[d.id]?(()=>{ const p=safe(()=>dayPoints(d.id))||0; return `<div class="daytitle"><b>${dayTitle(p)}</b><span>${p} point${p===1?"":"s"} today${QUARTER[d.id]===4?" · Sunday, doubled":""}${p>=7?" · the booth is impressed":p>0?" · the booth has notes":" · the booth is asleep"}</span></div><div class="row" style="margin:-4px 0 10px"><button type="button" class="btn mini" id="recapBtn" data-id="${d.id}">📻 Nile Bowl Tonight</button><span class="muted" style="font-size:0.7647rem">the day's plays, read by the booth</span></div>`; })():""}
     ${safe(()=>conversionBox(d))}
     ${safe(()=>rateBox(d))}
+    ${safe(()=>pickBoxHTML(d))||""}
     <div class="journ"><b style="font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Three lines</b><textarea id="cdj" placeholder="Best moment. Funniest moment. The thing you'd tell someone who wasn't there.">${esc(j)}</textarea></div>
     ${safe(()=>stampBox(d))}
     ${safe(()=>photoBox(d))||""}
     ${nx?`<div class="tmrw"><b>Tomorrow · ${nx.dow} ${nx.num}</b>${esc(nx.title)} · ⏰ ${esc(nx.alarm)} · carry: ${esc(nx.bag)}<div class="row" style="margin-top:8px"><button type="button" class="btn primary" data-brief="${nx.id}">📖 Read tomorrow's briefing</button><span class="muted">two minutes, in bed</span></div></div>`:""}
   </div>`);
+  safe(()=>{ if(pickDayOK(d)) pickSync(true).then(ch=>{ if(ch) pickRefresh(d.id); }); });
   const ta=$("#cdj"); if(ta){ let tm; ta.addEventListener("input",()=>{ clearTimeout(tm); tm=setTimeout(()=>{ try{ localStorage.setItem("egypt.journal."+d.id, ta.value); }catch(e){} },300); }); }
 }
 function sheetsWire(){
@@ -4644,6 +4651,237 @@ function boatDayNote(){ try{ const card=document.getElementById("dayCard"); if(!
   const head=card.querySelector(".dayhead"); if(head&&head.nextSibling) head.parentNode.insertBefore(el, head.nextSibling); else card.prepend(el); }catch(e){} }
 (function(){ const css=`.boatnote{display:flex;gap:10px;align-items:flex-start;margin:10px 0 12px;padding:10px 12px;border-radius:12px;background:var(--nile-soft);border:1px solid var(--nile);font-size:0.8235rem;line-height:1.4}.boatnote .bn-i{font-size:1.1rem}.boatnote>div{flex:1}.boatnote b{color:var(--nile-ink)}html.bigtext .boatnote{flex-wrap:wrap}`; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st);
   setTimeout(()=>{ try{ if(typeof renderDay==="function"&&!renderDay.__boat){ const _rd=renderDay; renderDay=function(){ const r=_rd.apply(this,arguments); boatDayNote(); return r; }; renderDay.__boat=1; } boatDayNote(); }catch(e){} }, 0); })();
+
+// ---------- together.js: the tab (who owes who), fair prices in the souk, Arabic numerals, the nightly blind pick ----------
+// Sync: rooms/{room}-tab/{id} = {by, w, amt, cur, split, at, dead?}   (one key per entry: two phones never overwrite each other)
+//       rooms/{room}-pick/{dayId}/{Brad|Duane} = {m, r, at}           (each person writes only their own slot)
+const togURL=(k,p)=>`${DB_URL}/rooms/${room()}-${k}${p?"/"+p:""}.json`;
+async function togGet(k){ if(!liveOK()||!navigator.onLine) return null; try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),10000); const r=await fetch(togURL(k),{cache:"no-store",signal:ctl.signal}); clearTimeout(t); if(!r.ok) return null; return (await r.json())||{}; }catch(e){ return null; } }
+async function togPut(k,p,v){ if(!liveOK()||!navigator.onLine) return false; try{ const r=await fetch(togURL(k,p),{method:"PUT",body:JSON.stringify(v)}); return r.ok; }catch(e){ return false; } }
+const lsJ=(k,d)=>{ try{ const v=JSON.parse(localStorage.getItem(k)||"null"); return v==null?d:v; }catch(e){ return d; } };
+const lsJset=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+const escA=s=>esc(String(s==null?"":s)).replace(/"/g,"&quot;");
+const OTHER_OF=w=>w==="Brad"?"Duane":w==="Duane"?"Brad":"";
+const egpRate=()=>{ let r=52; try{ const v=parseFloat(($("#rate")||{}).value); if(v>10&&v<200) r=v; }catch(e){} return r; };
+const fmtE=n=>Math.round(n).toLocaleString("en-US");
+
+// =====================================================================================================
+// 1. THE TAB — who paid, who owes. Everything in EGP; dollars converted at the Money rate.
+// =====================================================================================================
+const TAB_K="egypt.tab";   // {e:{id:entry}, pend:{id:1}}
+const tabState=()=>{ const s=lsJ(TAB_K,{}); s.e=s.e||{}; s.pend=s.pend||{}; return s; };
+const tabLive=()=>Object.entries(tabState().e).filter(([,x])=>x&&!x.dead).map(([id,x])=>({id,...x})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+// what `w` is owed (positive) or owes (negative)
+function tabNet(w){ const R=egpRate(); let n=0; tabLive().forEach(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const share=x.split==="half"?egp/2:egp; if(x.by===w) n+=share; else n-=share; }); return n; }
+let tabSyncP=null;
+async function tabSync(){ if(tabSyncP) return tabSyncP; tabSyncP=(async()=>{ try{
+  const s=tabState(); let changed=false;
+  for(const id of Object.keys(s.pend)){ if(await togPut("tab",id,s.e[id])){ delete s.pend[id]; changed=true; } }
+  const srv=await togGet("tab"); if(srv){ for(const [id,x] of Object.entries(srv)){ if(s.pend[id]||!x) continue; const cur=s.e[id]; if(!cur||String(x.at2||x.at)>String(cur.at2||cur.at)||(x.dead&&!cur.dead)){ s.e[id]=x; changed=true; } } }
+  lsJset(TAB_K,s); return changed; } finally{ tabSyncP=null; } })(); return tabSyncP; }
+function tabAdd(x){ const s=tabState(); const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); s.e[id]={...x, at:new Date().toISOString()}; s.pend[id]=1; lsJset(TAB_K,s); tabSync().then(()=>{ if(tabOpen()) tabRender(); }); return id; }
+function tabDel(id){ const s=tabState(); const x=s.e[id]; if(!x) return; s.e[id]={...x, dead:true, at2:new Date().toISOString()}; s.pend[id]=1; lsJset(TAB_K,s); tabSync().then(()=>{ if(tabOpen()) tabRender(); }); }
+const tabOpen=()=>{ const s=$("#sheetTab"); return !!(s&&s.classList.contains("on")); };
+let tabForm={cur:"EGP", payer:"me", split:"half"};
+function tabBalanceHTML(){ const w=me(); const o=OTHER_OF(w); if(!w) return `<div class="tb-bal"><b>Pick whose phone this is first</b><small>tap the name chip up top</small></div>`;
+  const n=tabNet(w); const R=egpRate(); const a=Math.abs(n);
+  if(a<1) return `<div class="tb-bal even"><b>All square</b><small>${tabLive().length?"nobody owes anybody":"nothing on the tab yet"}</small></div>`;
+  return `<div class="tb-bal ${n>0?"up":"dn"}"><b>${n>0?`${esc(o)} owes you`:`You owe ${esc(o)}`} ${fmtE(a)} EGP</b><small>≈ $${(a/R).toFixed(a/R<10?2:0)} at ${R} EGP to the dollar</small></div>`; }
+function tabSheetHTML(){ const w=me(); const o=OTHER_OF(w)||"him"; const L=tabLive(); const R=egpRate(); const pend=tabState().pend;
+  const seg=(k,opts)=>`<div class="seg tb-seg">${opts.map(([v,l])=>`<button type="button" class="${tabForm[k]===v?"on":""}" data-tbset="${k}:${v}">${l}</button>`).join("")}</div>`;
+  const splitLbl=tabForm.payer==="me"?[["half","Half each"],["all",`All for ${o}`]]:[["half","Half each"],["all","All for me"]];
+  const n=tabNet(w);
+  return `<div class="qh"><h3>The tab</h3><button type="button" class="x" aria-label="Close">×</button></div>
+  <div class="tab">${tabBalanceHTML()}
+    <form class="tb-form" id="tbForm"><input id="tbW" placeholder="What (dinner at Abou Tarek, the guide…)" maxlength="60" autocomplete="off"><div class="tb-amt"><input id="tbA" inputmode="decimal" placeholder="Amount" autocomplete="off">${seg("cur",[["EGP","EGP"],["USD","$"]])}</div>
+      <div class="tb-row"><span>Paid by</span>${seg("payer",[["me","Me"],["them",esc(o)]])}</div>
+      <div class="tb-row"><span>Split</span>${seg("split",splitLbl)}</div>
+      <button class="btn primary" type="submit">Add to the tab</button></form>
+    ${Math.abs(n)>=1?`<button type="button" class="btn tb-settle" data-tbsettle="1">${n>0?`${esc(o)} paid me back`:`I paid ${esc(o)} back`} · ${fmtE(Math.abs(n))} EGP</button>`:""}
+    ${L.length?`<ul class="tb-list">${L.map(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const d=new Date(x.at); const dd=isNaN(d)?"":d.toLocaleDateString("en-US",{weekday:"short",day:"numeric"});
+      const how=x.settle?"settled up":x.split==="half"?"half each":`all for ${esc(OTHER_OF(x.by))}`;
+      return `<li class="${x.settle?"settle":""}"><div><b>${esc(x.w||"—")}</b><small>${esc(x.by)} paid · ${how} · ${dd}${pend[x.id]?" · <i>not synced yet</i>":""}</small></div><span class="tb-v">${x.cur==="USD"?`$${fmtE(x.amt)}<small>${fmtE(egp)} EGP</small>`:`${fmtE(x.amt)}<small>EGP</small>`}</span><button type="button" class="tb-x" data-tbdel="${x.id}" aria-label="Remove">✕</button></li>`; }).join("")}</ul>`:`<p class="muted" style="margin-top:10px">Whoever pays, log it here — both phones see the same tab. Settle up at the airport.</p>`}
+    <p class="muted tb-foot">Dollars count at the Money rate (${R} EGP). Remove a line on either phone and it's gone on both.</p>
+  </div>`; }
+function tabRender(){ const s=$("#sheetTab"); if(!s) return; const box=s.querySelector(".qbox"); if(!box) return; const keep={w:($("#tbW")||{}).value||"", a:($("#tbA")||{}).value||""}; const f=document.activeElement&&document.activeElement.id; box.innerHTML=tabSheetHTML(); if($("#tbW")) $("#tbW").value=keep.w; if($("#tbA")) $("#tbA").value=keep.a; if(f&&$("#"+f)) try{ $("#"+f).focus(); }catch(e){} }
+function openTab(focus){ if(!me()){ safe(()=>whoSheet(true)); return; } openSheet("sheetTab", tabSheetHTML()); const s=$("#sheetTab"); if(s&&!s._tb){ s._tb=1; s.addEventListener("click",e=>{ if(e.target===s||e.target.closest(".x")) closeSheet("sheetTab"); }); }
+  if(focus) setTimeout(()=>{ const i=$("#tbW"); if(i) i.focus(); },250);
+  tabSync().then(ch=>{ if(ch&&tabOpen()) tabRender(); safe(renderNavigator); }); }
+document.addEventListener("click", e=>{
+  const t=e.target.closest("[data-tbset]"); if(t){ const [k,v]=t.dataset.tbset.split(":"); tabForm[k]=v; tabRender(); return; }
+  const d=e.target.closest("[data-tbdel]"); if(d){ if(d.dataset.arm!=="1"){ d.dataset.arm="1"; d.textContent="Remove?"; d.classList.add("arm"); setTimeout(()=>{ if(d.isConnected){ d.dataset.arm=""; d.textContent="✕"; d.classList.remove("arm"); } },2500); return; } tabDel(d.dataset.tbdel); tabRender(); toast("Removed from the tab."); return; }
+  const st=e.target.closest("[data-tbsettle]"); if(st){ const w=me(); const n=tabNet(w); if(Math.abs(n)<1) return; if(st.dataset.arm!=="1"){ st.dataset.arm="1"; st.textContent="Tap again to record it"; setTimeout(()=>{ if(st.isConnected){ st.dataset.arm=""; tabRender(); } },3000); return; }
+    // the one who owed pays the whole balance to the other
+    tabAdd({by:n>0?OTHER_OF(w):w, w:"Settled up", amt:Math.round(Math.abs(n)), cur:"EGP", split:"all", settle:true}); tabRender(); toast("All square."); safe(()=>sfx("stamp")); return; }
+});
+document.addEventListener("submit", e=>{ if(e.target.id!=="tbForm") return; e.preventDefault(); const w=($("#tbW").value||"").trim(); const a=parseFloat(String($("#tbA").value||"").replace(/[^\d.]/g,""));
+  if(!(a>0)){ toast("How much?"); $("#tbA").focus(); return; } if(!w){ toast("What was it?"); $("#tbW").focus(); return; }
+  const by=tabForm.payer==="me"?me():OTHER_OF(me()); tabAdd({by, w, amt:Math.round(a*100)/100, cur:tabForm.cur, split:tabForm.split});
+  $("#tbW").value=""; $("#tbA").value=""; tabRender(); toast(`On the tab: ${w}.`); });
+function tabTileLine(){ const w=me(); if(!w) return "who paid, who owes"; const n=tabNet(w); return Math.abs(n)<1?(tabLive().length?"all square":"who paid, who owes"):n>0?`${OTHER_OF(w)} owes you ${fmtE(n)}`:`you owe ${OTHER_OF(w)} ${fmtE(-n)}`; }
+
+// =====================================================================================================
+// 2. FAIR PRICES — what a reasonable haggler ends up paying (EGP, 2025–26 guides; ≈ marks thin data)
+// =====================================================================================================
+const FAIR=[
+  {n:"Brass lantern, small", k:/lantern|fanous|fanoos|lamp/i, big:false, lo:200, hi:600},
+  {n:"Lantern, large", k:/lantern|fanous|fanoos|lamp/i, big:true, lo:1500, hi:5000},
+  {n:"Khayamiya cushion cover", k:/khayam|cushion|pillow|appliq/i, big:false, lo:200, hi:800},
+  {n:"Khayamiya wall panel, medium", k:/khayam|appliq|panel|wall ?hang|tapestr/i, big:true, lo:800, hi:2500},
+  {n:"Cotton scarf", k:/scarf|shawl/i, lo:50, hi:150},
+  {n:"“Pashmina” scarf (rarely real)", k:/pashmina|cashmere/i, lo:200, hi:400, thin:1},
+  {n:"Papyrus, real, small", k:/papyr/i, big:false, lo:100, hi:300},
+  {n:"Papyrus, real, medium", k:/papyr/i, big:true, lo:300, hi:800},
+  {n:"Alabaster, small vase or figure", k:/alabast|vase/i, lo:150, hi:500},
+  {n:"Perfume oil, ≈10 ml", k:/perfum|essence|oil|scent|musk/i, lo:150, hi:400},
+  {n:"Spices / karkade, per 100 g", k:/spice|karkade|hibiscus|cumin|saffron|tea|mint/i, lo:30, hi:80},
+  {n:"Galabeya, plain cotton", k:/galab|gallab|jalab|djellab|kaftan|robe/i, lo:200, hi:500},
+  {n:"Scarab or small figure (resin/faience)", k:/scarab|statue|figur|bastet|anubis|sphinx|ushabti/i, lo:50, hi:200, thin:1},
+  {n:"Silver cartouche, your name", k:/cartouch|pendant|silver|necklace/i, lo:600, hi:1500},
+  {n:"Leather wallet", k:/wallet|leather|purse/i, lo:200, hi:600, thin:1},
+  {n:"Inlaid box, small", k:/inlaid|jewel(le)?ry box|box/i, big:false, lo:150, hi:400, thin:1},
+  {n:"Backgammon set", k:/backgammon|tawla|chess/i, lo:500, hi:2000, thin:1},
+  {n:"T-shirt, printed", k:/t-?shirt|tee\b|shirt/i, lo:150, hi:300, thin:1, est:1},
+  {n:"Fridge magnet", k:/magnet/i, lo:15, hi:50},
+  {n:"Water, 1.5 L at a kiosk", k:/water/i, lo:10, hi:15},
+  {n:"Koshary, a bowl", k:/koshar|koshe?ri/i, lo:25, hi:80},
+];
+const BIG=/\b(big|large|huge|tall|medium|wall|hanging|panel)\b/i;
+function fairFor(w){ w=String(w||""); if(!w.trim()) return null; const hits=FAIR.filter(f=>f.k.test(w)); if(!hits.length) return null; if(hits.length===1) return hits[0]; const big=BIG.test(w); return hits.find(f=>f.big===big)||hits.find(f=>f.big===undefined)||hits[0]; }
+function fairHint(w,asked,paid){ const f=fairFor(w); const a=parseFloat(String(asked||"").replace(/[^\d.]/g,"")); const p=parseFloat(String(paid||"").replace(/[^\d.]/g,""));
+  if(!f&&!(a>0)) return "";
+  const parts=[]; if(f) parts.push(`<b>${esc(f.n)}</b>: fair is <b>${fmtE(f.lo)}–${fmtE(f.hi)}</b> EGP${f.thin?" (thin data)":""}.`);
+  if(a>0&&!(p>0)){ const open=Math.round(a/3/10)*10; parts.push(`Asked ${fmtE(a)} → open at <b>≈${fmtE(open)}</b>${f?`, walk at ${fmtE(f.hi)}+`:""}; deals usually land at 40–60% of the ask.`); }
+  if(p>0&&f) parts.push(p<=f.hi?(p<f.lo?"Under the fair range. Whoever sold that is having a bad day.":"✓ That's a fair price."):`That's ${Math.round((p/f.hi-1)*100)}% over the fair top. Tourist tax — it happens.`);
+  return parts.join(" "); }
+function fairVerdict(h){ const f=fairFor(h.w); if(!f||!(h.p>0)) return ""; return h.p<=f.hi?`<span class="fairv ok">✓ fair price</span>`:`<span class="fairv hi">tourist price</span>`; }
+function fairTableHTML(){ return `<details class="fold fair"><summary>What it should cost <span class="muted" style="font-weight:500">· fair prices, EGP</span></summary><div class="in">
+  <p class="fair-rule"><b>Counter at about a third of the first ask.</b> Most deals land at 40–60% of it. Two lanes back from the entrance is cheaper; hotel and museum shops run 2–3×. Buy three, ask for a bundle. Walking away is a move, not an insult.</p>
+  <table class="fair-t"><tbody>${FAIR.map(f=>`<tr><td>${esc(f.n)}${f.thin?` <i>≈</i>`:""}</td><td>${fmtE(f.lo)}–${fmtE(f.hi)}</td></tr>`).join("")}</tbody></table>
+  <p class="muted fair-foot">What a reasonable haggler pays in Khan el-Khalili, Luxor and Aswan (2025–26 shopping guides). <i>≈</i> = thin or estimated. Papyrus for 10–30 is banana leaf. Silver is sold by weight: haggle the making fee, not the metal. Fixed-price shops (Azza Fahmy, Wissa Wassef) don't haggle. Type what you're buying above and the numbers fill in as you go.</p></div></details>`; }
+// live hint under any haggle form (Games card and the + sheet)
+document.addEventListener("input", e=>{ const fm=e.target.closest(".hform"); if(!fm) return; const q=s=>fm.querySelector(s); const w=(q("#hw")||q("#qhw")||{}).value, a=(q("[data-ha]")||{}).value, p=(q("[data-hp]")||{}).value;
+  let h=fm.nextElementSibling; if(!h||!h.classList.contains("fairhint")){ h=document.createElement("div"); h.className="fairhint"; fm.after(h); }
+  const html=fairHint(w,a,p); h.innerHTML=html; h.hidden=!html; });
+
+// =====================================================================================================
+// 3. NUMBERS — Arabic-Indic digits, the words, and a price-tag decoder
+// =====================================================================================================
+const AR_D="٠١٢٣٤٥٦٧٨٩";
+const NUMS=[["٠","0","صفر","sifr"],["١","1","واحد","waaHid"],["٢","2","اتنين","itneen"],["٣","3","تلاتة","talaata"],["٤","4","أربعة","arba'a"],["٥","5","خمسة","khamsa"],["٦","6","ستة","sitta"],["٧","7","سبعة","sab'a"],["٨","8","تمانية","tamanya"],["٩","9","تسعة","tis'a"]];
+const NUMS_BIG=[["١٠","10","عشرة","'ashara"],["٢٠","20","عشرين","'ishreen"],["٥٠","50","خمسين","khamseen"],["١٠٠","100","مية","meyya"],["٢٠٠","200","ميتين","meteen"],["٥٠٠","500","خمسمية","khumsumeyya"],["١٠٠٠","1000","ألف","alf"]];
+const toAr=s=>String(s).replace(/\d/g,d=>AR_D[+d]);
+let numBuf="";
+function numSheetHTML(){ const R=egpRate(); const v=numBuf?parseInt(numBuf,10):0;
+  const cell=([a,w,ar,lat])=>`<button type="button" class="say nm" data-say="${ar}" data-latin="${escA(lat)}"><b>${a}</b><span>${w}</span><small>${esc(lat)} 🔊</small></button>`;
+  return `<div class="qh"><h3>Numbers</h3><button type="button" class="x" aria-label="Close">×</button></div>
+  <div class="nums">
+    <p class="muted" style="margin:0 0 8px">Price tags, bus fronts, menus and taxi meters often use these. Read left to right, like ours. Tap one to hear it.</p>
+    <div class="nm-grid">${NUMS.map(cell).join("")}</div>
+    <div class="nm-trap"><b>The traps</b> <span><b>٠</b> is the dot — that's zero.</span> <span><b>٥</b> is five, not zero.</span> <span><b>٧</b> and <b>٨</b> are 7 and 8: V and Λ.</span> <span><b>٦</b> is six, <b>٤</b> is four.</span></div>
+    <div class="nm-dec"><div class="nm-h">Read a price tag</div><div class="nm-out"><span class="nm-ar" aria-label="Arabic digits">${numBuf?toAr(numBuf):"—"}</span><span class="nm-en">${numBuf?`<b>${fmtE(v)}</b> EGP <small>≈ $${(v/R).toFixed(v/R<10?2:0)}</small>`:`tap the shapes you see`}</span></div>
+      <div class="nm-pad">${[1,2,3,4,5,6,7,8,9].map(d=>`<button type="button" data-nmk="${d}">${AR_D[d]}<small>${d}</small></button>`).join("")}<button type="button" data-nmk="c" class="fn">clear</button><button type="button" data-nmk="0">${AR_D[0]}<small>0</small></button><button type="button" data-nmk="b" class="fn" aria-label="Delete">⌫</button></div></div>
+    <div class="nm-h" style="margin-top:12px">Saying a price</div>
+    <div class="nm-grid big">${NUMS_BIG.map(cell).join("")}</div>
+    <p class="nm-tip"><b>Say the currency back.</b> “Fifty” can turn into fifty dollars at the till: <button type="button" class="say" data-say="خمسين جنيه مصري؟" data-latin="khamseen geneih masri?">khamseen geneih masri? 🔊</button> — fifty Egyptian pounds? Pounds are <b>ج.م</b> on a tag; <b>قرش</b> (irsh) is a piastre, 1/100 of a pound.</p>
+  </div>`; }
+function openNums(){ openSheet("sheetNum", numSheetHTML()); const s=$("#sheetNum"); if(s&&!s._nm){ s._nm=1; s.addEventListener("click",e=>{ if(e.target===s||e.target.closest(".x")) closeSheet("sheetNum"); }); } }
+document.addEventListener("click", e=>{ const k=e.target.closest("[data-nmk]"); if(!k) return; const v=k.dataset.nmk; if(v==="c") numBuf=""; else if(v==="b") numBuf=numBuf.slice(0,-1); else if(numBuf.length<7) numBuf=(numBuf==="0"?"":numBuf)+v;
+  const box=$("#sheetNum .qbox"); if(!box) return; const R=egpRate(); const n=numBuf?parseInt(numBuf,10):0; const ar=box.querySelector(".nm-ar"), en=box.querySelector(".nm-en"); if(ar) ar.textContent=numBuf?toAr(numBuf):"—"; if(en) en.innerHTML=numBuf?`<b>${fmtE(n)}</b> EGP <small>≈ $${(n/R).toFixed(n/R<10?2:0)}</small>`:"tap the shapes you see"; });
+
+// =====================================================================================================
+// 4. THE BLIND PICK — each picks the day's best moment and a score; nobody sees the other's until both are in
+// =====================================================================================================
+const PICK_K="egypt.pick";   // {day:{Brad:{m,r,at}, Duane:{…}}, pend:{day:1}, seen:{day:1}}
+const pickState=()=>{ const s=lsJ(PICK_K,{}); s.d=s.d||{}; s.pend=s.pend||{}; s.seen=s.seen||{}; return s; };
+const pickDayOK=d=>!!d&&d.who!=="brad";
+const pickOf=(id,w)=>((pickState().d[id]||{})[w])||null;
+const pickBoth=id=>!!(pickOf(id,"Brad")&&pickOf(id,"Duane"));
+let pickSyncP=null, pickAt=0;
+async function pickSync(force){ if(!force&&Date.now()-pickAt<45000) return false; if(pickSyncP) return pickSyncP; pickAt=Date.now(); pickSyncP=(async()=>{ try{
+  const s=pickState(); let changed=false; const w=me(); if(!w) return false;
+  for(const id of Object.keys(s.pend)){ const mine=(s.d[id]||{})[w]; if(!mine){ delete s.pend[id]; continue; } if(await togPut("pick",`${id}/${w}`,mine)){ delete s.pend[id]; changed=true; } }
+  const srv=await togGet("pick"); if(srv){ for(const [id,o] of Object.entries(srv)){ for(const [who,x] of Object.entries(o||{})){ if(!x||(who===w&&s.pend[id])) continue; s.d[id]=s.d[id]||{}; const cur=s.d[id][who]; if(!cur||String(x.at)>String(cur.at)){ s.d[id][who]=x; changed=true; } } } }
+  lsJset(PICK_K,s); return changed; } finally{ pickSyncP=null; } })(); return pickSyncP; }
+function pickSave(id,m,r){ const s=pickState(); const w=me(); if(!w) return; s.d[id]=s.d[id]||{}; s.d[id][w]={m:String(m).slice(0,90), r, at:new Date().toISOString()}; s.pend[id]=1; lsJset(PICK_K,s); pickSync(true).then(()=>pickRefresh(id)); }
+const PICK_R=["","rough","fine","good","great","one for the ages"];
+let pickDraft={};
+function pickBoxHTML(d){ if(!pickDayOK(d)) return ""; const w=me(); if(!w) return ""; const o=OTHER_OF(w); const mine=pickOf(d.id,w), theirs=pickOf(d.id,o); const both=mine&&theirs;
+  const head=`<div class="pk-h"><b>The blind pick</b><span>${both?"both in — revealed":mine?`yours is sealed · waiting on ${esc(o)}`:theirs?`${esc(o)}'s is in, sealed 🔒`:"you pick, he picks, nobody peeks"}</span></div>`;
+  if(both) return `<div class="pick" data-pickday="${d.id}">${head}${pickRevealHTML(d.id)}</div>`;
+  const r=(pickDraft[d.id]&&pickDraft[d.id].r)||(mine&&mine.r)||0; const m=(pickDraft[d.id]&&pickDraft[d.id].m!=null)?pickDraft[d.id].m:(mine?mine.m:"");
+  return `<div class="pick" data-pickday="${d.id}">${head}
+    <input class="pk-m" data-pkm="${d.id}" maxlength="90" placeholder="The day's best moment, in a few words" value="${escA(m)}" autocomplete="off">
+    <div class="pk-r">${[1,2,3,4,5].map(n=>`<button type="button" class="${r===n?"on":""}" data-pkr="${d.id}:${n}" aria-label="${n} of 5">${n}</button>`).join("")}<span>${r?PICK_R[r]:"the day, out of 5"}</span></div>
+    <button type="button" class="btn ${mine?"":"primary"} pk-go" data-pkgo="${d.id}">${mine?"Update my sealed pick":"Seal it 🔒"}</button>
+    <p class="muted pk-n">${mine?`${esc(o)} hasn't picked. You can change yours until he does.`:`Revealed the moment ${esc(o)} picks too. Same moment, same score — the booth will notice.`}</p></div>`; }
+function pickRevealHTML(id){ const B=pickOf(id,"Brad"), D=pickOf(id,"Duane"); if(!B||!D) return "";
+  const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(x=>x.length>3);
+  const shared=norm(B.m).filter(x=>norm(D.m).includes(x)); const same=B.r===D.r;
+  const verdict=shared.length?`Same moment: “${esc(shared[0])}”. Married, basically.`:same?`Same score, different moments — ${PICK_R[B.r]} either way.`:Math.abs(B.r-D.r)>=2?"Two very different days, apparently.":`Close enough to call it a ${PICK_R[Math.round((B.r+D.r)/2)]} day.`;
+  return `<div class="pk-rev">${[["Brad",B],["Duane",D]].map(([w,x])=>`<div class="pk-c"><small>${w}</small><b>${esc(x.m||"—")}</b><span>${"●".repeat(x.r)}${"○".repeat(5-x.r)} ${PICK_R[x.r]}</span></div>`).join("")}</div><p class="pk-v">${verdict}</p>`; }
+function pickRefresh(id){ document.querySelectorAll(`.pick[data-pickday="${id}"]`).forEach(el=>{ const d=DAYS.find(x=>x.id===id); el.outerHTML=pickBoxHTML(d); }); safe(renderNow); safe(renderPassport); }
+document.addEventListener("input", e=>{ const m=e.target.closest("[data-pkm]"); if(!m) return; const id=m.dataset.pkm; pickDraft[id]={...(pickDraft[id]||{}), m:m.value}; });
+document.addEventListener("click", e=>{
+  const r=e.target.closest("[data-pkr]"); if(r){ const [id,n]=r.dataset.pkr.split(":"); pickDraft[id]={...(pickDraft[id]||{}), r:+n}; const box=r.closest(".pick"); if(box){ box.querySelectorAll("[data-pkr]").forEach(b=>b.classList.toggle("on",b===r)); const s=box.querySelector(".pk-r span"); if(s) s.textContent=PICK_R[+n]; } return; }
+  const g=e.target.closest("[data-pkgo]"); if(g){ const id=g.dataset.pkgo; const box=g.closest(".pick"); const m=((box&&box.querySelector(".pk-m"))||{}).value||""; const mine=pickOf(id,me()); const rr=(pickDraft[id]&&pickDraft[id].r)||(mine&&mine.r)||0;
+    if(!m.trim()){ toast("One moment — a few words."); return; } if(!rr){ toast("And a score, 1 to 5."); return; }
+    pickSave(id,m.trim(),rr); delete pickDraft[id]; const o=OTHER_OF(me()); toast(pickOf(id,o)?"Both in. Reveal!":`Sealed. Revealed when ${o} picks.`); safe(()=>sfx("stamp")); pickRefresh(id); return; }
+  const rv=e.target.closest("[data-pkreveal]"); if(rv){ const id=rv.dataset.pkreveal; const s=pickState(); s.seen[id]=1; lsJset(PICK_K,s); const d=DAYS.find(x=>x.id===id); openSheet("sheetQC", `<div class="qh"><h3>The blind pick · ${d.dow} ${d.num}</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="pick reveal">${pickRevealHTML(id)}</div>`); safe(()=>sfx("stamp")); safe(renderNow); return; }
+});
+// a band for the evening Now card: nudges to pick, or the reveal
+function pickBand(d){ if(!pickDayOK(d)||!me()) return ""; pickSync(false).then(ch=>{ if(ch) safe(renderNow); });
+  const w=me(), o=OTHER_OF(w); const mine=pickOf(d.id,w), theirs=pickOf(d.id,o);
+  if(mine&&theirs){ const seen=pickState().seen[d.id]; return `<div class="fband pkband"><span class="fb-ic">✨</span><div><b>${seen?"Tonight's blind pick":"Both picks are in"}</b><span class="prose">${seen?esc(`${w}: ${mine.m} · ${o}: ${theirs.m}`):"Tap to reveal."}</span></div><button type="button" class="btn mini" data-pkreveal="${d.id}">${seen?"See":"Reveal"}</button></div>`; }
+  if(theirs&&!mine) return `<div class="fband pkband"><span class="fb-ic">🔒</span><div><b>${esc(o)} has sealed his pick</b><span class="prose">The day's best moment and a score. Yours, and both get revealed.</span></div><button type="button" class="btn mini pts-me" data-closeday="${d.id}">Pick</button></div>`;
+  if(mine) return `<div class="fband pkband"><span class="fb-ic">🔒</span><div><b>Your pick is sealed</b><span class="prose">Waiting on ${esc(o)}.</span></div></div>`;
+  return ""; }
+// the passport: both picks, written in, once revealed
+function pickPassLine(d){ if(!pickDayOK(d)||!pickBoth(d.id)) return ""; const B=pickOf(d.id,"Brad"), D=pickOf(d.id,"Duane"); return `<p class="pk-pass"><span>B · ${esc(B.m)}</span><span>D · ${esc(D.m)}</span></p>`; }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ const d=typeof todayDay==="function"&&todayDay(); if(d&&pickDayOK(d)&&cairoNow().h>=15) pickSync(false).then(ch=>{ if(ch) safe(renderNow); }); } });
+
+// ---------- styles (theme variables only, so dark mode just works) ----------
+(function(){ const css=`
+.tab .tb-bal{border-radius:12px;padding:12px 14px;background:var(--sand);margin-bottom:12px}.tab .tb-bal b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:1.2rem;line-height:1.2}.tab .tb-bal small{color:var(--muted);font-size:0.7647rem}
+.tab .tb-bal.up{background:color-mix(in srgb,var(--ok) 16%,var(--card));}.tab .tb-bal.up b{color:var(--ok)}.tab .tb-bal.dn{background:var(--dusk-soft)}.tab .tb-bal.dn b{color:var(--dusk)}
+.tb-form{display:grid;gap:8px}.tb-form input{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.tb-amt{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.tb-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.8235rem;color:var(--muted)}
+.tb-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--card)}.tb-seg button{border:0;background:none;border-radius:999px;padding:6px 12px;font:600 0.7941rem var(--body);color:var(--muted);cursor:pointer}.tb-seg button.on{background:var(--fg);color:var(--bg)}
+.tb-settle{width:100%;margin-top:10px;justify-content:center}.tb-form .btn{justify-content:center;text-align:center;padding:12px}
+.tb-list{list-style:none;margin:12px 0 0;padding:0}.tb-list li{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.tb-list li b{display:block;font-size:0.8235rem}.tb-list li small{color:var(--muted);font-size:0.7059rem}.tb-list li.settle b{color:var(--ok)}
+.tb-v{font-family:var(--mono);font-weight:600;font-size:0.8235rem;text-align:right}.tb-v small{display:block;font-weight:500;color:var(--muted);font-size:0.6471rem}
+.tb-x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:0.7647rem;padding:4px 6px;border-radius:8px}.tb-x.arm{background:var(--dusk);color:var(--on-accent);font-weight:700}
+.tb-foot{font-size:0.7059rem;margin-top:10px}
+html.bigtext .tb-amt{grid-template-columns:1fr}html.bigtext .tb-row{flex-wrap:wrap}
+.fairhint{margin:8px 0 0;padding:8px 10px;border-radius:10px;font-size:0.7647rem;line-height:1.45;background:rgba(0,0,0,.05);border:1px dashed currentColor;opacity:.92}
+.fairv{display:inline-block;margin-left:6px;font-size:0.6471rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}.fairv.ok{color:#2f7d4e}.fairv.hi{color:#b5322b}
+.fold.fair{margin-top:12px;border-color:rgba(0,0,0,.15);background:rgba(255,255,255,.25)}.fold.fair summary{font-weight:700}
+.fair-rule{font-size:0.7941rem;margin:0 0 8px}.fair-t{width:100%;border-collapse:collapse;font-size:0.7941rem}.fair-t td{padding:5px 0;border-top:1px dashed rgba(0,0,0,.18)}.fair-t td:last-child{text-align:right;font-family:var(--mono);font-weight:600;white-space:nowrap;padding-left:10px}.fair-t i{font-style:normal;opacity:.6}
+.fair-foot{font-size:0.7059rem;margin-top:8px}
+@media (prefers-color-scheme:dark){ .fold.fair{border-color:rgba(255,255,255,.14);background:rgba(0,0,0,.18)} .fair-t td{border-top-color:rgba(255,255,255,.14)} .fairhint{background:rgba(0,0,0,.2)} }
+.nm-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.nm-grid.big{grid-template-columns:repeat(4,1fr)}
+.say.nm{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 4px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font:inherit}
+.say.nm b{font-size:1.6rem;line-height:1.1;font-family:"Noto Naskh Arabic","Geeza Pro",serif}.say.nm span{font:600 0.7059rem var(--mono);color:var(--muted)}.say.nm small{font-size:0.6176rem;color:var(--nile)}
+.nm-grid.big .say.nm b{font-size:1.2rem}
+.nm-trap{margin:10px 0;padding:8px 10px;border-radius:10px;background:var(--dusk-soft);font-size:0.7647rem;display:flex;flex-wrap:wrap;gap:4px 10px}.nm-trap>b{color:var(--dusk);width:100%}.nm-trap span b{font-size:1.05rem;font-family:"Noto Naskh Arabic","Geeza Pro",serif}
+.nm-h{font:700 0.7059rem var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.nm-dec{border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--sand)}
+.nm-out{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 8px 10px}.nm-ar{font-size:2rem;font-family:"Noto Naskh Arabic","Geeza Pro",serif;direction:ltr}.nm-en{font-size:0.8235rem;color:var(--muted);text-align:right}.nm-en b{font:700 1.2rem var(--mono);color:var(--fg)}
+.nm-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.nm-pad button{padding:8px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:1.5rem "Noto Naskh Arabic","Geeza Pro",serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.1}.nm-pad button small{font:500 0.6471rem var(--mono);color:var(--muted)}.nm-pad .fn{font:600 0.7647rem var(--body);color:var(--muted);justify-content:center}
+.nm-tip{font-size:0.7647rem;margin-top:10px}
+.pick{margin:12px 0;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--sand)}
+.pk-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}.pk-h b{font:700 0.7059rem var(--display);letter-spacing:.1em;text-transform:uppercase}.pk-h span{font-size:0.7059rem;color:var(--muted)}
+.pk-m{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.pk-r{display:flex;align-items:center;gap:6px;margin:8px 0}.pk-r button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--fg);font:700 0.8235rem var(--mono);cursor:pointer}.pk-r button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}.pk-r span{font-size:0.7647rem;color:var(--muted);margin-left:4px}
+.pk-go{width:100%}.pk-n{font-size:0.7059rem;margin:6px 0 0}
+.pk-rev{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pk-c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;animation:pkflip .5s ease both}.pk-c:nth-child(2){animation-delay:.25s}
+.pk-c small{font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.pk-c b{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:0.9412rem;line-height:1.3}.pk-c span{font:0.7059rem var(--mono);color:var(--nile)}
+.pk-v{margin:8px 0 0;font-size:0.7941rem;text-align:center;color:var(--muted)}
+@keyframes pkflip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pk-c{animation:none}}
+html.bigtext .pk-rev{grid-template-columns:1fr}html.bigtext .nm-grid{grid-template-columns:repeat(3,1fr)}html.bigtext .nm-grid.big{grid-template-columns:repeat(2,1fr)}.say.nm{min-width:0}.say.nm small{overflow-wrap:anywhere;text-align:center}
+.pk-pass{display:flex;flex-direction:column;gap:1px;margin:4px 0 0;font-family:"Caveat",cursive;font-size:1rem;line-height:1.15;opacity:.85}
+`; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
