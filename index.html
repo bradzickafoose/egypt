@@ -2037,7 +2037,7 @@ function renderDay(){
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
     const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.t)}${a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${safe(()=>lookLine(d,a))||""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.lt||a.t)}${a.lt?"<small>Cape Town</small>":a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${safe(()=>lookLine(d,a))||""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
   }).join("");
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
@@ -2096,20 +2096,20 @@ function renderNow(){
   } else if(now.date > last){
     html = safe(()=>lookingBack()) || `<div class="eyebrow">After</div><div class="big">Egypt, October 2026.</div>`;
   } else {
-    const di = dayIndexFor(now.date); const d = DAYS[di];
+    const di = dayIndexFor(now.date); const d = safe(()=>withMe(DAYS[di])) || DAYS[di];
     const ni = d.agenda.findIndex(a=>toMins(a.t)>now.mins);
     const cur = ni===-1 ? d.agenda[d.agenda.length-1] : (ni>0 ? d.agenda[ni-1] : null);
     let next = ni===-1 ? null : d.agenda[ni]; let nextDay = d; let nextMins = next?toMins(next.t)-now.mins:0;
     if(!next && DAYS[di+1]){ nextDay = DAYS[di+1]; next = nextDay.agenda[0]; nextMins = (24*60-now.mins)+toMins(next.t); }
     const done = ni===-1 ? d.agenda.length : ni;
-    const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = (safe(()=>otherFlightBand(now))||"") + evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
+    const evening = safe(()=>eveningCard(d, ni, now)); if(evening){ $("#now").innerHTML = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"") + evening; $("#now").classList.toggle("solo", d.who==="brad"); return; }
     const wxr = (()=>{ const loc=WX_LOC[d.id]; const r = loc && WX[loc[2]] && WX[loc[2]].days && WX[loc[2]].days[d.date]; if(!r) return ""; const [ic,w]=wxIcon(r.c); return ` · ${ic} ${Math.round(r.hi)}°/${Math.round(r.lo)}°`; })();
     const fb = (safe(()=>flightBand(now))||"") + (safe(()=>otherFlightBand(now))||"");
-    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
+    const hon = safe(()=>honorific()); const nl = safe(()=>nileLine()); html = fb + (hon?`<div class="hon">Good ${now.h<12?"morning":now.h<18?"afternoon":"evening"}, ${esc(hon)}.${nl?` <span class="ql">${esc(nl)}</span>`:""}</div>`:"") + `<div class="eyebrow">${d.dow} Oct ${d.num} · ${d.who==="brad"?"Brad solo":d.id==="sat10"?"Travel day":"Together"} · ${done}/${d.agenda.length} stops${wxr}</div><div class="bar"><i style="width:${Math.round(100*done/d.agenda.length)}%"></i></div>` + (di===sel?(safe(()=>briefNudge(d, now))||""):"");
     if(d.who==="brad" && safe(me)==="Duane") html += `<div class="sub">You're home. Brad, today:</div>`;
-    const exm = safe(()=>extrasMorning(d, now)); const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur){ const ago=now.mins-toMins(cur.t); if(ago>150 && next && nextDay===d) html += `<div class="sub">Now: nothing until ${fmt12(next.t)}</div>`; else html += `<div class="sub">Now: ${esc(cur.title)}</div>`; } if(exm) html += `<div class="sub excof">${esc(exm)}</div>`;
+    const exm = safe(()=>extrasMorning(d, now)); const fnow = safe(()=>flightNowLine(now)) || ((now.h<6 && next && nextMins>=180) ? `sleep — nothing until ${next.lt?fmt12(next.lt)+" Cape Town":fmt12(next.t)}` : ""); if(fnow) html += `<div class="sub">Now: ${esc(fnow)}</div>`; else if(cur){ const ago=now.mins-toMins(cur.t); if(ago>150 && next && nextDay===d) html += `<div class="sub">Now: nothing until ${next.lt?fmt12(next.lt)+" Cape Town":fmt12(next.t)}</div>`; else html += `<div class="sub">Now: ${esc(cur.title)}</div>`; } if(exm) html += `<div class="sub excof">${esc(exm)}</div>`;
     if(next){
-      html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
+      html += `<div class="big">${next.alarm?"⏰ ":""}${esc(next.title)}</div><div class="row"><span class="cd">${nextDay===d?"":nextDay.dow+" "}${next.lt?fmt12(next.lt)+" Cape Town":fmt12(next.t)} · in ${dur(nextMins)}</span>${next.map?`<a class="btn" target="_blank" rel="noopener" href="${A(next.map)}">Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${G(next.map)}">Google Maps</a>`:""}</div>`;
       if(next.note) html += `<div class="sub">${esc(next.note)}</div>`;
     }
     if(d.sleep) html += `<div class="row"><span class="sub">Tonight: <b>${esc(d.sleep)}</b></span>${d.sleepq?`<a class="btn" target="_blank" rel="noopener" href="${G(d.sleepq)}">Take me there</a>`:""}</div>`;
@@ -2260,7 +2260,7 @@ function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(
 const FLIGHTS = [
  {id:"dua-out0",who:"Duane",date:"2026-10-09",no:"",op:"",from:{ap:"ORF",city:"Norfolk",t:"",tz:-4},to:{ap:"LHR",city:"London Heathrow",t:"",tz:1},status:"tbd",slot:"out",note:"The Norfolk → London leg, probably overnight Friday. Add it and the board counts down from Norfolk, with the Heathrow connection worked out."},
  {id:"dua-out",who:"Duane",date:"2026-10-10",no:"AA 6838",op:"British Airways",from:{ap:"LHR",city:"London Heathrow",t:"10:10",tz:1},to:{ap:"CAI",city:"Cairo",t:"17:20",tz:3},status:"ok",note:"Booked as AA, flown by BA. Manage it in the BA app with the AA record locator — seat, terminal and gate live there. You're connecting at Heathrow: BA long-haul is Terminal 5 unless the app says 3; follow the purple Flight Connections signs, allow 90 min between terminals.",arrive:"Visa counter is before immigration (bank window, $30 cash) or the e-Visa lane. Then Uber from the signed pickup, ≈$15, an hour to the Hilton in evening traffic."},
- {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:15",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"home",mins:30,before:150}},
+ {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:15",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"the Old Biscuit Mill",mins:30,before:150}},
  {id:"brad-out2",who:"Brad",date:"2026-10-10",no:"ET 452",op:"Ethiopian Airlines",from:{ap:"ADD",city:"Addis Ababa",t:"22:15",tz:3,approx:true},to:{ap:"CAI",city:"Cairo",t:"02:05",tz:3,date:"2026-10-11"},status:"ok",note:"A350, about four hours. Lands 2am Sunday — the Hilton has been told; Duane is asleep.",arrive:"Visa counter before immigration (bank window, $30 cash) or the e-Visa lane. Uber from the signed pickup, ≈$15, 45 min at that hour."},
  {id:"asw",who:"Both",date:"2026-10-13",no:"NP 81",op:"Nile Air",from:{ap:"CAI",city:"Cairo",t:"08:00",tz:3},to:{ap:"ASW",city:"Aswan",t:"09:25",tz:3},status:"ok",note:"Domestic, Airbus. Brad is in 10F — right side, the pyramids go past in the first ten minutes. Nile Air does not use Terminal 3 — the terminal is on the ticket; check it the night before. The boat's rep meets this flight: send them NP 81 / 09:25.",leave:{from:"Hilton Cairo Grand Nile",mins:45,before:75}},
  {id:"lxr",who:"Both",date:"2026-10-18",no:"MS 275",op:"EgyptAir",from:{ap:"LXR",city:"Luxor",t:"15:40",tz:3},to:{ap:"CAI",city:"Cairo · T3",t:"16:50",tz:3},status:"ok",note:"Domestic, lands Terminal 3. Brad is in 22A — left side: the Theban hills on the climb-out, Giza on the way in. Luxor airport is tiny — 75 min before is plenty. Three flights behind it the same evening (EgyptAir 16:55 and 21:30, Air Cairo 22:00), so a cancellation is an annoyance, not a crisis for Duane's 07:25.",leave:{from:"Hilton Luxor Resort & Spa",mins:25,before:75}},
@@ -2330,16 +2330,16 @@ function flightBand(now){ try{ const w=me(); if(!w) return ""; const mine=allFli
   return `<div class="fband"><span class="fb-ic">✈️</span><div><b>${isT?"Flight day":"Flight tomorrow"} · ${esc(f.no||f.op)} ${esc(f.from.ap)} → ${esc(f.to.ap)} ${esc(f.from.t)}</b><span>${esc(isT?flightStage(f,now,plan):(plan?`${plan.up?`up ${plan.up} · `:""}leave ${plan.go} · airport ${plan.at}`:""))}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`; }catch(e){ return ""; } }
 // once you're past the airport time the agenda's "Uber to the airport" is stale; the flight itself says where you are
 function flightNowLine(now){ const w=me(); if(!w) return ""; const f=allFlights().find(x=>(x.who===w||x.who==="Both")&&x.from.t&&x.status!=="tbd"&&x.date===now.date&&(flightDep(x)-nowUTC())>-2*3600000); if(!f) return ""; const plan=flightPlan(f); const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=(dep-n)/60000;
-  if(arr!==null&&n>=arr) return ""; if(left<=0) return `In the air to ${f.to.city||f.to.ap} · lands ${f.to.t||"soon"}`; if(left<=40) return `At the gate · ${f.no||f.op} boarding`; if(plan&&now.mins>=hm(plan.at)) return `At ${f.from.city||f.from.ap} airport · ${f.no||f.op} boards ${plan.board}`; return ""; }
+  if(arr!==null&&n>=arr) return ""; if(left<=0) return `In the air to ${f.to.city||f.to.ap} · lands ${f.to.t||"soon"}`; if(left<=40) return `At the gate · ${f.no||f.op} boarding`; if(plan&&(now.mins-(3-(f.from.tz??3))*60)>=hm(plan.at)) return `At ${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} airport · ${f.no||f.op} boards ${plan.board}${(f.from.tz??3)!==3?" local":""}`; return ""; }
 // on the day itself the line only shows what is still ahead: the steps already done fall away, the next one leads
 function flightStage(f,now,plan){ const dep=flightDep(f), arr=flightArr(f), n=nowUTC(); const left=Math.round((dep-n)/60000);
   if(arr!==null&&n>=arr) return `landed ${f.to.t} · ${f.to.city||f.to.ap}`;
-  if(left<=0) return `in the air · lands ${f.to.t||"soon"}${arr!==null?` · ${Math.max(1,Math.round((arr-n)/60000))} min`:""}`;
+  if(left<=0){ const r=arr!==null?Math.max(1,Math.round((arr-n)/60000)):0; return `in the air · lands ${f.to.t||"soon"}${arr!==null?` · ${r<60?r+" min":Math.floor(r/60)+"h "+pad2(r%60)+"m"}`:""}`; }
   if(left<=40) return `boarding now · wheels up ${f.from.t} · ${left} min`;
-  if(!plan) return `in ${Math.floor(left/60)}h ${pad2(left%60)}m`;
-  const cur=now.mins; const steps=[plan.up&&["up",plan.up],["leave",plan.go],["airport",plan.at],["boards",plan.board]].filter(Boolean).filter(([,hhmm])=>hm(hhmm)>cur);
-  if(!steps.length) return `boards ${plan.board} · ${left} min`;
-  const [k,v]=steps[0]; const inm=hm(v)-cur; return `${k} ${v} in ${inm<60?inm+" min":Math.floor(inm/60)+"h "+pad2(inm%60)+"m"}${steps.slice(1).map(([a,b])=>` · ${a} ${b}`).join("")}`; }
+  if(!plan) return left<60?`departs in ${left} min`:`departs in ${Math.floor(left/60)}h ${pad2(left%60)}m`;
+  const cur=now.mins-(3-(f.from.tz??3))*60; const tzl=(f.from.tz??3)!==3?` (${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} time)`:""; const steps=[plan.up&&["up",plan.up],["leave",plan.go],["airport",plan.at],["boards",plan.board]].filter(Boolean).filter(([,hhmm])=>hm(hhmm)>cur);
+  if(!steps.length) return `boards ${plan.board}${tzl} · ${left} min`;
+  const [k,v]=steps[0]; const inm=hm(v)-cur; return `${k} ${v} in ${inm<60?inm+" min":Math.floor(inm/60)+"h "+pad2(inm%60)+"m"}${steps.slice(1).map(([a,b])=>` · ${a} ${b}`).join("")}${tzl}`; }
 function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHER(); const theirs=allFlights().filter(f=>f.who===o&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
   const n0=nowUTC(); const live=theirs.filter(x=>(x.date===now.date||(x.to.date||x.date)===now.date) && ((flightArr(x)||flightDep(x)+2*3600000)-n0)>-3*3600000).sort((a,b)=>flightDep(a)-flightDep(b));
   const f=live.find(x=>(flightArr(x)||flightDep(x)+2*3600000)>n0) || live[live.length-1] || (now.h>=15?theirs.find(x=>x.date===tmr):null); if(!f) return "";
@@ -2503,7 +2503,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v89)";
+const BUILD = "Oct 9, 2026 (v90)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3301,7 +3301,19 @@ function standaloneShareFiles(){
 // ---------- whose phone is this: first-run chooser, header chip, personal overrides ----------
 const OTHER = ()=> me()==="Brad"?"Duane":me()==="Duane"?"Brad":"";
 const PERSONAL = {
- sat10:{ Brad:{alarm:"none · you land 2:05am", mission:"Land at 2, visa line, Uber to Garden City, let yourself into the room Duane booked. Sleep until the light does it for you.", chal:"Find Duane's room without waking Duane."},
+ sat10:{ Brad:{alarm:"7:00 Cape Town", title:"Cape Town, then up the continent", place:"Cape Town → Addis Ababa → Cairo (lands 2:05am)", sleep:"the plane, then the Hilton at ≈3am", bag:"passport, $30 cash for the visa, charger, the rand for the market", dress:"the Red Wings — they're heavy to pack", cash:"rand for the Mill · $30 visa · ≈$15 Uber in Cairo",
+           mission:"Coffee and the market at the Old Biscuit Mill, then two flights and a visa line. Land at 2, Uber to Garden City, let yourself into the room Duane booked. Sleep until the light does it for you.", chal:"Find Duane's room without waking Duane.",
+           // times are Cairo time (Cape Town is an hour behind); lt is the Cape Town clock, shown in the list
+           agenda:[
+            {t:"08:00",lt:"07:00",title:"Up. Coffee, finish packing",note:"Passport, $30 cash for the Cairo visa, phone charger, the boots if you bought them."},
+            {t:"09:00",lt:"08:00",title:"Check out",note:"Take the bags in the Uber — the Mill has no luggage room. If your hotel will hold them and it's on the way to the airport, leave them and grab them on the way at ≈10:45 instead."},
+            {t:"09:20",lt:"08:20",title:"Espresso Lab Microroasters, Old Biscuit Mill",note:"Opens 8am on Saturdays: single-origin pour-overs and the lab-coat baristas. Breakfast here before the crowds.",map:"Espresso Lab Microroasters Woodstock Cape Town"},
+            {t:"10:00",lt:"09:00",title:"Neighbourgoods Market opens",note:"Saturdays only, 9–3: food stalls, makers, the design shops in the Mill (also open from 9). Cards everywhere. Out by 10:45.",map:"The Old Biscuit Mill Woodstock Cape Town"},
+            {t:"11:50",lt:"10:50",title:"Uber to Cape Town International",note:"≈20–30 min from Woodstock on the N2. No parking at the Mill on Saturdays, so pickup is on Albert Road.",map:"Cape Town International Airport"},
+            {t:"12:20",lt:"11:20",title:"Check in for ET 844 — bag tagged through to Cairo",note:"International departures. Ask them to check the bag all the way to CAI so you don't touch it in Addis. On wifi, open this app once so it's current."},
+            {t:"14:50",lt:"13:50",title:"✈ ET 844 to Addis Ababa, lands 21:15",note:"Left-side window for Table Mountain on the climb-out, if it's clear."},
+            {t:"21:15",title:"Addis Ababa — about an hour to connect",note:"Transfer signs, security again, straight to the gate. Addis is on Cairo time."},
+            {t:"22:15",title:"✈ ET 452 to Cairo — lands 2:05am Sunday",note:"Then the visa: $30 cash at the bank window before immigration, or the e-Visa lane. Uber to the Hilton, ≈$15."}]},
          Duane:{mission:"Land 5:20, visa, Uber, eat something good, sleep. Tell the desk Brad arrives ≈3:30am so they key him in.", chal:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone."} },
  sun11:{ Brad:{alarm:"≈8:30 · you landed at 2"}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
  mon19:{ Brad:{alarm:"7:00 · up at 4:15 for the hug", mission:"Hug at 4:30, back to bed, car at 7:45. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
