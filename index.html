@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v146)";
+const BUILD = "Oct 9, 2026 (v147)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5292,13 +5292,21 @@ async function claudeCall({system, messages, tools, max_tokens, timeout, model})
 function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cairoNow(); const R=egpRate(); const L=[];
   const cut=(s,k)=>{ s=String(s||"").replace(/\s+/g," "); return s.length>k?s.slice(0,k)+"…":s; };
   L.push(`Asking: ${w} (${(TEAMS[w]||{}).team||""} fan). Travel partner: ${o} (${(TEAMS[o]||{}).team||""}). Cairo time now: ${n.date} ${String(n.h).padStart(2,"0")}:${String(n.m||0).padStart(2,"0")}. Exchange rate ≈ ${R} EGP per USD.`);
-  try{ const wh=skyWhere(); L.push(`${w} is now: ${wh.air?"in the air — "+wh.name:wh.name} (local time ${clock12(wh.tz,nowUTC())}).`); }catch(e){}
+  // where each of them is RIGHT NOW, computed from the flight list — the model must not guess this
+  const durT=m=>m>=1440?`${Math.floor(m/1440)}d ${Math.floor(m%1440/60)}h`:m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m} min`;
+  const statusOf=who=>{ try{ const n=nowUTC(); const fl=allFlights().filter(f=>f.who===who&&f.no&&f.from&&f.from.t&&f.status!=="tbd").sort((a,b)=>flightDep(a)-flightDep(b)); const end=f=>flightArr(f)??(flightDep(f)+3*3600000);
+    const air=fl.find(f=>flightDep(f)<=n&&n<end(f)); const next=fl.find(f=>flightDep(f)>n); const last=fl.filter(f=>end(f)<=n).pop();
+    const at=last?((AP_LL[last.to.ap]||[])[3]||last.to.city):(who==="Duane"?"Norfolk, Virginia (home)":"Cape Town, South Africa");
+    const leg=f=>`${f.no} ${f.from.ap}→${f.to.ap}, departs ${f.date} ${f.from.t} local, lands ${f.to.date||f.date} ${f.to.t||"?"} local`;
+    if(air) return `${who}: IN THE AIR on ${leg(air)} — lands in ${durT(Math.round((end(air)-n)/60000))}.${next?` Next: ${leg(next)}.`:""}`;
+    return `${who}: ON THE GROUND in ${at} — has not taken off yet${last?" again":""}.${next?` Next flight: ${leg(next)} — in ${durT(Math.round((flightDep(next)-n)/60000))}.`:" No more flights on the list."}`; }catch(e){ return ""; } };
+  L.push("WHERE THEY ARE RIGHT NOW (authoritative — never guess flight states):\n  "+[statusOf(w),statusOf(o)].filter(Boolean).join("\n  "));
   L.push(`Trip: Brad + Duane in Egypt Oct 10–19 (Cairo, Aswan, a Nile dahabiya, Luxor); Brad alone after: Dahab/Sinai Oct 19–22, White Desert Oct 23–24, home Oct 25.`);
   const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date;
   const dayTxt=(d,full)=>{ if(!d) return ""; const x=safe(()=>withMe(d))||d; return `${x.dow} ${x.num} Oct — ${x.title} (${x.place||""}). Sleep: ${x.sleep||"—"}. Alarm: ${x.alarm||"—"}.\n`+(x.agenda||[]).slice(0,full?14:5).map(a=>`  ${a.lt?a.lt+" "+(a.ltz||"local"):a.t} ${cut(a.title,90)}${full&&a.note?" — "+cut(a.note,110):""}`).join("\n"); };
   if(pre) L.push("Before the trip. First day:\n"+dayTxt(DAYS[0],true)); else { L.push("TODAY:\n"+dayTxt(DAYS[di],true)); if(DAYS[di+1]) L.push("TOMORROW:\n"+dayTxt(DAYS[di+1],false)); }
   try{ L.push("HOTELS:\n"+HOTELS.map(h=>`  ${h.n} · ${h.d||""}${h.telD?" · tel "+h.telD:""}${h.addr?" · "+h.addr:""}`).join("\n")); }catch(e){}
-  try{ L.push("FLIGHTS (times local to each airport):\n"+allFlights().filter(f=>f.no&&f.from&&f.from.t).map(f=>`  ${f.who}: ${f.no} ${f.from.ap} ${f.date} ${f.from.t} → ${f.to.ap} ${f.to.t||"?"}${f.live&&f.live.status?" ["+f.live.status+"]":""}`).join("\n")); }catch(e){}
+  try{ L.push("FLIGHTS (times local to each airport):\n"+allFlights().filter(f=>f.no&&f.from&&f.from.t).map(f=>{ const n=nowUTC(), d0=flightDep(f), d1=flightArr(f)??(d0+3*3600000); return `  ${f.who}: ${f.no} ${f.from.ap} (${f.from.city}) ${f.date} ${f.from.t} → ${f.to.ap} (${f.to.city}) ${f.to.t||"?"} — ${n>=d1?"flown":n>=d0?"IN THE AIR NOW":"not yet"}${f.live&&f.live.status&&f.live.status!=="unknown"?" ["+f.live.status+"]":""}`; }).join("\n")); }catch(e){}
   try{ L.push("FAIR PRICES (EGP, what a reasonable haggler pays): "+FAIR.map(f=>`${f.n} ${f.lo}–${f.hi}`).join("; ")+". Rule: counter at a third of the first ask; deals land at 40–60%."); }catch(e){}
   L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
@@ -5308,7 +5316,8 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
 const MUM_SYS_TXT=()=>`You are the Mummy — the mascot of Brad and Duane's Egypt trip app. A 3,000-year-old Egyptian mummy: dry, deadpan, a little vain, fond of both of them, obsessed with their Steelers (Brad) vs Bengals (Duane) rivalry.
 How you answer:
 - Lead with the useful answer in 1–3 short sentences. Then at most one short joke in character. Usually under 80 words.
-- Use the trip context below exactly (times, prices, phone numbers, hotel names). Never invent bookings, prices or times that aren't there; if you don't know, say so and say who would (the hotel desk, the guide, the airline app).
+- Use the trip context below exactly (times, prices, phone numbers, hotel names, airports). Where someone is and whether a flight has happened come ONLY from the WHERE THEY ARE RIGHT NOW lines — never infer it.
+- Talk to the person asking, by name. Never invent bookings, prices or times that aren't there; if you don't know, say so and say who would (the hotel desk, the guide, the airline app).
 - Safety, health, or legal trouble: be plain and serious, no jokes — tourist police 126, ambulance 123, the hotel desk, the US Embassy.
 - Scams and touts: name the trick, give the line to say back.
 - Prices: EGP first, ≈USD after. Haggling: open at about a third of the first ask.
