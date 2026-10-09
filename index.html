@@ -2541,7 +2541,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v106)";
+const BUILD = "Oct 9, 2026 (v107)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4322,21 +4322,37 @@ function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes
   </article>`; }
 // the whole decision on one screen: tap a row to jump to its card
 function boatGlance(list){ const mv=boatVotes(), ov=boatOther().votes||{}, o=OTHER(); const v=x=>x>0?"👍":x<0?"👎":"·";
-  return `<div class="bs-gl"><table><thead><tr><th>#</th><th>Option</th><th title="Kom Ombo, Silsila, Edfu">Places</th><th>Each</th><th>Comfort</th><th title="Abu Simbel">Abu S.</th><th title="You, then ${esc(o||"")}">Votes</th></tr></thead><tbody>${list.map(b=>`<tr data-bjump="${b.id}" class="${(mv[b.id]||0)>0&&(ov[b.id]||0)>0?"both":""}${(mv[b.id]||0)<0||(ov[b.id]||0)<0?" out":""}"><td>${b.rank}</td><td><b>${esc(b.short||b.name)}</b><small>${esc(b.datesS||"")}</small></td><td class="c pl">${b.pl.filter(x=>x==="✓").length}/3${b.pl.includes("?")?`<sup>?</sup>`:""}</td><td>${esc(b.priceS||"")}</td><td>${boatDots(b.comfort[0])}</td><td class="c">${b.abu==="✓"?"✓":b.abu==="✗"?"✗":"?"}</td><td class="c">${v(mv[b.id]||0)}${o?` ${v(ov[b.id]||0)}`:""}</td></tr>`).join("")}</tbody></table><p class="muted">Ranked for what you asked for: the places first (Kom Ombo, Silsila, Edfu — with Abu Simbel done on our own), then comfort, a seller we can trust, then price. Tap a row.</p></div>`; }
+  return `<div class="bs-gl"><p class="bs-h">At a glance · tap a row${o?` · votes: yours, then ${esc(o)}'s`:""}</p><table><thead><tr><th>#</th><th>Option</th><th title="Kom Ombo, Silsila, Edfu">Places</th><th>Each</th><th>Comfort</th><th title="Abu Simbel">Abu S.</th><th title="You, then ${esc(o||"")}">Votes</th></tr></thead><tbody>${list.map(b=>`<tr data-bjump="${b.id}" class="${(mv[b.id]||0)>0&&(ov[b.id]||0)>0?"both":""}${(mv[b.id]||0)<0||(ov[b.id]||0)<0?" out":""}"><td>${b.rank}</td><td><b>${esc(b.short||b.name)}</b><small>${esc(b.datesS||"")}</small></td><td class="c pl">${b.pl.filter(x=>x==="✓").length}/3${b.pl.includes("?")?`<sup>?</sup>`:""}</td><td>${esc(b.priceS||"")}</td><td>${boatDots(b.comfort[0])}</td><td class="c">${b.abu==="✓"?"✓":b.abu==="✗"?"✗":"?"}</td><td class="c">${v(mv[b.id]||0)}${o?` ${v(ov[b.id]||0)}`:""}</td></tr>`).join("")}</tbody></table><p class="muted">Ranked for what you asked for: the places first (Kom Ombo, Silsila, Edfu — with Abu Simbel done on our own), then comfort, a seller we can trust, then price. Tap a row.</p></div>`; }
 function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally(); const showAll=sessionStorage.getItem(BOAT_LS.showAll)==="1";
   let list=[...BOATS].sort((a,b)=>a.rank-b.rank); if(!c){ if(boatFilter==="ahead"||boatFilter==="onsite") list=list.filter(b=>b.book===boatFilter); if(boatFilter==="both") list=list.filter(b=>boatBothUp().includes(b)); }
   const chosenB=c?BOATS.find(b=>b.id===c.id):null; const rest=c?BOATS.filter(b=>b!==chosenB):[];
   const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`You both 👍 · ${t.both}`]];
-  const advice=`<details class="bs-adv" ${c?"":"open"}><summary>The short answer</summary><div class="in">
-   <p><b>Do Abu Simbel on our own — it makes the most sense.</b> Tuesday stays as planned in Aswan (Philae, high tea, the Nubian village) with a hotel that night. A private car leaves at 4am Wednesday (≈$180 for both through the hotel; entry 750–822 EGP each), we're back ≈12:30, and we board a Wednesday boat chosen purely for its stops. No boat has to bend its schedule around Abu Simbel.</p>
-   <p><b>Then the boat that goes everywhere: Tour Egypt Club</b> — Kom Ombo, Gebel el-Silsila, Edfu, El Kab and Luxor, real reviews, Tripadvisor's protection; ask them to confirm a 1pm boarding. <b>Or The Orient</b> — the same stops on a boutique boat, joined at Kom Ombo that afternoon if they agree. <b>Merit</b> is the most comfortable but sails past Edfu and Silsila.</p>
-   <p><b>Bags — we never carry them:</b> Tuesday, one car from the airport drops the bags at the Aswan hotel on the way to Philae. Wednesday, they go in the trunk of the 4am Abu Simbel car (a private car waits for you) and come out at the boat's gangway — the message asks the boat to arrange that car. Saturday, the boat's transfer takes us and the bags to the Luxor hotel. Pick an Aswan hotel on the east-bank Corniche (Basma or the Old Cataract), not the Mövenpick on Elephantine Island, which adds a ferry with every bag.</p>
-   <p><b>What it costs us:</b> we're off the boat Saturday, a day later. Friday's Luxor museum and temple move to Saturday afternoon, and the balloon moves to Sunday dawn (our Luxor flight is 15:40, so it fits). We sleep on the boat Friday, so the Hilton Luxor drops to Saturday night only — change it once the boat is confirmed.</p>
-   <p><b>Book now, not on the quay.</b> Dahabiyas carry 5–12 cabins and sell out through agents.</p>
-   <table class="bs-tbl"><tr><th></th><th>Book now</th><th>On site</th></tr><tr><td>Dahabiya, 3 nights</td><td>$899–1,815 or ≈€990 each</td><td>Near-zero odds</td></tr><tr><td>Felucca, 2 nights</td><td>—</td><td>≈$150–300 each (estimate)</td></tr><tr><td>Cruise ship, 3 nights</td><td>$554 (Tuesday, TourRadar)</td><td>≈$150 each (2021 report)</td></tr><tr><td>Money back</td><td>Inside 7 days: usually 50–100% gone</td><td>Pay on boarding</td></tr></table>
-   <p><b>Do this today:</b> message Tour Egypt Club (through Tripadvisor) and The Orient at once; Merit is the comfortable back-up. Each card has the message ready. Take the first that confirms in writing the boat's name, twin beds, the boarding time or meeting point after Abu Simbel, and the terms. Book the Aswan hotel for Tuesday and the 4am car once the boat is set. If nobody confirms by Sunday night: a felucca from Wednesday afternoon.</p>
+  const top3=[...BOATS].sort((x,y)=>x.rank-y.rank).slice(0,3);
+  const advice=`<details class="bs-adv" ${c?"":"open"}><summary>Start here: what we're deciding</summary><div class="in">
+   <p class="bs-lead"><b>Three nights on a Nile boat, Aswan → Luxor.</b> We need to pick one and book it this weekend — the good boats sell out, and none can be found on the dock.</p>
+   <ol class="bs-plan">
+    <li><b>Tue 13</b> · Fly to Aswan (lands 9:25). Philae, high tea, the Nubian village. Sleep in an Aswan hotel.</li>
+    <li><b>Wed 14</b> · 4am private car to Abu Simbel with our bags in the trunk. Back ≈12:30 and straight onto the boat.</li>
+    <li><b>Wed–Sat</b> · Sail to Kom Ombo, Gebel el-Silsila and Edfu. Off in Luxor on Saturday.</li>
+   </ol>
+   <p class="bs-h">What we each do now</p>
+   <ol class="bs-todo">
+    <li><b>Both:</b> look at the top three below (${top3.map(b=>esc(b.short||b.name)).join(", ")}) — photos, places, price — and tap 👍 or 👎. ${esc(OTHER()||"The other phone")} sees your vote straight away.</li>
+    <li><b>Whoever's free first:</b> on #1 and #2, tap <i>WhatsApp</i> or <i>Email</i>. The message is already written — dates, twin beds, Abu Simbel, our bags. Send both.</li>
+    <li><b>When a boat confirms in writing</b> (boat name, twin beds, boarding time, price): tap <i>Choose this one</i>. The other options fold away on both phones.</li>
+    <li><b>Then:</b> book the Aswan hotel for Tuesday (Basma or the Old Cataract — not the island one), and cut the Hilton Luxor to Saturday night only.</li>
+   </ol>
+   <p class="bs-dl"><b>Deadline: Sunday night.</b> If no boat has confirmed by then, we take a felucca from Aswan on Wednesday instead.</p>
+   <details class="bs-more"><summary>Why this order, bags, and booking now vs. on the dock</summary>
+    <p><b>The order:</b> the places we want first (Kom Ombo, Silsila, Edfu — Abu Simbel we do ourselves), then comfort, then a seller we can trust, then price. #1 Tour Egypt Club and #2 The Orient go everywhere; #3 Merit is the most comfortable but skips Edfu and Silsila.</p>
+    <p><b>Why not a boat on Tuesday:</b> the only ones leave Aswan Tuesday morning, which loses Abu Simbel.</p>
+    <p><b>What changes in the trip:</b> we're off the boat Saturday instead of Friday. Friday's Luxor museum and temple move to Saturday afternoon; the balloon moves to Sunday dawn (our Luxor flight is 15:40).</p>
+    <p><b>Bags — we never carry them:</b> Tuesday a car drops them at the hotel on the way to Philae; Wednesday they ride in the Abu Simbel car's trunk to the boat; Saturday the boat's transfer takes them to the Luxor hotel.</p>
+    <table class="bs-tbl"><tr><th></th><th>Book now</th><th>On the dock</th></tr><tr><td>Dahabiya, 3 nights</td><td>$899–1,815 or ≈€990 each</td><td>Near-zero odds</td></tr><tr><td>Felucca, 2 nights</td><td>—</td><td>≈$150–300 each (estimate)</td></tr><tr><td>Cruise ship, 3 nights</td><td>$554 (Tuesday, TourRadar)</td><td>≈$150 each (2021 report)</td></tr><tr><td>Money back</td><td>Inside 7 days: usually 50–100% gone</td><td>Pay on boarding</td></tr></table>
+    <p><b>Paying:</b> a card deposit, the rest in cash on board. Pure Nile Tours (Merit's cheaper seller) has no track record we could find — deposit only.</p>
+   </details>
   </div></details>`;
-  const head=`<div class="qh"><h3>The boat · ${c?esc(chosenB.when.split(" · ")[0]):"Tue 13 → Fri 16"}</h3><button type="button" class="x" aria-label="Close">✕</button></div>
+  const head=`<div class="qh"><h3>The Nile boat${c?` · ${esc(chosenB.when.split(" · ")[0])}`:""}</h3><button type="button" class="x" aria-label="Close">✕</button></div>
    <div class="bs-who">${c?`<b>Decided:</b> ${esc(chosenB.name)} — ${esc(chosenB.seller)}.`:`<span>You: ${t.mine?`${t.mine} vote${t.mine>1?"s":""}`:"no votes yet"}</span><span>${esc(o)}: ${t.theirs?`${t.theirs} vote${t.theirs>1?"s":""}`:"no votes yet"}</span>${t.both?`<span class="both">Both 👍: ${boatBothUp().map(b=>esc(b.name)).join(", ")}</span>`:""}`}${liveOK()?"":`<span class="muted">Pick whose phone this is (top of the app) so your votes reach ${esc(o)}.</span>`}</div>`;
   const body = c
    ? `${boatCard(chosenB)}<button type="button" class="btn bs-rest" data-bshowall="1">${showAll?"Hide":"Show"} the ${rest.length} we didn't pick</button>${showAll?`<div class="bs-restl">${rest.map(b=>boatCard(b)).join("")}</div>`:""}`
@@ -4371,6 +4387,7 @@ html.hugetext .boatslot{flex-wrap:wrap}html.hugetext .boatslot .btn{margin-left:
 #sheetBoat .qh{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-16px;background:var(--card);padding:6px 0;z-index:2}#sheetBoat .qh h3{margin:0;font-family:var(--display)}
 .bs-who{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:0.8235rem;margin:2px 0 10px}.bs-who span{white-space:nowrap}.bs-who .both{color:var(--ok);font-weight:600;white-space:normal}
 .bs-adv{border:1px solid var(--line);border-radius:var(--r);background:var(--sand);margin-bottom:12px}.bs-adv>summary{padding:10px 12px;font-weight:700;cursor:pointer}.bs-adv .in{padding:0 12px 10px}.bs-adv p{margin:6px 0;font-size:0.8824rem}
+.bs-lead{font-size:0.9412rem!important}.bs-plan,.bs-todo{margin:6px 0 10px;padding-left:22px;font-size:0.8824rem}.bs-plan li,.bs-todo li{margin:4px 0}.bs-h{font-family:var(--mono);font-size:0.7059rem!important;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 2px!important}.bs-dl{background:var(--dusk-soft);border-radius:10px;padding:8px 10px}.bs-more{margin-top:10px;font-size:0.8235rem}.bs-more>summary{cursor:pointer;color:var(--nile-ink);font-weight:600}
 .bs-tbl{width:100%;table-layout:fixed;border-collapse:collapse;font-size:0.7941rem;margin:8px 0}.bs-tbl th,.bs-tbl td{overflow-wrap:anywhere;hyphens:auto;text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}.bs-tbl td:first-child{font-weight:600}
 .bs-f{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.bs-f .chip{flex-direction:row;white-space:nowrap}
 .bc{border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:12px;background:var(--card)}
