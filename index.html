@@ -2599,7 +2599,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v168)";
+const BUILD = "Oct 10, 2026 (v169)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6381,7 +6381,7 @@ function wayHTML(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT)||T[0]; i
    <div class="way-save"><button type="button" class="btn" data-waysave="hotel">📍 I'm at the hotel — save it</button><button type="button" class="btn" data-waysave="other">📍 Save this spot…</button></div>
    <p class="way-note" id="wayNote">GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8.</p>`; }
 function wayUpdate(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT); const A=document.getElementById("wayArrow"), D=document.getElementById("wayD"), S=document.getElementById("wayS"), N=document.getElementById("wayN"); if(!A||!D) return;
-  if(!wayPos){ D.textContent="Finding you…"; return; } if(!t){ D.textContent="—"; S.textContent="Save a spot, or pick a landmark"; return; }
+  if(!wayPos){ A.style.opacity=".18"; D.textContent="Finding you…"; return; } A.style.opacity=t&&wayPos?"1":".18"; if(!t){ D.textContent="📍"; S.textContent="Nothing saved near here yet. Save this spot and the arrow leads back to it from anywhere."; return; }
   const dist=wayDist(wayPos,t), b=wayBear(wayPos,t); const walk=Math.round(dist/80);
   D.textContent=wayFmt(dist); S.textContent=`${t.n} · ${wayCard(b)}${dist<6000?` · ≈${walk<1?1:walk} min walk`:""}${wayPos.acc>60?` · GPS ±${Math.round(wayPos.acc)} m`:""}`;
   if(wayHead!=null){ A.style.transform=`rotate(${(b-wayHead+360)%360}deg)`; N.style.transform=`rotate(${(-wayHead+360)%360}deg) translateY(-118px) rotate(${(wayHead)%360}deg)`; N.hidden=false; }
@@ -6393,7 +6393,7 @@ async function openWay(target){ wayT=target||wayT;
   try{ if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=="granted") wayHead=null; } }catch(e){}
   if(!wayOrient){ wayOrient=e=>{ let h=null; if(typeof e.webkitCompassHeading==="number") h=e.webkitCompassHeading; else if(e.absolute&&typeof e.alpha==="number") h=(360-e.alpha)%360; if(h!=null){ const first=wayHead==null; wayHead=h; if(first){ const note=document.getElementById("wayNote"); if(note){ delete note.dataset.nc; note.textContent="GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8."; } } wayUpdate(); } };
     addEventListener("deviceorientationabsolute",wayOrient); addEventListener("deviceorientation",wayOrient); }
-  if(navigator.geolocation&&wayWatch==null){ wayWatch=navigator.geolocation.watchPosition(p=>{ wayPos={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}; const fresh=!document.querySelector("#bigCard .way-t .chip"); wayUpdate(); },err=>{ const D=document.getElementById("wayD"); if(D) D.textContent=err.code===1?"Location is off for this app":"No GPS fix yet"; const S=document.getElementById("wayS"); if(S&&err.code===1) S.textContent="Settings → Privacy → Location Services → Safari Websites → While Using"; },{enableHighAccuracy:true,maximumAge:5000,timeout:20000}); }
+  if(navigator.geolocation&&wayWatch==null){ wayWatch=navigator.geolocation.watchPosition(p=>{ const first=!wayPos; wayPos={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}; if(first){ /* now we know where you are: only show what's near */ const box=document.querySelector("#bigCard .way-t"); const T=wayTargets(); if(!T.find(x=>x.k===wayT)) wayT=T[0]?T[0].k:null; if(box) box.innerHTML=T.map(x=>`<button type=\"button\" class=\"chip ${x.k===wayT?"on":""}\" data-wayt=\"${escA(x.k)}\">${x.saved?"📍 ":""}${esc(x.n)}</button>`).join(""); } wayUpdate(); },err=>{ const D=document.getElementById("wayD"); if(D) D.textContent=err.code===1?"Location is off for this app":"No GPS fix yet"; const S=document.getElementById("wayS"); if(S&&err.code===1) S.textContent="Settings → Privacy → Location Services → Safari Websites → While Using"; },{enableHighAccuracy:true,maximumAge:5000,timeout:20000}); }
   wayUpdate(); }
 function wayStop(){ if(wayWatch!=null&&navigator.geolocation){ navigator.geolocation.clearWatch(wayWatch); wayWatch=null; } }
 (function(){ const B=bigClose; bigClose=function(){ wayStop(); return B.apply(this,arguments); }; })();
@@ -6426,7 +6426,7 @@ html.big-open .mumtab,html.big-open .pptab,html.big-open #obPill{display:none}
 .bc-x{display:block;width:100%;max-width:320px;margin:14px auto 0;padding:14px;border-radius:14px;border:0;font:700 1rem var(--display);background:#111;color:#fff;cursor:pointer}
 #bigCard.way .bc-x{background:#fff;color:#111}
 .bc-awake{font-size:0.7059rem;opacity:.5;margin:10px 0 0}
-.way-dial{position:relative;width:240px;height:240px;margin:6px auto 4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.way-dial{position:relative;width:240px;height:240px;margin:24px auto 4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
 .way-arrow{width:150px;height:150px;color:#f2c14e;transition:transform .25s ease-out}.way-arrow svg{width:100%;height:100%;filter:drop-shadow(0 6px 14px rgba(242,193,78,.35))}
 .way-n{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#c0392b;color:#fff;font:800 13px/28px var(--display);transform:translateY(-118px)}
 .way-d{font:800 2.6rem/1.1 var(--display);margin:6px 0 2px}.way-s{margin:0 0 12px;opacity:.75;font-size:0.9412rem}
