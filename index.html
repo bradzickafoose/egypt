@@ -3586,7 +3586,7 @@ const RELICS = {
   sat24:["🦊","Fennec hair","Evidence. The fox was real. The chips were yours."],
   sun25:["🎫","The boarding pass","The last relic. Keep it in the passport, where it belongs."],
 };
-const MUMMY_LINES = ["Three thousand years in the dark and the first thing I see is a Bengals jersey.","I was a pharaoh. Now I'm an easter egg.","Don't unwrap me. I'm not that kind of mummy.","You woke me for THIS?","Tutankhamun says hi. He's still mad about the parking.","Put me back. The curse is real. The curse is mostly jet lag.","I haggled once. 2000 BC. Still paid too much.","Steelers 30, Bengals 27. I was there. I'm always there.","Snakes. Why did it have to be snakes.","I've seen your stamp streak. The gods are mildly impressed.","Bandages by the metre. Ask for the Khan price.","The afterlife has wifi. It's also 'Hilton_Guest'."];
+const MUMMY_LINES = ["Three thousand years in the dark and the first thing I see is a Bengals jersey.","I was a pharaoh. Now I'm an easter egg.","Don't unwrap me. I'm not that kind of mummy.","You woke me for THIS?","Tutankhamun says hi. He's still mad about the parking.","Put me back. The curse is real. The curse is mostly jet lag.","I haggled once. 2000 BC. Still paid too much.","Snakes. Why did it have to be snakes.","I've seen your stamp streak. The gods are mildly impressed.","Bandages by the metre. Ask for the Khan price.","The afterlife has wifi. The password is on a scroll somewhere.","I'm not dead, I'm vintage.","Drink water. Look at me. This is what happens when you don't.","Somebody tell the Sphinx I said hi. He never writes."];
 function mummyWalk(force){ try{ if(document.querySelector(".mummy")) return; if(matchMedia("(prefers-reduced-motion: reduce)").matches && !force) return; safe(()=>sfx("mummy")); const m=document.createElement("button"); m.type="button"; m.className="mummy"; m.setAttribute("aria-label","A mummy"); m.innerHTML=`<i class="mb"></i><i class="me l"></i><i class="me r"></i><i class="ma a1"></i><i class="ma a2"></i>`; document.body.appendChild(m);
   const line=MUMMY_LINES[Math.floor(Math.random()*MUMMY_LINES.length)];
   m.addEventListener("click", ()=>{ if(m.dataset.said) return; m.dataset.said="1"; m.classList.add("stop"); const s=document.createElement("div"); s.className="msay"; s.textContent=line; m.appendChild(s); const n=(GS.get("mummies",0)||0)+1; GS.set("mummies",n); if(n===1) toast("The mummy has spoken. It will be back."); if(n===5) milestone("mummy5","Five mummies. You're basically Brendan Fraser."); safe(()=>logEvent("met a mummy — "+line)); setTimeout(()=>{ m.classList.add("gone"); setTimeout(()=>m.remove(),900); }, 3800); });
@@ -4696,33 +4696,45 @@ const tabLive=()=>Object.entries(tabState().e).filter(([,x])=>x&&!x.dead).map(([
 // what `w` is owed (positive) or owes (negative)
 function tabNet(w){ const R=egpRate(); let n=0; tabLive().forEach(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const share=x.split==="half"?egp/2:egp; if(x.by===w) n+=share; else n-=share; }); return n; }
 let tabSyncP=null;
-async function tabSync(){ if(tabSyncP) return tabSyncP; tabSyncP=(async()=>{ try{
-  const s=tabState(); let changed=false;
-  for(const id of Object.keys(s.pend)){ if(await togPut("tab",id,s.e[id])){ delete s.pend[id]; changed=true; } }
-  const srv=await togGet("tab"); if(srv){ for(const [id,x] of Object.entries(srv)){ if(s.pend[id]||!x) continue; const cur=s.e[id]; if(!cur||String(x.at2||x.at)>String(cur.at2||cur.at)||(x.dead&&!cur.dead)){ s.e[id]=x; changed=true; } } }
-  lsJset(TAB_K,s); return changed; } finally{ tabSyncP=null; } })(); return tabSyncP; }
+async function tabSync(){ if(tabSyncP) return tabSyncP; tabSyncP=(async()=>{ let again=false; try{
+  // push from a snapshot, but merge the results into the CURRENT local state, so a line added mid-sync is never overwritten
+  const snap=tabState(); const sent={}; let changed=false; const ver=x=>x?`${x.at2||x.at}|${x.dead?1:0}`:"";
+  for(const id of Object.keys(snap.pend)){ if(await togPut("tab",id,snap.e[id])) sent[id]=ver(snap.e[id]); }
+  const srv=await togGet("tab");
+  const f=tabState();
+  for(const [id,v] of Object.entries(sent)){ if(ver(f.e[id])===v){ delete f.pend[id]; changed=true; } }
+  if(srv){ for(const [id,x] of Object.entries(srv)){ if(f.pend[id]||!x) continue; const cur=f.e[id]; if(!cur||String(x.at2||x.at)>String(cur.at2||cur.at)||(x.dead&&!cur.dead)){ f.e[id]=x; changed=true; } } }
+  lsJset(TAB_K,f); again=Object.keys(f.pend).some(id=>!(id in snap.pend)); return changed; } finally{ tabSyncP=null; if(again) setTimeout(()=>tabSync().then(ch=>{ if(ch&&tabOpen()) tabRender(); }),50); } })(); return tabSyncP; }
 function tabAdd(x){ const s=tabState(); const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); s.e[id]={...x, at:new Date().toISOString()}; s.pend[id]=1; lsJset(TAB_K,s); tabSync().then(()=>{ if(tabOpen()) tabRender(); }); return id; }
 function tabDel(id){ const s=tabState(); const x=s.e[id]; if(!x) return; s.e[id]={...x, dead:true, at2:new Date().toISOString()}; s.pend[id]=1; lsJset(TAB_K,s); tabSync().then(()=>{ if(tabOpen()) tabRender(); }); }
 const tabOpen=()=>{ const s=$("#sheetTab"); return !!(s&&s.classList.contains("on")); };
-let tabForm={cur:"EGP", payer:"me", split:"half"};
+// which currency the tab is shown in — per phone, flip it any time; entries keep the currency they were paid in
+const TABCUR_K="egypt.tabcur";
+function tabCur(){ try{ return localStorage.getItem(TABCUR_K)==="USD"?"USD":"EGP"; }catch(e){ return "EGP"; } }
+function tabSetCur(c){ try{ localStorage.setItem(TABCUR_K,c); }catch(e){} tabForm.cur=c; }
+function tabUSD(egp){ const v=egp/egpRate(); return "$"+(Math.abs(v)<10?v.toFixed(2):fmtE(Math.round(v))); }
+function tabFmt(egp){ return tabCur()==="USD"?tabUSD(egp):`${fmtE(Math.round(egp))} EGP`; }
+function tabAlt(egp){ return tabCur()==="USD"?`${fmtE(Math.round(egp))} EGP`:`≈ ${tabUSD(egp)}`; }
+let tabForm={cur:tabCur(), payer:"me", split:"half"};
 function tabBalanceHTML(){ const w=me(); const o=OTHER_OF(w); if(!w) return `<div class="tb-bal"><b>Pick whose phone this is first</b><small>tap the name chip up top</small></div>`;
   const n=tabNet(w); const R=egpRate(); const a=Math.abs(n);
   if(a<1) return `<div class="tb-bal even"><b>All square</b><small>${tabLive().length?"nobody owes anybody":"nothing on the tab yet"}</small></div>`;
-  return `<div class="tb-bal ${n>0?"up":"dn"}"><b>${n>0?`${esc(o)} owes you`:`You owe ${esc(o)}`} ${fmtE(a)} EGP</b><small>≈ $${(a/R).toFixed(a/R<10?2:0)} at ${R} EGP to the dollar</small></div>`; }
+  return `<div class="tb-bal ${n>0?"up":"dn"}"><b>${n>0?`${esc(o)} owes you`:`You owe ${esc(o)}`} ${tabFmt(a)}</b><small>${tabAlt(a)} · ${R} EGP to the dollar</small></div>`; }
+function tabCurSeg(){ const c=tabCur(); return `<div class="tb-show"><span>Show in</span><div class="seg tb-seg">${[["EGP","EGP"],["USD","USD $"]].map(([v,l])=>`<button type="button" class="${c===v?"on":""}" data-tbcur="${v}">${l}</button>`).join("")}</div></div>`; }
 function tabSheetHTML(){ const w=me(); const o=OTHER_OF(w)||"him"; const L=tabLive(); const R=egpRate(); const pend=tabState().pend;
   const seg=(k,opts)=>`<div class="seg tb-seg">${opts.map(([v,l])=>`<button type="button" class="${tabForm[k]===v?"on":""}" data-tbset="${k}:${v}">${l}</button>`).join("")}</div>`;
   const splitLbl=tabForm.payer==="me"?[["half","Half each"],["all",`All for ${o}`]]:[["half","Half each"],["all","All for me"]];
   const n=tabNet(w);
   return `<div class="qh"><h3>The tab</h3><button type="button" class="x" aria-label="Close">×</button></div>
-  <div class="tab">${tabBalanceHTML()}
+  <div class="tab">${tabBalanceHTML()}${tabCurSeg()}
     <form class="tb-form" id="tbForm"><input id="tbW" placeholder="What (dinner at Abou Tarek, the guide…)" maxlength="60" autocomplete="off"><div class="tb-amt"><input id="tbA" inputmode="decimal" placeholder="Amount" autocomplete="off">${seg("cur",[["EGP","EGP"],["USD","$"]])}</div>
       <div class="tb-row"><span>Paid by</span>${seg("payer",[["me","Me"],["them",esc(o)]])}</div>
       <div class="tb-row"><span>Split</span>${seg("split",splitLbl)}</div>
       <button class="btn primary" type="submit">Add to the tab</button></form>
-    ${Math.abs(n)>=1?`<button type="button" class="btn tb-settle" data-tbsettle="1">${n>0?`${esc(o)} paid me back`:`I paid ${esc(o)} back`} · ${fmtE(Math.abs(n))} EGP</button>`:""}
+    ${Math.abs(n)>=1?`<button type="button" class="btn tb-settle" data-tbsettle="1">${n>0?`${esc(o)} paid me back`:`I paid ${esc(o)} back`} · ${tabFmt(Math.abs(n))}</button>`:""}
     ${L.length?`<ul class="tb-list">${L.map(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const d=new Date(x.at); const dd=isNaN(d)?"":`${d.toLocaleDateString("en-US",{weekday:"short"})} ${d.getDate()}`;
       const how=x.settle?"settled up":x.split==="half"?"half each":`all for ${esc(OTHER_OF(x.by))}`;
-      return `<li class="${x.settle?"settle":""}"><div><b>${esc(x.w||"—")}</b><small>${esc(x.by)} paid · ${how} · ${dd}${pend[x.id]?" · <i>not synced yet</i>":""}</small></div><span class="tb-v">${x.cur==="USD"?`$${fmtE(x.amt)}<small>${fmtE(egp)} EGP</small>`:`${fmtE(x.amt)}<small>EGP</small>`}</span><button type="button" class="tb-x" data-tbdel="${x.id}" aria-label="Remove">✕</button></li>`; }).join("")}</ul>`:`<p class="muted" style="margin-top:10px">Whoever pays, log it here — both phones see the same tab. Settle up at the airport.</p>`}
+      return `<li class="${x.settle?"settle":""}"><div><b>${esc(x.w||"—")}</b><small>${esc(x.by)} paid · ${how} · ${dd}${pend[x.id]?" · <i>not synced yet</i>":""}</small></div><span class="tb-v">${tabCur()==="USD"?(x.cur==="USD"?`$${fmtE(x.amt)}<small>paid in $</small>`:`${tabUSD(egp)}<small>${fmtE(x.amt)} EGP</small>`):(x.cur==="USD"?`${fmtE(Math.round(egp))}<small>EGP · paid $${fmtE(x.amt)}</small>`:`${fmtE(x.amt)}<small>EGP</small>`)}</span><button type="button" class="tb-x" data-tbdel="${x.id}" aria-label="Remove">✕</button></li>`; }).join("")}</ul>`:`<p class="muted" style="margin-top:10px">Whoever pays, log it here — both phones see the same tab. Settle up at the airport.</p>`}
     <p class="muted tb-foot">Dollars count at the Money rate (${R} EGP). Remove a line on either phone and it's gone on both.</p>
   </div>`; }
 function tabRender(){ const s=$("#sheetTab"); if(!s) return; const box=s.querySelector(".qbox"); if(!box) return; const keep={w:($("#tbW")||{}).value||"", a:($("#tbA")||{}).value||""}; const f=document.activeElement&&document.activeElement.id; box.innerHTML=tabSheetHTML(); if($("#tbW")) $("#tbW").value=keep.w; if($("#tbA")) $("#tbA").value=keep.a; if(f&&$("#"+f)) try{ $("#"+f).focus(); }catch(e){} }
@@ -4730,6 +4742,7 @@ function openTab(focus){ if(!me()){ safe(()=>whoSheet(true)); return; } openShee
   if(focus) setTimeout(()=>{ const i=$("#tbW"); if(i) i.focus(); },250);
   tabSync().then(ch=>{ if(ch&&tabOpen()) tabRender(); safe(renderNavigator); }); }
 document.addEventListener("click", e=>{
+  const tc=e.target.closest("[data-tbcur]"); if(tc){ tabSetCur(tc.dataset.tbcur); tabRender(); safe(renderNavigator); return; }
   const t=e.target.closest("[data-tbset]"); if(t){ const [k,v]=t.dataset.tbset.split(":"); tabForm[k]=v; tabRender(); return; }
   const d=e.target.closest("[data-tbdel]"); if(d){ if(d.dataset.arm!=="1"){ d.dataset.arm="1"; d.textContent="Remove?"; d.classList.add("arm"); setTimeout(()=>{ if(d.isConnected){ d.dataset.arm=""; d.textContent="✕"; d.classList.remove("arm"); } },2500); return; } tabDel(d.dataset.tbdel); tabRender(); toast("Removed from the tab."); return; }
   const st=e.target.closest("[data-tbsettle]"); if(st){ const w=me(); const n=tabNet(w); if(Math.abs(n)<1) return; if(st.dataset.arm!=="1"){ st.dataset.arm="1"; st.textContent="Tap again to record it"; setTimeout(()=>{ if(st.isConnected){ st.dataset.arm=""; tabRender(); } },3000); return; }
@@ -4740,7 +4753,7 @@ document.addEventListener("submit", e=>{ if(e.target.id!=="tbForm") return; e.pr
   if(!(a>0)){ toast("How much?"); $("#tbA").focus(); return; } if(!w){ toast("What was it?"); $("#tbW").focus(); return; }
   const by=tabForm.payer==="me"?me():OTHER_OF(me()); tabAdd({by, w, amt:Math.round(a*100)/100, cur:tabForm.cur, split:tabForm.split});
   $("#tbW").value=""; $("#tbA").value=""; tabRender(); toast(`On the tab: ${w}.`); });
-function tabTileLine(){ const w=me(); if(!w) return "who paid, who owes"; const n=tabNet(w); return Math.abs(n)<1?(tabLive().length?"all square":"who paid, who owes"):n>0?`${OTHER_OF(w)} owes you ${fmtE(n)}`:`you owe ${OTHER_OF(w)} ${fmtE(-n)}`; }
+function tabTileLine(){ const w=me(); if(!w) return "who paid, who owes"; const n=tabNet(w); return Math.abs(n)<1?(tabLive().length?"all square":"who paid, who owes"):n>0?`${OTHER_OF(w)} owes you ${tabFmt(n)}`:`you owe ${OTHER_OF(w)} ${tabFmt(-n)}`; }
 
 // =====================================================================================================
 // 2. FAIR PRICES — what a reasonable haggler ends up paying (EGP, 2025–26 guides; ≈ marks thin data)
@@ -4864,6 +4877,7 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ const d
 
 // ---------- styles (theme variables only, so dark mode just works) ----------
 (function(){ const css=`
+.tab .tb-show{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-4px 0 12px;font-size:0.7647rem;color:var(--muted)}.tab .tb-show .tb-seg{flex:none}
 .tab .tb-bal{border-radius:12px;padding:12px 14px;background:var(--sand);margin-bottom:12px}.tab .tb-bal b{display:block;font-family:var(--display);font-stretch:87.5%;font-size:1.2rem;line-height:1.2}.tab .tb-bal small{color:var(--muted);font-size:0.7647rem}
 .tab .tb-bal.up{background:color-mix(in srgb,var(--ok) 16%,var(--card));}.tab .tb-bal.up b{color:var(--ok)}.tab .tb-bal.dn{background:var(--dusk-soft)}.tab .tb-bal.dn b{color:var(--dusk)}
 .tb-form{display:grid;gap:8px}.tb-form input{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
@@ -5074,18 +5088,18 @@ html.bigtext .now .sky{height:58px}
 // Rules so he stays a treat: one "good morning" appearance a day, at most 6 reactions a day, 2 minutes apart
 // (big plays skip the gap), never while you're typing, never over an open sheet, and nothing with Reduce Motion.
 const MUM_DAY={
-  pre:["Pack light. I've done three thousand years in one outfit.","Egypt tomorrow. I've been waiting since 1323 BC. No pressure."],
-  sat10:{Brad:["Two flights and a layover in Addis? Amateur. I came by reed boat.","Landing at 2am? That's my favourite hour. Very spooky."],Duane:["Welcome to Egypt. Mind the traffic. I'd walk you in, but… well.","Tell the desk Brad's coming at 3am. Tell them I'm coming whenever."]},
-  sun11:["Dahshur today. The Bent Pyramid is what happens when nobody checks the angles.","Saqqara is my cousin's place. Don't touch his stuff.","The Khan tonight. Haggle like you've got three thousand years."],
-  mon12:["The Great Pyramid: 4,500 years old and still no elevator.","At the GEM? Say hi to Tut. He owes me money.","Felucca at sunset. Wave if you see a guy in bandages. That's me. Hi."],
-  tue13:["Aswan! High tea at the Old Cataract. Don't mention the murders.","Philae was moved stone by stone to a new island. I'd like that kind of commitment."],
-  wed14:["A 3:30 alarm? I've been lying down since the Old Kingdom. Get up.","Abu Simbel got moved 65 metres uphill. Nobody asked me.","On a boat tonight. Finally, a pace I can keep up with."],
-  thu15:["Gebel el-Silsila: the quarry. Somebody had to cut all those stones. Not me. I was resting.","Edfu is the best-preserved temple in Egypt. Second best-preserved thing? You're looking at him."],
-  fri16:["El Kab. Nobody goes there. That's the point. Shh.","Last night on the boat. Tip the crew. They've seen things."],
-  sat17:["Valley of the Kings today. If you see my ex, I'm not here.","Hatshepsut ran Egypt for twenty years in a fake beard. Respect.","Luxor Temple at night. Best lighting I've had in centuries."],
-  sun18:["Hot air balloon at dawn. I'd come, but I'm extremely flammable.","Karnak: 134 columns. I counted. I had time.","Final whistle tonight. Loser buys. I accept tips in incense."],
-  mon19:{Brad:["Dahab: the only place more relaxed than me.","Duane's gone. You've got me now. Lucky you."],Duane:["Goodbyes are hard. Try three thousand years of them.","Safe flight. Window seat. Wave at the pyramids — they'll wave back. Probably."]},
-  tue20:["The Blue Hole. I don't swim. I'm basically a teabag.","Snorkel the Bells. I'll guard the towels. Nobody steals from a mummy."],
+  pre:["Pack light. I've done three thousand years in one outfit and I look incredible.","Egypt tomorrow. I've been waiting since 1323 BC. No pressure.","Passport, charger, sunscreen. I had to pack my organs in jars. You'll be fine.","Last night before Egypt. Sleep. Trust me, I'm a professional."],
+  sat10:{Brad:["Cape Town to Cairo via Addis? Amateur. I came by reed boat and it took a season.","Landing at 2am? My favourite hour. Very spooky. Great for an entrance.","Window seat over Sudan. Wave. Somebody down there owes me a camel.","Eat the airline injera. Gods know when you'll eat again."],Duane:["Norfolk, Philadelphia, London, Cairo. That's not a route, that's a quest.","Welcome to Egypt. Cross the road like you mean it. Hesitation is how they get you.","Tell the desk Brad's coming at 3am. Tell them I'm coming whenever I like.","Stay up till ten. I know. I KNOW. Ten. Then sleep like me."]},
+  sun11:["Dahshur today. The Bent Pyramid is what happens when nobody checks the angles halfway.","Saqqara is my cousin's place. Don't touch his stuff. He's petty about it.","The Khan tonight. Haggle like you've got three thousand years. I do. It helps.","Step Pyramid: the first one. Every pyramid since has been a sequel."],
+  mon12:["The Great Pyramid: 4,500 years old and still no elevator.","At the GEM? Say hi to Tut. He owes me money and he knows it.","Felucca at sunset. If you see a guy in bandages waving from the bank, wave back. It's me. Hi.","The Sphinx lost his nose. I lost a toe. We don't talk about it."],
+  tue13:["Aswan! High tea at the Old Cataract. Pinky out. Mine fell off, so you'll have to do it for me.","Philae got moved stone by stone to a new island. That's commitment. Nobody ever moved me anywhere nice.","Nubian village today. Buy the spices. Not the crocodile. Never the crocodile."],
+  wed14:["A 3:30 alarm? I've been lying down since the Old Kingdom and even I think that's early.","Abu Simbel got moved 65 metres uphill. Nobody asked me. Nobody ever asks me.","On a boat tonight. Finally, a pace I can keep up with.","Ramses built four giant statues of himself. Relatable. I'd build five."],
+  thu15:["Gebel el-Silsila: the quarry. Somebody cut all those stones. Not me. I was resting.","Edfu is the best-preserved temple in Egypt. The second best-preserved thing is talking to you right now.","Kom Ombo has crocodile mummies. My cousins. Cold-blooded. Lovely at parties."],
+  fri16:["El Kab. Nobody goes there. That's the point. Shh.","Last night on the boat. Tip the crew. They've seen things.","Esna lock today. The boat goes up a giant step. I've been waiting for an elevator for three millennia."],
+  sat17:["Valley of the Kings today. If you see my ex, I'm not here. I'm in Cairo. I'm busy.","Hatshepsut ran Egypt for twenty years in a fake beard. Respect.","Luxor Temple at night. Best lighting I've had in centuries.","Tombs today. Some of them still have the price tags. Kidding. Mostly."],
+  sun18:["Hot air balloon at dawn. I'd come, but I'm extremely flammable.","Karnak: 134 columns. I counted. I had time.","Final whistle tonight. Loser buys dinner. Winner gets custody of me.","Fourth quarter. Every play counts double. My heart would be racing if I still had it."],
+  mon19:{Brad:["Dahab: the only place more relaxed than me.","Duane's gone. You've got me now. Lucky you. I snore.","Red Sea time. I'm already salted. You'll catch up."],Duane:["Goodbyes are hard. Try three thousand years of them.","Safe flight. Window seat. Wave at the pyramids. They'll wave back. Probably not.","Take me home in your carry-on. I'm under the liquids limit."]},
+  tue20:["The Blue Hole. I don't swim. I'm basically a teabag.","Snorkel the Bells. I'll guard the towels. Nobody steals from a mummy twice."],
   wed21:["Mount Sinai at 1am. Moses did it once. You're showing off.","St Catherine's has a burning bush. I keep my distance. See: flammable."],
   thu22:["Ras Abu Galum. No road, no wifi, no problem.","Last Red Sea day. Get salty. I'm already preserved."],
   fri23:["The White Desert. Finally, a place that matches my outfit.","The Black Desert, then the White. Pick a theme, Egypt."],
@@ -5093,17 +5107,17 @@ const MUM_DAY={
   sun25:["Going home? Take me. I'm carry-on sized.","Three thousand years and nobody ever said goodbye. Thanks for the trip."],
 };
 const MUM_EV={
-  fg:["Forty percent off? In my day we haggled in goats.","That vendor will tell his grandchildren about you.","Field goal! I'd high-five you but my arms are wrapped together."],
-  td:["TOUCHDOWN! I haven't moved this fast since the embalming.","Six points. The gods are taking notes.","I'm unravelling with joy. Literally."],
-  saf:["Flag on the play. I've seen this ref before — 1200 BC, terrible eyesight.","Penalty! Somebody call the vizier."],
-  xp:["Extra point is good. The scribes have been notified."],
-  stamp:["That stamp is going on my sarcophagus.","Stamped. Very official. I love paperwork. I'm made of paperwork."],
-  settle:["All square? I've been owed three obols since the New Kingdom.","Money changing hands. My favourite ritual."],
+  fg:["Forty percent off? In my day we haggled in goats.","That vendor will tell his grandchildren about you. Not nicely.","Field goal! I'd high-five you but my arms are wrapped to my body.","Three points and a souvenir. The souvenir is worse, but the points are real."],
+  td:["TOUCHDOWN! I haven't moved this fast since the embalming.","Six points. The gods are taking notes. Thoth is doing the stats.","I'm unravelling with joy. Literally. Someone grab my end.","TOUCHDOWN! Somewhere a pharaoh just sat up in his tomb."],
+  saf:["Flag on the play. I've seen this ref before. 1200 BC, terrible eyesight.","Penalty! Somebody call the vizier."],
+  xp:["Extra point is good. The scribes have been notified.","One more point. I'd carve it in stone but my chisel's in storage."],
+  stamp:["That stamp is going on my sarcophagus.","Stamped. Very official. I love paperwork. I'm made of paperwork.","Another stamp. At this rate you'll need a second passport and I'll need a second sarcophagus."],
+  settle:["All square? I've been owed three obols since the New Kingdom.","Money changing hands. My favourite ritual. Second favourite: the one with the jars."],
   same:["Same best moment? Married, basically. I'll officiate.","Same moment. Spooky. And I would know spooky."],
   diff:["Two very different days. One of you is lying. Probably both.","Agree to disagree. I've been doing it with Anubis for centuries."],
-  photo:["Wait — get my good side. Both sides look the same, but still.","Was that a photo? I wasn't ready. I'm never ready. I'm a mummy."],
+  photo:["Wait, get my good side. Both sides look the same, but still.","Was that a photo? I wasn't ready. I'm never ready. I'm a mummy."],
   tout:["Ten 'my friends'. I have zero friends. Can I be one?","Everyone's your friend in Cairo. I'm still waiting for mine."],
-  night:["Go to sleep. I slept three thousand years and look how rested I am.","It's late. Even the Sphinx closes its eyes. It doesn't. But it should."],
+  night:["Go to sleep. I slept three thousand years and look how rested I am.","It's late. Even the Sphinx closes its eyes. It doesn't. But it should.","Bedtime. Lie very still. Fold your arms. Perfect. Now you're one of us."],
   early:["You're up early. I've been up since 1323 BC.","Coffee first. Pyramids second. Curses third."],
   poke:["Ow.","Personal space. It's a tomb thing.","Poke me again and I curse your wifi.","Right. That's it."],
 };
@@ -5360,7 +5374,7 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
   if(has("tomorrow")){ const t=DAYS[pre?0:di+1]; if(!t) return "Tomorrow is the flight home. I'm told it's sad."; const x=safe(()=>withMe(t))||t; return `Tomorrow, ${x.dow} ${x.num}: ${x.title}. Alarm ${x.alarm}. First: ${(x.agenda||[]).slice(0,3).map(a=>(a.lt||f12(a.t))+" "+a.title.split(/ [—(]/)[0]).join(" · ")}.`; }
   if(has("next","now","today","plan","schedule","what's on","whats on","doing")){ const nx=(d.agenda||[]).filter(a=>pre||toMins(a.t)>n.mins).slice(0,3); return nx.length?`${pre?"Saturday":"Next"}: ${nx.map(a=>(a.lt?f12(a.lt)+" "+(a.ltz||"Cape Town")+" time":f12(a.t))+" "+a.title.split(/ — /)[0]).join(" · ")}. Tonight: ${d.sleep||"—"}.`:`That's today done. Tonight: ${d.sleep||"—"}. Tomorrow's alarm: ${(DAYS[di+1]||{}).alarm||"—"}.`; }
   if(has("flight","plane","fly","airport","gate")){ const f=safe(()=>myFlights().find(x=>(flightArr(x)??flightDep(x)+3*3600000)>nowUTC()&&x.from.t)); return f?`Your next flight: ${f.no||""} ${f.from.city} ${f.date} ${f.from.t} → ${f.to.city} ${f.to.t||""} (local times).${f.live&&f.live.status?" Last check: "+f.live.status+".":""} Gate and terminal live in the airline app.`:"No more flights on your list. Enjoy the ground."; }
-  if(has("owe","tab","settle","money")){ const t=safe(()=>tabNet(w))||0; const o=OTHER_OF(w); return Math.abs(t)<1?"The tab is all square. Suspicious, but square.":t>0?`${o} owes you ${fmtE(t)} EGP.`:`You owe ${o} ${fmtE(-t)} EGP. I'd pay before he notices interest.`; }
+  if(has("owe","tab","settle","money")){ const t=safe(()=>tabNet(w))||0; const o=OTHER_OF(w); return Math.abs(t)<1?"The tab is all square. Suspicious, but square.":t>0?`${o} owes you ${tabFmt(t)}.`:`You owe ${o} ${tabFmt(-t)}. I'd pay before he notices interest.`; }
   if(has("score","winning","bowl")){ const a=safe(()=>nileTotal(w)), b=safe(()=>nileTotal(OTHER_OF(w))); return a&&b?`Nile Bowl: you ${a.pts}, ${OTHER_OF(w)} ${b.pts}. ${a.pts>=b.pts?"Don't get comfortable.":"Plenty of time. Not that much time."}`:"The board's on the Games tab."; }
   if(has("sunset","sunrise","dark","light")){ const s=safe(()=>{ const ll=LL[d.id]; return ll&&sunTimes(d.date,ll[0],ll[1]); }); return s?`Sunrise ${s.rise}, sunset ${s.set} (${d.place||"today"}).`:"The sky strip on the Today card knows."; }
   if(has("say","arabic","how do i","phrase","thank","hello","no thanks","word")){ const all=WORDS.flatMap(g=>g[1]); const hit=all.find(p=>q.split(/\W+/).filter(x=>x.length>3).some(x=>p[2].toLowerCase().includes(x))); const p=hit||all[0]; return `[[${p[1]}|${p[0]}]] — ${p[2]}. Forty more under Guide → Words.`; }
@@ -5903,7 +5917,7 @@ document.addEventListener("click", e=>{ const a=e.target.closest("[data-pet]"); 
 // ---------- the tab shows his needs; sand piles sit next to him ----------
 (function(){ if(typeof mumTabRender!=="function") return; const R=mumTabRender; mumTabRender=function(){ const r=R.apply(this,arguments); try{ const el=$("#mumTab"); if(!el) return r; const p=petNow(); const lo=petMood(p); const st=petStage(p);
   ["baby","kid","teen","pharaoh","elder"].forEach(c=>el.classList.toggle("pt-"+c, st[2]===c)); el.classList.toggle("pt-sad", lo.lo<25);
-  const jy=el.querySelector(".pt-jersey"); if(jy) jy.remove(); // the jersey is for game day only: he wears it in the Games section, not in the margin
+  safe(()=>petTabOutfit(el));
   let acc=el.querySelector(".pt-acc"); if(!acc){ acc=document.createElement("i"); acc.className="pt-acc"; el.querySelector(".mt-body").appendChild(acc); }
   if(lo.lo<25&&!mumAlert()){ el.classList.add("unread"); el.querySelector(".mt-dot").textContent=PET_NEED[lo.k][0]; }
   let sand=document.getElementById("petSand"); if(p.sand){ if(!sand){ sand=document.createElement("button"); sand.type="button"; sand.id="petSand"; sand.setAttribute("aria-label","Sweep up his sand"); document.body.appendChild(sand); sand.addEventListener("click",()=>petSweep()); } sand.innerHTML=Array.from({length:p.sand},()=>"<i></i>").join(""); } else if(sand) sand.remove();
@@ -5936,7 +5950,11 @@ setInterval(()=>{ petPull().then(()=>safe(mumTabRender)); }, 5*60000); setTimeou
 #petSand{position:fixed;left:40px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:36;display:flex;gap:2px;padding:4px 6px;border:0;background:none;cursor:pointer}
 #petSand i{display:block;width:16px;height:8px;border-radius:50% 50% 2px 2px;background:radial-gradient(circle at 40% 30%,#e9d49a,#b8975a);box-shadow:0 1px 1px rgba(0,0,0,.25)}
 html:has(.qs.on) #petSand,html:has(.mummy) #petSand,html.pp-open #petSand,html:has(#sheet.show) #petSand,html.scrolling-down #petSand{display:none}
-.mumtab .pt-acc{position:absolute;pointer-events:none}.mumtab .pt-jersey{position:absolute;left:2px;right:2px;bottom:4px;height:24px;border-radius:2px 8px 8px 2px;opacity:.92;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.mumtab .pt-acc{position:absolute;pointer-events:none}.mumtab:not(.pt-mascot) .pt-jersey,.mumtab:not(.pt-mascot) .pt-num,.mumtab:not(.pt-mascot) .pt-foam{display:none}
+.mumtab .pt-num{position:absolute;left:0;right:0;bottom:8px;text-align:center;font:900 11px var(--display);font-style:normal;color:#fff;text-shadow:0 1px 0 #000;pointer-events:none}
+.mumtab .pt-foam{position:absolute;right:-12px;top:-4px;padding:9px 3px 3px;border-radius:7px 7px 3px 3px;background:#f5c518;color:#111;font:900 8px/1 var(--display);font-style:normal;transform:rotate(14deg);box-shadow:0 2px 4px rgba(0,0,0,.3);pointer-events:none;animation:ptfoam 1.4s ease-in-out infinite}
+.mumtab .pt-foam::before{content:"";position:absolute;left:5px;top:-6px;width:5px;height:9px;border-radius:3px 3px 0 0;background:#f5c518}
+@keyframes ptfoam{50%{transform:rotate(-6deg) translateY(-2px)}}.mumtab .pt-jersey{position:absolute;left:2px;right:2px;bottom:4px;height:24px;border-radius:2px 8px 8px 2px;opacity:.92;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
 .mumtab.pt-baby .pt-acc{left:30px;top:33px;width:9px;height:9px;border-radius:50%;background:#7fc3ff;box-shadow:0 0 0 2px #fff}
 .mumtab.pt-kid .pt-acc{left:20px;top:-10px;width:26px;height:12px;border-radius:13px 13px 0 0;background:conic-gradient(#e33 0 25%,#fd3 0 50%,#3b5 0 75%,#39f 0);}
 .mumtab.pt-kid .pt-acc::after{content:"";position:absolute;left:5px;top:-5px;width:16px;height:3px;background:#555;border-radius:2px;animation:ptprop .3s linear infinite}@keyframes ptprop{to{transform:scaleX(-1)}}
@@ -5965,6 +5983,13 @@ setInterval(()=>{ try{ const c=document.querySelector("#gameBody .card.mascot");
 // the stadium ticker plugs the mascot
 (function(){ if(typeof nbTicker!=="function") return; const N=nbTicker; nbTicker=function(){ let h=N.apply(this,arguments); try{ const p=petNow(); const S=petSide(); const lo=petMood(p); const msg=lo.lo<25?`MASCOT UPDATE: ${PET_NAME.toUpperCase()} IS ${lo.k==="belly"?"EATING HIS OWN BANDAGES":lo.k==="mood"?"SULKING IN A SARCOPHAGUS":"COMING APART AT THE SEAMS"} — SOMEBODY HELP HIM`:S.who?`MASCOT ${PET_NAME.toUpperCase()} NOW IN ${String((TEAMS[S.who]||{}).team||S.who).toUpperCase()} COLOURS${S.why==="talk"?" (BRIBED BY TRASH TALK)":""}`:`MASCOT ${PET_NAME.toUpperCase()} REFUSES TO PICK A SIDE`; h=h.replace('<div class="nb-tick">',`<div class="nb-tick"><span>🧻 ${esc(msg)}</span><i>◆</i>`).replace(/(<\/span><i>◆<\/i>)(?![\s\S]*<span>🧻)/,"$1"); }catch(e){} return h; }; })();
 // when he runs out to celebrate a score, he's in the scorer's jersey — but only while you're looking at the Games section
+// the side tab suits up as the mascot while you're scrolling the Games section, and changes back when you leave
+function petTabOutfit(el){ el=el||document.getElementById("mumTab"); if(!el) return; const on=petInGames(); el.classList.toggle("pt-mascot", on); if(!on) return;
+  const body=el.querySelector(".mt-body"); if(!body) return; let jy=el.querySelector(".pt-jersey"); if(!jy){ jy=document.createElement("i"); jy.className="pt-jersey"; body.insertBefore(jy, el.querySelector(".me")); }
+  const S=petSide(); if(S.who){ const [a,b]=petTeamColors(S.who); jy.style.background=`repeating-linear-gradient(180deg,${a} 0 5px,${b} 5px 8px)`; } else jy.style.background="linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)";
+  let jn=el.querySelector(".pt-num"); if(!jn){ jn=document.createElement("i"); jn.className="pt-num"; body.appendChild(jn); } jn.textContent=S.who==="Brad"?"7":S.who==="Duane"?"9":"½";
+  if(!el.querySelector(".pt-foam")){ const f=document.createElement("i"); f.className="pt-foam"; f.textContent="#1"; body.appendChild(f); } }
+let petScrollQ=false; addEventListener("scroll", ()=>{ if(petScrollQ) return; petScrollQ=true; requestAnimationFrame(()=>{ petScrollQ=false; safe(()=>petTabOutfit()); }); }, {passive:true});
 function petInGames(){ const g=document.getElementById("game"); if(!g) return false; const r=g.getBoundingClientRect(); return r.top<innerHeight*0.6&&r.bottom>innerHeight*0.4; }
 let mascotTeam=null, mascotTeamAt=0;
 (function(){ if(typeof jumbo!=="function") return; const J=jumbo; jumbo=function(word, who){ try{ if(/field goal|touchdown|two-point|extra point|safety/i.test(String(word||""))&&TEAMS[who]){ mascotTeam=who; mascotTeamAt=Date.now(); } }catch(e){} return J.apply(this,arguments); }; })();
@@ -5989,20 +6014,30 @@ const MS_TAB={
  guide:{props:'<i class="p-specs"></i><i class="p-scroll"></i>', lines:()=>["Per my scroll: Egypt is very old. Source: me.","Fun fact: I used to be a fun fact.","Chapter one: don't touch the merchandise. Chapter two: Brad touched the merchandise.","I'd have written it all in birds, but they said no.","Hang on, this scroll keeps going. Like the Nile. Like my nap."]},
  map:{props:'<i class="p-map"></i>', lines:()=>["We are… here. Probably. The Nile's the wet bit.","North is up. Unless you're a mummy. Then it's whichever way they carry you.","Hold on, this is upside down. Or Egypt is.","I don't need a map. I know exactly where I'm going. Down. Into a tomb.","Left at the pyramid. No, the other pyramid. They're all pyramids."]},
  game:{props:'', lines:()=>MS_CHEERS}};
-let msLastK={};
+// long enough to actually read: ~1.6s to notice, then a relaxed pace per word, capped so he doesn't move in
+function msRead(t){ const n=String(t||"").trim().split(/\s+/).length; return Math.min(10000, Math.max(3200, 1600+n*330)); }
+// the walking mummy holds every speech bubble for at least that long too
+(function(){ if(typeof mumSay!=="function") return; const M=mumSay; mumSay=function(m, text, ms){ return M.call(this, m, text, Math.max(ms||0, msRead(text))); }; })();
+let msLastK={}, msGameSpot="";
 function msPop(kind, anchor){ if(RM()) return; if(document.querySelector(".mummy,.ms-cele")) return; if(document.querySelector(".qs.on, .sheet.on, #sheetCD.on")) return; if(Date.now()-(msLastK[kind]||0)<12000) return; msLastK[kind]=Date.now();
   const K=MS_TAB[kind]; if(!K) return; const isG=kind==="game";
   const S=petSide(); const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"]; const mv=isG?mumPick(MS_MOVES):kind;
   const nav=document.querySelector(".bottom"); const nb=nav?Math.max(0,Math.round(innerHeight-nav.getBoundingClientRect().top)):0;
-  const a=anchor||document.querySelector(`.bottom a[data-go="${kind}"]`); const ar=a?a.getBoundingClientRect():{left:62,width:52}; const x=Math.max(8,Math.min(innerWidth-60,Math.round(ar.left+ar.width/2-26))); const flip=x>innerWidth/2;
-  const w=document.createElement("div"); w.className="ms-cele k-"+kind+(flip?" flip":""); w.setAttribute("aria-hidden","true"); w.style.setProperty("--nb",nb+"px"); w.style.left=x+"px"; w.style.setProperty("--mw",Math.round(flip?(x+20)/1.6-16:(innerWidth-x-80)/1.6-16)+"px");
+  const a=anchor||document.querySelector(`.bottom a[data-go="${kind}"]`); const ar=a?a.getBoundingClientRect():{left:62,width:52}; let x=Math.max(8,Math.min(innerWidth-60,Math.round(ar.left+ar.width/2-26)));
+  // Games: he turns up somewhere different every time — out of the tab, elsewhere along the bottom, or barging in from either side
+  let spot=""; if(isG){ const spots=["tab","bl","bm","sl","sr"].filter(z=>z!==msGameSpot); spot=mumPick(spots); msGameSpot=spot; x=spot==="bl"?14:spot==="bm"?Math.round(innerWidth*0.36):spot==="sl"?4:spot==="sr"?innerWidth-56:x; }
+  const flip=x>innerWidth/2;
+  const w=document.createElement("div"); w.className="ms-cele k-"+kind+(flip?" flip":"")+(spot==="sl"?" side side-l":spot==="sr"?" side side-r":""); w.setAttribute("aria-hidden","true"); w.style.setProperty("--nb",nb+"px"); w.style.left=x+"px"; if(spot==="sl"||spot==="sr") w.style.bottom=Math.round(innerHeight*0.42)+"px"; w.style.setProperty("--mw",Math.round((flip?(x+20)/1.6-16:(innerWidth-x-80)/1.6-16)-(spot==="sl"||spot==="sr"?22:0))+"px");
   w.innerHTML=`<div class="ms-up"><div class="ms-fig" style="--j1:${c1};--j2:${c2}"><div class="am-m ${isG&&!S.who?"split":""}"><i class="mb"></i>${isG?'<i class="ms-j"></i>':""}<i class="me l"></i><i class="me r"></i>${K.props}</div></div></div>`;
   document.body.appendChild(w); const fig=w.querySelector(".ms-fig");
-  setTimeout(()=>{ if(!w.isConnected) return; w.classList.add("cel-"+mv); const fx=document.createElement("div"); fx.className="ms-fx"; fx.innerHTML=(isG?Array.from({length:16},(_,i)=>`<i style="--dx:${Math.round(Math.random()*180-90)}px;--dy:${Math.round(-50-Math.random()*110)}px;--r:${Math.round(Math.random()*720-360)}deg;animation-delay:${(i*0.04).toFixed(2)}s"></i>`).join(""):"")+`<b>${esc(mumPick(K.lines()))}</b>`; fig.appendChild(fx); safe(()=>sfx(isG?(mv==="leg"?"saf":"td"):"stamp")); }, 520);
-  setTimeout(()=>w.classList.add("down"), isG?3300:3100); setTimeout(()=>w.remove(), isG?3900:3700);
+  setTimeout(()=>{ if(!w.isConnected) return; w.classList.add("cel-"+mv); const fx=document.createElement("div"); fx.className="ms-fx"; fx.innerHTML=(isG?Array.from({length:16},(_,i)=>`<i style="--dx:${Math.round(Math.random()*180-90)}px;--dy:${Math.round(-50-Math.random()*110)}px;--r:${Math.round(Math.random()*720-360)}deg;animation-delay:${(i*0.04).toFixed(2)}s"></i>`).join(""):"")+`<b>${esc(mumPick(K.lines()))}</b>`; const bb=fx.querySelector("b"); const hold=msRead(bb.textContent); bb.style.animationDuration=(hold+300)+"ms"; fig.appendChild(fx); safe(()=>sfx(isG?(mv==="leg"?"saf":"td"):"stamp")); setTimeout(()=>w.classList.add("down"), hold+400); setTimeout(()=>w.remove(), hold+1000); }, 520);
   w.addEventListener("click", ()=>w.classList.add("down")); }
 function mascotCelebrate(){ msPop("game"); }
 document.addEventListener("click", e=>{ const a=e.target.closest(".bottom a[data-go]"); const g2=e.target.closest('[data-go2="game"]'); if(!a&&!g2) return; const kind=g2?"game":a.dataset.go; if(!MS_TAB[kind]) return;
+  // not every tap: the first time on each tab, then a coin toss weighted by tab, with a breather between appearances
+  const seen=GS.get("mspop",{}); const first=!seen[kind]; const since=Date.now()-Math.max(0,...Object.values(msLastK));
+  if(!first){ if(since<45000) return; if(Math.random()>(kind==="game"?0.45:0.3)) return; }
+  if(first){ seen[kind]=1; GS.set("mspop",seen); }
   if(kind!=="game"){ setTimeout(()=>safe(()=>msPop(kind,a)),250); return; }
   // Games: wait until the scroll has settled with the scoreboard on screen (smooth scroll takes its own sweet time)
   const t0=Date.now(); let last=null, still=0;
@@ -6023,6 +6058,11 @@ document.addEventListener("click", e=>{ const a=e.target.closest(".bottom a[data
 .ms-cele .ms-fig .ms-j{position:absolute;left:1px;right:1px;bottom:3px;height:22px;border-radius:2px 2px 8px 8px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.ms-cele .split .ms-j{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
 html:has(.ms-cele) .pptab{opacity:0;pointer-events:none;transition:opacity .2s}html:has(.ms-cele) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
 .ms-fx{position:absolute;left:26px;top:20px;pointer-events:none}
+.ms-cele.side{z-index:31}.ms-cele.side-l .ms-fx b{rotate:-8deg}.ms-cele.side-r .ms-fx b{rotate:8deg}
+.ms-cele.side-l .ms-up{animation:msinl .55s cubic-bezier(.2,1.5,.4,1) both}.ms-cele.side-l.down .ms-up{animation:msoutl .45s cubic-bezier(.6,0,.9,.4) both}
+.ms-cele.side-r .ms-up{animation:msinr .55s cubic-bezier(.2,1.5,.4,1) both}.ms-cele.side-r.down .ms-up{animation:msoutr .45s cubic-bezier(.6,0,.9,.4) both}
+@keyframes msinl{from{transform:translateX(-140px) rotate(-30deg)}to{transform:rotate(8deg)}}@keyframes msoutl{from{transform:rotate(8deg)}to{transform:translateX(-140px) rotate(-30deg)}}
+@keyframes msinr{from{transform:translateX(140px) rotate(30deg)}to{transform:rotate(-8deg)}}@keyframes msoutr{from{transform:rotate(-8deg)}to{transform:translateX(140px) rotate(30deg)}}
 .ms-cele.flip .ms-fx b{left:auto;right:6px;transform-origin:right bottom}
 .ms-cele .am-m > i[class^="p-"]{position:absolute;pointer-events:none}
 .k-today .p-sun{left:14px;top:-10px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,#ffd86b 0 45%,rgba(255,200,80,.35) 46% 70%,transparent 71%);z-index:-1;animation:psun 2.4s ease-out .4s both}@keyframes psun{from{transform:translateY(30px);opacity:0}to{transform:translateY(-18px);opacity:1}}
