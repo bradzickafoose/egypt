@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v161)";
+const BUILD = "Oct 9, 2026 (v162)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5516,7 +5516,7 @@ async function flightWatch(force){ if(fsBusy) return; fsBusy=true; try{ let L=[]
   }finally{ fsBusy=false; } }
 MUM_EV.delay=["Delayed? I've waited three thousand years. You'll survive.","A delay. Time for a coffee. Or, in my case, nothing. Forever.","They moved the departure. I'd complain, but my mouth is bandaged."];
 // the line on the Now card: what the last check said
-function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&&f.from&&f.from.t&&fsWindow(f)&&(f.who===me()||f.who===OTHER_OF(me()))).sort((a,b)=>flightDep(a)-flightDep(b)); const n=nowUTC(); [me(),OTHER_OF(me())].forEach(w=>{ const x=all.find(f=>f.who===w&&(flightArr(f)??flightDep(f)+3*3600000)>n); if(x) L.push(x); }); }catch(e){} if(!L.length) return "";
+function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&&f.from&&f.from.t&&fsWindow(f)&&(f.who===me()||f.who===OTHER_OF(me()))).sort((a,b)=>flightDep(a)-flightDep(b)); const n=nowUTC(); [me(),OTHER_OF(me())].forEach(w=>{ const x=all.find(f=>f.who===w&&(flightArr(f)??flightDep(f)+3*3600000)>n); if(!x) return; /* you're on it with no key: the in-flight card already says everything this band could */ if(w===me()&&!mumKey()&&typeof myAirFlight==="function"){ const a=myAirFlight(); if(a&&a.id===x.id) return; } L.push(x); }); }catch(e){} if(!L.length) return "";
   const n=nowUTC(); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; }; const dur=m=>m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`:`${m} min`;
   return L.slice(0,2).map(f=>{ const s=f.live||null; const mine=f.who===me(); const who=mine?"":`${f.who} · `; const city=c=>String(c||"").replace(" Heathrow","");
     const dep=flightDep(f), arr=flightArr(f)??(dep+3*3600000); const toDep=Math.round((dep-n)/60000), toArr=Math.round((arr-n)/60000);
