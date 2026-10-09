@@ -2587,7 +2587,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v140)";
+const BUILD = "Oct 9, 2026 (v141)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5360,7 +5360,8 @@ async function flightWatch(force){ if(fsBusy) return; fsBusy=true; try{ let L=[]
   const srv=await togGet("fstat"); const S=fsAll(); let ch=false; if(srv) for(const [id,x] of Object.entries(srv)){ if(x&&(!S[id]||String(x.at)>String(S[id].at))){ S[id]=x; ch=true; } } if(ch){ lsJset(FS_K,S); safe(renderNow); safe(renderFlights); }
   // 2. check anything stale (20 min), if this phone has the key
   if(!mumKey()||!navigator.onLine) return;
-  for(const f0 of W){ const s=S[f0.id]; if(s&&s.found&&/landed|cancel/.test(s.status)&&!force) continue; if(!force&&s&&Date.now()-Date.parse(s.at)<20*60000) continue; fsTry[f0.id]={at:Date.now()}; const f=FLIGHTS.find(x=>x.id===f0.id)||f0;   // ask about the *scheduled* flight
+  const claims=(await togGet("fstatclaim"))||{};
+  for(const f0 of W){ const s=S[f0.id]; const er=fsErr[f0.id]; if(!force&&er&&Date.now()-er.at<20*60000) continue; const cl=claims[f0.id]; if(!force&&cl&&cl.by!==me()&&Date.now()-Date.parse(cl.at)<3*60000) continue;   /* the other phone is checking this one right now */ if(s&&s.found&&/landed|cancel/.test(s.status)&&!force) continue; if(!force&&s&&Date.now()-Date.parse(s.at)<20*60000) continue; fsTry[f0.id]={at:Date.now()}; togPut("fstatclaim",f0.id,{by:me(),at:new Date().toISOString()}); const f=FLIGHTS.find(x=>x.id===f0.id)||f0;   // ask about the *scheduled* flight
     try{ const out=await claudeCall({system:"You check live flight status for a travel app. Use web search (FlightAware, FlightStats, the airline, airport departure boards). Reply with ONLY a JSON object, no prose: {\"found\":true|false,\"status\":\"scheduled|on time|delayed|boarding|departed|landed|cancelled|diverted|unknown\",\"dep_est\":\"HH:MM\"|null,\"arr_est\":\"HH:MM\"|null,\"dep_gate\":string|null,\"arr_terminal\":string|null,\"source\":string,\"note\":string (max 80 chars)}. Times are 24-hour LOCAL time at each airport; for departed/landed flights give actual times. If the results are not clearly about this exact flight on this exact date, return {\"found\":false}.", messages:[{role:"user",content:`Flight ${f.no}${f.op?" ("+f.op+")":""}, ${f.from.ap} → ${f.to.ap}, scheduled to depart ${f.date} ${f.from.t} local${f.to.t?`, arrive ${f.to.date||f.date} ${f.to.t} local`:""}. Current UTC time: ${new Date(nowUTC()).toISOString()}. What is its current status and estimated/actual times?`}], tools:[{type:"web_search_20250305",name:"web_search",max_uses:2}], max_tokens:500, timeout:60000});
       const m=out.match(/\{[\s\S]*\}/); if(!m){ fsErr[f0.id]={kind:"parse",at:Date.now()}; continue; } let j; try{ j=JSON.parse(m[0]); }catch(e){ fsErr[f0.id]={kind:"parse",at:Date.now()}; continue; } delete fsErr[f0.id];
       const sane=(t0,t1)=>{ if(!t0||!t1||!/^\d\d:\d\d$/.test(t1)) return true; let d=hm(t1)-hm(t0); if(d<-720) d+=1440; if(d>720) d-=1440; return d>-120&&d<10*60; };   // a 10-hour "delay" is the wrong flight, not news
@@ -5422,18 +5423,18 @@ document.addEventListener("click", e=>{ if(!e.target.closest("[data-fscheck]")) 
 @keyframes ambob{to{transform:translateY(-4px) rotate(-3deg)}}
 @keyframes amghost{50%{transform:translateY(-5px)}}
 @keyframes amfly{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(10px,-6px)}50%{transform:translate(0,-12px)}75%{transform:translate(-10px,-6px)}100%{transform:translate(0,0)}}
-.am-log{flex:1;min-height:120px;max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:2px}
+.am-log{flex:1;min-height:34vh;max-height:52vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:2px}
 .am-q{align-self:flex-end;max-width:84%;background:var(--nile);color:var(--on-accent);padding:8px 11px;border-radius:14px 14px 4px 14px;font-size:0.8824rem}.am-q img{display:block;max-width:180px;border-radius:8px;margin-bottom:4px}
 .am-a{align-self:flex-start;max-width:90%;background:var(--sand);border:1px solid var(--line);padding:9px 12px;border-radius:14px 14px 14px 4px;font-size:0.8824rem;line-height:1.45}
 .am-a .say{margin:2px 2px}.am-a.ghost{border-style:dashed;opacity:.95}.am-a .am-why{display:block;font-style:italic;color:var(--muted);font-size:0.7647rem;margin-bottom:6px}
 .am-a .am-send{display:flex;margin-top:8px}
 .am-a.typing{display:flex;gap:4px}.am-a.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:amdot 1s infinite}.am-a.typing i:nth-child(2){animation-delay:.15s}.am-a.typing i:nth-child(3){animation-delay:.3s}
 @keyframes amdot{50%{opacity:.25;transform:translateY(-3px)}}
-.am-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.am-chip{flex:0 0 auto;font-family:var(--body);font-size:0.7647rem;padding:6px 11px;flex-direction:row}
+.am-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:24px}.am-chip{flex:0 0 auto;font-family:var(--body);font-size:0.7647rem;padding:6px 11px;flex-direction:row}
 .am-in{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center}.am-in input{font:inherit;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);min-width:0}
 .am-cam{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;background:var(--card)}
 .am-pv{display:flex;align-items:center;gap:8px;font-size:0.7647rem;color:var(--muted)}.am-pvq{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1}.am-pvq .chip{flex:0 0 auto;flex-direction:row;font-family:var(--body);font-size:0.7353rem;padding:5px 9px}.am-kt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.am-kt span{font-size:0.7353rem}.am-place{margin:14px 0 4px}.am-pv img{width:44px;height:44px;object-fit:cover;border-radius:8px}
-.am-key{border:1px solid var(--line);border-radius:12px;padding:8px 10px}.am-key summary{font-size:0.7941rem;font-weight:600;cursor:pointer}.am-key .muted{font-size:0.7353rem}
+.am-key{border:1px solid var(--line);border-radius:12px;padding:8px 10px}.am-key summary{font-size:0.7941rem;font-weight:600;cursor:pointer}.am-key:not([open]){border-color:transparent;padding:2px 4px}.am-key:not([open]) summary{font-weight:500;color:var(--muted);font-size:0.7353rem}.am-key .muted{font-size:0.7353rem}
 .am-kr{display:grid;grid-template-columns:1fr auto;gap:6px;margin:6px 0}.am-kr input{font:inherit;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);min-width:0}
 .am-priv{margin:6px 0 0}
 .msay-ask{display:block;margin-top:6px;border:0;background:rgba(255,255,255,.14);color:inherit;border-radius:999px;padding:4px 10px;font:600 0.7059rem var(--body);cursor:pointer}
