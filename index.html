@@ -1298,6 +1298,9 @@ html.bigtext .fr-picks{grid-template-columns:1fr}
 .rd.ok i{background:#2f8a4a;border-color:#2f8a4a;color:#fff}
 .rd span b{display:block;font-size:0.8235rem}
 .rd span small{display:block;font-size:0.7353rem;color:var(--muted)}
+.ppov.open .ppov-h{opacity:0;transition:opacity .4s}
+.ppov.open .ppov-top{background:none;pointer-events:none}
+.ppov.open .ppov-x{pointer-events:auto}
 </style>
 <script>
 // text size follows the phone's setting (iOS Dynamic Type via -apple-system-body), clamped so the layout holds: 17px default, up to 28px
@@ -2260,7 +2263,7 @@ function renderGuideFront(){ try{ renderNavigator(); }catch(e){} try{ cityBrief(
 const FLIGHTS = [
  {id:"dua-out0",who:"Duane",date:"2026-10-09",no:"",op:"",from:{ap:"ORF",city:"Norfolk",t:"",tz:-4},to:{ap:"LHR",city:"London Heathrow",t:"",tz:1},status:"tbd",slot:"out",note:"The Norfolk → London leg, probably overnight Friday. Add it and the board counts down from Norfolk, with the Heathrow connection worked out."},
  {id:"dua-out",who:"Duane",date:"2026-10-10",no:"AA 6838",op:"British Airways",from:{ap:"LHR",city:"London Heathrow",t:"10:10",tz:1},to:{ap:"CAI",city:"Cairo",t:"17:20",tz:3},status:"ok",note:"Booked as AA, flown by BA. Manage it in the BA app with the AA record locator — seat, terminal and gate live there. You're connecting at Heathrow: BA long-haul is Terminal 5 unless the app says 3; follow the purple Flight Connections signs, allow 90 min between terminals.",arrive:"Visa counter is before immigration (bank window, $30 cash) or the e-Visa lane. Then Uber from the signed pickup, ≈$15, an hour to the Hilton in evening traffic."},
- {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:15",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"the Old Biscuit Mill",mins:30,before:150}},
+ {id:"brad-out1",who:"Brad",date:"2026-10-10",no:"ET 844",op:"Ethiopian Airlines",from:{ap:"CPT",city:"Cape Town",t:"13:50",tz:2},to:{ap:"ADD",city:"Addis Ababa",t:"21:15",tz:3,approx:true},status:"ok",note:"787-9. One ticket through to Cairo, bags checked through — the hour in Addis is a gate change, not a reclaim. International: at the desk 2½ hours out.",leave:{from:"Woodstock",mins:30,before:150}},
  {id:"brad-out2",who:"Brad",date:"2026-10-10",no:"ET 452",op:"Ethiopian Airlines",from:{ap:"ADD",city:"Addis Ababa",t:"22:15",tz:3,approx:true},to:{ap:"CAI",city:"Cairo",t:"02:05",tz:3,date:"2026-10-11"},status:"ok",note:"A350, about four hours. Lands 2am Sunday — the Hilton has been told; Duane is asleep.",arrive:"Visa counter before immigration (bank window, $30 cash) or the e-Visa lane. Uber from the signed pickup, ≈$15, 45 min at that hour."},
  {id:"asw",who:"Both",date:"2026-10-13",no:"NP 81",op:"Nile Air",from:{ap:"CAI",city:"Cairo",t:"08:00",tz:3},to:{ap:"ASW",city:"Aswan",t:"09:25",tz:3},status:"ok",note:"Domestic, Airbus. Brad is in 10F — right side, the pyramids go past in the first ten minutes. Nile Air does not use Terminal 3 — the terminal is on the ticket; check it the night before. The boat's rep meets this flight: send them NP 81 / 09:25.",leave:{from:"Hilton Cairo Grand Nile",mins:45,before:75}},
  {id:"lxr",who:"Both",date:"2026-10-18",no:"MS 275",op:"EgyptAir",from:{ap:"LXR",city:"Luxor",t:"15:40",tz:3},to:{ap:"CAI",city:"Cairo · T3",t:"16:50",tz:3},status:"ok",note:"Domestic, lands Terminal 3. Brad is in 22A — left side: the Theban hills on the climb-out, Giza on the way in. Luxor airport is tiny — 75 min before is plenty. Three flights behind it the same evening (EgyptAir 16:55 and 21:30, Air Cairo 22:00), so a cancellation is an annoyance, not a crisis for Duane's 07:25.",leave:{from:"Hilton Luxor Resort & Spa",mins:25,before:75}},
@@ -2503,7 +2506,7 @@ function mapLinks(){
   el.innerHTML=h;
 }
 
-const BUILD = "Oct 9, 2026 (v91)";
+const BUILD = "Oct 9, 2026 (v92)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
