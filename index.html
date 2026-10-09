@@ -2543,7 +2543,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v122)";
+const BUILD = "Oct 9, 2026 (v123)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -2679,16 +2679,16 @@ const GUIDES = [
  {id:"luxor", city:"Luxor", emoji:"🏺", when:"Fri 16 – Sun 18",
   intro:"Luxor is a small town wrapped around the biggest open-air museum on earth. The East Bank souq is for the evening; the West Bank is where the craftsmen live.",
   eat:[
-   {n:"Sofra", where:"90 Mohamed Farid St, East Bank · lunch and dinner · book", what:"A 1930s house with the best Egyptian menu in Upper Egypt: molokheya, stuffed pigeon, okra tagine, a mezze spread, karkadeh. Locals bring visiting family here. ≈300–500 EGP.", q:"Sofra Restaurant Luxor", fit:"Fri 16 dinner."},
+   {n:"Sofra", where:"90 Mohamed Farid St, East Bank · lunch and dinner · book", what:"A 1930s house with the best Egyptian menu in Upper Egypt: molokheya, stuffed pigeon, okra tagine, a mezze spread, karkadeh. Locals bring visiting family here. ≈300–500 EGP.", q:"Sofra Restaurant Luxor", fit:"Fri 16 dinner — Sat 17 if we take a Wednesday boat."},
    {n:"Al-Sahaby Lane", where:"Rooftop beside Luxor Temple", what:"Tagines and grills with the temple lit up below. Touristy, and worth it once. ≈300–400 EGP.", q:"Al-Sahaby Lane Restaurant Luxor", fit:"Sat 17 dinner (the Winter Palace is closed, so this is the night out)."},
    {n:"Restaurant Mohamed", where:"Gezira village, West Bank · book a day ahead", what:"Mohamed's family cooks duck, chicken, and vegetables from their garden in a courtyard between the sugarcane. Simple, ≈200 EGP, and the West Bank meal people remember.", q:"Restaurant Mohamed Gezira Luxor", fit:"Sat 17 lunch between the tombs and the temples."},
    {n:"Maratonga Café", where:"Opposite Medinet Habu, West Bank", what:"Shaded tables facing the temple walls: fresh lemon-mint, omelettes, stuffed vegetables. The guides' lunch stop. ≈100–150 EGP.", q:"Maratonga Cafe Medinet Habu", fit:"Sat 17 if you do Medinet Habu."},
    {n:"Koshary and ta'ameya on Television St", where:"East Bank, where the town eats", what:"Walk Television Street in the evening and eat where the queue is: koshary, shawerma, feteer from a wood oven. 30–80 EGP.", q:"Television Street Luxor", fit:"Any night you want a 30-pound dinner."}
   ],
   shop:[
-   {n:"Luxor Souq (Sharia al-Souq)", where:"Behind Luxor Temple, pedestrian · 5–10pm", buy:"Spices, galabeyas, cotton scarves, alabaster, cheap but decent papyrus-style prints, Luxor's famous honey-sesame sweets. Firmer bargaining than Aswan; start at a third.", q:"Luxor Souq", fit:"Fri 16 evening."},
-   {n:"Habiba", where:"Off Sharia al-Souq, East Bank", buy:"A fair-trade gallery of hand-made Egyptian crafts: Siwan and Bedouin embroidery, Fayoum pottery, Nagada weaving, hand-made soap. Fixed prices, no pressure — the place to buy the gift you haven't found yet.", q:"Habiba Gallery Luxor", fit:"Fri 16 or Sat 17 evening."},
-   {n:"West Bank alabaster workshops, Gurna", where:"Along the road to the Valley of the Kings", buy:"The village has carved alabaster for 3,000 years. The 'factories' the drivers stop at are shows; ask the guide for a small family workshop, hold the piece to the light — real alabaster glows and is cold and heavy, resin fakes are warm and uniform.", q:"Gurna alabaster workshop Luxor", fit:"Fri 16 or Sat 17 with the guide."},
+   {n:"Luxor Souq (Sharia al-Souq)", where:"Behind Luxor Temple, pedestrian · 5–10pm", buy:"Spices, galabeyas, cotton scarves, alabaster, cheap but decent papyrus-style prints, Luxor's famous honey-sesame sweets. Firmer bargaining than Aswan; start at a third.", q:"Luxor Souq", fit:"Fri 16 evening — Sat 17 with a Wednesday boat."},
+   {n:"Habiba", where:"Off Sharia al-Souq, East Bank", buy:"A fair-trade gallery of hand-made Egyptian crafts: Siwan and Bedouin embroidery, Fayoum pottery, Nagada weaving, hand-made soap. Fixed prices, no pressure — the place to buy the gift you haven't found yet.", q:"Habiba Gallery Luxor", fit:"Fri 16 or Sat 17 evening (Sat with a Wednesday boat)."},
+   {n:"West Bank alabaster workshops, Gurna", where:"Along the road to the Valley of the Kings", buy:"The village has carved alabaster for 3,000 years. The 'factories' the drivers stop at are shows; ask the guide for a small family workshop, hold the piece to the light — real alabaster glows and is cold and heavy, resin fakes are warm and uniform.", q:"Gurna alabaster workshop Luxor", fit:"Fri 16 or Sat 17 with the guide (Sat with a Wednesday boat)."},
    {n:"Caravanserai", where:"Opposite Medinet Habu, West Bank", buy:"A small, honest crafts shop next to Maratonga: pottery, textiles, baskets from Upper Egypt. Fixed prices.", q:"Caravanserai Medinet Habu Luxor", fit:"Sat 17."}
   ],
   buy:[
@@ -4421,8 +4421,8 @@ const BOAT_AGENDA=[
  ["tue13","09:25","Land. A car takes the bags to the hotel; we go on to Philae.","Basma or the Old Cataract (whichever we booked) — 15 min from the airport, on the way to Philae. Check-in is later; they'll hold the bags."],
  ["tue13","12:30","Hotel: check in, lunch","The bags are already here. Ask the desk to confirm tomorrow's 4am car and a breakfast box."],
  ["tue13","14:00","Hotel: pool, nap, the hot hours.",""],
- ["wed14","04:00",b=>`Private car from the hotel — bags in the trunk`,b=>`Check out at 3:45. The driver waits at Abu Simbel, then takes us and the bags ${b&&b.id==="orient"?"to Kom Ombo to join The Orient (≈50 min past Aswan)":"straight to the boat"}. ≈$180–250 for both; arrange it with the boat or the hotel.`],
- ["wed14","12:30",b=>b?`Board ${b.name}. Lunch. We sail.`:"Board the boat. Lunch. We sail.",b=>b&&b.id==="orient"?"At Kom Ombo, if Djed has agreed the join — otherwise in Aswan at their pickup point.":"The car drops us at the gangway; the crew takes the bags."]
+ ["wed14","04:00",b=>`Private car from the hotel — bags in the trunk`,b=>`Check out at 3:45. The driver waits at Abu Simbel, then takes us and the bags ${!b||b.id==="orient"?"to Kom Ombo to join The Orient (≈50 min past Aswan)":"straight to the boat"}. ≈$180–250 for both; arrange it with the boat or the hotel.`],
+ ["wed14","12:30",b=>(!b||b.id==="orient")?"Back in Aswan: lunch, then the same car on to Kom Ombo":`Board ${b.name}. Lunch. We sail.`,b=>(!b||b.id==="orient")?"The bags stay in the trunk. ≈50 min north to the Kom Ombo landing, where The Orient picks us up (if Djed has agreed the join).":"The car drops us at the gangway; the crew takes the bags."]
 ];
 // Fri–Sun rebuilt for a Wednesday boat. Reuses the original items (photos, maps, notes) at their new times.
 function boatWedDays(b, O){ const merit=b&&b.id==="merit"; const lux=b&&(b.id==="merit"||b.id==="tec");
@@ -4430,8 +4430,20 @@ function boatWedDays(b, O){ const merit=b&&b.id==="merit"; const lux=b&&(b.id===
   const at=(it,t,extra)=>it?Object.assign(it,{t},extra||{}):null;
   const vk=pick("sat17",/Valley of the Kings/), hat=pick("sat17",/Hatshepsut/), col=pick("sat17",/Colossi/), bal=pick("sat17",/Balloon/), mus=pick("fri16",/Luxor Museum/), lt=pick("fri16",/Luxor Temple/), sofra=pick("fri16",/Sofra/), kar=pick("sun18",/Karnak/);
   const sunTail=(O.sun18.agenda||[]).filter(x=>x.t>="13:30");
+  const orient=!b||b.id==="orient";   // undecided shows The Orient (#1)
+  const ko=pick("thu15",/Kom Ombo/), sil=pick("thu15",/Silsila/), edfu=pick("fri16",/Edfu/), wedHead=(O.wed14.agenda||[]).filter(x=>x.t<="12:30").map(x=>Object.assign({},x));
+  const extra={};
+  if(orient){
+    extra.wed14={ sleep:"the dahabiya, at Gebel el-Silsila", agenda:[...wedHead, at(ko,"15:30",{title:"Kom Ombo Temple — we join the boat here",note:"The car from Abu Simbel brings us (and the bags) to the Kom Ombo landing; the boat's guide takes us round. "+(ko&&ko.note||"")}), {t:"19:30",title:"Dinner on board, moored at Gebel el-Silsila",note:"First night on the water — no engine, no other boats.",approx:true}].filter(Boolean) };
+    extra.thu15={ sleep:"the dahabiya, on an island near Edfu", title:"Gebel el-Silsila → Edfu → a campfire", place:"On the Nile", emoji:"⛵", alarm:"the crew's call, ≈6:30", mission:"Dawn among the quarries where the temples were cut, the best-preserved temple in Egypt after lunch, and dinner round a fire on an island.",
+      agenda:[ at(sil,"06:30",{note:"We wake up moored here. "+(sil&&sil.note||"")}), {t:"09:00",title:"Sail. Breakfast on deck.",approx:true}, at(edfu,"13:30",{title:"Temple of Horus, Edfu",note:"Horse carriage from the landing. Roof still on, reliefs still sharp. Afternoon light, fewer big-boat crowds than the morning."}), {t:"19:30",title:"Campfire dinner on an island",note:"The crew sets it up; the stars do the rest.",approx:true} ].filter(Boolean) };
+  } else if(merit){
+    extra.wed14={ sleep:"the dahabiya, moored in Aswan", agenda:[...wedHead, {t:"15:00",title:"Afternoon: the boat's Philae and High Dam trip — or stay on deck",note:"We saw Philae on Tuesday; the deck is a fine alternative.",approx:true}, {t:"19:30",title:"Dinner on board, moored in Aswan",approx:true}] };
+    extra.thu15={ sleep:"the dahabiya, at al-Ramady island", title:"Kom Ombo → al-Ramady island", place:"On the Nile", emoji:"⛵", alarm:"the crew's call, ≈6:30", mission:"The double temple of the crocodile god, then a long, slow sail and a night moored at an island.",
+      agenda:[ at(ko,"07:00"), {t:"09:00",title:"Sail. Breakfast on deck.",approx:true}, {t:"15:00",title:"Deck, tea, a swim stop if the crew calls it",approx:true}, {t:"19:30",title:"Dinner on board, moored at al-Ramady island",approx:true} ].filter(Boolean) };
+  }
   const nm=b?b.name:"the boat";
-  return {
+  return { ...extra,
    fri16:{ title: merit?"Esna lock → Karnak and Luxor Temple":"El Kab → Esna", place: merit?"On the Nile → Luxor":"On the Nile → Esna", emoji:"⛵", alarm:"the crew's call", bag:"nothing", dress:"temple clothes; a hat", cash:"tips envelope tonight",
      mission: merit?"Through the Esna lock, then Luxor's two great temples with the boat's guide. The last night on the water.":"The quietest stretch of the river: El Kab's painted tombs, then sail into Esna. The last night on the water.",
      agenda:[ {t:"07:00",title:"Breakfast on deck",approx:true},
@@ -4465,19 +4477,22 @@ function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0)
     const t=day("tue13"); if(t){ t.sleep="an Aswan hotel (Basma or the Old Cataract)"; t.sleepq="Basma Hotel Aswan"; }
     boatTM(t,"Fly south: Philae, high tea, the Nubian village","Aswan done properly: Philae, high tea on Agatha Christie's terrace, a motorboat through sunset to a Nubian village for dinner. The bags wait at the hotel."); boatTM(day("wed14"),"Abu Simbel at sunrise, then onto the boat","Brutal alarm, enormous payoff. Then the bags go aboard and the week changes speed.");
     { const th=day("thu15"); if(th&&th._o) Object.assign(th,th._o); const w=day("wed14"); if(w&&w._sleep0!==undefined){ w.sleep=w._sleep0; w.sleepq=w._sleepq0; } }
-    { const O={}; ["fri16","sat17","sun18"].forEach(id=>{ const d=day(id); if(!d) return; if(!d._o) d._o={title:d.title,place:d.place,emoji:d.emoji,alarm:d.alarm,bag:d.bag,dress:d.dress,cash:d.cash,mission:d.mission,agenda:d.agenda}; O[id]=d._o; });
+    { const O={}; ["wed14","thu15","fri16","sat17","sun18"].forEach(id=>{ const d=day(id); if(!d) return; if(!d._o) d._o={title:d.title,place:d.place,emoji:d.emoji,alarm:d.alarm,bag:d.bag,dress:d.dress,cash:d.cash,mission:d.mission,agenda:d.agenda,sleep:d.sleep,sleepq:d.sleepq}; O[id]=d._o; });
+      ["wed14","thu15"].forEach(id=>{ const d=day(id); if(d&&d._o) Object.assign(d,d._o); });
       if(O.fri16&&O.sat17&&O.sun18){ const W=boatWedDays(b,O); Object.entries(W).forEach(([id,v])=>Object.assign(day(id),v)); } }
     BOAT_AGENDA.forEach(([id,tm,title,note])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(!it) return; if(it._t0===undefined){ it._t0=it.title; it._n0=it.note; } it.title=typeof title==="function"?title(b):title; it.note=typeof note==="function"?note(b):note; });
-    const f=day("fri16"); if(f){ f.sleep="the boat (Esna or Luxor)"; f.sleepq=""; }
+    const f=day("fri16"); if(f){ f.sleep = (!b||b.id==="orient"||b.id==="akhnaton") ? "the dahabiya, at Esna" : b.id==="merit" ? "the dahabiya, on Luxor's West Bank" : "the boat (Esna or Luxor)"; f.sleepq=""; }
   } else if(car){
     // no boat: two Aswan nights, a car north on Thursday, an extra Hilton night
-    ["fri16","sat17","sun18"].forEach(id=>{ const d=day(id); if(d&&d._o) Object.assign(d,d._o); });
+    ["wed14","fri16","sat17","sun18"].forEach(id=>{ const d=day(id); if(d&&d._o) Object.assign(d,d._o); });
     if(ai<0&&dh) H.splice(H.indexOf(dh),0,{ _boatHotel:1, n:"Aswan hotel (Basma or the Old Cataract)", q:"Basma Hotel Aswan", d:"", fit:[], amen:"Basma: east-bank Corniche, pool, next door to the Old Cataract." });
     const ah=H.find(x=>x._boatHotel); if(ah){ ah.d=`Tue 13 – Wed 14 · 2 nights · ${st.hotel?"booked ✅":"not booked yet ⬜"}`; ah.fit=["Tue 13: the airport car drops the bags here on the way to Philae.","Wed 14: Abu Simbel at 4am, back for lunch; sunset felucca sail from the Corniche.","Thu 15: check out ≈7:30; the bags ride in the car to Luxor."]; }
     if(dh){ dh.d="Thu 15 · private car Aswan → Luxor via Kom Ombo and Edfu"+(st.confirmed?" ✅":" ⬜"); dh.fit=["Thu 15: car at ≈7:30 from the hotel, Kom Ombo ≈8:30, Edfu ≈11, Hilton Luxor ≈3:30pm."]; }
     if(hl){ hl.d = st.hilton ? "Thu 15 – Sat 17 · $50/night ✅" : "Thu 15 – Sat 17 · $50/night ✅ — add Thursday night ⬜"; hl.fit=["Thu 15: arrive ≈3:30pm by car.", ...(hl._fit0||[]).filter(x=>!/^Fri 16/.test(x))]; }
     const t=day("tue13"); if(t){ t.sleep="an Aswan hotel (Basma or the Old Cataract)"; t.sleepq="Basma Hotel Aswan"; }
-    const w=day("wed14"); if(w){ if(w._sleep0===undefined){ w._sleep0=w.sleep; w._sleepq0=w.sleepq; } w.sleep="an Aswan hotel (Basma or the Old Cataract)"; w.sleepq="Basma Hotel Aswan"; }
+    const w=day("wed14"); if(w){ if(w._sleep0===undefined){ w._sleep0=w.sleep; w._sleepq0=w.sleepq; } w.sleep="an Aswan hotel (Basma or the Old Cataract)"; w.sleepq="Basma Hotel Aswan";
+      if(!w._o) w._o={title:w.title,place:w.place,emoji:w.emoji,alarm:w.alarm,bag:w.bag,dress:w.dress,cash:w.cash,mission:w.mission,agenda:w.agenda,sleep:w._sleep0,sleepq:w._sleepq0};
+      w.agenda=[...w._o.agenda.filter(x=>x.t<="12:30").map(x=>Object.assign({},x)), {t:"17:30",title:"Sunset felucca sail from the Corniche",note:"A daytime sail only — ≈$15–20 for the boat for an hour, agreed before you step on. Elephantine and the Old Cataract going gold.",map:"Aswan Corniche"}, {t:"20:00",title:"Dinner in Aswan",note:"Ask the hotel for their favourite on the Corniche; the hotel's own terrace is fine too.",approx:true}]; }
     const th=day("thu15"); if(th){ if(!th._o) th._o={title:th.title,place:th.place,emoji:th.emoji,alarm:th.alarm,bag:th.bag,dress:th.dress,cash:th.cash,mission:th.mission,agenda:th.agenda,sleep:th.sleep,sleepq:th.sleepq};
       Object.assign(th,{ title:"By car to Luxor: Kom Ombo → Edfu", place:"Aswan → Luxor", emoji:"🚗", alarm:"6:45", bag:"everything (checkout)", dress:"temple clothes, a hat", cash:"≈$25 entries + the driver", sleep:"Hilton Luxor Resort & Spa", sleepq:"Hilton Luxor Resort & Spa",
         mission:"Two great temples on the road north, the bags in the trunk, and the Hilton pool by mid-afternoon.",
@@ -4488,12 +4503,12 @@ function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0)
         agenda:[{t:"08:00",title:"Up. Breakfast, pool, the hot hours indoors",alarm:true}, ...f._o.agenda.filter(x=>x.t>="17:00")] }); }
     BOAT_AGENDA.slice(0,3).forEach(([id,tm,title,note])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(!it) return; if(it._t0===undefined){ it._t0=it.title; it._n0=it.note; } it.title=title; it.note=note; });
     const w4=w&&w.agenda.find(x=>x.t==="04:00"); if(w4){ if(w4._t0===undefined){ w4._t0=w4.title; w4._n0=w4.note; } w4.title="Private car from the hotel to Abu Simbel"; w4.note="Back at the hotel ≈12:30. ≈$180–250 for both."; }
-    const w12=w&&w.agenda.find(x=>x.t==="12:30"); if(w12){ if(w12._t0===undefined){ w12._t0=w12.title; w12._n0=w12.note; } w12.title="Back at the hotel. Lunch, nap, then a sunset felucca sail from the Corniche"; w12.note="A daytime sail only — ≈$15–20 for the boat for an hour, agreed first."; }
+    const w12=w&&w.agenda.find(x=>x.t==="12:30"); if(w12){ if(w12._t0===undefined){ w12._t0=w12.title; w12._n0=w12.note; } w12.title="Back at the hotel. Lunch, a nap."; w12.note="The car drops us at the hotel; the afternoon is ours."; }
   } else {
     if(ai>=0) H.splice(ai,1);
     if(dh){ dh.d=dh._d0; dh.fit=dh._fit0; } if(hl){ hl.d=hl._d0; hl.fit=hl._fit0; }
     ["tue13","fri16"].forEach(id=>{ const d=day(id); if(d){ d.sleep=d._sleep0; d.sleepq=d._sleepq0; } });
-    ["fri16","sat17","sun18","thu15"].forEach(id=>{ const d=day(id); if(d&&d._o) Object.assign(d,d._o); }); boatTM(day("tue13"),null); boatTM(day("wed14"),null); { const w=day("wed14"); if(w&&w._sleep0!==undefined){ w.sleep=w._sleep0; w.sleepq=w._sleepq0; } }
+    ["wed14","fri16","sat17","sun18","thu15"].forEach(id=>{ const d=day(id); if(d&&d._o) Object.assign(d,d._o); }); boatTM(day("tue13"),null); boatTM(day("wed14"),null); { const w=day("wed14"); if(w&&w._sleep0!==undefined){ w.sleep=w._sleep0; w.sleepq=w._sleepq0; } }
     BOAT_AGENDA.forEach(([id,tm])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(it&&it._t0!==undefined){ it.title=it._t0; it.note=it._n0; } });
   }
   if(typeof renderHotels==="function") safe(renderHotels); if(typeof renderNow==="function") safe(renderNow); if(typeof renderDay==="function") safe(renderDay); }catch(e){} }
@@ -4577,7 +4592,7 @@ html.bigtext .bv{margin-left:0;flex-basis:100%}
 const BOAT_DAYNOTE = {
  tue13:"We don't board today. Philae, high tea and the Nubian village as planned, then a night in an Aswan hotel (Basma or the Old Cataract). A car takes the bags straight to the hotel from the airport.",
  wed14:"Abu Simbel by private car at 4am from the hotel, bags in the trunk — then onto the boat: Merit in Aswan, The Orient at Kom Ombo (≈50 min on).",
- thu15:"On board all day. The Orient: Gebel el-Silsila and Edfu. Merit: Kom Ombo and the Esna lock.",
+ thu15:"On board all day. The Orient: Gebel el-Silsila, Edfu and a campfire on an island. Merit: Kom Ombo, then a night at al-Ramady island.",
  fri16:b=>`This day is rewritten for a Wednesday boat — ${b?`with ${b.name}`:"shown for The Orient until we choose (Merit's version: the Esna lock, then Karnak and Luxor Temple)"}. No drive to Luxor and no Hilton tonight.`,
  sat17:b=>`Rewritten for a Wednesday boat — ${b?`with ${b.name}`:"shown for The Orient until we choose (Merit does the West Bank this morning, then a pool afternoon)"}. The balloon moved to Sunday.`,
  sun18:b=>`Rewritten for a Wednesday boat: balloon at dawn — with no spare morning if it's windy — then ${b&&b.id==="merit"?"a free morning":"Karnak"}, fly 15:40.`
