@@ -684,7 +684,7 @@ p.muted{margin:0 0 8px}
 .bingo button.free{background:var(--dusk-soft);color:var(--dusk);border-style:dashed}
 .hform{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 .hform input{font:0.8235rem var(--body);padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);min-width:0}
-.hform #hw,.hform #hd,.hform #qhw,.hform #tauntIn,.hform #qline{grid-column:1/-1}.hform .btn{grid-column:1/-1;justify-content:center}
+.hform #hw,.hform #hd,.hform #qhw,.hform #qhd,.hform #tauntIn,.hform #qline{grid-column:1/-1}.hform .btn{grid-column:1/-1;justify-content:center}
 .htab{width:100%;border-collapse:collapse;font-size:0.7941rem}.htab th{text-align:left;font-size:0.6765rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 4px 4px 0}
 .htab td{padding:6px 4px 6px 0;border-top:1px solid var(--line);vertical-align:top}.htab td small{display:block;color:var(--muted)}
 .htab .pct{font-weight:700}.htab .pct.win{color:var(--nile)}
@@ -1323,6 +1323,7 @@ html.hugetext .bp-on em{grid-column:2}
  .now.solo .bar i{background:var(--dusk)}
  .now:not(.solo) .fband{background:rgba(255,255,255,.06)}
  .stars button{color:#5e5749}
+ .qgrid button[data-qc="taunt"]{background:#3a3222;color:var(--fg);border-color:rgba(226,190,120,.35)}
  .navsos{color:#ffa79c;background:rgba(255,100,88,.09);border-color:rgba(255,120,108,.35)}
  /* games: same objects, lit for night */
  .sg.souk{background:linear-gradient(180deg,#3a2f20,#2e251a);border-color:#5c4a30;color:#f1e5cc}
@@ -2199,7 +2200,7 @@ function renderNavigator(){
       ["phrases","🗣️","Words", "40 phrases, spoken"],
       ["eat","🍽️","Eat & shop", g.city],
       ["tab","🧾","The tab", safe(tabTileLine)||"who paid, who owes"],
-      ["numbers","٣","Numbers", "read a price tag"]]],
+      ["numbers","<b style=\"font:700 1.35rem/1 Geeza Pro,Noto Naskh Arabic,serif\">٣</b>","Numbers", "read a price tag"]]],
     ["What you're looking at",[
       ["arc","📖","The story", "9 chapters, one thread"],
       ["who","🏺","Who's who", "gods, kings, walls"],
@@ -2577,7 +2578,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v128)";
+const BUILD = "Oct 9, 2026 (v129)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4698,7 +4699,7 @@ function tabSheetHTML(){ const w=me(); const o=OTHER_OF(w)||"him"; const L=tabLi
       <div class="tb-row"><span>Split</span>${seg("split",splitLbl)}</div>
       <button class="btn primary" type="submit">Add to the tab</button></form>
     ${Math.abs(n)>=1?`<button type="button" class="btn tb-settle" data-tbsettle="1">${n>0?`${esc(o)} paid me back`:`I paid ${esc(o)} back`} · ${fmtE(Math.abs(n))} EGP</button>`:""}
-    ${L.length?`<ul class="tb-list">${L.map(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const d=new Date(x.at); const dd=isNaN(d)?"":d.toLocaleDateString("en-US",{weekday:"short",day:"numeric"});
+    ${L.length?`<ul class="tb-list">${L.map(x=>{ const egp=x.cur==="USD"?x.amt*R:x.amt; const d=new Date(x.at); const dd=isNaN(d)?"":`${d.toLocaleDateString("en-US",{weekday:"short"})} ${d.getDate()}`;
       const how=x.settle?"settled up":x.split==="half"?"half each":`all for ${esc(OTHER_OF(x.by))}`;
       return `<li class="${x.settle?"settle":""}"><div><b>${esc(x.w||"—")}</b><small>${esc(x.by)} paid · ${how} · ${dd}${pend[x.id]?" · <i>not synced yet</i>":""}</small></div><span class="tb-v">${x.cur==="USD"?`$${fmtE(x.amt)}<small>${fmtE(egp)} EGP</small>`:`${fmtE(x.amt)}<small>EGP</small>`}</span><button type="button" class="tb-x" data-tbdel="${x.id}" aria-label="Remove">✕</button></li>`; }).join("")}</ul>`:`<p class="muted" style="margin-top:10px">Whoever pays, log it here — both phones see the same tab. Settle up at the airport.</p>`}
     <p class="muted tb-foot">Dollars count at the Money rate (${R} EGP). Remove a line on either phone and it's gone on both.</p>
@@ -4873,7 +4874,7 @@ html.bigtext .tb-amt{grid-template-columns:1fr}html.bigtext .tb-row{flex-wrap:wr
 .pk-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}.pk-h b{font:700 0.7059rem var(--display);letter-spacing:.1em;text-transform:uppercase}.pk-h span{font-size:0.7059rem;color:var(--muted)}
 .pk-m{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
 .pk-r{display:flex;align-items:center;gap:6px;margin:8px 0}.pk-r button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--fg);font:700 0.8235rem var(--mono);cursor:pointer}.pk-r button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}.pk-r span{font-size:0.7647rem;color:var(--muted);margin-left:4px}
-.pk-go{width:100%}.pk-n{font-size:0.7059rem;margin:6px 0 0}
+.pk-go{width:100%;justify-content:center;text-align:center;padding:11px}.pk-n{font-size:0.7059rem;margin:6px 0 0}
 .pk-rev{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pk-c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;animation:pkflip .5s ease both}.pk-c:nth-child(2){animation-delay:.25s}
 .pk-c small{font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.pk-c b{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:0.9412rem;line-height:1.3}.pk-c span{font:0.7059rem var(--mono);color:var(--nile)}
 .pk-v{margin:8px 0 0;font-size:0.7941rem;text-align:center;color:var(--muted)}
