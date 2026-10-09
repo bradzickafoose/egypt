@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><meta name="description" content="Day by day plan for the Egypt trip, Oct 10–19 2026: today's card, directions, places, lists, money."><meta property="og:title" content="Egypt · Brad + Duane"><meta property="og:description" content="Day by day, Oct 10–19. Opens on today, counts down to the next stop, every place explained."><meta property="og:image" content="https://bradzickafoose.github.io/egypt/icon-512.png"><meta property="og:url" content="https://bradzickafoose.github.io/egypt/"><meta property="og:type" content="website"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"></head><body><title>Egypt · Brad + Duane</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4efe3"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15140f"><style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style><meta name="description" content="Day by day plan for the Egypt trip, Oct 10–19 2026: today's card, directions, places, lists, money."><meta property="og:title" content="Egypt · Brad + Duane"><meta property="og:description" content="Day by day, Oct 10–19. Opens on today, counts down to the next stop, every place explained."><meta property="og:image" content="https://bradzickafoose.github.io/egypt/icon-512.png"><meta property="og:url" content="https://bradzickafoose.github.io/egypt/"><meta property="og:type" content="website"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1320x2868.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1206x2622.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1290x2796.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1179x2556.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1284x2778.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1170x2532.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1125x2436.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1242x2688.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/launch-828x1792.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/launch-1080x2340.png"><link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/launch-750x1334.png"></head><body><title>Egypt · Brad + Duane</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;600&display=swap">
 <style>
@@ -2186,8 +2186,10 @@ function renderClock(){
   const di = dayIndexFor(n.date); const pr=$("#prog");
   // huge text: the short form, so it never ends in "…"
   const hg=document.documentElement.classList.contains("hugetext");
-  const full = di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${di+1} of ${DAYS.length}` : `Day ${di+1} of ${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home · Oct 10–25";
-  pr.textContent = !hg ? full : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${di+1}/${DAYS.length}` : `Day ${di+1}/${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
+  // each of you counts your own trip: Duane's ten days, Brad's sixteen
+  const meW=(typeof me==="function"&&me())||""; const mine=DAYS.filter(d=>meW!=="Duane"||d.who!=="brad"); const mi=di>=0?mine.indexOf(DAYS[di]):-1; const tot=mine.length; const over=di>=0&&mi<0;
+  const full = over ? `Home · ${mine.length} days, done` : di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${mi+1} of ${tot}` : `Day ${mi+1} of ${tot}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home";
+  pr.textContent = !hg ? full : over ? "Home" : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${mi+1}/${tot}` : `Day ${mi+1}/${tot}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
   pr.title=full;
   // still at home after Cairo's midnight: say whose clock the day is following
   if(n.home&&!hg&&navigator.onLine!==false){ const ln=new Date(); pr.textContent=`${pr.textContent.replace(/^Starts /,"")} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} here`; }
@@ -2597,7 +2599,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v166)";
+const BUILD = "Oct 10, 2026 (v167)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6316,6 +6318,124 @@ setTimeout(()=>{ safe(obPill); safe(obFlush); }, 3000);
 #obPill.ob-done{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
 @keyframes obin{from{transform:translateY(-6px);opacity:0}}
 @media (prefers-color-scheme:dark){#obPill{color:#e2a840}}
+`; document.head.appendChild(st); })();
+
+// ---------- pwa.js: the phone's own powers — screen stays awake when you show it, a compass home, data kept safe ----------
+// ---- keep the screen awake while someone else is reading it ----
+let pwaLock=null;
+async function pwaWake(on){ try{ if(on){ if(!("wakeLock" in navigator)) return; if(pwaLock) return; pwaLock=await navigator.wakeLock.request("screen"); pwaLock.addEventListener("release",()=>{ pwaLock=null; }); } else if(pwaLock){ await pwaLock.release(); pwaLock=null; } }catch(e){ pwaLock=null; } }
+// iOS drops the lock when the app goes to the background; take it back if the card is still up
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&document.querySelector("#bigCard.on")) pwaWake(true); });
+
+// ---- the big card: one screen, huge type, held up to a driver, a porter, a check-in desk ----
+function bigCard(html, cls){ let el=document.getElementById("bigCard"); if(!el){ el=document.createElement("div"); el.id="bigCard"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); document.body.appendChild(el);
+    el.addEventListener("click",e=>{ if(e.target.closest("[data-bigx]")||e.target===el) bigClose(); }); }
+  el.className=cls||""; el.innerHTML=`<div class="bc-in">${html}<button type="button" class="bc-x" data-bigx="1">Done</button><p class="bc-awake">${"wakeLock" in navigator?"Screen stays on while this is open":"Tip: turn the brightness up"}</p></div>`;
+  requestAnimationFrame(()=>el.classList.add("on")); document.documentElement.classList.add("big-open"); pwaWake(true); }
+function bigClose(){ const el=document.getElementById("bigCard"); if(el) el.classList.remove("on"); document.documentElement.classList.remove("big-open"); pwaWake(false); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") bigClose(); });
+
+// ---- "Show the driver": tonight's hotel in Arabic, big ----
+const HOTEL_AR={
+ "Hilton Cairo Grand Nile":["فندق هيلتون القاهرة جراند نايل","كورنيش النيل، جاردن سيتي، القاهرة"],
+ "Hilton Luxor Resort & Spa":["فندق هيلتون الأقصر","الكرنك الجديد، البر الشرقي، الأقصر"],
+ "Waldorf Astoria Cairo Heliopolis":["فندق والدورف أستوريا القاهرة مصر الجديدة","شارع العروبة، مصر الجديدة، القاهرة"],
+ "Le Méridien Cairo Airport (Brad)":["فندق لو ميريديان مطار القاهرة","مبنى الركاب ٣، مطار القاهرة الدولي"]
+};
+const hotelsAr=()=>HOTELS.filter(h=>HOTEL_AR[h.n]&&(!h.solo||me()==="Brad"));
+function driverHotel(){ try{ const n=cairoNow(); const di=dayIndexFor(n.date); const from=di>=0?di:0; for(let i=from;i<DAYS.length;i++){ const h=hotelFor(DAYS[i]); if(h&&HOTEL_AR[h.n]) return h; } }catch(e){} return hotelsAr()[0]; }
+function driverHTML(h){ const ar=HOTEL_AR[h.n]; const others=hotelsAr().filter(x=>x!==h);
+  return `<p class="bc-k" lang="ar" dir="rtl">من فضلك، وصّلني إلى</p>
+   <h2 class="bc-ar" lang="ar" dir="rtl">${esc(ar[0])}</h2><p class="bc-ar2" lang="ar" dir="rtl">${esc(ar[1])}</p>
+   <div class="bc-en"><b>${esc(h.n.replace(/ \(.*\)/,""))}</b><span>${esc(h.addr||"")}</span>${h.tel?`<a class="btn" href="tel:${h.tel}">📞 ${esc(h.telD)}</a>`:""}</div>
+   <p class="bc-say">Say it: <b>min fadlak, wassalni</b> — “please, take me”</p>
+   ${others.length?`<div class="bc-other">${others.map(x=>`<button type="button" class="chip" data-driver="${escA(x.n)}">${esc(x.n.replace(/ \(.*\)/,"").replace(/ Resort & Spa| Heliopolis/,""))}</button>`).join("")}</div>`:""}`; }
+function openDriver(name){ const h=(name&&HOTELS.find(x=>x.n===name))||driverHotel(); if(!h) return; bigCard(driverHTML(h),"driver"); }
+document.addEventListener("click",e=>{ const d=e.target.closest("[data-driver]"); if(d){ e.preventDefault(); safe(()=>closeSheet("sheetQC")); openDriver(d.dataset.driver||""); } });
+// a button on each hotel that has an Arabic card, and one in the + menu
+(function(){ if(typeof renderHotels!=="function") return; const R=renderHotels; renderHotels=function(){ const r=R.apply(this,arguments); try{ document.querySelectorAll("#hotels details.hotel").forEach((dt,i)=>{ const h=HOTELS[i]; if(!h||!HOTEL_AR[h.n]||dt.querySelector("[data-driver]")) return; const row=dt.querySelector(".hrow"); if(row) row.insertAdjacentHTML("beforebegin",`<div class="hdrv"><button type="button" class="btn" data-driver="${escA(h.n)}">🚕 Show the driver</button><button type="button" class="btn" data-way="hotel:${escA(h.n)}">🧭 Way back</button></div>`); }); }catch(e){} return r; }; })();
+(function(){ if(typeof qcHome!=="function") return; const Q=qcHome; qcHome=function(){ let h=Q.apply(this,arguments); try{ h=h.replace(/(<button type="button" data-askmum="1">)/,`<button type="button" data-driver=""><span class="qi">🚕</span>Show the driver<small>tonight's hotel, in Arabic</small></button><button type="button" data-way=""><span class="qi">🧭</span>Find your way<small>arrow home, no signal needed</small></button>$1`); }catch(e){} return h; }; })();
+
+// ---- booking codes, big, for the check-in desk ----
+(function(){ if(typeof renderFlights!=="function") return; const R=renderFlights; renderFlights=function(){ const r=R.apply(this,arguments); try{ document.querySelectorAll("form.pnrf").forEach(fm=>{ const v=(fm.querySelector("input")||{}).value; if(!v||fm.querySelector("[data-pnrbig]")) return; fm.insertAdjacentHTML("beforeend",`<button type="button" class="btn mini" data-pnrbig="${escA(fm.dataset.f)}">Show big</button>`); }); }catch(e){} return r; }; })();
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-pnrbig]"); if(!b) return; e.preventDefault(); const f=allFlights().find(x=>x.id===b.dataset.pnrbig); if(!f) return; const code=pnrOf(f); if(!code) return;
+  bigCard(`<p class="bc-k">Booking reference · ${esc(f.no||"")} ${esc(f.from.ap)} → ${esc(f.to.ap)}</p><h2 class="bc-code">${esc(code)}</h2><p class="bc-en"><span>${esc(me()||"")} · ${esc(new Date(f.date+"T12:00:00Z").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"}))} · ${esc(fmt12(f.from.t||"00:00"))}</span></p>`,"code"); });
+
+// ---- the compass: an arrow to the hotel, or anywhere you've saved, from GPS alone ----
+const SPOTS_K="egypt.spots";
+const spots=()=>{ try{ return JSON.parse(localStorage.getItem(SPOTS_K)||"[]")||[]; }catch(e){ return []; } };
+const LANDMARKS=[["Great Pyramid",29.9792,31.1342],["Khan el-Khalili",30.0477,31.2622],["Tahrir Square",30.0444,31.2357],["Karnak Temple",25.7188,32.6573],["Luxor Temple",25.6995,32.6390],["Cairo airport",30.1120,31.4000]];
+let wayT=null, wayPos=null, wayHead=null, wayWatch=null, wayOrient=null;
+function wayTargets(){ const S=spots().map(s=>({k:"spot:"+s.id, n:s.n, lat:s.lat, lng:s.lng, saved:true})); const L=LANDMARKS.map(([n,lat,lng])=>({k:"lm:"+n,n,lat,lng}));
+  if(!wayPos) return S.concat(L); return S.concat(L.filter(t=>wayDist(wayPos,t)<80000)); }
+function wayDist(a,b){ const R=6371000, r=x=>x*Math.PI/180; const dLa=r(b.lat-a.lat), dLo=r(b.lng-a.lng); const h=Math.sin(dLa/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+function wayBear(a,b){ const r=x=>x*Math.PI/180, d=x=>x*180/Math.PI; const y=Math.sin(r(b.lng-a.lng))*Math.cos(r(b.lat)); const x=Math.cos(r(a.lat))*Math.sin(r(b.lat))-Math.sin(r(a.lat))*Math.cos(r(b.lat))*Math.cos(r(b.lng-a.lng)); return (d(Math.atan2(y,x))+360)%360; }
+const wayCard=b=>["north","northeast","east","southeast","south","southwest","west","northwest"][Math.round(b/45)%8];
+function wayFmt(m){ return m<1000?`${Math.round(m/10)*10} m`:`${(m/1000).toFixed(m<10000?1:0)} km`; }
+function wayHTML(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT)||T[0]; if(t) wayT=t.k;
+  const chips=T.map(x=>`<button type="button" class="chip ${x.k===wayT?"on":""}" data-wayt="${escA(x.k)}">${x.saved?"📍 ":""}${esc(x.n)}</button>`).join("");
+  return `<p class="bc-k">Find your way</p>
+   <div class="way-dial"><div class="way-n" id="wayN">N</div><div class="way-arrow" id="wayArrow"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6 L78 86 L50 70 L22 86 Z" fill="currentColor"/></svg></div></div>
+   <h2 class="way-d" id="wayD">${wayPos?"…":"Finding you…"}</h2><p class="way-s" id="wayS">${t?esc(t.n):"Save a spot first"}</p>
+   <div class="bc-other way-t">${chips}</div>
+   <div class="way-save"><button type="button" class="btn" data-waysave="hotel">📍 I'm at the hotel — save it</button><button type="button" class="btn" data-waysave="other">📍 Save this spot…</button></div>
+   <p class="way-note" id="wayNote">GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8.</p>`; }
+function wayUpdate(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT); const A=document.getElementById("wayArrow"), D=document.getElementById("wayD"), S=document.getElementById("wayS"), N=document.getElementById("wayN"); if(!A||!D) return;
+  if(!wayPos){ D.textContent="Finding you…"; return; } if(!t){ D.textContent="—"; S.textContent="Save a spot, or pick a landmark"; return; }
+  const dist=wayDist(wayPos,t), b=wayBear(wayPos,t); const walk=Math.round(dist/80);
+  D.textContent=wayFmt(dist); S.textContent=`${t.n} · ${wayCard(b)}${dist<6000?` · ≈${walk<1?1:walk} min walk`:""}${wayPos.acc>60?` · GPS ±${Math.round(wayPos.acc)} m`:""}`;
+  if(wayHead!=null){ A.style.transform=`rotate(${(b-wayHead+360)%360}deg)`; N.style.transform=`rotate(${(-wayHead+360)%360}deg) translateY(-118px) rotate(${(wayHead)%360}deg)`; N.hidden=false; }
+  else { A.style.transform=`rotate(${b}deg)`; N.style.transform="translateY(-118px)"; const note=document.getElementById("wayNote"); if(note&&!note.dataset.nc){ note.dataset.nc=1; note.textContent="No compass reading — the arrow is relative to north (the N). Turn until the top of your phone points north, then follow it."; } }
+  if(dist<40){ D.textContent="You're here"; } }
+async function openWay(target){ wayT=target||wayT;
+  bigCard(wayHTML(),"way");
+  // motion permission must be asked from the tap itself on iPhone
+  try{ if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=="granted") wayHead=null; } }catch(e){}
+  if(!wayOrient){ wayOrient=e=>{ let h=null; if(typeof e.webkitCompassHeading==="number") h=e.webkitCompassHeading; else if(e.absolute&&typeof e.alpha==="number") h=(360-e.alpha)%360; if(h!=null){ const first=wayHead==null; wayHead=h; if(first){ const note=document.getElementById("wayNote"); if(note){ delete note.dataset.nc; note.textContent="GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8."; } } wayUpdate(); } };
+    addEventListener("deviceorientationabsolute",wayOrient); addEventListener("deviceorientation",wayOrient); }
+  if(navigator.geolocation&&wayWatch==null){ wayWatch=navigator.geolocation.watchPosition(p=>{ wayPos={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}; const fresh=!document.querySelector("#bigCard .way-t .chip"); wayUpdate(); },err=>{ const D=document.getElementById("wayD"); if(D) D.textContent=err.code===1?"Location is off for this app":"No GPS fix yet"; const S=document.getElementById("wayS"); if(S&&err.code===1) S.textContent="Settings → Privacy → Location Services → Safari Websites → While Using"; },{enableHighAccuracy:true,maximumAge:5000,timeout:20000}); }
+  wayUpdate(); }
+function wayStop(){ if(wayWatch!=null&&navigator.geolocation){ navigator.geolocation.clearWatch(wayWatch); wayWatch=null; } }
+(function(){ const B=bigClose; bigClose=function(){ wayStop(); return B.apply(this,arguments); }; })();
+document.addEventListener("click",e=>{
+  const w=e.target.closest("[data-way]"); if(w){ e.preventDefault(); const v=w.dataset.way||""; let t=""; if(v.startsWith("hotel:")){ const nm=v.slice(6).replace(/ \(.*\)/,""); const s=spots().find(x=>x.n===nm); t=s?"spot:"+s.id:""; if(!s) toast("Save the hotel once you're there — then this arrow always leads back."); } else { const s=spots().find(x=>x.hotel); if(s) t="spot:"+s.id; } safe(()=>closeSheet("sheetQC")); openWay(t); return; }
+  const t=e.target.closest("[data-wayt]"); if(t){ wayT=t.dataset.wayt; document.querySelectorAll("#bigCard [data-wayt]").forEach(c=>c.classList.toggle("on",c===t)); wayUpdate(); return; }
+  const s=e.target.closest("[data-waysave]"); if(s){ if(!wayPos){ toast("Still finding you — give it a few seconds outdoors."); return; }
+    let n; if(s.dataset.waysave==="hotel"){ const h=driverHotel(); n=h?h.n.replace(/ \(.*\)/,""):"The hotel"; } else { n=(prompt("Name this spot (the car, the café, the meeting point):","Meeting point")||"").trim(); if(!n) return; }
+    const L=spots().filter(x=>x.n!==n); const sp={id:Date.now().toString(36), n, lat:wayPos.lat, lng:wayPos.lng, at:new Date().toISOString(), hotel:s.dataset.waysave==="hotel"}; L.unshift(sp); try{ localStorage.setItem(SPOTS_K, JSON.stringify(L.slice(0,8))); }catch(x){}
+    wayT="spot:"+sp.id; const box=document.querySelector("#bigCard .bc-in"); if(box){ const keep=box.querySelector(".bc-x").outerHTML+box.querySelector(".bc-awake").outerHTML; box.innerHTML=wayHTML()+keep; } wayUpdate(); toast(`Saved: ${n}. The arrow leads back here from anywhere.`); }
+});
+
+// ---- ask the phone to keep this app's storage (journal, photos, booking codes) when space runs low ----
+setTimeout(async()=>{ try{ if(navigator.storage&&navigator.storage.persist&&!(await navigator.storage.persisted())) await navigator.storage.persist(); }catch(e){} }, 6000);
+
+(function(){ const st=document.createElement("style"); st.textContent=`
+#bigCard{position:fixed;inset:0;z-index:90;background:#0d0c0a;color:#fff;display:flex;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));opacity:0;pointer-events:none;transition:opacity .2s;overflow:auto}
+#bigCard.on{opacity:1;pointer-events:auto}
+#bigCard.driver,#bigCard.code{background:#fffdf7;color:#111}
+html.big-open .mumtab,html.big-open .pptab,html.big-open #obPill{display:none}
+.bc-in{width:100%;max-width:520px;text-align:center}
+.bc-k{font:700 0.8235rem var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin:0 0 10px}
+.bc-k[lang=ar]{font:600 1.5rem/1.3 "Geeza Pro","Noto Naskh Arabic",serif;letter-spacing:0;text-transform:none;opacity:.8}
+.bc-ar{font:700 clamp(2rem,9vw,3.2rem)/1.25 "Geeza Pro","Noto Naskh Arabic",serif;margin:6px 0 10px}
+.bc-ar2{font:500 clamp(1.3rem,6vw,2rem)/1.35 "Geeza Pro","Noto Naskh Arabic",serif;margin:0 0 18px}
+.bc-en{display:flex;flex-direction:column;align-items:center;gap:4px;margin:0 0 12px;font-size:0.9412rem}.bc-en b{font:800 1.15rem var(--display)}.bc-en span{opacity:.7}.bc-en .btn{margin-top:8px}
+.bc-say{font-size:0.8235rem;opacity:.7;margin:0 0 14px}
+.bc-code{font:800 clamp(2.2rem,12vw,4rem)/1.1 var(--mono);letter-spacing:.14em;white-space:nowrap;margin:8px 0 14px}
+.bc-other{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0 14px}
+.bc-x{display:block;width:100%;max-width:320px;margin:14px auto 0;padding:14px;border-radius:14px;border:0;font:700 1rem var(--display);background:#111;color:#fff;cursor:pointer}
+#bigCard.way .bc-x{background:#fff;color:#111}
+.bc-awake{font-size:0.7059rem;opacity:.5;margin:10px 0 0}
+.way-dial{position:relative;width:240px;height:240px;margin:6px auto 4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.way-arrow{width:150px;height:150px;color:#f2c14e;transition:transform .25s ease-out}.way-arrow svg{width:100%;height:100%;filter:drop-shadow(0 6px 14px rgba(242,193,78,.35))}
+.way-n{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#c0392b;color:#fff;font:800 13px/28px var(--display);transform:translateY(-118px)}
+.way-d{font:800 2.6rem/1.1 var(--display);margin:6px 0 2px}.way-s{margin:0 0 12px;opacity:.75;font-size:0.9412rem}
+.way-save{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.way-save .btn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)}
+#bigCard.way .chip{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18)}#bigCard.way .chip.on{background:#f2c14e;color:#111}
+.way-note{font-size:0.7353rem;opacity:.55;margin:12px 0 0}
+#bigCard.driver .chip,#bigCard.code .chip{background:#f1ece0;color:#111;border-color:#d9cfb8}#bigCard.driver .btn{background:#111;color:#fff;border-color:#111}
+.hdrv{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+@media (prefers-reduced-motion:reduce){.way-arrow{transition:none}}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
