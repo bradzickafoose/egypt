@@ -2587,7 +2587,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v138)";
+const BUILD = "Oct 9, 2026 (v139)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5476,6 +5476,15 @@ html:has(.qs.on) .mumtab,html:has(#review.on) .mumtab,html:has(#whoSheet.on) .mu
 @media (prefers-reduced-motion:reduce){.mumtab .me,.mumtab.unread .mt-dot{animation:none}}
 .am-chips .chip.am-chip{font-family:var(--body)!important;letter-spacing:0}
 `; document.head.appendChild(st); })();
+
+// ---------- one-off clean-up (v139): a test trash-talk line sent from Brad's phone while it was set to "Duane" ----------
+// Only runs on a phone that is Brad's now: any "Duane" taunt in its own event list came from that test. Removes it locally
+// and from Duane's slot on the server (only those lines; Duane's phone rewrites the rest of its slot on its next sync).
+(function(){ setTimeout(async ()=>{ try{ if(me()!=="Brad"||GS.get("fix139")) return; const ev=GS.get("events",[])||[]; const bad=ev.filter(e=>e&&e.who==="Duane"&&String(e.text||"").startsWith("🗣")); const keep=ev.filter(e=>!bad.includes(e));
+    if(bad.length){ GS.set("events",keep); }
+    if(liveOK()&&navigator.onLine){ const url=`${DB_URL}/rooms/${room()}/Duane/events.json`; const r=await fetch(url,{cache:"no-store"}); if(r.ok){ const de=(await r.json())||[]; const texts=new Set(bad.map(e=>e.text)); const arr=Array.isArray(de)?de:Object.values(de); const clean=arr.filter(e=>!(e&&texts.has(e.text)&&String(e.text||"").startsWith("🗣"))); if(clean.length!==arr.length) await fetch(url,{method:"PUT",body:JSON.stringify(clean)}); }
+      const live=GS.get("live",{})||{}; if(live.Duane&&Array.isArray(live.Duane.events)){ live.Duane.events=live.Duane.events.filter(e=>!(e&&bad.some(b=>b.text===e.text))); GS.set("live",live); } GS.set("fix139",1); safe(renderGame); if(bad.length) toast("Cleaned up: the test trash talk is gone."); }
+  }catch(e){} }, 3500); })();
 
 // ---------- inflight.js: the Now card in the air — progress, what's below, the landing drill, a flight kit, and the phrase drill ----------
 // Everything here works in airplane mode: no network, just the clock and what's already on the phone.
