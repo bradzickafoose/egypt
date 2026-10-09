@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v164)";
+const BUILD = "Oct 10, 2026 (v165)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3504,7 +3504,8 @@ function overturn(re, label){ try{ const ev=GS.get("events",[]); const i=ev.find
 function evDedupe(a){ const seen=new Set(); return (a||[]).filter(e=>{ if(!e) return false; const k=(e.at||"")+"|"+(e.who||"")+"|"+(e.text||""); if(seen.has(k)) return false; seen.add(k); return true; }); }
 function logEvent(text){ const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text}); GS.set("events", ev.slice(0,40)); livePush(); }
 let pushT=null, lastPushed="";
-function livePush(now){ if(!liveOK()) return; clearTimeout(pushT); const go=async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); setTimeout(()=>livePull(), 4000); } }catch(e){} }; if(now) go(); else pushT=setTimeout(go, 1500); }
+function obHashBody(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return s.length+":"+h; }
+function livePush(now){ if(!liveOK()) return; clearTimeout(pushT); const go=async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); try{ const q=JSON.parse(body); delete q.at; localStorage.setItem("egypt.ob.live", JSON.stringify(obHashBody(JSON.stringify(q)))); }catch(x){} setTimeout(()=>livePull(), 4000); } }catch(e){} }; if(now) go(); else pushT=setTimeout(go, 1500); }
 async function livePull(){ if(!liveOK()) return null; try{ const r=await fetch(`${DB_URL}/rooms/${room()}.json`,{cache:"no-store"}); if(!r.ok){ GS.set("liveFail", new Date().toISOString()); renderSyncState(); return null; } const d=await r.json(); if(safe(()=>followReset(d))) return d; GS.set("live", d||{}); GS.set("livePulled", new Date().toISOString()); renderLive(); safe(()=>noticeTheirPlays(d||{})); safe(()=>{ const f=document.activeElement; if(!(f && f.closest && f.closest("#flights"))) renderFlights(); }); return d; }catch(e){ GS.set("liveFail", new Date().toISOString()); renderSyncState(); return null; } }
 function syncState(){ const pulled=GS.get("livePulled",""), fail=GS.get("liveFail",""); if(!pulled && !fail) return {cls:"", txt:"waiting for signal"}; const ago=ms=>{ const m=Math.round(ms/60000); return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.floor(m/60)}h ${m%60}m ago`:`${Math.round(m/1440)}d ago`; }; const stale = fail && (!pulled || fail>pulled) && (Date.now()-Date.parse(fail))<10*60000 || (pulled && Date.now()-Date.parse(pulled)>5*60000); if(stale) return {cls:"nosig", txt:`no signal · last synced ${pulled?ago(Date.now()-Date.parse(pulled)):"never"}`}; return {cls:"", txt:"updated "+new Date(pulled).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}; }
 function renderSyncState(){ const el=document.querySelector("#live .lk .sync"); if(!el) return; const s=syncState(); el.textContent="· "+s.txt; el.className="muted sync "+s.cls; }
@@ -6256,17 +6257,13 @@ document.addEventListener("click", e=>{
 const OB_TOG="egypt.ob.tog", OB_BOAT="egypt.ob.boat", OB_LIVE="egypt.ob.live";
 const obJ=(k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)||"null")??d; }catch(e){ return d; } };
 const obSet=(k,v)=>{ try{ if(v==null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+function obCanon(x){ const c=v=>Array.isArray(v)?v.map(c):v&&typeof v==="object"?Object.keys(v).sort().reduce((o,k)=>{ const y=c(v[k]); if(y!==undefined&&y!==null&&!(typeof y==="object"&&!Array.isArray(y)&&!Object.keys(y).length)&&!(Array.isArray(y)&&!y.length)) o[k]=y; return o; },{}):v; return JSON.stringify(c(x)); }
 const obHash=s=>{ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return s.length+":"+h; };
 // the live board: what this phone last got the server to accept (the payload's own timestamp aside)
-function obLiveBody(){ try{ const p=livePayload(); delete p.at; return obHash(JSON.stringify(p)); }catch(e){ return ""; } }
+// the live board: the server said yes to exactly this payload (its own timestamp aside) — recorded by livePush itself
+function obLiveBody(){ try{ const p=JSON.parse(JSON.stringify(livePayload())); delete p.at; return obHashBody(JSON.stringify(p)); }catch(e){ return ""; } }
 function obLivePending(){ if(!me()||typeof liveOK!=="function"||!liveOK()) return 0; const h=obLiveBody(); return h&&h!==obJ(OB_LIVE,"")?1:0; }
-(function(){ if(typeof livePush!=="function") return; const L=livePush; livePush=function(now){ const r=L.apply(this,arguments);
-  // livePush fires and forgets; confirm by reading back our own record a moment later
-  setTimeout(()=>safe(obLiveConfirm), now?2500:4500); return r; }; })();
-async function obLiveConfirm(){ if(!navigator.onLine||!me()) return; try{ const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{cache:"no-store"}); if(!r.ok) return; const d=await r.json(); if(!d) return; delete d.at; const mine=livePayload(); delete mine.at;
-  // the server copy round-trips through JSON; compare what matters: our plays and stamps
-  const same=JSON.stringify(d.events||[])===JSON.stringify(mine.events||[]) && JSON.stringify(d.stamps||{})===JSON.stringify(mine.stamps||{}) && (d.pts||0)===(mine.pts||0);
-  if(same) obSet(OB_LIVE, obLiveBody()); obPill(); }catch(e){} }
+(function(){ if(typeof livePush!=="function") return; const L=livePush; livePush=function(){ const r=L.apply(this,arguments); setTimeout(()=>safe(obPill), 3000); return r; }; })();
 // health and Ramses: one-shot writes — keep the latest value for each until the server takes it
 (function(){ if(typeof togPut!=="function") return; const T=togPut; togPut=async function(k,p,v){ const ok=await T.apply(this,arguments); if(k==="health"||k==="pet"){ const q=obJ(OB_TOG,{}); const key=k+"|"+(p||""); if(ok) delete q[key]; else q[key]={k,p:p||"",v}; obSet(OB_TOG,q); obPill(); } return ok; }; togPut.raw=T; })();
 // the boat: votes, booking ticks and the choice
