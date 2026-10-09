@@ -2599,7 +2599,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v167)";
+const BUILD = "Oct 10, 2026 (v168)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6437,6 +6437,12 @@ html.big-open .mumtab,html.big-open .pptab,html.big-open #obPill{display:none}
 .hdrv{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
 @media (prefers-reduced-motion:reduce){.way-arrow{transition:none}}
 `; document.head.appendChild(st); })();
+// on Today: when the step right now is a ride to the hotel, the driver card is one tap away
+(function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const n=document.getElementById("now"); if(!n||n.querySelector("[data-driver]")) return r;
+  const nowLine=[...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3); const big=[...n.querySelectorAll(".big")].map(x=>x.textContent).join(" ")+" "+(nowLine?nowLine.textContent:"");
+  if(!/uber|taxi|careem|\bcar\b|driver|to the (hilton|hotel|waldorf|m[ée]ridien)|back to the hotel|^\s*(hilton|waldorf|le m[ée]ridien)/i.test(big)) return r;
+  const go=[...n.querySelectorAll("a,button")].find(b=>/take me there/i.test(b.textContent)); const btn=`<button type="button" class="btn mini" data-driver="">🚕 Show the driver</button>`;
+  if(go) go.insertAdjacentHTML("afterend", btn); }catch(e){} return r; }; })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
