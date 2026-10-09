@@ -2587,7 +2587,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v137)";
+const BUILD = "Oct 9, 2026 (v138)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4965,6 +4965,11 @@ function skyMount(){ const now=$("#now"); if(!now) return; let el=now.querySelec
   const h=safe(skyHTML)||""; if(el._h!==h){ el.innerHTML=h; el._h=h; }
   el.setAttribute("aria-label", (el.querySelector(".sk-lab")||{}).textContent||"the sky"); }
 
+// a slot on the Now card that other modules fill: re-rendered on every tick, but only touched when its HTML changes
+// (renderNow skips rewriting #now when nothing changed, so injected bands must keep themselves fresh)
+function nowSlot(cls, html, after){ const now=$("#now"); if(!now) return null; const cur=[...now.querySelectorAll(`:scope > .${cls}`)]; const t=document.createElement("div"); t.innerHTML=html||""; const want=[...t.children]; want.forEach(c=>c.classList.add(cls));
+  const sig=want.map(c=>c.outerHTML).join(""); if(cur.map(c=>c.outerHTML).join("")===sig) return cur[0]||null; cur.forEach(c=>c.remove()); if(!want.length) return null;
+  const anchor=[...now.querySelectorAll(after.map(s=>`:scope > ${s}`).join(","))].pop(); const frag=document.createDocumentFragment(); want.forEach(c=>frag.appendChild(c)); if(anchor) anchor.after(frag); else now.insertBefore(frag, now.firstChild); return want[0]; }
 // =====================================================================================================
 // 2. SPLIT-FLAP — countdown digits flip like an old departures board when they change
 // =====================================================================================================
@@ -5195,22 +5200,24 @@ function bodyClock(){ try{ if(me()!=="Duane") return null; const n=cairoNow(); c
   const p=P.find(([a,b])=>t>=a&&t<b); if(!p) return null; return {ic:p[2], h:p[3], s:p[4]}; }catch(e){ return null; } }
 function bodyClockBand(){ const b=bodyClock(); if(!b) return ""; return `<div class="fband bclock"><span class="fb-ic">${b.ic}</span><div><b>${esc(b.h)}</b><span class="prose">${esc(b.s)}</span></div></div>`; }
 // on the Now card: right under the sky, before everything else
-(function(){ if(typeof renderNow!=="function"||renderNow.__bc) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const now=$("#now"); if(now&&!now.querySelector(".bclock")){ const h=bodyClockBand(); if(h){ const sky=now.querySelector(":scope > .sky"); const tmp=document.createElement("div"); tmp.innerHTML=h; const el=tmp.firstChild; if(sky) sky.after(el); else now.insertBefore(el, now.firstChild); } } }catch(e){} return r; }; renderNow.__bc=true; })();
+(function(){ if(typeof renderNow!=="function"||renderNow.__bc) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("bclock", bodyClockBand(), [".sky"]); }catch(e){} return r; }; renderNow.__bc=true; renderNow.last=R.last; })();
 (function(){ const st=document.createElement("style"); st.textContent=`.now .fband.bclock{background:color-mix(in srgb,var(--nile) 22%,transparent);border:1px solid color-mix(in srgb,var(--nile) 45%,transparent)}.now .fband.bclock b{display:block}`; document.head.appendChild(st); })();
 
 // ---------- askmummy.js: Ask the Mummy (Claude, with a key kept on this phone) + his ghost (offline answers) + live flight delays ----------
 // The key lives only in this phone's localStorage ("egypt.mumkey"): never in the code, never in the server backup.
-const MUM_KEY="egypt.mumkey", MUM_MODEL="claude-sonnet-5-5";
+const MUM_KEY="egypt.mumkey", MUM_MODEL="claude-haiku-5-5", MUM_MODEL_EYES="claude-sonnet-5-5";   // Haiku for talk and flight checks (fast, cheapest); Sonnet only when there's a photo to read
+const MUM_PRICE={"claude-haiku-5-5":[1,5],"claude-sonnet-5-5":[3,15]};   // $ per million tokens in/out — an estimate for the meter, not a bill
 const mumKey=()=>{ try{ return (localStorage.getItem(MUM_KEY)||"").trim(); }catch(e){ return ""; } };
 class MumErr extends Error{ constructor(kind,msg){ super(msg||kind); this.kind=kind; } }
-async function claudeCall({system, messages, tools, max_tokens, timeout}){
+async function claudeCall({system, messages, tools, max_tokens, timeout, model}){ model=model||MUM_MODEL;
   const key=mumKey(); if(!key) throw new MumErr("nokey"); if(!navigator.onLine) throw new MumErr("offline");
   const ctl=new AbortController(); const tm=setTimeout(()=>ctl.abort(), timeout||45000);
-  let r; try{ r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",signal:ctl.signal,headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:MUM_MODEL,max_tokens:max_tokens||700,system,messages,...(tools?{tools}:{})})}); }
+  let r; try{ r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",signal:ctl.signal,headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model,max_tokens:max_tokens||400,system,messages,...(tools?{tools}:{})})}); }
   catch(e){ clearTimeout(tm); throw new MumErr(e.name==="AbortError"?"timeout":(navigator.onLine?"network":"offline")); }
   clearTimeout(tm);
   if(!r.ok){ let msg=""; try{ msg=((await r.json()).error||{}).message||""; }catch(e){} throw new MumErr(r.status===401||r.status===403?"auth":(r.status===429||r.status===529||r.status>=500)?"busy":r.status===400&&/credit|balance/i.test(msg)?"credit":"error", msg); }
-  const j=await r.json(); return (j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim(); }
+  const j=await r.json(); try{ const u=j.usage||{}; const P=MUM_PRICE[model]||[3,15]; const srch=((u.server_tool_use||{}).web_search_requests)||0; const cost=((u.input_tokens||0)+(u.cache_creation_input_tokens||0)*1.25+(u.cache_read_input_tokens||0)*.1)/1e6*P[0]+(u.output_tokens||0)/1e6*P[1]+srch*0.01; const m=lsJ("egypt.mumuse",{}); const d=cairoNow().date; m[d]=m[d]||{n:0,c:0}; m[d].n++; m[d].c+=cost; m.all=(m.all||0)+cost; lsJset("egypt.mumuse",m); }catch(e){}
+  return (j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim(); }
 
 // ---------- what the mummy knows: the trip, right now (no booking codes, nothing private beyond the plan) ----------
 function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cairoNow(); const R=egpRate(); const L=[];
@@ -5228,7 +5235,7 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
   try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's pick is The Orient (dahabiya, Wed–Sat), then Merit"}.`); }catch(e){}
   return L.join("\n\n"); }
-const MUM_SYS=()=>`You are the Mummy — the mascot of Brad and Duane's Egypt trip app. A 3,000-year-old Egyptian mummy: dry, deadpan, a little vain, fond of both of them, obsessed with their Steelers (Brad) vs Bengals (Duane) rivalry.
+const MUM_SYS_TXT=()=>`You are the Mummy — the mascot of Brad and Duane's Egypt trip app. A 3,000-year-old Egyptian mummy: dry, deadpan, a little vain, fond of both of them, obsessed with their Steelers (Brad) vs Bengals (Duane) rivalry.
 How you answer:
 - Lead with the useful answer in 1–3 short sentences. Then at most one short joke in character. Usually under 80 words.
 - Use the trip context below exactly (times, prices, phone numbers, hotel names). Never invent bookings, prices or times that aren't there; if you don't know, say so and say who would (the hotel desk, the guide, the airline app).
@@ -5240,6 +5247,7 @@ How you answer:
 
 TRIP CONTEXT
 ${mumContext()}`;
+const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemeral"}}];
 
 // ---------- the ghost: answers from the trip data when the AI can't be reached ----------
 function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date; const d=pre?DAYS[0]:(safe(()=>withMe(DAYS[di]))||DAYS[di]); const R=egpRate(); const w=me()||"Brad";
@@ -5258,9 +5266,10 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
   return "My ghost only remembers the trip itself. Try: what's next · tomorrow · what should a scarf cost · tips · tonight's hotel · how do I say thank you · the tab · emergency numbers."; }
 
 // ---------- the sheet ----------
-let amHist=[], amBusy=false, amPhoto=null, amLastWhy="";
+let amHist=lsJ("egypt.mumchat",[])||[], amBusy=false, amPhoto=null, amLastWhy="";
+const amSave=()=>lsJset("egypt.mumchat", amHist.slice(-16).map(m=>Object.assign({},m,{img:m.img?"📷":null})));
 const AM_DEAD={nokey:"He's not dead, he's just… unlicensed. Add an Anthropic key below and he'll rise. Meanwhile, his ghost answers from the trip notes.",offline:"No signal. The mummy has returned to the dead. His ghost still knows the plan.",network:"The afterlife isn't answering. His ghost still knows the plan.",timeout:"He fell asleep mid-sentence. Three thousand years will do that. His ghost answered instead.",auth:"The key didn't work. The mummy rejects your offering. Check it below.",busy:"The afterlife is busy. Try again in a minute — the ghost covered for him.",credit:"The key's account is out of credit. Even mummies need funding.",error:"Something went wrong in the underworld. The ghost covered for him."};
-function amChips(){ const n=cairoNow(); const d=todayDay(); const o=OTHER_OF(me())||"him"; const c=[["next","What's next?"],["photo","📷 What is this?"]];
+function amChips(){ if(amMode()==="ghost") return [["What's next?"],["Tomorrow?"],["Fair price for a scarf?"],["What do I tip?"],["Tonight's hotel"],["How do I say thank you?"],["What do we owe?"],["Emergency numbers"]].map(([l])=>`<button type="button" class="chip am-chip" data-amchip="q" data-q="${escA(l)}">${esc(l)}</button>`).join(""); const n=cairoNow(); const d=todayDay(); const o=OTHER_OF(me())||"him"; const c=[["next","What's next?"],["photo","📷 What is this?"]];
   const place=((d&&(d.place+" "+d.title))||"").toLowerCase();
   if(/giza|pyramid|dahshur|saqqara/.test(place)) c.push(["q","Is the camel guy legit?"]); if(/khan|cairo/.test(place)) c.push(["q","Fair price for a lantern?"]); if(/aswan|nubian|philae/.test(place)) c.push(["q","How do I say thank you to our host?"]); if(/luxor|valley|karnak|hatshepsut/.test(place)) c.push(["q","What should I look for in the tombs?"]); if(/dahab|sinai|blue hole/.test(place)) c.push(["q","Taxi price Sharm to Dahab?"]);
   c.push(["q","Is this a scam?"],["settle","Settle this…"],["curse",`Curse ${o}`]); if(n.h>=19) c.push(["q","Roast today's scoreboard"]); c.push(["q","What do I tip?"]);
@@ -5268,49 +5277,54 @@ function amChips(){ const n=cairoNow(); const d=todayDay(); const o=OTHER_OF(me(
 function amMode(){ return mumKey()?(navigator.onLine?"awake":"ghost"):"ghost"; }
 function amFace(state){ return `<div class="am-m ${state}"><i class="mb"></i><i class="me l"></i><i class="me r"></i><i class="am-fly">🪰</i></div>`; }
 function amSheetHTML(){ const k=!!mumKey(); return `<div class="am">
-  <div class="am-hd"><div class="am-stage" id="amStage">${amFace(k?"idle":"ghost")}</div><div class="am-t"><b>Ask the Mummy</b><small id="amSub">${k?"Awake · knows your whole trip":"Ghost mode · answers from the trip notes"}</small></div><button type="button" class="x" aria-label="Close">×</button></div>
-  <div class="am-log" id="amLog">${amHist.length?amHist.map(amMsgHTML).join(""):amMsgHTML({role:"assistant",text:k?`Ask me anything about today, prices, scams, what you're looking at — or show me a photo. ${(cairoNow().h<12?"Good morning.":"Good evening.")} I've been up for three thousand years.`:"My body's resting. My ghost knows the plan, the prices, the phrases and the phone numbers. To wake me properly, add a key below."})}</div>
+  <div class="am-hd"><div class="am-stage" id="amStage">${amFace(k?"idle":"ghost")}</div><div class="am-t"><b>Ask the Mummy</b><small id="amSub">${k?(navigator.onLine?"Awake · knows your whole trip":"No signal · his ghost is answering"):"Ghost mode · answers from the trip notes"}</small></div>${amHist.length?`<button type="button" class="am-new" data-amnew="1" title="New chat">New</button>`:""}<button type="button" class="x" aria-label="Close">×</button></div>
+  <div class="am-log" id="amLog">${amHist.length?amHist.map(amMsgHTML).join(""):amMsgHTML({role:"assistant",text:k?`${(cairoNow().h<5?"Up late":cairoNow().h<12?"Good morning":cairoNow().h<18?"Good afternoon":"Good evening")}, ${me()||"traveller"}. Ask me about today, prices, scams, what you're looking at — or show me a photo. I've been up for three thousand years.`:"My body's resting. My ghost knows the plan, the prices, the phrases and the phone numbers. To wake me properly, add a key below."})}</div>
   <div class="am-chips">${amChips()}</div>
   <form class="am-in" id="amForm"><label class="am-cam" title="Photo"><input type="file" accept="image/*" id="amPhoto" hidden>📷</label><input id="amQ" placeholder="Ask the mummy…" autocomplete="off" maxlength="400"><button class="btn primary" type="submit">Ask</button></form>
   <div class="am-pv" id="amPv" hidden></div>
+  <div class="am-mode" id="amModeBar" hidden></div>
   <details class="am-key"${k?"":" open"}><summary>${k?"🔑 Key on this phone · change":"🔑 Wake him: add an Anthropic API key"}</summary><div class="in">
     <p class="muted">Get one at <b>console.anthropic.com</b> → API keys (a few cents a day). It's stored on <b>this phone only</b> — not in the app's code, not in the backup. The same key also checks live flight delays for both of you.</p>
     <div class="am-kr"><input id="amKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-…"><button type="button" class="btn" data-amkeysave="1">Save</button></div>
     ${k?`<button type="button" class="btn mini" data-amkeydel="1">Remove the key</button>`:""}
-    <p class="muted am-priv">What you ask (and any photo) goes to Anthropic with the trip plan — never booking codes.</p></div></details>
+    <p class="muted am-priv">What you ask (and any photo) goes to Anthropic with the trip plan — never booking codes. Talk uses Claude Haiku (the cheapest); photos use Sonnet.${(()=>{ const m=lsJ("egypt.mumuse",{}); const t=m[cairoNow().date]; return m.all?` On this phone: today ${t?t.n:0} call${t&&t.n===1?"":"s"} ≈ $${(t?t.c:0).toFixed(2)} · whole trip ≈ $${m.all.toFixed(2)}.`:""; })()}</p></div></details>
 </div>`; }
 function amRich(t){ return esc(t).replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g,(m,ar,lat)=>`<button type="button" class="say" data-say="${escA(ar)}" data-latin="${escA(lat)}">${esc(lat)} 🔊</button>`).replace(/\n/g,"<br>"); }
-function amMsgHTML(m){ if(m.role==="user") return `<div class="am-q">${m.img?`<img src="${m.img}" alt="">`:""}${m.text?esc(m.text):""}</div>`; return `<div class="am-a ${m.ghost?"ghost":""} ${m.dead?"dead":""}">${m.dead?`<i class="am-why">${esc(m.dead)}</i>`:""}${amRich(m.text)}${m.taunt?`<button type="button" class="btn mini pts-me am-send" data-amtaunt="${escA(m.taunt)}">Send to his jumbotron</button>`:""}</div>`; }
+function amMsgHTML(m){ if(m.role==="user") return `<div class="am-q">${m.img&&m.img!=="📷"?`<img src="${m.img}" alt="">`:m.img?"📷 ":""}${m.text?esc(m.text):""}</div>`; return `<div class="am-a ${m.ghost?"ghost":""} ${m.dead?"dead":""}">${m.dead?`<i class="am-why">${esc(m.dead)}</i>`:""}${amRich(m.text)}${m.text&&!m.ghost?`<button type="button" class="am-read" data-amread="1" aria-label="Read it aloud">🔊</button>`:""}${m.taunt?`<button type="button" class="btn mini pts-me am-send" data-amtaunt="${escA(m.taunt)}">Send to his jumbotron</button>`:""}</div>`; }
 function amStage(state){ const s=$("#amStage"); if(s) s.innerHTML=amFace(state); }
-function amAppend(m){ amHist.push(m); amHist=amHist.slice(-16); const log=$("#amLog"); if(!log) return; log.insertAdjacentHTML("beforeend", amMsgHTML(m)); log.scrollTop=log.scrollHeight; }
+function amAppend(m){ amHist.push(m); amHist=amHist.slice(-16); amSave(); const log=$("#amLog"); if(!log) return; log.insertAdjacentHTML("beforeend", amMsgHTML(m)); log.scrollTop=log.scrollHeight; }
 function openAskMummy(prefill){ document.querySelectorAll(".mummy").forEach(m=>m.remove()); openSheet("sheetMum", amSheetHTML()); const s=$("#sheetMum"); if(s&&!s._am){ s._am=1; s.addEventListener("click",e=>{ if(e.target===s||e.target.closest(".am-hd .x")) closeSheet("sheetMum"); }); }
   setTimeout(()=>{ const log=$("#amLog"); if(log) log.scrollTop=log.scrollHeight; const q=$("#amQ"); if(q&&prefill){ q.value=prefill; q.focus(); } },250); }
-async function amAsk(text, mode){ if(amBusy) return; text=String(text||"").trim(); const img=amPhoto; if(!text&&!img) return; amBusy=true; amPhoto=null; const pv=$("#amPv"); if(pv){ pv.hidden=true; pv.innerHTML=""; }
-  amAppend({role:"user", text: mode==="curse"?`Curse ${OTHER_OF(me())}.`:text, img:img?img.url:null});
+async function amAsk(text, mode, opt){ opt=opt||{}; if(amBusy) return; text=String(text||"").trim(); const img=amPhoto; if(!text&&!img) return; amBusy=true; amPhoto=null; const pv=$("#amPv"); if(pv){ pv.hidden=true; pv.innerHTML=""; }
+  if(!opt.hidden) amAppend({role:"user", text: mode==="curse"?`Curse ${OTHER_OF(me())}.`:mode==="settle"?`⚖️ ${text}`:text, img:img?img.url:null}); amModeBar("");
   const log=$("#amLog"); if(log){ log.insertAdjacentHTML("beforeend",`<div class="am-a typing" id="amTyping"><i></i><i></i><i></i></div>`); log.scrollTop=log.scrollHeight; } amStage("think");
-  const prior=amHist.slice(0,-1).filter(m=>!m.ghost&&!m.dead&&m.text).slice(-8).map(m=>({role:m.role==="user"?"user":"assistant",content:m.text}));
+  const prior=amHist.slice(0,-1).filter(m=>!m.ghost&&!m.dead&&m.text).slice(-6).map(m=>({role:m.role==="user"?"user":"assistant",content:m.text}));
   let ask=text; if(mode==="curse") ask=`Write ONE trash-talk line (max 120 characters) for ${me()} to send ${OTHER_OF(me())} — Steelers vs Bengals, mummy-flavoured, about something from today's plan or the score. Reply with only the line, no quotes.`;
   if(mode==="settle") ask=`Settle this argument between Brad and Duane, as the judge. Rule clearly for one of them in the first sentence, then the reason. The argument: ${text}`;
   const content=img?[{type:"image",source:{type:"base64",media_type:"image/jpeg",data:img.b64}},{type:"text",text:ask||"What is this? Say what it is; translate or read any writing (Arabic, hieroglyphs, a cartouche); then anything useful — a fair price, what to order, what to look for."}]:ask;
-  try{ const out=await claudeCall({system:MUM_SYS(), messages:prior.concat([{role:"user",content}]), max_tokens:mode==="curse"?120:600});
+  try{ const out=await claudeCall({system:MUM_SYS(), messages:prior.concat([{role:"user",content}]), max_tokens:mode==="curse"?100:img?500:350, model:img?MUM_MODEL_EYES:MUM_MODEL});
     $("#amTyping")&&$("#amTyping").remove(); amStage("talk"); const t=out.replace(/^["“]|["”]$/g,""); amAppend({role:"assistant", text:t, taunt:mode==="curse"?t.slice(0,140):null}); setTimeout(()=>amStage("idle"),2400); }
-  catch(e){ $("#amTyping")&&$("#amTyping").remove(); const kind=e.kind||"error"; amStage("dead"); safe(()=>sfx("mummy"));
+  catch(e){ const kind=e.kind||"error"; if(kind==="nokey"||kind==="offline") await mwait(450); $("#amTyping")&&$("#amTyping").remove(); amStage("dead"); safe(()=>sfx("mummy")); const sub=$("#amSub"); if(sub) sub.textContent=kind==="auth"?"Key problem · his ghost is answering":kind==="offline"?"No signal · his ghost is answering":kind==="nokey"?"Ghost mode · answers from the trip notes":"The afterlife hiccuped · ghost answering";
     const g=img?"My ghost can't see photos. Wake me (a key, and signal) and ask again.":mode==="curse"?((typeof TAUNTS!=="undefined"&&mumPick(TAUNTS))||"Your defence is a sarcophagus: closed and full of dead things."):mode==="settle"?"The ghost doesn't rule on arguments. Coin of Ra, Games tab: winner's right.":ghostAnswer(text);
-    const why=AM_DEAD[kind]||AM_DEAD.error; const showWhy=why!==amLastWhy; amLastWhy=why; amAppend({role:"assistant", text:g, ghost:true, dead:showWhy?why:"", taunt:mode==="curse"?g:null}); setTimeout(()=>amStage("ghost"),2600); }
+    const why=AM_DEAD[kind]||AM_DEAD.error; const showWhy=why!==amLastWhy||opt.hidden; amLastWhy=why; if(opt.hidden){ amAppend({role:"assistant", text:"I tried to rise. I could not. Check the key below — until then, my ghost answers.", ghost:true, dead:why}); setTimeout(()=>amStage("ghost"),2600); return; } amAppend({role:"assistant", text:g, ghost:true, dead:showWhy?why:"", taunt:mode==="curse"?g:null}); setTimeout(()=>amStage("ghost"),2600); }
   finally{ amBusy=false; } }
 // photo: shrink to ≤1024px JPEG before it goes anywhere
 document.addEventListener("change", e=>{ const inp=e.target.closest("#amPhoto"); if(!inp||!inp.files||!inp.files[0]) return; const f=inp.files[0]; const url=URL.createObjectURL(f); const im=new Image(); im.onload=()=>{ try{ const mx=1024, sc=Math.min(1,mx/Math.max(im.width,im.height)); const c=document.createElement("canvas"); c.width=Math.round(im.width*sc); c.height=Math.round(im.height*sc); c.getContext("2d").drawImage(im,0,0,c.width,c.height); const d=c.toDataURL("image/jpeg",.8); amPhoto={url:d, b64:d.split(",")[1]}; const pv=$("#amPv"); if(pv){ pv.hidden=false; pv.innerHTML=`<img src="${d}" alt=""><span>Photo ready — ask about it, or just tap Ask.</span><button type="button" class="tb-x" data-amphotox="1">✕</button>`; } }catch(err){ toast("Couldn't read that photo."); } URL.revokeObjectURL(url); inp.value=""; }; im.src=url; });
+function amModeBar(t){ const b=$("#amModeBar"); if(!b) return; b.hidden=!t; b.innerHTML=t?`<span>${esc(t)}</span><button type="button" data-ammodex="1">Cancel</button>`:""; }
 document.addEventListener("submit", e=>{ if(e.target.id!=="amForm") return; e.preventDefault(); const q=$("#amQ"); const v=(q.value||"").trim(); const mode=q.dataset.mode||""; q.value=""; q.dataset.mode=""; q.placeholder="Ask the mummy…"; if(!v&&!amPhoto) { q.focus(); return; } amAsk(v||"What is this?", mode); });
 document.addEventListener("click", e=>{
   const a=e.target.closest("[data-askmum]"); if(a){ e.preventDefault(); e.stopPropagation(); openAskMummy(); return; }
   const ch=e.target.closest("[data-amchip]"); if(ch){ const k=ch.dataset.amchip; const q=$("#amQ");
     if(k==="photo"){ const p=$("#amPhoto"); if(p) p.click(); return; }
-    if(k==="settle"){ if(q){ q.dataset.mode="settle"; q.placeholder="Who's right? e.g. Brad says the Sphinx is bigger than it looks…"; q.focus(); } return; }
+    if(k==="settle"){ if(q){ q.dataset.mode="settle"; q.placeholder="Both sides: Brad says… Duane says…"; amModeBar("⚖️ Settling an argument — give both sides"); q.focus(); } return; }
     if(k==="curse"){ amAsk("curse","curse"); return; }
     amAsk(ch.dataset.q, ""); return; }
+  if(e.target.closest("[data-ammodex]")){ const q=$("#amQ"); if(q){ q.dataset.mode=""; q.placeholder="Ask the mummy…"; } amModeBar(""); return; }
+  if(e.target.closest("[data-amnew]")){ amHist=[]; amSave(); amLastWhy=""; openAskMummy(); return; }
+  const rd=e.target.closest("[data-amread]"); if(rd){ try{ const t=(rd.closest(".am-a")||{}).innerText||""; const clean=t.replace(/🔊/g,"").replace(/Send to his jumbotron|Sent ✓/g,"").trim(); if(speechSynthesis.speaking){ speechSynthesis.cancel(); return; } const u=new SpeechSynthesisUtterance(clean); const v=safe(boothVoice); if(v){ u.voice=v; u.lang=v.lang; } u.rate=.92; u.pitch=.72; speechSynthesis.speak(u); }catch(x){ toast("No voice on this phone."); } return; }
   if(e.target.closest("[data-amphotox]")){ amPhoto=null; const pv=$("#amPv"); if(pv){ pv.hidden=true; pv.innerHTML=""; } return; }
   const tt=e.target.closest("[data-amtaunt]"); if(tt){ safe(()=>sendTaunt(tt.dataset.amtaunt)); tt.disabled=true; tt.textContent="Sent ✓"; return; }
-  if(e.target.closest("[data-amkeysave]")){ const v=($("#amKey").value||"").trim(); if(!/^sk-ant-/.test(v)){ toast("That doesn't look like an Anthropic key (sk-ant-…)."); return; } try{ localStorage.setItem(MUM_KEY,v); }catch(x){} $("#amKey").value=""; amLastWhy=""; toast("The mummy stirs…"); openAskMummy(); setTimeout(()=>amAsk("Wake up. Say hello in one line."),400); safe(()=>flightWatch(true)); return; }
+  if(e.target.closest("[data-amkeysave]")){ const v=($("#amKey").value||"").trim(); if(!/^sk-ant-/.test(v)){ toast("That doesn't look like an Anthropic key (sk-ant-…)."); return; } try{ localStorage.setItem(MUM_KEY,v); }catch(x){} $("#amKey").value=""; amLastWhy=""; toast("The mummy stirs…"); openAskMummy(); setTimeout(()=>amAsk("You were just woken up with a new key. Say hello to me in one line, in character.","",{hidden:true}),400); safe(()=>flightWatch(true)); return; }
   if(e.target.closest("[data-amkeydel]")){ try{ localStorage.removeItem(MUM_KEY); }catch(x){} toast("Key removed. He's a ghost again."); openAskMummy(); return; }
 }, true);
 
@@ -5328,39 +5342,50 @@ function fsLocalDate(ap,ms){ const tz=(AP_LL[ap]||[])[2]||TZ; try{ return new Da
   return g; }); }; allFlights.__fs=true; })();
 function fsAddDay(ds){ const d=new Date(ds+"T12:00:00Z"); d.setUTCDate(d.getUTCDate()+1); return d.toISOString().slice(0,10); }
 const fsWindow=f=>{ const dep=flightDep(f), arr=flightArr(f)??(dep+3*3600000); const n=nowUTC(); return dep-6*3600000<=n && n<=arr+3600000; };
-let fsBusy=false;
+let fsBusy=false; const fsErr={}, fsTry={};
 async function flightWatch(force){ if(fsBusy) return; fsBusy=true; try{ let L=[]; try{ L=allFlights().filter(f=>f.no&&f.status!=="tbd"&&f.from&&f.from.t&&(f.who==="Brad"||f.who==="Duane"||f.who==="Both")); }catch(e){} const W=L.filter(fsWindow); if(!W.length) return;
   // 1. what the other phone already found
   const srv=await togGet("fstat"); const S=fsAll(); let ch=false; if(srv) for(const [id,x] of Object.entries(srv)){ if(x&&(!S[id]||String(x.at)>String(S[id].at))){ S[id]=x; ch=true; } } if(ch){ lsJset(FS_K,S); safe(renderNow); safe(renderFlights); }
   // 2. check anything stale (20 min), if this phone has the key
   if(!mumKey()||!navigator.onLine) return;
-  for(const f0 of W){ const s=S[f0.id]; if(!force&&s&&Date.now()-Date.parse(s.at)<20*60000) continue; const f=FLIGHTS.find(x=>x.id===f0.id)||f0;   // ask about the *scheduled* flight
-    try{ const out=await claudeCall({system:"You check live flight status for a travel app. Use web search (FlightAware, FlightStats, the airline, airport departure boards). Reply with ONLY a JSON object, no prose: {\"found\":true|false,\"status\":\"scheduled|on time|delayed|boarding|departed|landed|cancelled|diverted|unknown\",\"dep_est\":\"HH:MM\"|null,\"arr_est\":\"HH:MM\"|null,\"dep_gate\":string|null,\"arr_terminal\":string|null,\"source\":string,\"note\":string (max 80 chars)}. Times are 24-hour LOCAL time at each airport; for departed/landed flights give actual times. If the results are not clearly about this exact flight on this exact date, return {\"found\":false}.", messages:[{role:"user",content:`Flight ${f.no}${f.op?" ("+f.op+")":""}, ${f.from.ap} → ${f.to.ap}, scheduled to depart ${f.date} ${f.from.t} local${f.to.t?`, arrive ${f.to.date||f.date} ${f.to.t} local`:""}. Current UTC time: ${new Date(nowUTC()).toISOString()}. What is its current status and estimated/actual times?`}], tools:[{type:"web_search_20250305",name:"web_search",max_uses:3}], max_tokens:700, timeout:60000});
-      const m=out.match(/\{[\s\S]*\}/); if(!m) continue; let j; try{ j=JSON.parse(m[0]); }catch(e){ continue; }
+  for(const f0 of W){ const s=S[f0.id]; if(s&&s.found&&/landed|cancel/.test(s.status)&&!force) continue; if(!force&&s&&Date.now()-Date.parse(s.at)<20*60000) continue; fsTry[f0.id]={at:Date.now()}; const f=FLIGHTS.find(x=>x.id===f0.id)||f0;   // ask about the *scheduled* flight
+    try{ const out=await claudeCall({system:"You check live flight status for a travel app. Use web search (FlightAware, FlightStats, the airline, airport departure boards). Reply with ONLY a JSON object, no prose: {\"found\":true|false,\"status\":\"scheduled|on time|delayed|boarding|departed|landed|cancelled|diverted|unknown\",\"dep_est\":\"HH:MM\"|null,\"arr_est\":\"HH:MM\"|null,\"dep_gate\":string|null,\"arr_terminal\":string|null,\"source\":string,\"note\":string (max 80 chars)}. Times are 24-hour LOCAL time at each airport; for departed/landed flights give actual times. If the results are not clearly about this exact flight on this exact date, return {\"found\":false}.", messages:[{role:"user",content:`Flight ${f.no}${f.op?" ("+f.op+")":""}, ${f.from.ap} → ${f.to.ap}, scheduled to depart ${f.date} ${f.from.t} local${f.to.t?`, arrive ${f.to.date||f.date} ${f.to.t} local`:""}. Current UTC time: ${new Date(nowUTC()).toISOString()}. What is its current status and estimated/actual times?`}], tools:[{type:"web_search_20250305",name:"web_search",max_uses:2}], max_tokens:500, timeout:60000});
+      const m=out.match(/\{[\s\S]*\}/); if(!m){ fsErr[f0.id]={kind:"parse",at:Date.now()}; continue; } let j; try{ j=JSON.parse(m[0]); }catch(e){ fsErr[f0.id]={kind:"parse",at:Date.now()}; continue; } delete fsErr[f0.id];
       const sane=(t0,t1)=>{ if(!t0||!t1||!/^\d\d:\d\d$/.test(t1)) return true; let d=hm(t1)-hm(t0); if(d<-720) d+=1440; if(d>720) d-=1440; return d>-120&&d<10*60; };   // a 10-hour "delay" is the wrong flight, not news
       if(j.found&&(!sane(f.from.t,j.dep_est)||!sane(f.to.t,j.arr_est))) j.found=false;
       const prev=S[f.id]; const rec={found:!!j.found, status:String(j.status||"unknown").toLowerCase(), dep_est:j.dep_est||null, arr_est:j.arr_est||null, dep_gate:j.dep_gate||null, arr_terminal:j.arr_terminal||null, source:String(j.source||"").slice(0,40), note:String(j.note||"").slice(0,90), at:new Date().toISOString(), by:me()};
       S[f.id]=rec; lsJset(FS_K,S); togPut("fstat",f.id,rec); ch=true;
       const late=rec.found&&rec.dep_est&&hm(rec.dep_est)-hm(f.from.t)>=15; if(rec.found&&(late||/cancel|divert/.test(rec.status))&&!(prev&&prev.status===rec.status&&prev.dep_est===rec.dep_est)){ toast(`${f.no}: ${/cancel/.test(rec.status)?"CANCELLED — check the airline app":`delayed, now ${rec.dep_est}`}`); safe(()=>mumReact("delay",{line:/cancel/.test(rec.status)?"Cancelled? I was cancelled once. Took three thousand years to come back. Call the airline.":mumLine("delay"),act:"trip",big:true,delay:1500})); }
-    }catch(e){ if(e.kind==="auth"||e.kind==="nokey"||e.kind==="credit") break; }
+    }catch(e){ fsErr[f0.id]={kind:e.kind||"error", msg:String(e.message||"").slice(0,140), at:Date.now()}; ch=true; if(e.kind==="auth"||e.kind==="nokey"||e.kind==="credit") break; }
+    finally{ delete fsTry[f0.id]; }
   }
   if(ch){ safe(renderNow); safe(renderFlights); safe(renderDay); }
   }finally{ fsBusy=false; } }
 MUM_EV.delay=["Delayed? I've waited three thousand years. You'll survive.","A delay. Time for a coffee. Or, in my case, nothing. Forever.","They moved the departure. I'd complain, but my mouth is bandaged."];
 // the line on the Now card: what the last check said
 function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&&f.from&&f.from.t&&fsWindow(f)&&(f.who===me()||f.who===OTHER_OF(me()))).sort((a,b)=>flightDep(a)-flightDep(b)); const n=nowUTC(); [me(),OTHER_OF(me())].forEach(w=>{ const x=all.find(f=>f.who===w&&(flightArr(f)??flightDep(f)+3*3600000)>n); if(x) L.push(x); }); }catch(e){} if(!L.length) return "";
-  if(!mumKey()){ const off=L.filter(f=>!f.live); if(off.length){ L=L.filter(f=>f.live); L.push({__off:off}); } }
-  return L.slice(0,2).map(f=>{ if(f.__off) return `<div class="fband flive off"><span class="fb-ic">📡</span><div><b>Live delays are off</b><span class="prose">${esc(f.__off.map(x=>(x.who===me()?"":x.who+"'s ")+x.no).join(" and "))} — one phone with the Mummy's key checks for both of you.</span></div><button type="button" class="btn mini" data-askmum="1">Add key</button></div>`;
-    const s=f.live; const who=f.who===me()?"":`${f.who} · `;
-    if(!s){ return mumKey()?`<div class="fband flive"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · checking live status…</b><span>Every 20 min until it lands, shared with both phones.</span></div></div>`:`<div class="fband flive off"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · live delays are off</b><span class="prose">One phone with the Mummy's key checks for both of you.</span></div><button type="button" class="btn mini" data-askmum="1">Add key</button></div>`; }
-    const ago=Math.max(0,Math.round((Date.now()-Date.parse(s.at))/60000));
-    if(s.nf) return `<div class="fband flive"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · no live status yet</b><span>checked ${ago<1?"just now":ago+" min ago"} · rechecks every 20 min</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Verify</a>`:""}</div>`;
-    const bad=/cancel|divert/.test(s.status); const late=(s.depDelay||0)>=15||(s.arrDelay||0)>=15;
-    const what=bad?s.status.toUpperCase():late?`delayed ${s.depDelay>=15?s.depDelay:s.arrDelay} min — now ${s.depDelay?"departs "+f.from.t:"lands "+f.to.t}`:/departed|landed|boarding/.test(s.status)?s.status:"on time";
-    let conn=""; try{ const nx=allFlights().filter(x=>x.who===f.who&&x.from&&x.from.ap===f.to.ap&&x.from.t).map(x=>({x,m:(flightDep(x)-(flightArr(f)??0))/60000})).filter(o=>o.m>-60&&o.m<14*60).sort((a,b)=>a.m-b.m)[0]; if(nx&&(s.arrDelay||s.depDelay)){ const m=Math.round(nx.m); conn=m<45?`⚠ tight: ${m<0?"misses":m+" min for"} the ${nx.x.no} connection — the airline app rebooks; ask the crew on landing`:`connection now ${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`; } }catch(e){}
-    const tight=/tight/.test(conn);
-    return `<div class="fband flive ${bad||tight?"bad":late?"late":"ok"}"><span class="fb-ic">${bad?"⛔":late?"⏱️":"✅"}</span><div><b>${esc(who+f.no)} · ${esc(what)}</b>${conn?`<span class="prose">${esc(conn)}</span>`:""}<span>${s.gate?`gate ${esc(s.gate)} · `:""}checked ${ago<1?"just now":ago+" min ago"}${s.src?" · "+esc(s.src):""}${s.note?" · "+esc(s.note):""}</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Verify</a>`:""}</div>`; }).join(""); }
-(function(){ if(typeof renderNow!=="function"||renderNow.__fs) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const now=$("#now"); if(now&&!now.querySelector(".flive")){ const h=flightLiveBand(); if(h){ const t=document.createElement("div"); t.innerHTML=h; const anchor=now.querySelector(":scope > .bclock")||now.querySelector(":scope > .sky"); const frag=document.createDocumentFragment(); [...t.children].forEach(c=>frag.appendChild(c)); if(anchor) anchor.after(frag); else now.insertBefore(frag, now.firstChild); } } }catch(e){} return r; }; renderNow.__fs=true; })();
+  const n=nowUTC(); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; }; const dur=m=>m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`:`${m} min`;
+  return L.slice(0,2).map(f=>{ const s=f.live||null; const mine=f.who===me(); const who=mine?"":`${f.who} · `; const city=c=>String(c||"").replace(" Heathrow","");
+    const dep=flightDep(f), arr=flightArr(f)??(dep+3*3600000); const toDep=Math.round((dep-n)/60000), toArr=Math.round((arr-n)/60000);
+    // line 1: where the flight is in its life, from the (possibly delayed) times
+    const phase=n<dep?(toDep<=40?`boarding now · departs ${f12(f.from.t)} ${city(f.from.city)} time`:`departs ${f12(f.from.t)} ${city(f.from.city)} time · in ${dur(toDep)}`):n<arr?`in the air · lands ${f12(f.to.t||"")} ${city(f.to.city)} time · ${dur(toArr)} to go`:"landed";
+    const gate=(s&&s.gate)||((f.note||"").match(/[Gg]ate ([A-Z]?\d+[A-Z]?)/)||[])[1]||"";
+    // line 2: what the live check says — or, honestly, why there's nothing yet
+    let st="", cls="", ic="✈️", act="";
+    const ago=s&&s.at?Math.max(0,Math.round((Date.now()-Date.parse(s.at))/60000)):null; const when=ago==null?"":ago<1?"just now":`${ago} min ago`;
+    if(s&&!s.nf){ const bad=/cancel|divert/.test(s.status); const late=(s.depDelay||0)>=15||(s.arrDelay||0)>=15; cls=bad?"bad":late?"late":"ok"; ic=bad?"⛔":late?"⏱️":"✅";
+      st=bad?`${s.status.toUpperCase()} — open the airline app now`:late?`Delayed ${Math.max(s.depDelay||0,s.arrDelay||0)} min (was ${f12(s.depDelay?s.sched.dep:s.sched.arr)})`:/departed|landed|boarding/.test(s.status)?s.status[0].toUpperCase()+s.status.slice(1):"On time";
+      st+=` · checked ${when}${s.src?` via ${s.src}`:""}${s.note&&late?` · ${s.note}`:""}`;
+      try{ const nx=allFlights().filter(x=>x.who===f.who&&x.from&&x.from.ap===f.to.ap&&x.from.t).map(x=>({x,m:(flightDep(x)-arr)/60000})).filter(o=>o.m>-60&&o.m<14*60).sort((a,b)=>a.m-b.m)[0]; if(nx){ const m=Math.round(nx.m); if(m<45){ cls="bad"; st+=` · ⚠ ${m<0?"misses":"only "+m+" min for"} the ${nx.x.no} connection — the airline app rebooks; ask the crew`; } else if(s.arrDelay||s.depDelay) st+=` · connection now ${dur(m)}`; } }catch(e){} }
+    else if(fsTry[f.id]){ st="Checking live status now — takes up to a minute"; ic="📡"; }
+    else if(fsErr[f.id]&&mumKey()){ const e=fsErr[f.id]; ic="⚠️"; cls="warn"; st=e.kind==="auth"?"Live check failed: the key was refused":e.kind==="credit"?"Live check failed: the key's account is out of credit":e.kind==="offline"?"No signal — will check when you're back online":/web.?search/i.test(e.msg||"")?"Live check failed: web search isn't switched on for this key (Anthropic Console → Settings → Privacy)":e.kind==="busy"?"Anthropic is busy — retrying in a few minutes":e.kind==="parse"?"No clear status found online yet":`Live check failed${e.msg?": "+e.msg:""}`; act=`<button type="button" class="btn mini" data-fscheck="1">Retry</button>`; }
+    else if(s&&s.nf){ ic="📡"; st=`No live status published yet · checked ${when}`; act=`<button type="button" class="btn mini" data-fscheck="1">Check now</button>`; }
+    else if(mumKey()){ ic="📡"; st="Live status: first check coming up"; act=`<button type="button" class="btn mini" data-fscheck="1">Check now</button>`; }
+    else { ic="📡"; cls="off"; st=`Live delays off — one phone with the Mummy's key checks ${mine?"both of you":"his flights too"}`; act=`<button type="button" class="btn mini" data-askmum="1">Add key</button>`; }
+    if(!act&&statusHref(f)) act=`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Verify</a>`;
+    return `<div class="fband flive ${cls}"><span class="fb-ic">${ic}</span><div><b>${esc(who+f.no)} ${esc(f.from.ap)}→${esc(f.to.ap)} · ${esc(phase)}${gate&&n<dep?` · gate ${esc(gate)}`:""}</b><span class="prose">${esc(st)}</span></div>${act}</div>`; }).join(""); }
+document.addEventListener("click", e=>{ if(!e.target.closest("[data-fscheck]")) return; const b=e.target.closest("[data-fscheck]"); b.disabled=true; b.textContent="Checking…"; Object.keys(fsErr).forEach(k=>delete fsErr[k]); safe(()=>flightWatch(true).then(()=>safe(renderNow))); setTimeout(()=>safe(renderNow),300); });
+(function(){ if(typeof renderNow!=="function"||renderNow.__fs) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("flive", flightLiveBand(), [".sky",".bclock",".fmode"]); }catch(e){} return r; }; renderNow.__fs=true; })();
 (function(){ setTimeout(()=>safe(()=>flightWatch(false)), 6000); setInterval(()=>{ if(!document.hidden) safe(()=>flightWatch(false)); }, 5*60000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) safe(()=>flightWatch(false)); }); })();
 
 // ---------- entry points: the + menu, the Guide, and the walking mummy's speech bubble ----------
@@ -5368,7 +5393,9 @@ function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&
 (function(){ const st=document.createElement("style"); st.textContent=`
 .am{display:flex;flex-direction:column;gap:10px;max-height:min(86vh,760px)}
 .am-hd{display:flex;align-items:center;gap:12px}.am-t{flex:1;min-width:0}.am-t b{display:block;font:800 1.15rem var(--display);font-stretch:87.5%}.am-t small{color:var(--muted);font-size:0.7353rem}
-.am-hd .x{border:0;background:none;font-size:1.4rem;color:var(--muted);cursor:pointer}
+.am-hd .x{border:0;background:none;font-size:1.4rem;color:var(--muted);cursor:pointer}.am-new{border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 10px;font:600 0.7059rem var(--body);cursor:pointer}
+.am-a{position:relative}.am-a:has(.am-read){margin-bottom:10px}.am-read{position:absolute;right:-6px;bottom:-10px;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:12px;cursor:pointer;line-height:1}
+.am-mode{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:var(--dusk-soft);color:var(--dusk);font-size:0.7647rem;font-weight:600}.am-mode button{border:0;background:none;color:inherit;font:inherit;text-decoration:underline;cursor:pointer}
 .am-stage{width:54px;height:62px;position:relative;flex:none;overflow:hidden;border-radius:14px;background:radial-gradient(circle at 50% 70%,rgba(226,190,120,.22),transparent 70%)}
 .am-m{position:absolute;left:12px;top:4px;width:30px;height:54px;transform-origin:50% 90%}
 .am-m .mb{position:absolute;inset:0;border-radius:15px 15px 10px 10px;background:repeating-linear-gradient(-28deg,#efe6cf 0 5px,#d9cfb3 5px 7px,#efe6cf 7px 11px,#c9bc9a 11px 12px);box-shadow:inset 0 0 0 1px rgba(90,70,40,.35)}
@@ -5403,6 +5430,53 @@ function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&
 .am-nav .am-stage{width:40px;height:46px}.am-nav .am-m{transform:scale(.72);left:5px;top:-4px}.am-nav b{display:block;font:700 0.9412rem var(--display)}.am-nav small{color:var(--muted);font-size:0.7353rem}
 `; document.head.appendChild(st); })();
 
+// =====================================================================================================
+// THE MUMMY TAB — he lives at the left edge, the passport's twin on the right. Tap him to ask.
+// He blinks, glances around, waves now and then; a dot means he has something to tell you (today's line, a delay).
+// =====================================================================================================
+const mumAlert=()=>{ try{ return localStorage.getItem("egypt.mumalert")||""; }catch(e){ return ""; } };
+function mumTabUnread(){ const s=GS.get("mumtab",{})||{}; return !!mumAlert()||s.heard!==cairoNow().date; }
+function mumTabRender(){ let el=$("#mumTab"); if(!el){ el=document.createElement("button"); el.type="button"; el.id="mumTab"; el.className="mumtab"; el.innerHTML=`<span class="mt-body"><i class="mb"></i><i class="me l"></i><i class="me r"></i><i class="mt-arm"></i></span><i class="mt-dot" aria-hidden="true"></i>`; document.body.appendChild(el); }
+  const st=amMode(); el.classList.toggle("ghost", st==="ghost"); const unread=mumTabUnread(); el.classList.toggle("unread", unread); el.querySelector(".mt-dot").textContent=mumAlert()?"!":"…";
+  el.setAttribute("aria-label", `Ask the Mummy${st==="ghost"?" (ghost mode)":""}${unread?" — he has something to tell you":""}`); }
+// open: today's line (or the alert) goes in first, as his opening words
+function mumTabOpen(){ const el=$("#mumTab"); if(el){ el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); } safe(()=>sfx("mummy"));
+  setTimeout(()=>{ const al=mumAlert(); const s=GS.get("mumtab",{})||{}; const today=cairoNow().date;
+    if(al){ amAppend({role:"assistant", text:al}); try{ localStorage.removeItem("egypt.mumalert"); }catch(e){} }
+    else if(s.heard!==today){ const line=mumPick(mumDayLines()); amAppend({role:"assistant", text:line}); }
+    s.heard=today; GS.set("mumtab",s); openAskMummy(); mumTabRender(); }, 160); }
+document.addEventListener("click", e=>{ if(e.target.closest("#mumTab")){ e.preventDefault(); mumTabOpen(); } });
+// idle life: blink (CSS), and every so often a glance or a wave
+setInterval(()=>{ const el=$("#mumTab"); if(!el||document.hidden||RM()) return; const k=Math.random()<.5?"look":"wave"; el.classList.remove("look","wave"); void el.offsetWidth; el.classList.add(k); setTimeout(()=>el.classList.remove(k),1800); }, 23000);
+setInterval(()=>safe(mumTabRender), 60000); addEventListener("online",()=>safe(mumTabRender)); addEventListener("offline",()=>safe(mumTabRender));
+setTimeout(()=>safe(mumTabRender), 900);
+// a delay found by the flight check becomes his next opening line
+(function(){ if(typeof flightWatch!=="function") return; const F=flightWatch; flightWatch=async function(){ const before=JSON.stringify(fsAll()); const r=await F.apply(this,arguments); try{ const S=fsAll(); if(JSON.stringify(S)!==before){ const bad=Object.entries(S).find(([id,s])=>s&&s.found&&(/cancel|divert/.test(s.status)||(s.dep_est&&FLIGHTS.find(f=>f.id===id)&&hm(s.dep_est)-hm(FLIGHTS.find(f=>f.id===id).from.t)>=15))); if(bad){ const f=FLIGHTS.find(x=>x.id===bad[0])||{}; const s=bad[1]; localStorage.setItem("egypt.mumalert", /cancel/.test(s.status)?`${f.no} looks cancelled. Open the airline app now — they rebook faster than the desk. Then tell the other one.`:`${f.no} is running late: now ${s.dep_est} instead of ${f.from&&f.from.t}.${s.note?" ("+s.note+")":""} Everything in the app has moved with it.`); mumTabRender(); } } }catch(e){} return r; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.mumtab{position:fixed;left:-14px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:35;width:50px;height:70px;border:0;padding:0;background:none;cursor:pointer;transform:rotate(6deg);transform-origin:left bottom;transition:opacity .2s,transform .25s;-webkit-tap-highlight-color:transparent;filter:drop-shadow(4px 6px 8px rgba(0,0,0,.35))}
+.mumtab .mt-body{position:absolute;inset:0;border-radius:3px 22px 10px 3px;overflow:visible}
+.mumtab .mb{position:absolute;inset:0;border-radius:3px 26px 14px 3px;background:repeating-linear-gradient(-28deg,#efe6cf 0 6px,#d9cfb3 6px 8px,#efe6cf 8px 13px,#c9bc9a 13px 14px);box-shadow:inset 0 0 0 1px rgba(90,70,40,.35),inset -6px 0 10px rgba(0,0,0,.1)}
+.mumtab .me{position:absolute;top:22px;width:10px;height:10px;border-radius:50%;background:#1a1410;box-shadow:inset 0 0 0 2px #ffe08a,0 0 6px rgba(255,210,110,.55);animation:mtblink 5.5s infinite}
+.mumtab .me.l{left:23px}.mumtab .me.r{left:36px}
+.mumtab .mt-arm{position:absolute;right:-12px;top:40px;width:20px;height:10px;border-radius:5px;background:repeating-linear-gradient(90deg,#efe6cf 0 5px,#c9bc9a 5px 6px);box-shadow:inset 0 0 0 1px rgba(90,70,40,.35);transform-origin:left center;transform:rotate(18deg)}
+.mumtab.wave .mt-arm{animation:mtwave .45s ease-in-out 4 alternate}
+.mumtab.look .me{animation:mtlook 1.8s ease-in-out}
+.mumtab.ghost .mb{background:repeating-linear-gradient(-28deg,#e6eef2 0 6px,#c9d6de 6px 8px,#e6eef2 8px 13px,#b4c4ce 13px 14px)}.mumtab.ghost{filter:drop-shadow(0 0 7px rgba(140,195,255,.55)) drop-shadow(4px 6px 8px rgba(0,0,0,.3))}.mumtab.ghost .me{box-shadow:inset 0 0 0 2px #bfe3ff,0 0 7px rgba(150,200,255,.8)}
+.mumtab .mt-dot{position:absolute;right:-8px;top:-8px;min-width:20px;height:20px;padding:0 4px;border-radius:999px;background:#b5322b;color:#fff;font:700 11px/18px var(--mono);text-align:center;border:2px solid var(--bg);box-sizing:border-box;font-style:normal;display:none}
+.mumtab.unread .mt-dot{display:block;animation:mtdot 2.4s ease-in-out infinite}
+.mumtab:active{transform:rotate(2deg) scale(.96)}
+.mumtab.pop{animation:mtpop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes mtblink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes mtlook{0%,100%{transform:translateX(0)}30%{transform:translateX(3px)}65%{transform:translateX(-2px)}}
+@keyframes mtwave{from{transform:rotate(18deg)}to{transform:rotate(-40deg)}}
+@keyframes mtdot{50%{transform:scale(1.12)}}
+@keyframes mtpop{0%{transform:rotate(6deg)}40%{transform:rotate(-4deg) translate(10px,-8px) scale(1.1)}100%{transform:rotate(6deg)}}
+html.scrolling-down .mumtab{transform:translateX(-26px) rotate(6deg)}
+html:has(.qs.on) .mumtab,html:has(#review.on) .mumtab,html:has(#whoSheet.on) .mumtab,html.pp-open .mumtab,html:has(.lb[style*="block"]) .mumtab,html:has(.mummy) .mumtab{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.mumtab .me,.mumtab.unread .mt-dot{animation:none}}
+.am-chips .chip.am-chip{font-family:var(--body)!important;letter-spacing:0}
+`; document.head.appendChild(st); })();
+
 // ---------- inflight.js: the Now card in the air — progress, what's below, the landing drill, a flight kit, and the phrase drill ----------
 // Everything here works in airplane mode: no network, just the clock and what's already on the phone.
 function myAirFlight(){ try{ const n=nowUTC(); return allFlights().filter(f=>f.who===me()&&f.from&&f.from.t&&f.status!=="tbd").find(f=>{ const a=flightDep(f), b=flightArr(f)??(a+3*3600000); return a<=n&&n<b; })||null; }catch(e){ return null; } }
@@ -5433,9 +5507,9 @@ document.addEventListener("click", e=>{ const b=e.target.closest("[data-arrstep]
 // the Now card: in the air, the flight panel goes right under the sky (keeping the open/closed state across the 5-second refresh)
 let fmOpen=null;
 document.addEventListener("toggle", e=>{ if(e.target.classList&&e.target.classList.contains("fm-arr")) fmOpen=e.target.open; }, true);
-(function(){ if(typeof renderNow!=="function"||renderNow.__fm) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const now=$("#now"); if(now&&!now.querySelector(".fmode")){ const h=inflightHTML(); if(h){ const t=document.createElement("div"); t.innerHTML=h; const el=t.firstChild; const anchor=[...now.querySelectorAll(":scope > .bclock, :scope > .sky")].pop(); if(anchor) anchor.after(el); else now.insertBefore(el, now.firstChild); const d=el.querySelector(".fm-arr"); if(d&&fmOpen!==null) d.open=fmOpen;
+(function(){ if(typeof renderNow!=="function"||renderNow.__fm) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const now=$("#now"); const old=now&&now.querySelector(":scope > .fmode .fm-arr"); if(old) fmOpen=old.open; const el=nowSlot("fmode", inflightHTML(), [".sky",".bclock"]); if(el){ const d=el.querySelector(".fm-arr"); if(d&&fmOpen!==null) d.open=fmOpen; }
+        const f=myAirFlight(); if(now&&f&&f.no) now.querySelectorAll(":scope > .fband:not(.flive):not(.bclock)").forEach(b=>{ if(b.textContent.includes(f.no)&&/in the air/i.test(b.textContent)) b.remove(); }); }catch(e){} return r; }; renderNow.__fm=true; })();
         // the panel replaces the plain "in the air" band for the same flight
-        const f=myAirFlight(); if(f&&f.no) now.querySelectorAll(":scope > .fband:not(.flive):not(.bclock)").forEach(b=>{ if(b.textContent.includes(f.no)&&/in the air/i.test(b.textContent)) b.remove(); }); } } }catch(e){} return r; }; renderNow.__fm=true; })();
 
 // =====================================================================================================
 // THE PHRASE DRILL — ten cards: the English, guess the Arabic, flip, hear it, keep score. Offline.
