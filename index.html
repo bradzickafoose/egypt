@@ -1682,7 +1682,7 @@ const DAYS = [
   agenda:[
    {t:"06:30",title:"Up",alarm:true},
    {t:"07:15",title:"Guide + car at the hotel",note:"The car drops us at the Great Gate visitor centre on the Fayoum road — private cars can't drive onto the plateau any more; free electric buses run inside. Open 7–5; be there by 8, ahead of the tour buses (9:30).",map:"Hilton Cairo Grand Nile"},
-   {t:"08:00",photo:"Panorama point: the two of you with all three pyramids behind. The guide has done this a thousand times; let him direct, including the corny one holding the pyramid. Then the Sphinx with Khafre’s pyramid behind it from the viewing platform.",title:"Giza — Great Pyramid, panorama point, Sphinx",note:"The three-pyramid photo is from panorama point; a 20-min camel there is ≈$15 and fine, the “free” one is not. ≈$15 entry. Skip the paid interior: a hot empty room up a crouching passage.",map:"Great Pyramid of Giza"},
+   {t:"08:00",photo:"Panorama point: the two of you with all three pyramids behind. The guide has done this a thousand times; let him direct, including the corny one holding the pyramid. Then the Sphinx with Khafre’s pyramid behind it from the viewing platform.",title:"Giza — Great Pyramid, panorama point, Sphinx",note:"The three-pyramid photo is from panorama point; a 20-min camel there is ≈$15 and fine, the “free” one is not. Entry 700 EGP (≈$14), card only. Skip the paid interior: a hot empty room up a crouching passage.",map:"Great Pyramid of Giza"},
    {t:"10:45",photo:"The Grand Staircase looking back at the pyramids through the glass; Tut’s mask (no flash); the solar boat from the gallery above.",title:"Grand Egyptian Museum",note:"15–20 min away via the Great Gate exit. Timed ticket, online only (visit-gem.com) — nothing is sold at the door. The whole Tutankhamun collection in one place (the mask is here), Khufu's solar boat, the Grand Staircase. Give it the hours.",map:"Grand Egyptian Museum"},
    {t:"13:45",photo:"Lunch with the pyramids behind the table. Ask the waiter.",title:"Lunch — Khufu's (reserved)",note:"Modern Egyptian, terrace facing the pyramids, the best meal of the week. ≈$60 each. ⚠ Khufu's sits inside the ticketed plateau, and the morning ticket doesn't let you back in after GEM. Call them today: if the 1:45 booking won't get you through the Great Gate, eat here at ≈11 straight from the Sphinx and move the GEM slot to the afternoon on visit-gem.com.",map:"Khufu's Restaurant Giza"},
    {t:"15:30",title:"Back to the hotel. Pool, nap.",map:"Hilton Cairo Grand Nile"},
@@ -2348,7 +2348,7 @@ function flightStage(f,now,plan){ const dep=flightDep(f), arr=flightArr(f), n=no
   if(left<=0){ const r=arr!==null?Math.max(1,Math.round((arr-n)/60000)):0; return `in the air · lands ${f.to.t||"soon"}${arr!==null?` · ${r<60?r+" min":Math.floor(r/60)+"h "+pad2(r%60)+"m"}`:""}`; }
   if(left<=40) return `boarding now · wheels up ${f.from.t} · ${left} min`;
   if(!plan) return left<60?`departs in ${left} min`:`departs in ${Math.floor(left/60)}h ${pad2(left%60)}m`;
-  const cur=now.mins-(3-(f.from.tz??3))*60; const tzl=(f.from.tz??3)!==3?` (${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} time)`:""; const steps=[plan.up&&["up",plan.up],["leave",plan.go],["airport",plan.at],["boards",plan.board]].filter(Boolean).filter(([,hhmm])=>hm(hhmm)>cur);
+  const cur=now.mins-(3-(f.from.tz??3))*60; const tzl=(f.from.tz??3)!==3?` (${(f.from.city||f.from.ap).replace(/ ·.*$/,"")} time)`:""; const ob=(typeof ONBOARD!=="undefined")&&ONBOARD[f.id]; const bagT=(ob&&ob.bag&&f.from.t)?mmhh(hm(f.from.t)-ob.bag):""; const steps=[plan.up&&["up",plan.up],["leave",plan.go],["airport",plan.at],bagT&&["bags by",bagT],["boards",plan.board]].filter(Boolean).sort((a,b)=>hm(a[1])-hm(b[1])).filter(([,hhmm])=>hm(hhmm)>cur);
   if(!steps.length) return `boards ${plan.board}${tzl} · ${left} min`;
   const [k,v]=steps[0]; const inm=hm(v)-cur; return `${k} ${v} in ${inm<60?inm+" min":Math.floor(inm/60)+"h "+pad2(inm%60)+"m"}${steps.slice(1).map(([a,b])=>` · ${a} ${b}`).join("")}${tzl}`; }
 function otherFlightBand(now){ try{ const w=me(); if(!w) return ""; const o=OTHER(); const theirs=allFlights().filter(f=>f.who===o&&f.from.t&&f.status!=="tbd"); const tmr=(()=>{ const d=new Date(legUTC(now.date,"12:00",3)+86400000); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; })();
@@ -2531,7 +2531,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v93)";
+const BUILD = "Oct 9, 2026 (v94)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4477,7 +4477,7 @@ const EXTRAS = {
   ["heat","Hilton spa: sauna, steam, hot tub","Hilton Cairo Grand Nile","pm","Saqqara dust out of every pore. Ask at the gym desk; ask whether the wet areas are free for guests — some listings charge for the sauna.","Hilton Cairo Grand Nile"],
   ["dance","AfroLatin Holidays Egypt — zouk, kizomba","Saraya Hall, Old Cairo (it moves)","pm","A touring festival (Oct 1–15) with zouk in the mix and nightly parties. Email info@afrolatinegypt.com or WhatsApp +20 10 974 964 34 to ask if there's a Cairo party Sat or Sun. The best zouk chance of the trip.","Saraya Hall Old Cairo"]],
  mon12:[
-  ["coffee","30 North — inside the Grand Egyptian Museum","GEM, Giza","am","Egypt's best-known specialty roaster has a café in the museum. A flat white before Tutankhamun is the correct order.","Grand Egyptian Museum"],
+  ["coffee","30 North at the GEM","inside the museum, Giza","am","Egypt's best-known specialty roaster has a café in the museum. A flat white before Tutankhamun is the correct order.","Grand Egyptian Museum"],
   ["dance","Latin Love Practica — salsa, bachata, kiz","Narges Buildings, New Cairo","pm","Every other Monday, and Oct 12 is on: 9–11pm, 150 EGP. 45–60 min by Uber. WhatsApp +20 15 59642700 to confirm. No tango, but bodies moving to music, which is the point.","Latin Love Studios New Cairo"],
   ["dance","Tango — ask before you fly","Dansation (Mohandessin) · In The Mood (Dokki)","pm","Cairo milongas live on Facebook: message Dansation Egypt or In The Mood (+20 120 779 6177) for this week's milonga. Small scene, warm welcome.","Dokki Cairo"],
   ["heat","Four Seasons Nile Plaza hammam","Next door to the Hilton, Garden City","pm","The proper hammam, sauna and steam nearby. Non-guest access isn't published — call the spa first.","Four Seasons Hotel Cairo at Nile Plaza"]],
