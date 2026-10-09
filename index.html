@@ -1291,13 +1291,14 @@ html.bigtext .fr-picks{grid-template-columns:1fr}
 .indy .route.other{stroke:#b5322b;opacity:.35;stroke-width:6;stroke-dasharray:6 12}
 .in-key i.r.o{opacity:.4;margin-left:6px}
 
-.ready{margin-top:10px;padding:12px 14px;border-color:rgba(31,107,51,.25)}
-.ready.all{background:#eef7f0}
+.ready{margin-top:10px;padding:12px 14px}
+.rd-done{border-top:1px solid var(--line);padding-top:8px;font-size:0.7353rem;color:var(--muted)}.rd-done i{font-style:normal;color:var(--ok);font-weight:700}
+.ready-ok{display:flex;gap:8px;align-items:baseline;margin:10px 2px 0;font-size:0.7647rem;color:var(--muted);line-height:1.4}.ready-ok i{font-style:normal;color:var(--ok);font-weight:700;flex:none}.ready-ok b{color:var(--fg);font-weight:600}
 .rd-h b{display:block;font-family:var(--display);font-size:1rem}
 .rd-h span{display:block;font-size:0.7647rem;color:var(--muted);margin:2px 0 8px}
 .rd{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:8px 0;font:inherit;color:inherit;cursor:pointer}
 .rd i{font-style:normal;width:1.6em;height:1.6em;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--muted);color:var(--muted);flex:none;font-weight:700}
-.rd.ok i{background:#2f8a4a;border-color:#2f8a4a;color:#fff}
+.rd.ok i{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
 .rd span b{display:block;font-size:0.8235rem}
 .rd span small{display:block;font-size:0.7353rem;color:var(--muted)}
 .ppov.open .ppov-h{opacity:0;transition:opacity .4s}
@@ -2571,7 +2572,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v125)";
+const BUILD = "Oct 9, 2026 (v126)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -2580,8 +2581,12 @@ function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(disp
     [!!who,"Knows whose phone it is", who?`${who}'s`:"tap the name chip up top", "who"],
     [!!bk,"Backed up to the server", bk?`last ${memAgo()}`:"needs a minute online — tap to try", "bk"],
   ];
-  const n=items.filter(x=>x[0]).length;
-  return `<div class="card ready ${n===4?"all":""}"><div class="rd-h"><b>${n===4?"Ready. Go to bed.":`Ready for the plane? ${n}/4`}</b><span>${n===4?"Everything works offline from here.":"Fix these on wifi tonight."}</span></div>${items.map(([ok,t,s,k])=>`<button type="button" class="rd ${ok?"ok":""}" data-ready="${k}"><i>${ok?"✓":"○"}</i><span><b>${t}</b><small>${esc(s)}</small></span></button>`).join("")}</div>`; }
+  const todo=items.filter(x=>!x[0]), done=items.filter(x=>x[0]);
+  const SHORT={home:"Home Screen", off:"offline", who:who?`${who}'s phone`:"", bk:bk?`backed up ${memAgo()}`:"backed up"};
+  // all set: one quiet line of reassurance, not a card — nothing to do, so nothing to look at
+  if(!todo.length) return `<div class="ready-ok" role="status"><i>✓</i><span><b>Set for the plane</b> · ${done.map(x=>esc(SHORT[x[3]])).join(" · ")}</span></div>`;
+  // something's missing: only what needs fixing gets a row; what already works is one line underneath
+  return `<div class="card ready"><div class="rd-h"><b>Before the plane: ${todo.length===1?"one thing":`${todo.length} things`} to fix</b><span>Do ${todo.length===1?"it":"them"} on wifi tonight — tap for how.</span></div>${todo.map(([ok,t,s,k])=>`<button type="button" class="rd" data-ready="${k}"><i>○</i><span><b>${t}</b><small>${esc(s)}</small></span></button>`).join("")}${done.length?`<div class="rd-done"><i>✓</i> Already set: ${done.map(x=>esc(SHORT[x[3]])).join(" · ")}</div>`:""}</div>`; }
 document.addEventListener("click", e=>{ const b=e.target.closest("[data-ready]"); if(!b) return; const k=b.dataset.ready;
   if(k==="home") toast("In Safari: the Share button, then ‘Add to Home Screen’. Open it from the icon after.");
   else if(k==="off") location.reload();
