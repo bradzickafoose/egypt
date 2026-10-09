@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v150)";
+const BUILD = "Oct 9, 2026 (v151)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5903,9 +5903,7 @@ document.addEventListener("click", e=>{ const a=e.target.closest("[data-pet]"); 
 // ---------- the tab shows his needs; sand piles sit next to him ----------
 (function(){ if(typeof mumTabRender!=="function") return; const R=mumTabRender; mumTabRender=function(){ const r=R.apply(this,arguments); try{ const el=$("#mumTab"); if(!el) return r; const p=petNow(); const lo=petMood(p); const st=petStage(p);
   ["baby","kid","teen","pharaoh","elder"].forEach(c=>el.classList.toggle("pt-"+c, st[2]===c)); el.classList.toggle("pt-sad", lo.lo<25);
-  const S=petSide(); let jy=el.querySelector(".pt-jersey"); if(!jy){ jy=document.createElement("i"); jy.className="pt-jersey"; el.querySelector(".mt-body").insertBefore(jy, el.querySelector(".me")); }
-  const c=t=>{ const T=TEAMS[t]||{}; return [T.c1||"#333", (T.c2||"#999").toLowerCase()==="#000000"?"#111":T.c2]; };
-  if(S.who){ const [a,b]=c(S.who); jy.style.background=`repeating-linear-gradient(180deg,${a} 0 5px,${b} 5px 8px)`; jy.title=`${S.who}'s colours`; } else { const [a]=c("Brad"), [b]=c("Duane"); jy.style.background=`linear-gradient(90deg,${a} 0 50%,${b} 50%)`; }
+  const jy=el.querySelector(".pt-jersey"); if(jy) jy.remove(); // the jersey is for game day only: he wears it in the Games section, not in the margin
   let acc=el.querySelector(".pt-acc"); if(!acc){ acc=document.createElement("i"); acc.className="pt-acc"; el.querySelector(".mt-body").appendChild(acc); }
   if(lo.lo<25&&!mumAlert()){ el.classList.add("unread"); el.querySelector(".mt-dot").textContent=PET_NEED[lo.k][0]; }
   let sand=document.getElementById("petSand"); if(p.sand){ if(!sand){ sand=document.createElement("button"); sand.type="button"; sand.id="petSand"; sand.setAttribute("aria-label","Sweep up his sand"); document.body.appendChild(sand); sand.addEventListener("click",()=>petSweep()); } sand.innerHTML=Array.from({length:p.sand},()=>"<i></i>").join(""); } else if(sand) sand.remove();
@@ -5966,10 +5964,11 @@ document.addEventListener("click", e=>{ if(e.target.closest("[data-mascotcare]")
 setInterval(()=>{ try{ const c=document.querySelector("#gameBody .card.mascot"); if(c){ const t=document.createElement("div"); t.innerHTML=mascotCardHTML(); c.replaceWith(t.firstChild); } }catch(e){} }, 60000);
 // the stadium ticker plugs the mascot
 (function(){ if(typeof nbTicker!=="function") return; const N=nbTicker; nbTicker=function(){ let h=N.apply(this,arguments); try{ const p=petNow(); const S=petSide(); const lo=petMood(p); const msg=lo.lo<25?`MASCOT UPDATE: ${PET_NAME.toUpperCase()} IS ${lo.k==="belly"?"EATING HIS OWN BANDAGES":lo.k==="mood"?"SULKING IN A SARCOPHAGUS":"COMING APART AT THE SEAMS"} — SOMEBODY HELP HIM`:S.who?`MASCOT ${PET_NAME.toUpperCase()} NOW IN ${String((TEAMS[S.who]||{}).team||S.who).toUpperCase()} COLOURS${S.why==="talk"?" (BRIBED BY TRASH TALK)":""}`:`MASCOT ${PET_NAME.toUpperCase()} REFUSES TO PICK A SIDE`; h=h.replace('<div class="nb-tick">',`<div class="nb-tick"><span>🧻 ${esc(msg)}</span><i>◆</i>`).replace(/(<\/span><i>◆<\/i>)(?![\s\S]*<span>🧻)/,"$1"); }catch(e){} return h; }; })();
-// when he runs out to celebrate a score, he's in the scorer's jersey
+// when he runs out to celebrate a score, he's in the scorer's jersey — but only while you're looking at the Games section
+function petInGames(){ const g=document.getElementById("game"); if(!g) return false; const r=g.getBoundingClientRect(); return r.top<innerHeight*0.6&&r.bottom>innerHeight*0.4; }
 let mascotTeam=null, mascotTeamAt=0;
 (function(){ if(typeof jumbo!=="function") return; const J=jumbo; jumbo=function(word, who){ try{ if(/field goal|touchdown|two-point|extra point|safety/i.test(String(word||""))&&TEAMS[who]){ mascotTeam=who; mascotTeamAt=Date.now(); } }catch(e){} return J.apply(this,arguments); }; })();
-(function(){ if(typeof mumBuild!=="function") return; const B=mumBuild; mumBuild=function(){ const m=B.apply(this,arguments); try{ const who=Date.now()-mascotTeamAt<9000?mascotTeam:(petSide().who||""); if(who){ const [a,b]=petTeamColors(who); const j=document.createElement("i"); j.className="mm-jersey"; j.style.background=`repeating-linear-gradient(180deg,${a} 0 6px,${b} 6px 10px)`; const mw=m.querySelector(".mw"); mw.insertBefore(j, mw.querySelector(".me")); const n=document.createElement("i"); n.className="mm-num"; n.textContent=who==="Brad"?"7":"9"; mw.appendChild(n); } }catch(e){} return m; }; })();
+(function(){ if(typeof mumBuild!=="function") return; const B=mumBuild; mumBuild=function(){ const m=B.apply(this,arguments); try{ const who=!petInGames()?"":Date.now()-mascotTeamAt<9000?mascotTeam:(petSide().who||""); if(who){ const [a,b]=petTeamColors(who); const j=document.createElement("i"); j.className="mm-jersey"; j.style.background=`repeating-linear-gradient(180deg,${a} 0 6px,${b} 6px 10px)`; const mw=m.querySelector(".mw"); mw.insertBefore(j, mw.querySelector(".me")); const n=document.createElement("i"); n.className="mm-num"; n.textContent=who==="Brad"?"7":"9"; mw.appendChild(n); } }catch(e){} return m; }; })();
 (function(){ const st=document.createElement("style"); st.textContent=`
 .card.mascot{display:flex;gap:12px;align-items:center;margin-top:12px;padding:12px}
 .ms-fig{position:relative;width:52px;height:70px;flex:none}.ms-fig .am-m{left:10px;top:6px;width:32px;height:58px}.ms-fig .ms-j{position:absolute;left:1px;right:1px;bottom:3px;height:22px;border-radius:2px 2px 8px 8px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.ms-fig .split .ms-j{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
