@@ -1974,7 +1974,7 @@ const BAG = [
 
 // ---------- time in Cairo ----------
 const TZ = "Africa/Cairo";
-function cairoNow(){
+function cairoNowRaw(){
   try{
     const p = new Intl.DateTimeFormat("en-US",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).formatToParts(new Date());
     const o = {}; p.forEach(x=>o[x.type]=x.value);
@@ -1985,6 +1985,13 @@ function cairoNow(){
     return {date:`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`, h:n.getHours(), m:n.getMinutes(), s:n.getSeconds(), mins:n.getHours()*60+n.getMinutes()};
   }
 }
+// The trip clock. Everything runs on Cairo time, but a day doesn't start for you until it starts where you are:
+// until your arrival flight lands, if Cairo has passed midnight and your phone's own date hasn't, it's still your
+// yesterday — reported as hour 24+ of that date, so every schedule sum (days × 1440 + minutes) stays exact.
+const ARRIVE_CAI={Brad:"2026-10-11 02:05", Duane:"2026-10-10 17:20"};
+function localYMD(){ const n=new Date(); const pad=x=>String(x).padStart(2,"0"); return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`; }
+function cairoNow(){ const c=cairoNowRaw(); try{ const w=(typeof me==="function"&&me())||"Brad"; const at=`${c.date} ${String(c.h).padStart(2,"0")}:${String(c.m).padStart(2,"0")}`;
+  if(at>=(ARRIVE_CAI[w]||ARRIVE_CAI.Brad)) return c; const ld=localYMD(); if(ld<c.date && dateDiffDays(ld,c.date)===1) return {date:ld, h:c.h+24, m:c.m, s:c.s, mins:c.mins+1440, home:true}; }catch(e){} return c; }
 const toMins = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
 const fmt12 = t => { let [h,m]=t.split(":").map(Number); const ap=h>=12?"pm":"am"; h=h%12||12; return `${h}:${String(m).padStart(2,"0")}${ap}`; };
 const dayIndexFor = date => DAYS.findIndex(d=>d.date===date);
@@ -2172,9 +2179,9 @@ function renderNow(){
 }
 
 function renderClock(){
-  const n = cairoNow();
-  $("#cairoTime").textContent = `${String(n.h).padStart(2,"0")}:${String(n.m).padStart(2,"0")}`;
-  const d = new Date(n.date+"T12:00:00Z");
+  const n = cairoNow(), nr = cairoNowRaw();
+  $("#cairoTime").textContent = `${String(nr.h).padStart(2,"0")}:${String(nr.m).padStart(2,"0")}`;
+  const d = new Date(nr.date+"T12:00:00Z");
   $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"UTC"});
   const di = dayIndexFor(n.date); const pr=$("#prog");
   // huge text: the short form, so it never ends in "…"
@@ -2182,6 +2189,8 @@ function renderClock(){
   const full = di>=0 ? (DAYS[di].who==="brad" ? `Brad solo · day ${di+1} of ${DAYS.length}` : `Day ${di+1} of ${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Starts tomorrow":`Starts in ${k} days`; })() : "Home · Oct 10–25";
   pr.textContent = !hg ? full : di>=0 ? (DAYS[di].who==="brad" ? `Solo · ${di+1}/${DAYS.length}` : `Day ${di+1}/${DAYS.length}`) : n.date<DAYS[0].date ? (()=>{ const k=dateDiffDays(n.date,DAYS[0].date); return k===1?"Tomorrow":`In ${k} days`; })() : "Home";
   pr.title=full;
+  // still at home after Cairo's midnight: say whose clock the day is following
+  if(n.home&&!hg){ const ln=new Date(); pr.textContent=`${pr.textContent} · ${ln.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase()} your time`; }
   if(document.documentElement.classList.contains("hugetext")) $("#cairoDate").textContent = "Cairo · " + d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"});
   $("#offline").hidden = navigator.onLine !== false;
 }
@@ -2588,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v158)";
+const BUILD = "Oct 9, 2026 (v159)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3488,10 +3497,11 @@ const liveOK = ()=> DB_URL.startsWith("https://") && room().length>=24 && !!me()
 function livePayload(){
   const f=footballScore(); const s=gameScore(); const st=stamps(); const rate=GS.get("rate",{}); const ch=GS.get("chal",{});
   const camels=GS.get("camel",[]); const tout=Object.values(GS.get("tout",{})).reduce((a,b)=>a+b,0); const ff=GS.get("forfeit",{});
-  return { who:me(), team:team().team, at:new Date().toISOString(), own:nileOwn(), pen:nilePen(), flags:GS.get("flags",[]), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:GS.get("events",[]).slice(0,30), visited:(typeof visitedMine==="function"?visitedMine():{}), xflights:(typeof xFlights==="function"?xFlights():[]).map(f=>({id:f.id,no:f.no,op:f.op,date:f.date,from:f.from,to:f.to})) };
+  return { who:me(), team:team().team, at:new Date().toISOString(), own:nileOwn(), pen:nilePen(), flags:GS.get("flags",[]), pts:f.pts, td:f.td, fg:f.fg, xp:f.xp, tpc:f.tpc, bingo:GS.get("bingo",[12]), stamps:st, rate, chal:ch, haggles:s.n, best:s.best, saved:s.saved, tout, camelBest:camels.reduce((m,c)=>Math.max(m,c.n),0), forfeits:ff, events:(GS.get("events",[])||[]).filter(e=>e&&e.who===me()).slice(0,30), visited:(typeof visitedMine==="function"?visitedMine():{}), xflights:(typeof xFlights==="function"?xFlights():[]).map(f=>({id:f.id,no:f.no,op:f.op,date:f.date,from:f.from,to:f.to})) };
 }
 // a take-back: drop the original play from the feed, announce the reversal so the other board follows
 function overturn(re, label){ try{ const ev=GS.get("events",[]); const i=ev.findIndex(e=>e.who===me()&&re.test(String(e.text||""))); if(i>=0) ev.splice(i,1); ev.unshift({at:new Date().toISOString(), who:me(), text:`↩︎ overturned — ${label}`}); GS.set("events", ev.slice(0,40)); }catch(e){} livePush(true); safe(()=>sfx("whistle")); }
+function evDedupe(a){ const seen=new Set(); return (a||[]).filter(e=>{ if(!e) return false; const k=(e.at||"")+"|"+(e.who||"")+"|"+(e.text||""); if(seen.has(k)) return false; seen.add(k); return true; }); }
 function logEvent(text){ const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text}); GS.set("events", ev.slice(0,40)); livePush(); }
 let pushT=null, lastPushed="";
 function livePush(now){ if(!liveOK()) return; clearTimeout(pushT); const go=async ()=>{ try{ const body=JSON.stringify(livePayload()); if(body===lastPushed) return; const r=await fetch(`${DB_URL}/rooms/${room()}/${me()}.json`,{method:"PUT",body,headers:{"Content-Type":"application/json"}}); if(r.ok){ lastPushed=body; GS.set("livePushed", new Date().toISOString()); setTimeout(()=>livePull(), 4000); } }catch(e){} }; if(now) go(); else pushT=setTimeout(go, 1500); }
@@ -3506,7 +3516,7 @@ function renderLive(){ safe(()=>{ const k=JSON.stringify(visitedTheirs()); if(k!
   if(!liveOK()){ el.innerHTML = `<div class="card"><div class="lk">Live scoreboard</div>${!me()?`<p class="muted">Pick who's holding the phone (the name chip at the top) and the board links itself.</p>`:`<p class="muted">Live scoreboard isn't configured in this build.</p>`}</div>`; return; }
   const d=GS.get("live",{})||{}; const mine=d[me()], theirs=d[OTHER()]; const t=team(), o=TEAMS[OTHER()];
   const tm=x=>x?new Date(x.at).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"}):"—";
-  const events=[...(mine&&mine.events||[]),...(theirs&&theirs.events||[])].sort((a,b)=>b.at<a.at?-1:1).slice(0,12); const flagged=new Set([...(GS.get("flags",[])),...((theirs&&theirs.flags)||[])]);
+  const events=evDedupe([...(mine&&mine.events||[]),...(theirs&&theirs.events||[])]).sort((a,b)=>b.at<a.at?-1:1).slice(0,12); const flagged=new Set([...(GS.get("flags",[])),...((theirs&&theirs.flags)||[])]);
   const pulled=GS.get("livePulled",""); 
   el.innerHTML=`<div class="card">
     <div class="lk">Live scoreboard <span class="muted sync ${syncState().cls}">· ${syncState().txt}</span></div>
@@ -3564,7 +3574,7 @@ function burst(who, n){ try{ if(matchMedia("(prefers-reduced-motion: reduce)").m
 function jumbo(word, who, sub, opt){ opt=opt||{}; try{ if(!who||!TEAMS[who]) return; if(sub&&/[.!?]/.test(sub)&&!/trash talk/i.test(word)) safe(()=>announce(String(sub).replace(/^\+\d+\s*·\s*/,""))); if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; const T=TEAMS[who]; const old=$("#jumbo"); if(old) old.remove(); const el=document.createElement("div"); el.id="jumbo"; el.style.setProperty("--tc1",T.c1); el.style.setProperty("--tc2",T.c2.toLowerCase()==="#000000"?"#fff":T.c2); el.onclick=(ev)=>{ if(ev.target.closest("[data-reply]")){ el.remove(); tauntSheet(); return; } el.remove(); }; el.innerHTML=`<div class="jb ${opt.reply?"talk":""}"><small>${esc(T.team)}${opt.reply?" · "+esc(who):""}</small><b>${esc(word)}</b>${sub?`<i>${esc(sub)}</i>`:""}${opt.reply?`<button type="button" class="btn jbtn" data-reply="1">Fire back</button>`:""}</div>`; document.body.appendChild(el); setTimeout(()=>el.remove(), opt.hold||2300); }catch(e){} }
 const playShort = s => String(s||"").split(/\.\s+(?=[A-Z"“O])/)[0].replace(/\.$/,"");
 const playCall = s => { const i=String(s||"").search(/\.\s+(?=[A-Z"“O])/); return i>=0?String(s).slice(i+1).trim():""; };
-function nbTicker(){ const live=GS.get("live",{})||{}; const mine=GS.get("events",[]); const theirs=(live[OTHER()]&&live[OTHER()].events)||[]; const ev=[...mine,...theirs].filter(e=>e&&e.text).sort((a,b)=>b.at<a.at?-1:1).slice(0,8); const items = ev.length ? ev.map(e=>`<span><b>${esc((e.who||"").toUpperCase())}</b> ${esc(playShort(e.text))}</span>`) : [`<span>WELCOME TO THE NILE BOWL</span>`,`<span>KICKOFF SAT OCT 10 · CAIRO</span>`,`<span>FINAL WHISTLE SUN OCT 18 · 8PM CAIRO</span>`,`<span>LOSER BUYS SUNDAY DINNER</span>`]; const s=items.join(`<i>◆</i>`)+`<i>◆</i>`; return `<div class="nb-ticker" aria-hidden="true"><div class="nb-tick">${s}${s}</div></div>`; }
+function nbTicker(){ const live=GS.get("live",{})||{}; const mine=GS.get("events",[]); const theirs=(live[OTHER()]&&live[OTHER()].events)||[]; const ev=evDedupe([...mine,...theirs].filter(e=>e&&e.text)).sort((a,b)=>b.at<a.at?-1:1).slice(0,8); const items = ev.length ? ev.map(e=>`<span><b>${esc((e.who||"").toUpperCase())}</b> ${esc(playShort(e.text))}</span>`) : [`<span>WELCOME TO THE NILE BOWL</span>`,`<span>KICKOFF SAT OCT 10 · CAIRO</span>`,`<span>FINAL WHISTLE SUN OCT 18 · 8PM CAIRO</span>`,`<span>LOSER BUYS SUNDAY DINNER</span>`]; const s=items.join(`<i>◆</i>`)+`<i>◆</i>`; return `<div class="nb-ticker" aria-hidden="true"><div class="nb-tick">${s}${s}</div></div>`; }
 function kickoffIn(){ const n=cairoNow(); const ms=Date.UTC(2026,9,10,0,0)-Date.UTC(+n.date.slice(0,4),+n.date.slice(5,7)-1,+n.date.slice(8,10),n.h,n.m||0); if(ms<=0) return ""; const h=Math.floor(ms/36e5); const d=Math.floor(h/24); return d>0?`${d}D ${h%24}H`:`${h}H ${Math.floor((ms%36e5)/6e4)}M`; }
 
 // ---------- THE TOMB: mummies, relics, one boulder. Fortune and glory, kid. ----------
@@ -3644,7 +3654,7 @@ function liveTaunts(){ const w=me(), o=OTHER(); if(!w) return []; const A=nileTo
   return out; }
 function tauntPicks(){ const live=liveTaunts().sort(()=>Math.random()-.5).slice(0,2); const stat=[...TAUNTS].sort(()=>Math.random()-.5).slice(0,5-live.length); return [...live,...stat]; }
 let seenOther = GS.get("seenOther","");
-function noticeTheirPlays(d){ try{ const o=OTHER(); const ev=(d&&d[o]&&d[o].events)||[]; if(!ev.length) return; const latest=ev.map(e=>e.at).sort().pop(); if(!seenOther){ const cut=new Date(Date.now()-12*3600000).toISOString(); seenOther=cut; GS.set("seenOther",cut); } const fresh=ev.filter(e=>e.at>seenOther).sort((a,b)=>a.at<b.at?-1:1); if(!fresh.length) return; seenOther=latest; GS.set("seenOther",latest); const e=fresh[fresh.length-1]; const txt=String(e.text||""); const taunt=txt.startsWith("🗣"); const scored=/touchdown|field goal|extra point|two-point|two point|blackout|safety/i.test(txt); if(txt.startsWith("↩︎")){ jumbo("Overturned", o, "The call on the field is reversed: "+txt.replace(/^↩︎\s*overturned\s*—\s*/,""), {hold:4500}); safe(()=>sfx("whistle")); } else if(taunt){ jumbo("Trash talk", o, txt.replace(/^🗣\s*/,""), {hold:6000, reply:true}); safe(()=>sfx("taunt")); } else if(scored){ jumbo(`${o} scores`, o, playCall(txt)||playShort(txt)); } else { toast(`${o}: ${txt}`); } }catch(e){} }
+function noticeTheirPlays(d){ try{ const o=OTHER(); const ev=((d&&d[o]&&d[o].events)||[]).filter(e=>e&&e.who===o); if(!ev.length) return; const latest=ev.map(e=>e.at).sort().pop(); if(!seenOther){ const cut=new Date(Date.now()-12*3600000).toISOString(); seenOther=cut; GS.set("seenOther",cut); } const fresh=ev.filter(e=>e.at>seenOther).sort((a,b)=>a.at<b.at?-1:1); if(!fresh.length) return; seenOther=latest; GS.set("seenOther",latest); const e=fresh[fresh.length-1]; const txt=String(e.text||""); const taunt=txt.startsWith("🗣"); const scored=/touchdown|field goal|extra point|two-point|two point|blackout|safety/i.test(txt); if(txt.startsWith("↩︎")){ jumbo("Overturned", o, "The call on the field is reversed: "+txt.replace(/^↩︎\s*overturned\s*—\s*/,""), {hold:4500}); safe(()=>sfx("whistle")); } else if(taunt){ jumbo("Trash talk", o, txt.replace(/^🗣\s*/,""), {hold:6000, reply:true}); safe(()=>sfx("taunt")); } else if(scored){ jumbo(`${o} scores`, o, playCall(txt)||playShort(txt)); } else { toast(`${o}: ${txt}`); } }catch(e){} }
 function tauntSheet(){ const picks=tauntPicks(); const o=OTHER()||"him"; openSheet("sheetQC", `<div class="qh"><h3>Trash talk</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="qpanel"><p class="muted">Lands on ${esc(o)}'s jumbotron within half a minute, in your colours. Tap a line, or write your own.</p><div class="taunts">${picks.map(tt=>`<button type="button" class="btn taunt" data-taunt="${esc(tt).replace(/"/g,"&quot;")}">${esc(tt)}</button>`).join("")}</div><div class="row" style="margin:0 0 10px"><button type="button" class="btn mini" id="tauntShuffle">↻ Other lines</button></div><form class="hform" id="tauntForm"><input id="tauntIn" placeholder="Your own line (keep it clean, keep it funny)" maxlength="120" autocomplete="off"><button class="btn primary" type="submit">Send it</button></form></div>`); }
 function sendTaunt(line){ line=(line||"").trim(); if(!line) return; if(line.length>140) line=line.slice(0,140); const ev=GS.get("events",[]); ev.unshift({at:new Date().toISOString(), who:me(), text:"🗣 "+line}); GS.set("events", ev.slice(0,40)); livePush(true); closeSheet("sheetQC"); toast(`Sent. It's on ${OTHER()||"his"}'s board within half a minute.`, {undo:()=>{ const ev=GS.get("events",[]); const k=ev.findIndex(e=>e.who===me()&&String(e.text||"").startsWith("🗣")); if(k>=0) ev.splice(k,1); GS.set("events",ev); livePush(true); toast("Unsent — unless his phone already pulled it."); }}); }
 document.addEventListener("click", e=>{ if(e.target.closest("[data-toss]")){ const d=document.querySelector(".sg.toss"); if(d){ d.open=true; scrollToEl(d); } return; } if(e.target.id==="soundBtn"){ GS.set("sound", soundOn()?0:1); try{ speechSynthesis.cancel(); }catch(x){} renderGame(); toast(soundOn()?"Booth and stadium on.":"Quiet mode — temples, planes, Duane asleep."); return; } if(e.target.id==="tauntBtn"||e.target.id==="tauntShuffle"){ tauntSheet(); return; } const tb=e.target.closest("[data-taunt]"); if(tb){ sendTaunt(tb.dataset.taunt); return; } });
@@ -5327,7 +5337,7 @@ async function claudeStream({system, messages, max_tokens, model, onText, stallM
 // ---------- what the mummy knows: the trip, right now (no booking codes, nothing private beyond the plan) ----------
 function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cairoNow(); const R=egpRate(); const L=[];
   const cut=(s,k)=>{ s=String(s||"").replace(/\s+/g," "); return s.length>k?s.slice(0,k)+"…":s; };
-  L.push(`Asking: ${w} (${(TEAMS[w]||{}).team||""} fan). Travel partner: ${o} (${(TEAMS[o]||{}).team||""}). Cairo time now: ${n.date} ${String(n.h).padStart(2,"0")}:${String(n.m||0).padStart(2,"0")}. Exchange rate ≈ ${R} EGP per USD.`);
+  L.push(`Asking: ${w} (${(TEAMS[w]||{}).team||""} fan). Travel partner: ${o} (${(TEAMS[o]||{}).team||""}). Cairo time now: ${(typeof cairoNowRaw==="function"?cairoNowRaw():n).date} ${String((typeof cairoNowRaw==="function"?cairoNowRaw():n).h).padStart(2,"0")}:${String(n.m||0).padStart(2,"0")}. Exchange rate ≈ ${R} EGP per USD.`);
   // where each of them is RIGHT NOW, computed from the flight list — the model must not guess this
   const durT=m=>m>=1440?`${Math.floor(m/1440)}d ${Math.floor(m%1440/60)}h`:m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m} min`;
   const statusOf=who=>{ try{ const n=nowUTC(); const fl=allFlights().filter(f=>f.who===who&&f.no&&f.from&&f.from.t&&f.status!=="tbd").sort((a,b)=>flightDep(a)-flightDep(b)); const end=f=>flightArr(f)??(flightDep(f)+3*3600000);
