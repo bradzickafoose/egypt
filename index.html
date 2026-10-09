@@ -1878,7 +1878,7 @@ const DAYS = [
   alarm:"the light wakes you, ≈6:45",bag:"desert bag",dress:"layers again",cash:"tips for the driver, ≈$10–15",
   mission:"Watch the chalk turn pink, breakfast on the fire, and the long drive back. Last night in Egypt.",
   agenda:[
-   {t:"06:00",photo:"The formations with first light on one side; the camp from a distance, small.",title:"Sunrise in the White Desert (≈7:10)",note:"The formations face east; walk 10 minutes from camp for the light.",approx:true},
+   {t:"06:45",photo:"The formations with first light on one side; the camp from a distance, small.",title:"First light in the White Desert — sunrise ≈7:10",note:"The formations face east; walk 10 minutes from camp for the light.",approx:true},
    {t:"07:30",title:"Breakfast, strike camp, a last walk among the shapes",approx:true},
    {t:"09:00",title:"Drive back: Bahariya, then the highway",note:"Lunch at Bahariya. Dust in everything.",approx:true},
    {t:"16:30",title:"Cairo. Le Méridien Cairo Airport.",note:"Long shower. Repack for the flight: liquids, the USD you didn't use, the receipts.",map:"Le Meridien Cairo Airport",approx:true},
@@ -2580,7 +2580,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v130)";
+const BUILD = "Oct 9, 2026 (v131)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3408,8 +3408,13 @@ const PERSONAL = {
  sun11:{ Brad:{alarm:"≈8:30 · you landed at 2", agendaPre:[
             {t:"02:05",title:"Land in Cairo — visa, bag, Uber",note:"Visa: $30 cash at the bank window before immigration, or the e-Visa lane. The bag was checked through from Cape Town — it comes off here. Uber from the arrivals curb, ≈$15, 30–40 min to Garden City at this hour.",map:"Cairo International Airport"},
             {t:"03:15",title:"Hilton Cairo Grand Nile — the room is in Duane's name",note:"The desk has been told you're coming; ask for a key to Duane's room. Quietly. Phone on silent, alarm ≈8:30.",map:"Hilton Cairo Grand Nile"}]}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
- mon19:{ Brad:{alarm:"8:20 · up at 4:15 for the hug", mission:"Hug at 4:30, back to bed, car at 9. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
-         Duane:{alarm:"4:00", mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
+ mon19:{ Brad:{alarm:"8:20 · up at 4:15 for the hug", agendaPre:[{t:"04:00",title:"Duane's alarm. Yours is 4:15 — up for the goodbye",note:"His car's at 4:35. Coffee, hug, then back to bed until 8:20.",photo:"Last one together: the two of you in the lobby, bleary, before the Uber. Hand the phone to the doorman."}], mission:"Hug at 4:30, back to bed, car at 9. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
+         Duane:{alarm:"4:00", sleep:"home", place:"Cairo → Heathrow → home", agenda:[
+            {t:"04:00",title:"Up",alarm:true,photo:"Last one together: the two of you in the lobby, bleary, before the Uber. Hand the phone to the doorman."},
+            {t:"04:35",title:"Uber to CAI (15 min). At the BA desk by 4:55.",note:"BA plane, AA ticket. Brad's up to see you off.",map:"Cairo International Airport"},
+            {t:"07:25",title:"✈ AA 6609 Cairo → Heathrow, lands 10:50",note:"Then the flight home — it isn't in the app yet; add it under Guide → Flights and it shows here with the connection maths."},
+            {t:"13:50",title:"Brad's in the Red Sea about now",note:"He owes you a photo from the water. Heckle accordingly.",approx:true}],
+           mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
 };
 function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; if(!o) return d; const r=Object.assign({}, d, o); if(o.agendaPre){ const ts=new Set(o.agendaPre.map(x=>x.t)); r.agenda=o.agendaPre.concat((d.agenda||[]).filter(x=>!ts.has(x.t))); } return r; }  /* my own line at a time replaces the shared one */
 function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.innerHTML = `${esc(w||"Whose phone?")}<i class="me-c" aria-hidden="true"></i>`; el.setAttribute("aria-label", w?`This is ${w}’s phone. Tap to change.`:"Whose phone is this?"); el.classList.toggle("unset", !w); }
