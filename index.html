@@ -2541,7 +2541,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v109)";
+const BUILD = "Oct 9, 2026 (v110)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4107,7 +4107,7 @@ const boatMsg = o => `Hello! Two adults (two friends) — we need TWIN beds, or 
 // rank = our order for what you said you want: Abu Simbel is a must (done on our own Wed dawn), then the places (Kom Ombo, Silsila, Edfu), then comfort, then keeping the plan (Abu Simbel, Edfu/Silsila), then a seller we can trust, then price.
 // comfort: [1–5, why]. abu: does the Wed-dawn Abu Simbel plan still work?
 const BOATS = [
- { id:"merit", lux:["easy", "The boat does Karnak, Luxor Temple and the West Bank (Valley of the Kings) with its guide on Fri–Sat. Off Sat ≈noon. Sat: pool, Luxor Museum at 5. Sun: balloon at dawn, a free morning. Sacrifice: almost nothing in Luxor — we see it at the boat's pace, not ours."], prices:[["$1,815 — Luxor & Aswan Travel","https://www.luxorandaswan.com/en/cruise/Merit-Dahabiya"],["$999 — Pure Nile","https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/"]], short:"Merit", rank:2, pl:["✓","✗","✗"], book:"ahead", kind:"Dahabiya", name:"Merit", seller:"Luxor & Aswan Travel or Pure Nile Tours", pick:"Easiest",
+ { id:"merit", exp:[4, "The calmest and surest: a top-reviewed boat, no logistics risk, and Luxor done for us. Misses Edfu (the best-preserved temple in Egypt) and Silsila."], lux:["easy", "The boat does Karnak, Luxor Temple and the West Bank (Valley of the Kings) with its guide on Fri–Sat. Off Sat ≈noon. Sat: pool, Luxor Museum at 5. Sun: balloon at dawn, a free morning. Sacrifice: almost nothing in Luxor — we see it at the boat's pace, not ours."], prices:[["$1,815 — Luxor & Aswan Travel","https://www.luxorandaswan.com/en/cruise/Merit-Dahabiya"],["$999 — Pure Nile","https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/"]], short:"Merit", rank:2, pl:["✓","✗","✗"], book:"ahead", kind:"Dahabiya", name:"Merit", seller:"Luxor & Aswan Travel or Pure Nile Tours", pick:"Calmest",
    why:"The simplest plan: it spends its first night in Aswan, so we board after Abu Simbel with no rush. The best-reviewed boat (4.9★ from 60), twin cabins, and it does Luxor's temples and West Bank for us. But it sails past Edfu and Gebel el-Silsila.",
    fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Luxor, 3 nights", datesS:"Wed–Sat", ask:"wed",
    price:"$1,815 each (Luxor & Aswan Travel) · from $999 (Pure Nile)", est:"3 nights sharing a cabin, Sep–Apr rates", priceS:"$999–1,815", priceN:1400, verified:true,
@@ -4124,7 +4124,7 @@ const BOATS = [
    chk:[["✓","\"Every Wednesday\" from Aswan, 3 nights, ends Luxor"],["✓","4.9★ from 60 Tripadvisor reviews"],["✓","$1,815 double Sep–Apr (L&A); \"from $999 / person\" (Pure Nile)"],["✓","Six twin-bedded cabins (L&A)"],["?","Pure Nile: no independent reputation found"]],
    ta:"https://www.tripadvisor.com/Hotel_Review-g294205-d8700371-Reviews-Merit_Dahabya-Luxor_Nile_River_Valley.html", photoq:"Merit dahabiya Nile",
    wa:"201128775545", email:"booking@pureniletours.com", web:"https://www.luxorandaswan.com/en/cruise/Merit-Dahabiya", webL:"Luxor & Aswan Travel ↗", web2:"https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/", web2L:"Pure Nile ↗" },
- { id:"miriam", lux:["none", "Luxor plan unchanged — in Luxor Fri ≈11am as now. Sacrifice: Abu Simbel."], prices:[["€330/night — rates page","https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/"]], short:"Miriam", rank:9, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"Miriam", seller:"Nile Dahabiya Boats (operator)", pick:"Loses Abu Simbel",
+ { id:"miriam", exp:[2, "A lovely boat, but losing Abu Simbel outweighs it."], lux:["none", "Luxor plan unchanged — in Luxor Fri ≈11am as now. Sacrifice: Abu Simbel."], prices:[["€330/night — rates page","https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/"]], short:"Miriam", rank:9, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"Miriam", seller:"Nile Dahabiya Boats (operator)", pick:"Loses Abu Simbel",
    why:"Sails Tuesday with every stop we wanted (Silsila, Edfu, El Kab) — but it leaves Aswan Tuesday morning and sleeps at Silsila, so there's no Wednesday dawn in Aswan for Abu Simbel. Ranked low for that alone.",
    fit:"exact", when:"Tue 13 → Fri 16 · Aswan → Esna", datesS:"Tue–Fri", ask:"tue", askX:"Abu Simbel is a must for us. Could we join the boat later — e.g. Wednesday after Abu Simbel, at Kom Ombo or Edfu — and what would that cost?",
    price:"€330 each per night → ≈€990 each", est:"Suite €390/night → ≈€1,170. Page last updated Nov 2025 — confirm 2026", priceS:"≈€990", priceN:1150, verified:true,
@@ -4140,7 +4140,7 @@ const BOATS = [
    pros:["Our exact dates","Silsila, Edfu and El Kab"], cons:["Loses Abu Simbel","9am boarding — our flight lands 9:25","No reviews found"],
    chk:[["✓","\"Weekly departure – Every Tuesday on board Dahabiya Miriam\""],["✓","€330 per person per night double; €390 suite"],["✓","Night 1 at Silsila; Edfu; El Kab; Esna; Luxor ≈11am day 4"],["?","2026 prices, twin beds, inclusions"]],
    photoq:"Dahabiya Miriam Nile", email:"info@nile-dahabiya.com", web:"https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/", webL:"Their page ↗" },
- { id:"tec", lux:["easy", "Day 4 is Luxor's West Bank with the boat's guide; it ends on the Luxor Corniche Saturday. Sat afternoon: Luxor Museum, Luxor Temple at night. Sun: balloon at dawn, Karnak, fly 15:40. Sacrifice: little — the balloon loses its spare morning."], prices:[["$1,366.85 — FunEx (Viator reseller)","https://www.funex.com/tickets/dnc-vi7/sms:+19493671900"],["Tripadvisor listing (no price shown)","https://www.tripadvisor.com/AttractionProductReview-g294204-d24031600-Dahabiya_Nile_Cruise_Aswan_to_Luxor_4_Days_3_Nights-Aswan_Aswan_Governorate_Nile_R.html"]], short:"Tour Egypt Club", rank:3, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"Tour Egypt Club dahabiya", seller:"Tripadvisor / Viator", pick:"Hard to confirm",
+ { id:"tec", exp:[4, "Best route and real reviews, but the boat is a lottery and we can't confirm details by Sunday."], lux:["easy", "Day 4 is Luxor's West Bank with the boat's guide; it ends on the Luxor Corniche Saturday. Sat afternoon: Luxor Museum, Luxor Temple at night. Sun: balloon at dawn, Karnak, fly 15:40. Sacrifice: little — the balloon loses its spare morning."], prices:[["$1,366.85 — FunEx (Viator reseller)","https://www.funex.com/tickets/dnc-vi7/sms:+19493671900"],["Tripadvisor listing (no price shown)","https://www.tripadvisor.com/AttractionProductReview-g294204-d24031600-Dahabiya_Nile_Cruise_Aswan_to_Luxor_4_Days_3_Nights-Aswan_Aswan_Governorate_Nile_R.html"]], short:"Tour Egypt Club", rank:3, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"Tour Egypt Club dahabiya", seller:"Tripadvisor / Viator", pick:"Hard to confirm",
    why:"Goes everywhere we want — Kom Ombo, Gebel el-Silsila, Edfu, plus El Kab and Luxor — with real reviews and Tripadvisor's protection. But the boat is assigned (could be any of four), there's no operator email or WhatsApp — only Tripadvisor's message button — and half the money is non-refundable once booked. Hard to pin down a 1pm boarding by Sunday.",
    fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Luxor", datesS:"Wed–Sat", ask:"wed", askX:"Their day 1 includes Philae, which we'll have seen on Tuesday, so boarding at 1pm is perfect for us.",
    price:"$1,366.85 on a Viator reseller", est:"$1,500 list; per person not stated", priceS:"≈$1,367", priceN:1367, verified:true,
@@ -4157,7 +4157,7 @@ const BOATS = [
    chk:[["✓","Route incl. Silsila and El Kab (Tripadvisor)"],["✓","4.6★ · 35 reviews"],["✓","\"Wednesday or Friday\" Oct–Apr (reseller)"],["?","Price only on a reseller; operator identity"]],
    ta:"https://www.tripadvisor.com/AttractionProductReview-g294204-d24031600-Dahabiya_Nile_Cruise_Aswan_to_Luxor_4_Days_3_Nights-Aswan_Aswan_Governorate_Nile_R.html", photoq:"Turquoise dahabiya Nile",
    web:"https://www.tripadvisor.com/AttractionProductReview-g294204-d24031600-Dahabiya_Nile_Cruise_Aswan_to_Luxor_4_Days_3_Nights-Aswan_Aswan_Governorate_Nile_R.html", webL:"Book on Tripadvisor ↗" },
- { id:"akhnaton", lux:["squeeze", "Off at Esna Sat, Luxor by ≈noon. Same squeeze as The Orient: West Bank in the heat Saturday, museum and temple Saturday evening, balloon and Karnak Sunday. Sacrifice: rest time, cooler tomb hours, the balloon's spare morning."], prices:[["$899 — Pure Nile","https://pureniletours.com/tour/akhnaton-dahabiya-nile-cruise/"]], short:"Akhnaton", rank:4, pl:["?","✗","?"], book:"ahead", kind:"Dahabiya", name:"Akhnaton", seller:"Pure Nile Tours", pick:"Cheapest",
+ { id:"akhnaton", exp:[3, "Fine and cheap, but small cabins, unconfirmed stops and the same Luxor squeeze."], lux:["squeeze", "Off at Esna Sat, Luxor by ≈noon. Same squeeze as The Orient: West Bank in the heat Saturday, museum and temple Saturday evening, balloon and Karnak Sunday. Sacrifice: rest time, cooler tomb hours, the balloon's spare morning."], prices:[["$899 — Pure Nile","https://pureniletours.com/tour/akhnaton-dahabiya-nile-cruise/"]], short:"Akhnaton", rank:4, pl:["?","✗","?"], book:"ahead", kind:"Dahabiya", name:"Akhnaton", seller:"Pure Nile Tours", pick:"Cheapest",
    why:"The cheapest, and boarding after Abu Simbel is easy. But Kom Ombo and Edfu aren't confirmed, there's no Silsila, and reviewers say the cabins are very small.",
    fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Esna", datesS:"Wed–Sat", ask:"wed",
    price:"From $899 each, 3 nights", est:"", priceS:"$899", priceN:899, verified:true,
@@ -4174,7 +4174,7 @@ const BOATS = [
    chk:[["✓","\"Every Wednesday\", 4 days/3 nights"],["✓","\"Start from $899 USD / person\""],["✓","4.9★ · 16 reviews; small cabins (kimkim, Feb 2025)"],["?","Edfu stop, night-3 mooring, twin beds"]],
    ta:"https://www.tripadvisor.com/Attraction_Review-g303853-d27139040-Reviews-Akhnaton_Dahabiya-Esna_Qena_Governorate_Nile_River_Valley.html", photoq:"Akhnaton dahabiya Nile",
    wa:"201128775545", email:"booking@pureniletours.com", web:"https://pureniletours.com/tour/akhnaton-dahabiya-nile-cruise/", webL:"Their page ↗" },
- { id:"orient", lux:["squeeze", "In Luxor Sat ≈11am. Sat: Valley of the Kings + Hatshepsut in the midday heat, Luxor Museum at 5, Luxor Temple lit up. Sun: balloon at dawn, Karnak, fly 15:40. Sacrifice: the pool afternoon, cooler tomb hours, and the balloon's spare morning (if Sunday's windy, no balloon)."], prices:[["€330/night — boat page","https://www.nile-dahabiya.com/our-boats/dahabiya-the-orient/"],["Rates & days","https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/"]], short:"The Orient", rank:1, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"The Orient", seller:"Djed Egypt Travel (Nile Dahabiya Boats)", pick:"Our pick",
+ { id:"orient", exp:[5, "The most memorable: a real sailing boat for 10 guests, every temple we want, a night moored at Silsila and a campfire dinner on an island. Costs us a rushed Luxor and depends on the Kom Ombo join."], lux:["squeeze", "In Luxor Sat ≈11am. Sat: Valley of the Kings + Hatshepsut in the midday heat, Luxor Museum at 5, Luxor Temple lit up. Sun: balloon at dawn, Karnak, fly 15:40. Sacrifice: the pool afternoon, cooler tomb hours, and the balloon's spare morning (if Sunday's windy, no balloon)."], prices:[["€330/night — boat page","https://www.nile-dahabiya.com/our-boats/dahabiya-the-orient/"],["Rates & days","https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/"]], short:"The Orient", rank:1, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"The Orient", seller:"Djed Egypt Travel (Nile Dahabiya Boats)", pick:"Best experience",
    why:"Every place we want — Kom Ombo, Gebel el-Silsila, Edfu, plus El Kab — on a small boutique boat (4 cabins + a suite, twin beds available), from an operator with ≈1,000 Tripadvisor reviews at ≈4.9★. The one catch: it picks up at 9am Wednesday while we're at Abu Simbel, so we ask to join at Kom Ombo that afternoon (≈50 min by car).",
    fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Esna, 3 nights", datesS:"Wed–Sat", ask:"wed", askX:"We'll be at Abu Simbel on Wednesday morning (back in Aswan ≈12:30) — can we join the boat at Kom Ombo that afternoon? What time would you be there?",
    price:"€330 each per night → ≈€990 each", est:"Suite €390/night. Confirm the 2026 rate", priceS:"≈€990", priceN:1150, verified:true,
@@ -4191,7 +4191,7 @@ const BOATS = [
    chk:[["✓","\"Every Wednesday on board Dahabiya The Orient\""],["✓","Day 1 Kom Ombo, night at Silsila, Edfu, El Kab, Esna, Luxor ≈11am day 4"],["✓","4 cabins + suite, twin or king; inclusions listed on the boat page"],["✓","Djed Egypt Travel ≈1,006 Tripadvisor reviews"],["?","Whether they'll let us join at Kom Ombo — ask"]],
    ta:"https://www.tripadvisor.co.uk/ShowUserReviews-g294201-d8487834-r980288182-Djed_Egypt_Travel_Day_Tours-Cairo_Cairo_Governorate.html", photoq:"Orient dahabiya Nile Djed",
    email:"info@nile-dahabiya.com", web:"https://www.nile-dahabiya.com/our-boats/dahabiya-the-orient/", webL:"The boat ↗", web2:"https://www.nile-dahabiya.com/itineraries-rates/cruise-from-aswan-to-esna/", web2L:"Itinerary ↗" },
- { id:"custom", lux:["none", "Luxor plan unchanged, and their day 4 adds the West Bank and Karnak with a guide."], prices:[["$945 — Egypt Tours Portal","https://www.egypttoursportal.com/en-nz/egypt-nile-cruises/3-nights-dahabiya-aswan"]], short:"Built to order", rank:6, pl:["✓","✗","✓"], book:"ahead", kind:"Dahabiya", name:"A Tuesday boat, built to order", seller:"Egypt Tours Portal",
+ { id:"custom", exp:[3, "Good seller, unknown boat; Abu Simbel only if they hold it in Aswan."], lux:["none", "Luxor plan unchanged, and their day 4 adds the West Bank and Karnak with a guide."], prices:[["$945 — Egypt Tours Portal","https://www.egypttoursportal.com/en-nz/egypt-nile-cruises/3-nights-dahabiya-aswan"]], short:"Built to order", rank:5, pl:["✓","✗","✓"], book:"ahead", kind:"Dahabiya", name:"A Tuesday boat, built to order", seller:"Egypt Tours Portal",
    why:"The most trusted agency of the lot (4.9★ from 964 Trustpilot reviews) and it runs every day. Its standard trip sleeps at Kom Ombo night 1, which loses Abu Simbel — only worth it if they'll hold the boat in Aswan Tuesday night (likely a private charter).",
    fit:"exact", when:"Tue 13 → Fri 16 · if they say yes", datesS:"Tue–Fri", ask:"tue", askX:"If a shared Tuesday boat can't stay moored in Aswan, please quote a private charter, and tell us the boat's name.",
    price:"From $945 each (shared)", est:"Private charter: no price published — ask", priceS:"$945+", priceN:1300, verified:true,
@@ -4207,7 +4207,7 @@ const BOATS = [
    pros:["Most trusted seller","Runs every day","Luxor sights on day 4"], cons:["Boat unknown","Abu Simbel only if they hold the Aswan night"],
    chk:[["✓","\"Everyday\", \"From $945 / person\""],["✓","Trustpilot 4.9 · 964 reviews"],["✓","Nights Kom Ombo, Edfu, Esna; no Silsila"],["?","Boat name; Abu Simbel"]],
    photoq:"5 star dahabiya Aswan Esna", web:"https://www.egypttoursportal.com/en-nz/egypt-nile-cruises/3-nights-dahabiya-aswan", webL:"Their page ↗" },
- { id:"pasha", lux:["none", "Luxor plan unchanged — off Friday as now."], prices:[["Their page (no price)","https://ask-aladdin.com/all-destinations/egypt/travel-cruises/dahabiya-nile-cruise-pacha"]], short:"El Pasha", rank:5, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"El Pasha", seller:"Ask-Aladdin (agent)",
+ { id:"pasha", exp:[2, "Right route, but no reviews, no price and a shaky seller."], lux:["none", "Luxor plan unchanged — off Friday as now."], prices:[["Their page (no price)","https://ask-aladdin.com/all-destinations/egypt/travel-cruises/dahabiya-nile-cruise-pacha"]], short:"El Pasha", rank:6, pl:["✓","✓","✓"], book:"ahead", kind:"Dahabiya", name:"El Pasha", seller:"Ask-Aladdin (agent)",
    why:"Every stop we want and our Tuesday — but only works for Abu Simbel if they keep the boat in Aswan Tuesday night. And there are no reviews, no price, its page contradicts itself, and the agent's Trustpilot is 3.3★.",
    fit:"exact", when:"Tue 13 → Fri 16 · Aswan → Esna", datesS:"Tue–Fri", ask:"tue",
    price:"No price published", est:"", priceS:"?", priceN:1300,
@@ -4223,7 +4223,7 @@ const BOATS = [
    pros:["Our dates and route"], cons:["No reviews","No price","Weak seller record"],
    chk:[["✓","\"Every Tuesday from Aswan to Luxor (Esna)\""],["✓","Kom Ombo, Silsila, Edfu, Esna"],["✓","Trustpilot 3.3 · 130 reviews"],["?","Price; cabins; the page's 6-day plan"]],
    photoq:"Pasha dahabiya Nile", wa:"201066503161", email:"info@ask-aladdin.com", web:"https://ask-aladdin.com/all-destinations/egypt/travel-cruises/dahabiya-nile-cruise-pacha", webL:"Their page ↗" },
- { id:"tueship", lux:["none", "Luxor plan unchanged — off Friday in Luxor."], prices:[["$554 — TourRadar","https://www.tourradar.com/t/160829"]], short:"Tuesday ship", rank:7, pl:["✓","✗","✓"], book:"ahead", kind:"Cruise ship", name:"A big ship that sails Tuesday", seller:"TourRadar (unnamed 5-star ship)",
+ { id:"tueship", exp:[2, "Comfortable cabin, crowded temples, big-ship timetable."], lux:["none", "Luxor plan unchanged — off Friday in Luxor."], prices:[["$554 — TourRadar","https://www.tourradar.com/t/160829"]], short:"Tuesday ship", rank:8, pl:["✓","✗","✓"], book:"ahead", kind:"Cruise ship", name:"A big ship that sails Tuesday", seller:"TourRadar (unnamed 5-star ship)",
    why:"The cheapest comfortable bed that keeps Tuesday: a cabin, a shower, a pool. But it's a 60-cabin ship on the crowded timetable, not a dahabiya.",
    fit:"exact", when:"Tue 13 → Fri 16 · Aswan → Luxor", datesS:"Tue–Fri", ask:"tue",
    price:"$554 each, 3 nights", est:"Seat availability not shown", priceS:"$554", priceN:554, verified:true,
@@ -4236,7 +4236,7 @@ const BOATS = [
    pros:["Keeps Tuesday","Cheapest real cabin","Book online now"], cons:["Not a dahabiya","Crowds","Ship unnamed"],
    chk:[["✓","TourRadar t/160829 lists Tue 13 Oct from Aswan, 3 nights, $554"],["?","Ship name; seats left"]],
    photoq:"5 star Nile cruise ship Aswan", web:"https://www.tourradar.com/t/160829", webL:"TourRadar ↗" },
- { id:"felucca", lux:["none", "Mostly unchanged — a car from Kom Ombo/Edfu gets us to Luxor Friday. Sacrifice: Silsila probably, and comfort."], prices:[["$150/night — GetMyBoat listing","https://www.getmyboat.com/trips/EYnA0q4a"]], short:"Felucca", rank:8, pl:["✓","?","?"], book:"onsite", kind:"Felucca", name:"A private felucca", seller:"Aswan captains (Captain Ziggy, JJ Jamaica)",
+ { id:"felucca", exp:[3, "Unforgettable for a night, hard for two. No shower."], lux:["none", "Mostly unchanged — a car from Kom Ombo/Edfu gets us to Luxor Friday. Sacrifice: Silsila probably, and comfort."], prices:[["$150/night — GetMyBoat listing","https://www.getmyboat.com/trips/EYnA0q4a"]], short:"Felucca", rank:7, pl:["✓","?","?"], book:"onsite", kind:"Felucca", name:"A private felucca", seller:"Aswan captains (Captain Ziggy, JJ Jamaica)",
    why:"Beautiful, cheap and very Nile — but not comfortable: mattresses on deck, no shower, two nights.",
    fit:"exact", when:"Wed 14 → Fri 16 · 2 nights on deck", datesS:"Wed–Fri",
    price:"≈$75 each per night (listing: $150/night for up to 5)", est:"≈$150–300 each all in — our estimate", priceS:"≈$150–300", priceN:250,
@@ -4252,7 +4252,7 @@ const BOATS = [
    pros:["A fraction of the price","The most Nile you can get"], cons:["No cabin, no shower","Two nights, not three","Wind decides"],
    chk:[["✓","3 days/2 nights to Kom Ombo is the classic trip"],["✓","Tripadvisor: Ziggy 4.6 · 274; JJ 5.0 · 149"],["✓","Passport copies for the police licence"],["?","2026 walk-up price for 2"]],
    ta:"https://www.tripadvisor.com/Attraction_Review-g294204-d1758983-Reviews-Aswan_Felucca_Tours-Aswan_Aswan_Governorate_Nile_River_Valley.html", photoq:"felucca overnight Aswan Kom Ombo", wa:"201208562850", web:"https://www.tripadvisor.com/AttractionProductReview-g294204-d26608816-3_or_2_or_1_Nights_Mighty_Nile_Felucca_Adventure-Aswan_Aswan_Governorate_Nile_Rive.html", webL:"JJ Jamaica ↗" },
- { id:"quay", lux:["?", "Depends on what we find."], prices:[["$45–55/night — 2021 report","https://motohorek.life/en/2022/02/nile-cruise-egypt-on-budget/"]], short:"Turn up", rank:10, pl:["?","?","?"], book:"onsite", kind:"Dahabiya or ship", name:"Turn up and see", seller:"Aswan agencies and the moorings",
+ { id:"quay", exp:[1, "A gamble."], lux:["?", "Depends on what we find."], prices:[["$45–55/night — 2021 report","https://motohorek.life/en/2022/02/nile-cruise-egypt-on-budget/"]], short:"Turn up", rank:10, pl:["?","?","?"], book:"onsite", kind:"Dahabiya or ship", name:"Turn up and see", seller:"Aswan agencies and the moorings",
    why:"The gamble. Dahabiyas sell out through agents; a big ship might have a cabin at the dock. Comfort and price unknown until you're standing on the deck.",
    fit:"gamble", when:"Tue 13 or Wed 14 — if anything's empty", datesS:"?",
    price:"Ships: ≈$45–55 each/night (one 2021 report)", est:"Dahabiya: no discount expected", priceS:"?", priceN:600,
@@ -4297,7 +4297,7 @@ function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return 
   return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The Nile boat · ${urg}</span><b>Pick our Nile boat</b><small>${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
 // undecided and still time to book: it goes above the Now card; once decided (or from Monday) it sits quietly below it
 function renderBoatSlot(){ const el=document.getElementById("boatSlot"); if(!el) return; el.innerHTML=safe(boatSlotHTML)||""; const now=document.getElementById("now"); if(!now) return;
-  const top=!boatChoice() && cairoNow().date<="2026-10-11"; const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("top", top); }
+  const top=!boatChoice() && cairoNow().date<="2026-10-11"; const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("attop", top); }
 // ---------- the sheet
 const boatDots=n=>`<span class="cdots" aria-label="Comfort ${n} of 5">${[1,2,3,4,5].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`;
 const boatPhotos=b=>`${b.photoq?`<a class="btn mini" target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(b.photoq)}">📷 Photos ↗</a>`:""}${b.ta?`<a class="btn mini" target="_blank" rel="noopener" href="${b.ta}">⭐ Reviews ↗</a>`:""}`;
@@ -4315,8 +4315,9 @@ function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes
     <div><span>Dates</span><b>${esc(b.datesS||"?")}</b><small class="${b.fit==="exact"?"ok":"amber"}">${b.fit==="exact"?"our dates":b.fit==="plus1"?"off Sat":esc((BOAT_FIT[b.fit]||[""])[0])}</small></div>
     <div><span>Places</span><b>${nPl}/3</b><small class="pls">${["Kom Ombo","Silsila","Edfu"].map((n,i)=>`<i class="${b.pl[i]==="✓"?"y":b.pl[i]==="✗"?"n":"q"}">${b.pl[i]==="✓"?"✓":b.pl[i]==="✗"?"✗":"?"} ${n}</i>`).join("")}</small></div>
     <div><span>Each</span><b>${esc(b.priceS||"?")}</b><small>${b.verified?"published":"estimate"}</small></div>
-    <div><span>Comfort</span>${boatDots(b.comfort[0])}<small class="${b.abu==="✗"?"bad":""}">Abu S. ${abuT}</small></div>
+    <div><span>Experience</span>${boatDots(b.exp[0])}<small class="${b.abu==="✗"?"bad":""}">Abu S. ${abuT}</small></div>
    </div>
+   <p class="bc-exp"><b>The experience:</b> ${esc(b.exp[1])}</p>
    ${b.lux?`<p class="bc-lx ${b.lux[0]}"><b>Luxor:</b> ${esc(b.lux[1])}</p>`:""}
    <p class="bc-why">${esc(b.why)}</p>
    <ul class="bc-pc">${b.pros.map(x=>`<li class="p">${esc(x)}</li>`).join("")}${b.cons.map(x=>`<li class="c">${esc(x)}</li>`).join("")}</ul>
@@ -4331,7 +4332,7 @@ function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes
   </article>`; }
 // the whole decision on one screen: tap a row to jump to its card
 function boatGlance(list){ const mv=boatVotes(), ov=boatOther().votes||{}, o=OTHER(); const v=x=>x>0?"👍":x<0?"👎":"·";
-  return `<div class="bs-gl"><p class="bs-h">At a glance · tap a row${o?` · votes: yours, then ${esc(o)}'s`:""}</p><table><thead><tr><th>#</th><th>Option</th><th title="Kom Ombo, Silsila, Edfu">Places</th><th>Each</th><th>Comfort</th><th title="Abu Simbel">Abu S.</th><th title="You, then ${esc(o||"")}">Votes</th></tr></thead><tbody>${list.map(b=>`<tr data-bjump="${b.id}" class="${(mv[b.id]||0)>0&&(ov[b.id]||0)>0?"both":""}${(mv[b.id]||0)<0||(ov[b.id]||0)<0?" out":""}"><td>${b.rank}</td><td><b>${esc(b.short||b.name)}</b><small>${esc(b.datesS||"")}</small></td><td class="c pl">${b.pl.filter(x=>x==="✓").length}/3${b.pl.includes("?")?`<sup>?</sup>`:""}</td><td>${esc(b.priceS||"")}</td><td>${boatDots(b.comfort[0])}</td><td class="c">${b.abu==="✓"?"✓":b.abu==="✗"?"✗":"?"}</td><td class="c">${v(mv[b.id]||0)}${o?` ${v(ov[b.id]||0)}`:""}</td></tr>`).join("")}</tbody></table><p class="muted">Ranked for what you asked for: the places first (Kom Ombo, Silsila, Edfu — with Abu Simbel done on our own), then comfort, a seller we can trust, then price. Tap a row.</p></div>`; }
+  return `<div class="bs-gl"><p class="bs-h">At a glance · tap a row${o?` · votes: yours, then ${esc(o)}'s`:""}</p><table><thead><tr><th>#</th><th>Option</th><th title="Kom Ombo, Silsila, Edfu">Places</th><th>Each</th><th title="Overall experience">Overall</th><th title="Abu Simbel">Abu S.</th><th title="You, then ${esc(o||"")}">Votes</th></tr></thead><tbody>${list.map(b=>`<tr data-bjump="${b.id}" class="${(mv[b.id]||0)>0&&(ov[b.id]||0)>0?"both":""}${(mv[b.id]||0)<0||(ov[b.id]||0)<0?" out":""}"><td>${b.rank}</td><td><b>${esc(b.short||b.name)}</b><small>${esc(b.datesS||"")}</small></td><td class="c pl">${b.pl.filter(x=>x==="✓").length}/3${b.pl.includes("?")?`<sup>?</sup>`:""}</td><td>${esc(b.priceS||"")}</td><td>${boatDots(b.exp[0])}</td><td class="c">${b.abu==="✓"?"✓":b.abu==="✗"?"✗":"?"}</td><td class="c">${v(mv[b.id]||0)}${o?` ${v(ov[b.id]||0)}`:""}</td></tr>`).join("")}</tbody></table><p class="muted">Ranked by the overall experience: the places (with Abu Simbel done on our own), the boat itself, how relaxed the days are — Luxor included — and how sure we are it works. Tap a row.</p></div>`; }
 function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally(); const showAll=sessionStorage.getItem(BOAT_LS.showAll)==="1";
   let list=[...BOATS].sort((a,b)=>a.rank-b.rank); if(!c){ if(boatFilter==="ahead"||boatFilter==="onsite") list=list.filter(b=>b.book===boatFilter); if(boatFilter==="both") list=list.filter(b=>boatBothUp().includes(b)); }
   const chosenB=c?BOATS.find(b=>b.id===c.id):null; const rest=c?BOATS.filter(b=>b!==chosenB):[];
@@ -4349,7 +4350,7 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
     <tr class="chg"><td>Sun 18</td><td>Fly 15:40</td><td>Balloon at dawn, West Bank, fly 15:40</td></tr></table>
    <p><b>What it does to Luxor:</b> we arrive Saturday instead of Friday, so we lose about a day there. <b>Merit and Tour Egypt Club</b> end in Luxor and do Karnak, Luxor Temple and the Valley of the Kings for us — we lose almost nothing. <b>The Orient</b> ends at Esna, so Luxor gets squeezed: tombs in the Saturday heat, museum and temple that evening, balloon and Karnak Sunday morning — and the balloon has no spare morning if Sunday is windy. Each card says exactly what changes.</p>
    <p><b>Boat or the Hilton on Friday?</b> The boat. The Friday night comes with the cruise anyway (the Hilton night was $50), and we wake up on the Nile instead of by a pool. We keep the Hilton for Saturday.</p>
-   <p class="bs-pick"><b>Our pick: The Orient.</b> It goes everywhere we want — Kom Ombo, Gebel el-Silsila, Edfu, El Kab — on a small boat with twin cabins, run by a company with ≈1,000 great reviews. ≈€990 each, nearly everything included. <b>One question first:</b> it leaves at 9am Wednesday while we're at Abu Simbel, so we ask to join at Kom Ombo that afternoon.<br><b>If they say no: Merit.</b> The easiest plan and the most comfortable boat — but it skips Edfu and Silsila.</p>
+   <p class="bs-pick"><b>Our pick for the best overall experience: The Orient</b> — if they'll let us join at Kom Ombo after Abu Simbel. A real sailing boat for 10 guests, every temple we want (Kom Ombo, Silsila, Edfu, El Kab), a night at Silsila and a campfire dinner on an island; ≈€990 each, nearly everything included. The price: Luxor gets squeezed into Saturday afternoon and Sunday morning.<br><b>If they say no — or if we'd rather have calm days: Merit.</b> The surest, most relaxed choice: a top-reviewed boat, no logistics risk, and it does Luxor's big sites for us. It misses Edfu and Silsila.</p>
    <p class="bs-h">What we each do now</p>
    <ol class="bs-todo">
     <li><b>Both:</b> look at The Orient and Merit below — photos, places, price — and tap 👍 or 👎. ${esc(OTHER()||"The other phone")} sees your vote.</li>
@@ -4359,7 +4360,7 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
    </ol>
    <p class="bs-dl"><b>Deadline: Sunday night.</b> No answer by then → a felucca from Aswan on Wednesday.</p>
    <details class="bs-more"><summary>More detail — the ranking, Abu Simbel options, bags, money</summary>
-    <p><b>The ranking:</b> places first (Kom Ombo, Silsila, Edfu), then comfort, then a seller we can trust, then price. Tour Egypt Club also goes everywhere, but the boat is assigned and you can only reach them through Tripadvisor — hard to confirm by Sunday.</p>
+    <p><b>The ranking:</b> the overall experience — places, the boat, relaxed days, and how sure we are it works — then price. Tour Egypt Club also goes everywhere, but the boat is assigned and you can only reach them through Tripadvisor — hard to confirm by Sunday.</p>
     <p><b>Abu Simbel:</b> a private car at 4am Wednesday (≈$180–250 for both), back ≈12:30. Or the plane: EgyptAir 08:00 from Aswan, back 12:40 (≈$170–190 each, flights get suspended sometimes — check egyptair.com). Entry 822 EGP each.</p>
     <p><b>Why not a Tuesday boat:</b> the only ones leave Tuesday morning and lose Abu Simbel.</p>
     <p><b>Bags — we never carry them:</b> Tuesday a car drops them at the hotel on the way to Philae; Wednesday they ride in the Abu Simbel car to the boat; Saturday the boat's transfer takes them to the Hilton.</p>
@@ -4378,7 +4379,7 @@ function renderBoatSheet(keep){ const s=document.getElementById("sheetBoat"); co
   lsSet(BOAT_LS.seen, lsGet(BOAT_LS.other,"")); renderBoatSlot(); }
 function boatOpen(){ renderBoatSheet(false); boatPull().then(ch=>{ if(ch){ renderBoatSheet(true); boatApply(); } }); }
 // the chosen boat becomes the bed's name everywhere
-function boatApply(){ try{ const c=boatChoice(); const h=HOTELS.find(x=>/^Dahabiya/i.test(x.n)); if(!h) return; if(!h._n0) h._n0=h.n; const b=c&&BOATS.find(x=>x.id===c.id); h.n = b ? (b.kind==="Dahabiya"?`Dahabiya — ${b.name}`:h._n0.replace("(name TBC)", `→ ${b.name.toLowerCase()} instead`)) : h._n0; if(typeof renderHotels==="function") safe(renderHotels); }catch(e){} }
+function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0); const c=boatChoice(); const h=HOTELS.find(x=>/^Dahabiya/i.test(x.n)); if(!h) return; if(!h._n0) h._n0=h.n; const b=c&&BOATS.find(x=>x.id===c.id); h.n = b ? (b.kind==="Dahabiya"?`Dahabiya — ${b.name}`:h._n0.replace("(name TBC)", `→ ${b.name.toLowerCase()} instead`)) : h._n0; if(typeof renderHotels==="function") safe(renderHotels); }catch(e){} }
 document.addEventListener("click", e=>{
   if(e.target.closest("[data-boat-open]")){ boatOpen(); return; }
   const f=e.target.closest("[data-bfilter]"); if(f){ boatFilter=f.dataset.bfilter; boatConfirm=""; renderBoatSheet(true); return; }
@@ -4390,7 +4391,7 @@ document.addEventListener("click", e=>{
   const cp=e.target.closest("[data-copy-boat]"); if(cp){ const b=BOATS.find(x=>x.id===cp.dataset.copyBoat); const t=boatMsg(b); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into WhatsApp or email")).catch(()=>shareText(t,"The boat")); return; }
 });
 (function(){ const css=`
-#boatSlot:empty{display:none}#boatSlot.top .boatslot{margin:0 0 12px}
+#boatSlot:empty{display:none}#boatSlot.attop .boatslot{margin:0 0 12px}
 .boatslot{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:12px;border:1.5px solid var(--nile);background:var(--nile-soft)}
 .boatslot.chosen{border-color:var(--ok);background:var(--card)}
 .boatslot .bs-ic{font-size:1.5rem;flex:none}.boatslot .bs-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
@@ -4423,6 +4424,7 @@ html.bigtext .bc-keys{grid-template-columns:repeat(2,1fr)}
 .bc-more .bc-price{margin:8px 0 4px}.bc-more .bc-dl{margin-top:8px}
 .bc-rank{background:var(--nile);color:#fff;border-radius:999px;padding:2px 8px;font-weight:700}
 .bc-match{font-family:var(--mono);font-size:0.6471rem;background:var(--ok);color:#fff;border-radius:999px;padding:2px 8px;vertical-align:middle;white-space:nowrap}
+.bc-exp{font-size:0.8235rem;line-height:1.4;margin:8px 0 0}
 .bc-lx{font-size:0.8235rem;line-height:1.4;margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--sand)}.bc-lx.squeeze{background:var(--dusk-soft)}.bc-lx.easy,.bc-lx.none{background:color-mix(in srgb,var(--ok) 12%,transparent)}
 .bc-why{margin:8px 0;font-size:0.8235rem;line-height:1.4;border-left:3px solid var(--nile);padding-left:10px}
 .bc-photos{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
@@ -4449,6 +4451,21 @@ html.bigtext .bv{margin-left:0;flex-basis:100%}
 // first paint + keep both phones in step while it's still undecided or before boarding
 (function(){ const tick=async()=>{ if(document.hidden) return; if(cairoNow().date>"2026-10-15") return; const ch=await boatPull(); if(ch){ boatApply(); renderBoatSlot(); renderBoatSheet(true); } };
   setTimeout(()=>{ boatApply(); renderBoatSlot(); tick(); }, 300); setInterval(tick, 45000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) tick(); }); })();
+// ---------- the latest thinking on the days themselves: Tue–Sun carry a note until the boat is decided
+const BOAT_DAYNOTE = {
+ tue13:"We don't board today. Philae, high tea and the Nubian village as planned, then a night in an Aswan hotel (Basma or the Old Cataract). A car takes the bags straight to the hotel from the airport.",
+ wed14:"Abu Simbel by private car at 4am from the hotel, bags in the trunk — then onto the boat: Merit in Aswan, The Orient at Kom Ombo (≈50 min on).",
+ thu15:"On board all day. The Orient: Gebel el-Silsila and Edfu. Merit: Kom Ombo and the Esna lock.",
+ fri16:"Still on the boat — no drive to Luxor and no Hilton tonight. The Orient: El Kab and Esna. Merit: Karnak and Luxor Temple with its guide.",
+ sat17:"Off the boat ≈11am–noon. No balloon this morning — it moves to Sunday. Afternoon: the West Bank (The Orient) or the pool (Merit, which did the West Bank this morning). Luxor Museum at 5, Luxor Temple lit up. Hilton tonight.",
+ sun18:"Balloon at dawn (pickup ≈5:15) — no spare morning if it's windy. Then Karnak (if the boat didn't do it), lunch, fly 15:40."
+};
+function boatDayNote(){ try{ const card=document.getElementById("dayCard"); if(!card||typeof DAYS==="undefined"||typeof sel==="undefined"||preMode) return; const d=DAYS[sel]; const txt=d&&BOAT_DAYNOTE[d.id]; card.querySelectorAll(".boatnote").forEach(x=>x.remove()); if(!txt) return;
+  const c=boatChoice(); const b=c&&BOATS.find(x=>x.id===c.id); if(b&&b.fit==="exact") return;   // a Tuesday boat keeps the written plan
+  const el=document.createElement("div"); el.className="boatnote"; el.innerHTML=`<span class="bn-i">⛵</span><div><b>${b?`With ${esc(b.name)}:`:"With a Wednesday boat (both top picks):"}</b> ${esc(txt)}</div>${b?"":`<button type="button" class="btn mini" data-boat-open="1">The boat</button>`}`;
+  const head=card.querySelector(".dayhead"); if(head&&head.nextSibling) head.parentNode.insertBefore(el, head.nextSibling); else card.prepend(el); }catch(e){} }
+(function(){ const css=`.boatnote{display:flex;gap:10px;align-items:flex-start;margin:10px 0 12px;padding:10px 12px;border-radius:12px;background:var(--nile-soft);border:1px solid var(--nile);font-size:0.8235rem;line-height:1.4}.boatnote .bn-i{font-size:1.1rem}.boatnote>div{flex:1}.boatnote b{color:var(--nile-ink)}html.bigtext .boatnote{flex-wrap:wrap}`; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st);
+  setTimeout(()=>{ try{ if(typeof renderDay==="function"&&!renderDay.__boat){ const _rd=renderDay; renderDay=function(){ const r=_rd.apply(this,arguments); boatDayNote(); return r; }; renderDay.__boat=1; } boatDayNote(); }catch(e){} }, 0); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
