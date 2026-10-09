@@ -2276,7 +2276,8 @@ function indyMap(){
   const grid=(()=>{ let s=""; for(let lon=25;lon<=37;lon+=2) s+=`<line x1="${mx(lon)}" y1="0" x2="${mx(lon)}" y2="${MAP_H}" class="grid"/>`; for(let lat=22;lat<=32;lat+=2) s+=`<line x1="0" y1="${my(lat)}" x2="${MAP_W}" y2="${my(lat)}" class="grid"/>`; return s; })();
   const seaLabels=`<text x="${mx(27.4)}" y="${my(31.78)}" class="sealbl">MEDITERRANEAN</text><text x="${mx(35.6)}" y="${my(25.6)}" class="sealbl" transform="rotate(62 ${mx(35.6)} ${my(25.6)})">RED SEA</text><text x="${mx(26.2)}" y="${my(25.2)}" class="desertlbl">WESTERN DESERT</text><text x="${mx(33.6)}" y="${my(29.6)}" class="desertlbl" style="font-size:1.2941rem">SINAI</text>`;
   const compass=`<g class="compass" transform="translate(${MAP_W-120} 150)"><circle r="60"/><path d="M0 -54 L13 0 L0 54 L-13 0 Z"/><path d="M-54 0 L0 -13 L54 0 L0 13 Z" opacity=".45"/><text y="-70" text-anchor="middle">N</text></g>`;
-  const motion = curPath ? `<path id="curleg" d="${curPath}" class="route cur" pathLength="1"/><g class="veh"><text text-anchor="middle" dy="-18">${veh}</text><animateMotion dur="2.4s" begin="0.1s" fill="freeze" rotate="0"><mpath href="#curleg" xlink:href="#curleg"/></animateMotion></g>` : `<text x="${mx(tip[0])}" y="${(+my(tip[1])-26).toFixed(1)}" class="vehstat" text-anchor="middle">${veh}</text>`;
+  const onBoat=!preMode&&cur&&(cur[3]==="boat"||(cur[3]==="stay"&&/dahabiya|boat|felucca/i.test(d.sleep||"")));
+  const motion = curPath ? `<path id="curleg" d="${curPath}" class="route cur" pathLength="1"/><g class="veh">${onBoat&&typeof FELUCCA!=="undefined"?`<g transform="translate(0,-14) scale(1.9)">${FELUCCA}</g>`:`<text text-anchor="middle" dy="-18">${veh}</text>`}<animateMotion dur="2.4s" begin="0.1s" fill="freeze" rotate="0"><mpath href="#curleg" xlink:href="#curleg"/></animateMotion></g>` : (onBoat&&typeof FELUCCA!=="undefined"?`<g transform="translate(${mx(tip[0])},${(+my(tip[1])-22).toFixed(1)}) scale(1.9)">${FELUCCA}</g>`:`<text x="${mx(tip[0])}" y="${(+my(tip[1])-26).toFixed(1)}" class="vehstat" text-anchor="middle">${veh}</text>`);
   return `<div class="indy"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" aria-label="Egypt, the route so far">${sea}${grid}${land}${sinai}${nile}${seaLabels}${otherPath?`<path d="${otherPath}" class="route other"/>`:""}${done?`<path d="${done}" class="route"/>`:""}${motion}${places.map(([k,dx,dy,an])=>lbl(k,dx,dy,an)).join("")}${compass}</svg><div class="in-cap"><span><b>${preMode?"Before we go":d.dow+" "+d.num}</b> · ${preMode?"the line begins Saturday in Cairo":(cur&&cur[3]==="home"?"you’re home · Brad’s still out there":(cur&&cur[0]==="mon19"&&who==="Duane"?"Cairo → London, then home":esc(d.place||"")))}</span><span class="in-key"><i class="r"></i> ${who==="Duane"&&other.length?`your route · <i class="r o"></i> Brad’s`:"the route so far"}</span></div></div>`;
 }
 
@@ -2580,7 +2581,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v131)";
+const BUILD = "Oct 9, 2026 (v132)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -2983,6 +2984,7 @@ function sfx(kind){ if(!soundOn()) return; const a=ac(); if(!a) return; const t0
     case "whistle": tone(2600,"square",.05,.14); tone(2600,"square",.05,.14,.18); tone(2600,"square",.05,.3,.36); break;                         // the ref: three blasts, call reversed                                          // ref's whistle-ish
     case "saf": tone(220,"sawtooth",.07,.35); tone(196,"sawtooth",.07,.5,.2); break;                                           // wah
     case "xp": tone(1047,"sine",.07,.18); tone(1319,"sine",.07,.3,.14); break;
+    case "coin": tone(1976,"triangle",.05,.09); tone(2637,"triangle",.04,.16,.05); break;
     case "dig": noise(.25,.12,0,900); noise(.2,.12,.14,700); noise(.15,.14,.28,600); break;                                     // three shovels of sand
     case "whip": noise(.5,.06,0,6000); tone(1800,"sine",.05,.08,0,300); break;
     case "rumble": noise(.5,2.2,0,160); break;                                                                                    // the boulder
@@ -3182,7 +3184,7 @@ function passportWire(){
     if(e.target.closest("[data-print]")){ ppPrintSave(); return; }
     const pv=e.target.closest("#ppOverlay"); if(pv && !e.target.closest(".book") && !e.target.closest(".page.back") && !e.target.closest(".ppov-top")){ closePassport(); return; }
     const ent=e.target.closest("#ppOverlay .ent[data-day]"); if(ent){ const i=DAYS.findIndex(d=>d.id===ent.dataset.day); if(i>=0){ closePassport(); goDay(i,false); window.scrollTo({top:0}); } return; }
-    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; const dd0=DAYS.find(d=>d.id===id); const wasXP=!!st[id] && !!GS.get("chal",{})[id] && !!QUARTER[id] && !GS.get("stupid",{})[id]; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]) safe(ppTabBump); else safe(ppTabRender); if(!st[id]){ if(wasXP){ overturn(new RegExp("extra point — stamped "+dd0.dow+" "+dd0.num), `extra point, ${dayLabel(id)}, taken back`); toast("Unstamped. Point off the board."); } else { overturn(new RegExp("stamped "+dd0.dow+" "+dd0.num), `stamp, ${dayLabel(id)}, taken back`); toast("Unstamped."); } safe(renderGame); safe(renderNow); return; } const unstamp=()=>{ const st2=stamps(); delete st2[id]; GS.set("stamp",st2); renderDay(); renderStrip(); renderPassport(); safe(ppTabRender); safe(renderGame); safe(renderNow); const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]) overturn(new RegExp("extra point — stamped "+dd.dow+" "+dd.num), `extra point, ${dayLabel(id)}, taken back`); else overturn(new RegExp("stamped "+dd.dow+" "+dd.num), `stamp, ${dayLabel(id)}, taken back`); toast("Unstamped."); }; if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd), {undo:unstamp}); safe(()=>sfx("stamp")); if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]){ safe(()=>sfx("xp")); const ln=call("XP", callVars(me())); jumbo("Extra point", me(), `+${ptsFor(1,id)} · ${ln}`); safe(()=>logEvent(`extra point — stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}. ${ln}`)); } else safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}`)); } return; }
+    const s=e.target.closest("[data-stamp]"); if(s){ const st=stamps(); const id=s.dataset.stamp; const dd0=DAYS.find(d=>d.id===id); const wasXP=!!st[id] && !!GS.get("chal",{})[id] && !!QUARTER[id] && !GS.get("stupid",{})[id]; if(st[id]) delete st[id]; else st[id]={at:new Date().toISOString(), who:me()}; GS.set("stamp",st); renderDay(); renderStrip(); renderPassport(); safe(checkMilestones); if(st[id]) safe(ppTabBump); else safe(ppTabRender); if(!st[id]){ if(wasXP){ overturn(new RegExp("extra point — stamped "+dd0.dow+" "+dd0.num), `extra point, ${dayLabel(id)}, taken back`); toast("Unstamped. Point off the board."); } else { overturn(new RegExp("stamped "+dd0.dow+" "+dd0.num), `stamp, ${dayLabel(id)}, taken back`); toast("Unstamped."); } safe(renderGame); safe(renderNow); return; } const unstamp=()=>{ const st2=stamps(); delete st2[id]; GS.set("stamp",st2); renderDay(); renderStrip(); renderPassport(); safe(ppTabRender); safe(renderGame); safe(renderNow); const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]) overturn(new RegExp("extra point — stamped "+dd.dow+" "+dd.num), `extra point, ${dayLabel(id)}, taken back`); else overturn(new RegExp("stamped "+dd.dow+" "+dd.num), `stamp, ${dayLabel(id)}, taken back`); toast("Unstamped."); }; if(st[id]){ const dd=DAYS.find(d=>d.id===id); const td=!!GS.get("chal",{})[id]; toast(td&&QUARTER[id]?"Extra point is good. "+CITY_OF(dd):"Stamped · "+CITY_OF(dd), {undo:unstamp}); safe(()=>sfx("stamp")); safe(()=>stampSlam(id)); if(td&&QUARTER[id]&&!GS.get("stupid",{})[id]){ safe(()=>sfx("xp")); const ln=call("XP", callVars(me())); jumbo("Extra point", me(), `+${ptsFor(1,id)} · ${ln}`); safe(()=>logEvent(`extra point — stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}. ${ln}`)); } else safe(()=>logEvent(`stamped ${dd.dow} ${dd.num} · ${CITY_OF(dd)}`)); } return; }
     if(e.target.id==="ppSave"){ const p=passportData(); const name=`egypt-passport-${(me()||"me").toLowerCase()}.json`; const blob=new Blob([JSON.stringify(p,null,1)],{type:"application/json"}); const f=new File([blob],name,{type:"application/json"}); if(navigator.canShare && navigator.canShare({files:[f]})){ navigator.share({files:[f], title:name, text:"My Egypt passport file"}).then(()=>toast("Sent. Brad puts it in the repo.")).catch(()=>{}); return; } const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); toast("Saved "+name+" — send it to Brad"); return; }
     if(e.target.id==="ppText"){ const t=passportText(); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied the whole passport")).catch(()=>toast("Couldn't copy here")); return; }
   });
@@ -3262,7 +3264,7 @@ function funBox(){
 }
 function funWire(){
   document.addEventListener("click", e=>{
-    const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10) toast("Ten. You're famous."); if(n===25) toast("Twenty-five. Citizenship pending."); renderDay(); safe(checkMilestones); return; }
+    const t=e.target.closest("[data-tout]"); if(t){ const o=GS.get("tout",{}); o[t.dataset.tout]=Math.max(0,(o[t.dataset.tout]||0)+(+t.dataset.d)); GS.set("tout",o); const n=o[t.dataset.tout]; if(n===10){ toast("Ten. You're famous."); safe(()=>camelWalk(1)); } if(n===25){ toast("Twenty-five. Citizenship pending."); safe(()=>camelWalk(3)); } renderDay(); safe(checkMilestones); return; }
     if(e.target.id==="oracleRoll"){ const o=GS.get("oracle",{}); const k=cairoNow().date; o[k]=(o[k]||0)+1; GS.set("oracle",o); renderGame(); if(o[k]>=3) toast("The Oracle sighs."); return; }
     if(e.target.id==="coin"){ const r=$("#coinr"), out=$("#tossr"); const who=Math.random()<0.5?"Brad":"Duane"; const other=who==="Brad"?"Duane":"Brad"; const win=TEAMS[other]; r.innerHTML=`<div class="coin ${win.short.toLowerCase()}"><div class="face f1"><span>PIT</span></div><div class="face f2"><span>CIN</span></div></div>`; out.textContent="…"; e.target.disabled=true; const coin=r.querySelector(".coin"); coin.dataset.busy="1"; setTimeout(()=>{ coin.style.setProperty("--face", win.short==="CIN"?"180deg":"0deg"); coin.className="coin"; delete coin.dataset.busy; out.innerHTML=`<b>${win.team} win the toss.</b> ${who} pays. ${sendBtn(`🪙 The coin of Ra: ${win.team} win the toss. ${who} pays.`, SEND_ICON)}`; e.target.disabled=false; safe(()=>logEvent(`the toss — ${call("TOSS", callVars(other,{loser:who}))}`)); },1400); return; }
     const coinEl=e.target.closest(".coin"); if(coinEl){ if(coinEl.dataset.busy) return; coinEl.classList.remove("idle","rock"); void coinEl.offsetWidth; coinEl.classList.add("rock"); safe(()=>sfx("coin")); coinEl.addEventListener("animationend", ()=>{ coinEl.classList.remove("rock"); coinEl.classList.add("idle"); }, {once:true}); return; }
@@ -3804,7 +3806,7 @@ function sheetsWire(){
   document.addEventListener("click", e=>{
     if(e.target.id==="qcBtn"){ openSheet("sheetQC", qcHome()); return; }
     const q=e.target.closest("[data-qc]"); if(q){ const k=q.dataset.qc; const d=todayDay()||DAYS[sel];
-      if(k==="tout"){ const o=GS.get("tout",{}); o[d.id]=(o[d.id]||0)+1; GS.set("tout",o); const n=o[d.id]; toast(n===10?"Ten. You're famous.":n===25?"Twenty-five. Citizenship pending.":`“My friend” ${n}`); if(DAYS[sel].id===d.id) renderDay(); openSheet("sheetQC", qcHome()); return; }
+      if(k==="tout"){ const o=GS.get("tout",{}); o[d.id]=(o[d.id]||0)+1; GS.set("tout",o); const n=o[d.id]; toast(n===10?"Ten. You're famous.":n===25?"Twenty-five. Citizenship pending.":`“My friend” ${n}`); if(n===10||n===25) safe(()=>camelWalk(n===25?3:1)); if(DAYS[sel].id===d.id) renderDay(); openSheet("sheetQC", qcHome()); return; }
       if(k==="close"){ closeSheet("sheetQC"); setTimeout(()=>closeDaySheet(d.id),150); return; }
       if(k==="taunt"){ tauntSheet(); return; }
       openSheet("sheetQC", qcPanel(k)); if(k==="haggle") setTimeout(()=>{ const i=$("#qhw"); if(i) i.focus(); },250); return; }
@@ -4720,7 +4722,7 @@ document.addEventListener("click", e=>{
   const d=e.target.closest("[data-tbdel]"); if(d){ if(d.dataset.arm!=="1"){ d.dataset.arm="1"; d.textContent="Remove?"; d.classList.add("arm"); setTimeout(()=>{ if(d.isConnected){ d.dataset.arm=""; d.textContent="✕"; d.classList.remove("arm"); } },2500); return; } tabDel(d.dataset.tbdel); tabRender(); toast("Removed from the tab."); return; }
   const st=e.target.closest("[data-tbsettle]"); if(st){ const w=me(); const n=tabNet(w); if(Math.abs(n)<1) return; if(st.dataset.arm!=="1"){ st.dataset.arm="1"; st.textContent="Tap again to record it"; setTimeout(()=>{ if(st.isConnected){ st.dataset.arm=""; tabRender(); } },3000); return; }
     // the one who owed pays the whole balance to the other
-    tabAdd({by:n>0?OTHER_OF(w):w, w:"Settled up", amt:Math.round(Math.abs(n)), cur:"EGP", split:"all", settle:true}); tabRender(); toast("All square."); safe(()=>sfx("stamp")); return; }
+    const amt=Math.round(Math.abs(n)); st.disabled=true; safe(()=>coinsSettle(amt)); setTimeout(()=>{ tabAdd({by:n>0?OTHER_OF(w):w, w:"Settled up", amt, cur:"EGP", split:"all", settle:true}); tabRender(); toast("All square."); }, RM()?0:1000); return; }
 });
 document.addEventListener("submit", e=>{ if(e.target.id!=="tbForm") return; e.preventDefault(); const w=($("#tbW").value||"").trim(); const a=parseFloat(String($("#tbA").value||"").replace(/[^\d.]/g,""));
   if(!(a>0)){ toast("How much?"); $("#tbA").focus(); return; } if(!w){ toast("What was it?"); $("#tbW").focus(); return; }
@@ -4889,6 +4891,166 @@ html.bigtext .tb-amt{grid-template-columns:1fr}html.bigtext .tb-row{flex-wrap:wr
 @media (prefers-reduced-motion:reduce){.pk-c{animation:none}}
 html.bigtext .pk-rev{grid-template-columns:1fr}html.bigtext .nm-grid{grid-template-columns:repeat(3,1fr)}html.bigtext .nm-grid.big{grid-template-columns:repeat(2,1fr)}.say.nm{min-width:0}.say.nm small{overflow-wrap:anywhere;text-align:center}
 .pk-pass{display:flex;flex-direction:column;gap:1px;margin:4px 0 0;font-family:"Caveat",cursive;font-size:1rem;line-height:1.15;opacity:.85}
+`; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
+
+// ---------- whimsy.js: the live sky, split-flap countdowns, the stamp slam, the felucca, scoring moments, coins ----------
+// Everything here is decoration: it checks prefers-reduced-motion, never blocks a tap, and fails silently.
+const RM=()=>{ try{ return matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } };
+const IS_DARK=()=>{ try{ return matchMedia("(prefers-color-scheme: dark)").matches; }catch(e){ return false; } };
+
+// =====================================================================================================
+// 1. THE SKY — a strip on the Now card: the sun's real path over wherever you are, stars and the moon at night
+// =====================================================================================================
+const AP_LL={CPT:[-33.97,18.60,"Africa/Johannesburg","Cape Town"],ADD:[8.98,38.80,"Africa/Addis_Ababa","Addis Ababa"],CAI:[30.12,31.41,"Africa/Cairo","Cairo"],ORF:[36.89,-76.20,"America/New_York","Norfolk"],LHR:[51.47,-0.45,"Europe/London","London"],ASW:[23.96,32.82,"Africa/Cairo","Aswan"],LXR:[25.67,32.71,"Africa/Cairo","Luxor"],SSH:[27.98,34.39,"Africa/Cairo","Sharm"],ORD:[41.98,-87.90,"America/Chicago","Chicago"],MCO:[28.43,-81.31,"America/New_York","Orlando"]};
+const EGYPT_AP=new Set(["CAI","ASW","LXR","SSH"]);
+function sunAlt(lat,lon,ms){ const r=Math.PI/180; const d=ms/86400000+2440587.5-2451545; const g=(357.529+0.98560028*d)*r; const q=280.459+0.98564736*d; const L=(q+1.915*Math.sin(g)+0.020*Math.sin(2*g))*r; const e=(23.439-0.00000036*d)*r;
+  const ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L)); const dec=Math.asin(Math.sin(e)*Math.sin(L)); const gmst=(18.697374558+24.06570982441908*d)%24; const H=((gmst*15+lon)*r)-ra;
+  return Math.asin(Math.sin(lat*r)*Math.sin(dec)+Math.cos(lat*r)*Math.cos(dec)*Math.cos(H))/r; }
+function moonPhase(ms){ const p=((ms/86400000+2440587.5-2451550.1)/29.530588853)%1; return p<0?p+1:p; }
+const PHASE_NAME=p=>p<.03||p>.97?"new moon":p<.22?"waxing crescent":p<.28?"first quarter":p<.47?"waxing gibbous":p<.53?"full moon":p<.72?"waning gibbous":p<.78?"last quarter":"waning crescent";
+function tzOffsetMin(tz,ms){ try{ const f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(new Date(ms)); const g=t=>+f.find(x=>x.type===t).value; return Math.round((Date.UTC(g("year"),g("month")-1,g("day"),g("hour")%24,g("minute"))-ms)/60000); }catch(e){ return 0; } }
+const clock12=(tz,ms)=>{ try{ return new Date(ms).toLocaleTimeString("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).replace(" ","").toLowerCase(); }catch(e){ return ""; } };
+// where is "me", right now?
+function skyWhere(){ const w=(typeof me==="function"&&me())||"Brad"; const n=nowUTC(); let fl=[]; try{ fl=allFlights().filter(f=>(f.who===w||f.who==="Both")&&f.status!=="tbd"&&f.from&&f.from.t&&f.to&&f.to.ap&&AP_LL[f.to.ap]); }catch(e){}
+  const span=f=>[flightDep(f), flightArr(f)??(flightDep(f)+3*3600000)];
+  const air=fl.find(f=>{ const [a,b]=span(f); return a<=n&&n<b; });
+  if(air&&AP_LL[air.from.ap]){ const [a,b]=span(air); const t=(n-a)/(b-a); const A=AP_LL[air.from.ap], B=AP_LL[air.to.ap]; return {air, t, end:b, lat:A[0]+(B[0]-A[0])*t, lon:A[1]+(B[1]-A[1])*t, tz:B[2], name:air.no?`${air.no} → ${B[3]}`:`${A[3]} → ${B[3]}`}; }
+  const landed=fl.filter(f=>span(f)[1]<=n).sort((x,y)=>span(x)[1]-span(y)[1]).pop();
+  const ap=landed?landed.to.ap:(w==="Duane"?"ORF":"CPT");
+  if(EGYPT_AP.has(ap)){ const d=DAYS[dayIndexFor(cairoNow().date)]; const ll=d&&LL[d.id]; if(ll) return {lat:ll[0], lon:ll[1], tz:TZ, name:(d.place||"").split(/ → | · /)[0]||"Egypt"}; }
+  const P=AP_LL[ap]; return {lat:P[0], lon:P[1], tz:P[2], name:P[3]}; }
+const SKY_STOPS=[ // [altitude, top, bottom] light; dark mode gets its own, dimmer set
+  [-18,"#060a1c","#0f1733"],[-10,"#0d1638","#2a2a55"],[-4,"#27326a","#c0605a"],[0,"#4d5f9e","#f09a63"],[6,"#6f9bd0","#f6c88f"],[15,"#4f9fd8","#93cbec"],[60,"#3a8dd0","#86c3e6"]];
+const SKY_STOPS_DK=[[-18,"#04060f","#0a0f22"],[-10,"#080d24","#1b1b3a"],[-4,"#1a2147","#7a3c39"],[0,"#2f3a66","#9a5c3c"],[6,"#3b5579","#8b6d4f"],[15,"#2a5675","#456e86"],[60,"#21506f","#3c6a83"]];
+const hex2=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)); const mixC=(a,b,t)=>"#"+hex2(a).map((v,i)=>Math.round(v+(hex2(b)[i]-v)*t).toString(16).padStart(2,"0")).join("");
+function skyColors(alt){ const S=IS_DARK()?SKY_STOPS_DK:SKY_STOPS; if(alt<=S[0][0]) return [S[0][1],S[0][2]]; for(let i=1;i<S.length;i++){ if(alt<=S[i][0]){ const t=(alt-S[i-1][0])/(S[i][0]-S[i-1][0]); return [mixC(S[i-1][1],S[i][1],t),mixC(S[i-1][2],S[i][2],t)]; } } const z=S[S.length-1]; return [z[1],z[2]]; }
+function moonSVG(p){ const r=7, k=Math.cos(2*Math.PI*p), rx=Math.abs(k)*r; const waxing=p<.5; const s1=waxing?1:0;
+  // lit part: outer semicircle on the lit side + an ellipse terminator
+  const d=`M0 ${-r} A${r} ${r} 0 0 ${s1} 0 ${r} A${rx} ${r} 0 0 ${(k>0)!==waxing?1:0} 0 ${-r}Z`;
+  return `<svg viewBox="-9 -9 18 18" width="18" height="18" aria-hidden="true"><circle r="${r}" fill="rgba(255,255,255,.13)"/><path d="${(p<.03||p>.97)?"":d}" fill="#f4ecd2"/></svg>`; }
+let skyCache={key:"",html:""};
+// the exact minute the sun crosses -0.833° between two samples
+function skyCross(W,a,b){ const s=x=>sunAlt(W.lat,W.lon,x)+0.833; const up=s(a)<0; for(let i=0;i<16;i++){ const m=(a+b)/2; if((s(m)<0)===up) a=m; else b=m; } return (a+b)/2; }
+function skyHTML(){ const W=skyWhere(); const n=nowUTC(); const off=tzOffsetMin(W.tz,n); const loc=n+off*60000; const mid=Date.UTC(new Date(loc).getUTCFullYear(),new Date(loc).getUTCMonth(),new Date(loc).getUTCDate())-off*60000;   // local midnight, as UTC ms
+  const key=[Math.floor(n/60000),W.lat.toFixed(1),W.lon.toFixed(1),IS_DARK()].join("|"); if(skyCache.key===key) return skyCache.html;
+  const N=96, H0=64, k=0.62; const pts=[]; let rise=null,set=null,prev=null;
+  for(let i=0;i<=N;i++){ const t=mid+i*86400000/N; const a=sunAlt(W.lat,W.lon,t); pts.push([i/N*1000, Math.max(4,Math.min(98,H0-a*k))]); if(prev!==null){ if(prev<-0.833&&a>=-0.833&&rise===null) rise=skyCross(W,t-86400000/N,t); if(prev>=-0.833&&a<-0.833) set=skyCross(W,t-86400000/N,t); } prev=a; }
+  const alt=sunAlt(W.lat,W.lon,n); const x=((n-mid)/86400000)*100; const y=Math.max(4,Math.min(98,H0-alt*k));
+  const [c1,c2]=skyColors(alt); const night=alt<-6; const twi=alt<2;
+  // the label: what the light is doing
+  let lab="";
+  if(W.air){ const left=Math.max(0,Math.round((W.end-nowUTC())/60000)); lab=`<b>${esc(W.name)}</b> · ${left>=60?Math.floor(left/60)+"h "+(left%60)+"m":left+"m"} to go`; }
+  else if(alt>=-0.833&&set&&n<set){ const m=Math.round((set-n)/60000); lab=`<b>Sunset ${clock12(W.tz,set)}</b> · ${m>=60?Math.floor(m/60)+"h "+(m%60)+"m":m+" min"} of light left`; }
+  else { let r=rise; if(!r||n>=r){ for(let i=0;i<=N;i++){ const t=mid+86400000+i*86400000/N; if(sunAlt(W.lat,W.lon,t)>=-0.833){ r=skyCross(W,t-86400000/N,t); break; } } } lab=`<b>Sunrise ${clock12(W.tz,r)}</b> · ${PHASE_NAME(moonPhase(n))}`; }
+  const path="M"+pts.map(p=>p[0].toFixed(0)+" "+p[1].toFixed(1)).join(" L");
+  const stars=night||twi?Array.from({length:22},(_,i)=>{ const sx=(i*137.5)%100, sy=6+((i*61)%46); const sz=i%5===0?2:1; return `<i class="sk-st" style="left:${sx.toFixed(1)}%;top:${sy}%;width:${sz}px;height:${sz}px;animation-delay:${-((i*0.77)%4).toFixed(2)}s;opacity:${night?(.5+((i*13)%5)/10):.25}"></i>`; }).join(""):"";
+  const mp=moonPhase(n); const moon=(night||alt<0)&&!(mp<.03||mp>.97)?`<span class="sk-moon" style="left:${(x+38)%100>88?12:(x+38)%100}%">${moonSVG(mp)}</span>`:"";
+  const plane=W.air?`<span class="sk-plane" style="left:${(4+W.t*92).toFixed(1)}%">✈︎</span>`:"";
+  const html=`<div class="sk-bg" style="background:linear-gradient(180deg,${c1},${c2})"></div>${stars}${moon}
+    <svg class="sk-arc" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 ${H0} H1000" class="sk-hz"/><path d="${path}" class="sk-path"/></svg>
+    ${W.air||alt<-9?"":`<span class="sk-sun ${alt<0?"down":alt<8?"low":""}" style="left:${x.toFixed(2)}%;top:${y.toFixed(1)}%"></span>`}${plane}
+    <div class="sk-lab"><span>${lab}</span><span class="sk-where">${esc(W.air?"":W.name)}</span></div>`;
+  skyCache={key,html}; return html; }
+function skyMount(){ const now=$("#now"); if(!now) return; let el=now.querySelector(":scope > .sky"); if(!el){ el=document.createElement("div"); el.className="sky"; el.setAttribute("role","img"); now.insertBefore(el, now.firstChild); }
+  const h=safe(skyHTML)||""; if(el._h!==h){ el.innerHTML=h; el._h=h; }
+  el.setAttribute("aria-label", (el.querySelector(".sk-lab")||{}).textContent||"the sky"); }
+
+// =====================================================================================================
+// 2. SPLIT-FLAP — countdown digits flip like an old departures board when they change
+// =====================================================================================================
+const flapPrev=new Map();
+function flapify(){ if(RM()) return; document.querySelectorAll("#now .cd").forEach((el,i)=>{ if(el.children.length) return; const txt=el.textContent; const key="now"+i; const old=flapPrev.get(key)||""; flapPrev.set(key,txt);
+  el.innerHTML=[...txt].map((c,j)=>{ const dig=/\d/.test(c); const chg=old&&old.length===txt.length&&old[j]!==c; return dig?`<span class="flap${chg?" go":""}" data-o="${chg?esc(old[j]):""}">${c}</span>`:esc(c); }).join(""); }); }
+
+// =====================================================================================================
+// hook the Now card: sky first, then the flaps (renderNow rewrites #now every 5 s)
+// =====================================================================================================
+(function(){ if(typeof renderNow!=="function"||renderNow.__wh) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); safe(skyMount); safe(flapify); return r; }; renderNow.__wh=true; })();
+
+// =====================================================================================================
+// 3. THE STAMP SLAM — drop, squash, ink bleed, a small shake
+// =====================================================================================================
+function stampSlam(id){ if(RM()) return; const sh=$("#sheetCD"); const inSheet=!!(sh&&sh.classList.contains("on")); setTimeout(()=>stampSlam1(id), inSheet?820:0); }
+function stampSlam1(id){ requestAnimationFrame(()=>{ const els=[...document.querySelectorAll(`#sheetCD .stampbox .stamp:not(.ghost), #dayCard .dayhead .stamp`)]; const d=DAYS[sel]; els.filter(e=>e.closest("#sheetCD")||(d&&d.id===id)).forEach(s=>{ s.classList.remove("slam"); void s.offsetWidth; s.classList.add("slam"); const ink=document.createElement("i"); ink.className="ink"; s.appendChild(ink); setTimeout(()=>ink.remove(),1400); });
+  const box=$("#sheetCD .qbox")||$("#dayCard"); if(box){ box.classList.remove("thud"); void box.offsetWidth; box.classList.add("thud"); setTimeout(()=>box.classList.remove("thud"),500); } try{ navigator.vibrate&&navigator.vibrate(18); }catch(e){} }); }
+
+// =====================================================================================================
+// 4. THE FELUCCA — a drawn sail for the map (used for boat legs and boat nights)
+// =====================================================================================================
+const FELUCCA=`<g class="fel"><path class="fl-wake" d="M-46 14 q8 -4 16 0 t16 0"/><path class="fl-hull" d="M-30 4 Q0 18 30 4 L24 0 L-24 0Z"/><path class="fl-mast" d="M-4 1 L-4 -46"/><path class="fl-sail" d="M-26 -4 L22 -58 Q10 -26 -4 -2Z"/></g>`;
+
+// =====================================================================================================
+// 5. SCORING MOMENTS — goalposts for a field goal, a team-colour sweep for a touchdown, a camel for "my friend"
+// =====================================================================================================
+function fgKick(){ if(RM()) return; const el=document.createElement("div"); el.className="fx-fg"; el.innerHTML=`<svg viewBox="0 0 200 260" aria-hidden="true"><g class="posts"><path d="M100 250 V150 M60 150 H140 M60 150 V40 M140 150 V40"/></g><g class="ball"><ellipse rx="11" ry="7"/><path d="M-5 0 H5 M-2 -2 V2 M2 -2 V2"/></g></svg>`; document.body.appendChild(el); setTimeout(()=>el.remove(),2000); }
+function tdSweep(who){ if(RM()) return; const T=TEAMS&&TEAMS[who]; if(!T) return; const c2=T.c2.toLowerCase()==="#000000"?"#111":T.c2; const el=document.createElement("div"); el.className="fx-td"; el.innerHTML=`<i style="background:${T.c1}"></i><i style="background:${c2}"></i><i style="background:${T.c1}"></i>`; document.body.appendChild(el); setTimeout(()=>el.remove(),1600); }
+function camelWalk(n){ if(RM()) return; const el=document.createElement("div"); el.className="fx-camel"; el.innerHTML=Array.from({length:n||1},(_,i)=>`<span style="animation-delay:${i*.45}s">🐪</span>`).join(""); document.body.appendChild(el); setTimeout(()=>el.remove(),5200+(n||1)*450); }
+(function(){ if(typeof jumbo!=="function"||jumbo.__wh) return; const J=jumbo; jumbo=function(word, who){ const r=J.apply(this,arguments); try{ const w=String(word||""); if(/field goal/i.test(w)) fgKick(); else if(/touchdown|two-point/i.test(w)) tdSweep(who); }catch(e){} return r; }; jumbo.__wh=true; })();
+
+// =====================================================================================================
+// 6. COINS — settling up on the tab: coins drop, the balance counts down to zero
+// =====================================================================================================
+function coinsSettle(amount){ const bal=$("#sheetTab .tb-bal"); if(!bal) return; const R=RM(); try{ if(!R) for(let i=0;i<6;i++) setTimeout(()=>safe(()=>sfx("coin")),i*110); }catch(e){}
+  if(R) return; bal.classList.add("settling"); const b=bal.querySelector("b"); const coins=document.createElement("div"); coins.className="coins"; coins.innerHTML=Array.from({length:9},(_,i)=>`<i style="left:${12+i*9}%;animation-delay:${i*.07}s"></i>`).join(""); bal.appendChild(coins);
+  const t0=performance.now(), D=900; const step=t=>{ const p=Math.min(1,(t-t0)/D); const v=Math.round(amount*(1-p)*(1-p)); if(b) b.textContent=p<1?`${fmtE(v)} EGP`:"All square"; if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+
+// ---------- styles ----------
+(function(){ const css=`
+.now .sky{position:relative;height:50px;margin:-14px -16px 0;border-radius:var(--r) var(--r) 0 0;overflow:hidden;isolation:isolate}
+.sky .sk-bg{position:absolute;inset:0;transition:background 2s}
+.sky::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.26));pointer-events:none}
+.sky .sk-lab{z-index:1}
+.sky .sk-arc{position:absolute;inset:0;width:100%;height:100%}
+.sky .sk-hz{stroke:rgba(255,255,255,.28);stroke-width:1;vector-effect:non-scaling-stroke;fill:none}
+.sky .sk-path{stroke:rgba(255,240,200,.45);stroke-width:1.2;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;fill:none}
+.sky .sk-sun{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff7d1;box-shadow:0 0 0 3px rgba(255,236,170,.35),0 0 18px 6px rgba(255,220,130,.55);animation:skglow 4s ease-in-out infinite}
+.sky .sk-sun.low{background:#ffc27a;box-shadow:0 0 0 3px rgba(255,170,90,.35),0 0 20px 8px rgba(255,140,60,.5)}
+.sky .sk-sun.down{background:#c97a4a;box-shadow:none;opacity:.55;animation:none}
+.sky .sk-st{position:absolute;border-radius:50%;background:#fff;animation:sktw 4s ease-in-out infinite}
+.sky .sk-moon{position:absolute;top:6px;filter:drop-shadow(0 0 6px rgba(255,250,220,.35))}
+.sky .sk-plane{position:absolute;top:30%;transform:translate(-50%,-50%) rotate(-8deg);color:#fff;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.4);animation:skbob 3s ease-in-out infinite}
+.sky .sk-lab{position:absolute;left:10px;right:10px;bottom:4px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:0.6765rem;color:rgba(255,255,255,.88);text-shadow:0 1px 2px rgba(0,0,0,.45);white-space:nowrap;overflow:hidden}
+.sky .sk-lab b{font-weight:700;color:#fff}.sky .sk-lab span:first-child{overflow:hidden;text-overflow:ellipsis}.sky .sk-where{opacity:.8;font-family:var(--mono);font-size:0.6176rem;letter-spacing:.06em;text-transform:uppercase}
+html.bigtext .now .sky{height:58px}
+@keyframes skglow{50%{box-shadow:0 0 0 4px rgba(255,236,170,.3),0 0 24px 9px rgba(255,220,130,.5)}}
+@keyframes sktw{50%{opacity:.15}}
+@keyframes skbob{50%{transform:translate(-50%,-62%) rotate(-6deg)}}
+.flap{display:inline-block;position:relative;transform-origin:50% 50%}
+.flap.go{animation:flap .45s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes flap{0%{transform:rotateX(90deg);filter:brightness(.6)}60%{transform:rotateX(-12deg)}100%{transform:none;filter:none}}
+.stamp.slam{animation:slam .55s cubic-bezier(.2,1.6,.4,1) both;position:relative}
+.stamp .ink{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,var(--ink,#b5322b) 0,transparent 62%);opacity:.0;animation:ink 1.3s ease-out both;pointer-events:none;mix-blend-mode:multiply}
+@keyframes slam{0%{transform:translateY(-60px) scale(1.9) rotate(-14deg);opacity:0}55%{transform:scale(.88) rotate(2deg);opacity:1}75%{transform:scale(1.05)}100%{transform:none;opacity:1}}
+@keyframes ink{0%{opacity:0;transform:scale(.4)}35%{opacity:.32}100%{opacity:0;transform:scale(1.25)}}
+.thud{animation:thud .45s ease-out}
+@keyframes thud{25%{transform:translateY(3px)}50%{transform:translateY(-1px)}}
+.indy .fel{transform-box:fill-box;transform-origin:50% 100%;animation:fbob 2.6s ease-in-out infinite}
+.indy .fl-hull{fill:#7a4b28;stroke:#3d2412;stroke-width:2}.indy .fl-mast{stroke:#3d2412;stroke-width:3}.indy .fl-sail{fill:#fbf3df;stroke:#3d2412;stroke-width:2;stroke-linejoin:round}
+.indy .fl-wake{fill:none;stroke:#2f7aa0;stroke-width:3;stroke-linecap:round;opacity:.7;animation:fwake 2.6s ease-in-out infinite}
+@keyframes fbob{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-4px)}}
+@keyframes fwake{50%{opacity:.25}}
+.fx-fg{position:fixed;left:50%;top:6%;width:min(52vw,240px);transform:translateX(-50%);z-index:69;pointer-events:none}
+.fx-fg svg{width:100%;overflow:visible}
+.fx-fg .posts path{stroke:#f5d90a;stroke-width:7;fill:none;stroke-linecap:round;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));animation:fgposts 2s ease both}
+.fx-fg .ball{animation:fgball 1.25s cubic-bezier(.25,.6,.35,1) .1s both}
+.fx-fg .ball ellipse{fill:#8b4a1f;stroke:#4a2410;stroke-width:1.5}.fx-fg .ball path{stroke:#fff;stroke-width:1.4}
+@keyframes fgball{0%{transform:translate(100px,420px) scale(2.4) rotate(0)}100%{transform:translate(100px,70px) scale(.7) rotate(720deg)}}
+@keyframes fgposts{0%{opacity:0;transform:translateY(-10px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+.fx-td{position:fixed;inset:0;z-index:65;pointer-events:none;overflow:hidden}
+.fx-td i{position:absolute;top:-20%;bottom:-20%;width:45%;left:-60%;transform:skewX(-18deg);animation:tdsweep 1.1s cubic-bezier(.5,0,.3,1) both;opacity:.9}
+.fx-td i:nth-child(2){animation-delay:.12s}.fx-td i:nth-child(3){animation-delay:.24s;width:20%}
+@keyframes tdsweep{0%{left:-60%}100%{left:130%}}
+.fx-camel{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));height:44px;z-index:30;pointer-events:none;overflow:hidden}
+.fx-camel span{position:absolute;bottom:0;left:-50px;font-size:34px;transform:scaleX(-1);animation:camel 5s linear both}
+@keyframes camel{0%{left:-50px}100%{left:calc(100% + 50px)}}
+@keyframes camelstep{50%{transform:scaleX(-1) translateY(-3px)}}
+.fx-camel span{animation:camel 5s linear both,camelstep .5s ease-in-out infinite}
+.tb-bal{position:relative;overflow:hidden}
+.tb-bal.settling b{font-variant-numeric:tabular-nums}
+.coins{position:absolute;inset:0;pointer-events:none}
+.coins i{position:absolute;top:-16px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe9a0,#d4a73a 60%,#9c7419);box-shadow:0 1px 2px rgba(0,0,0,.35);animation:coin .8s cubic-bezier(.4,0,.6,1.6) both}
+@keyframes coin{0%{transform:translateY(0) rotateY(0)}70%{transform:translateY(62px) rotateY(540deg)}85%{transform:translateY(56px)}100%{transform:translateY(60px) rotateY(720deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){ .sky *{animation:none!important} .indy .fel,.indy .fl-wake{animation:none} }
 `; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
