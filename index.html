@@ -2601,7 +2601,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v171)";
+const BUILD = "Oct 10, 2026 (v172)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3010,10 +3010,30 @@ function sfx(kind){ if(!soundOn()) return; const a=ac(); if(!a) return; const t0
     case "rumble": noise(.5,2.2,0,160); break;                                                                                    // the boulder
     case "stamp": noise(.3,.05,0,2500); tone(140,"square",.08,.12,.02,90); break;                                                // thunk
     case "taunt": tone(392,"square",.05,.1); tone(330,"square",.05,.12,.1); tone(262,"square",.05,.2,.2); break;               // wah-wah
-    case "mummy": tone(110,"sawtooth",.05,.9,0,80); noise(.12,.6,.2,500); break;                                                // a groan
+    case "mummy": return mumGroan(a);                                                                                              // a dusty, three-thousand-year-old groan
     case "relic": [523,659,784,1047].forEach((f,i)=>tone(f,"sine",.07,.5,i*.09)); break;                                        // treasure glint
     case "coin": return clink();
   } }catch(e){} }
+// the mummy's groan: a low voice through two vowel formants ("uhh" sliding to "ooh"), a vocal-fry flutter, a puff of dust — quiet
+function mumGroan(a){ try{ const t0=a.currentTime+.01; const dur=.75+Math.random()*.45; const f0=78+Math.random()*16;
+  const out=a.createGain(); out.gain.value=.55; out.connect(a.destination);
+  // the voice: a sawtooth with a sag and a wobble
+  const v=a.createOscillator(); v.type="sawtooth"; v.frequency.setValueAtTime(f0*1.08,t0); v.frequency.linearRampToValueAtTime(f0,t0+dur*.35); v.frequency.exponentialRampToValueAtTime(f0*.78,t0+dur);
+  const vib=a.createOscillator(), vibG=a.createGain(); vib.frequency.value=5.5; vibG.gain.value=f0*.025; vib.connect(vibG).connect(v.frequency);
+  // vocal fry: the amplitude flutters ~24 times a second, like a creaky door that learned to moan
+  const fry=a.createOscillator(), fryG=a.createGain(), am=a.createGain(); fry.type="triangle"; fry.frequency.value=22+Math.random()*6; fryG.gain.value=.35; am.gain.value=.65; fry.connect(fryG).connect(am.gain);
+  // the mouth: two formants gliding from "uh" (F1 600 / F2 1000) to "oo" (F1 320 / F2 760)
+  const f1=a.createBiquadFilter(), f2=a.createBiquadFilter(); f1.type=f2.type="bandpass"; f1.Q.value=6; f2.Q.value=8;
+  f1.frequency.setValueAtTime(600,t0); f1.frequency.linearRampToValueAtTime(320,t0+dur*.8); f2.frequency.setValueAtTime(1000,t0); f2.frequency.linearRampToValueAtTime(760,t0+dur*.8);
+  const g1=a.createGain(), g2=a.createGain(); g1.gain.value=1; g2.gain.value=.45;
+  const env=a.createGain(); env.gain.setValueAtTime(0.0001,t0); env.gain.exponentialRampToValueAtTime(.2,t0+.18); env.gain.setValueAtTime(.2,t0+dur*.6); env.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  v.connect(am); am.connect(f1); am.connect(f2); f1.connect(g1).connect(env); f2.connect(g2).connect(env); env.connect(out);
+  // a breath of dust through the bandages
+  const n=Math.floor(a.sampleRate*dur), b=a.createBuffer(1,n,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  const ns=a.createBufferSource(); ns.buffer=b; const nf=a.createBiquadFilter(); nf.type="bandpass"; nf.frequency.value=700; nf.Q.value=1.2; const ng=a.createGain(); ng.gain.setValueAtTime(0.0001,t0); ng.gain.exponentialRampToValueAtTime(.04,t0+.25); ng.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  ns.connect(nf).connect(ng).connect(out);
+  [v,vib,fry,ns].forEach(o=>{ o.start(t0); o.stop(t0+dur+.05); });
+}catch(e){} }
 // a small bronze clink, synthesised — no file, no network
 let _ac=null; function clink(){ try{ _ac=_ac||new (window.AudioContext||window.webkitAudioContext)(); const ac=_ac; if(ac.state==="suspended") ac.resume(); const t0=ac.currentTime; [[2600,.05],[3900,.025],[5200,.015]].forEach(([f,g0],i)=>{ const o=ac.createOscillator(), gn=ac.createGain(); o.type="sine"; o.frequency.setValueAtTime(f*(1+(Math.random()-.5)*.02), t0); gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(g0, t0+.004); gn.gain.exponentialRampToValueAtTime(.0001, t0+.18+i*.05); o.connect(gn).connect(ac.destination); o.start(t0); o.stop(t0+.3); }); }catch(e){} }
 // ---------- the booth, out loud: the phone's English voice reads the call ----------
@@ -6356,7 +6376,7 @@ function openDriver(name){ const h=(name&&HOTELS.find(x=>x.n===name))||driverHot
 document.addEventListener("click",e=>{ const d=e.target.closest("[data-driver]"); if(d){ e.preventDefault(); safe(()=>closeSheet("sheetQC")); openDriver(d.dataset.driver||""); } });
 // a button on each hotel that has an Arabic card, and one in the + menu
 (function(){ if(typeof renderHotels!=="function") return; const R=renderHotels; renderHotels=function(){ const r=R.apply(this,arguments); try{ document.querySelectorAll("#hotels details.hotel").forEach((dt,i)=>{ const h=HOTELS[i]; if(!h||!HOTEL_AR[h.n]||dt.querySelector("[data-driver]")) return; const row=dt.querySelector(".hrow"); if(row) row.insertAdjacentHTML("beforebegin",`<div class="hdrv"><button type="button" class="btn" data-driver="${escA(h.n)}">🚕 Show the driver</button><button type="button" class="btn" data-way="hotel:${escA(h.n)}">🧭 Way back</button></div>`); }); }catch(e){} return r; }; })();
-(function(){ if(typeof qcHome!=="function") return; const Q=qcHome; qcHome=function(){ let h=Q.apply(this,arguments); try{ h=h.replace(/(<button type="button" data-askmum="1">)/,`<button type="button" data-driver=""><span class="qi">🚕</span>Show the driver<small>tonight's hotel, in Arabic</small></button><button type="button" data-way=""><span class="qi">🧭</span>Find your way<small>arrow home, no signal needed</small></button>$1`); }catch(e){} return h; }; })();
+// (the + menu entries for these live in qc.js)
 
 // ---- booking codes, big, for the check-in desk ----
 (function(){ if(typeof renderFlights!=="function") return; const R=renderFlights; renderFlights=function(){ const r=R.apply(this,arguments); try{ document.querySelectorAll("form.pnrf").forEach(fm=>{ const v=(fm.querySelector("input")||{}).value; if(!v||fm.querySelector("[data-pnrbig]")) return; fm.insertAdjacentHTML("beforeend",`<button type="button" class="btn mini" data-pnrbig="${escA(fm.dataset.f)}">Show big</button>`); }); }catch(e){} return r; }; })();
@@ -6452,6 +6472,51 @@ html.big-open .mumtab,html.big-open .pptab,html.big-open #obPill{display:none}
   if(!/uber|taxi|careem|\bcar\b|driver|to the (hilton|hotel|waldorf|m[ée]ridien)|back to the hotel|^\s*(hilton|waldorf|le m[ée]ridien)/i.test(big)) return r;
   const go=[...n.querySelectorAll("a,button")].find(b=>/take me there/i.test(b.textContent)); const btn=`<button type="button" class="btn mini" data-driver="">🚕 Show the driver</button>`;
   if(go) go.insertAdjacentHTML("afterend", btn); }catch(e){} return r; }; })();
+
+// ---------- qc.js: the + menu — two things that matter right now, then everything else, one screen, no scrolling ----------
+// Rows keep their places so your thumb learns them: Score (the Nile Bowl), Keep (money, words, the day), Help (getting about).
+function qcSuggest(){ const out=[]; const add=(x)=>{ if(out.length<2&&!out.find(o=>o.k===x.k)) out.push(x); };
+  try{ const n=cairoNow(); const d=todayDay(); const inTrip=!!d; const closed=d&&!!stamps()[d.id]; const h=n.h;
+    const now=document.getElementById("now"); const nowTxt=now?now.textContent:"";
+    const nowLine=now?([...now.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"":"";
+    const air=typeof myAirFlight==="function"&&myAirFlight();
+    if(air) add({k:"drill", why:"ten cards for the flight"});
+    if(/uber|taxi|careem|\bcar\b|driver|to the (hilton|hotel|waldorf)/i.test(nowLine)) add({k:"driver", why:"your ride's next — tonight's hotel, in Arabic"});
+    if(inTrip&&!closed&&(h>=19||h<3)) add({k:"close", why:"stamp, rate, three lines — two minutes"});
+    if(inTrip&&/khan|souk|bazaar|market|shopping|haggl/i.test(nowLine+" "+(d.title||""))) add({k:"haggle", why:"in the souk — 40% off is a field goal"});
+    if(inTrip&&h>=17&&spots().some(s=>s.hotel)) add({k:"way", why:"an arrow back to the hotel"});
+    if(inTrip) add({k:"tout", why:"every “my friend” counts"});
+    add({k:"tab", why:safe(tabTileLine)||"who paid, who owes"});
+    add({k:"mummy", why:"ask him anything"});
+  }catch(e){}
+  return out; }
+const QC_ITEMS={
+  tout:{i:"🗣️",l:"My friend",a:'data-qc="tout"'}, haggle:{i:"🤝",l:"Haggle",a:'data-qc="haggle"'}, camel:{i:"🐪",l:"Camel",a:'data-qc="camel"'}, flag:{i:"🚩",l:"Flag",a:'data-qc="flag"'},
+  taunt:{i:"📣",l:"Trash talk",a:'data-qc="taunt"'}, tab:{i:"🧾",l:"Paid",a:'data-nav="tab"'}, line:{i:"✍️",l:"One line",a:'data-qc="line"'}, close:{i:"🛂",l:"Close day",a:'data-qc="close"'},
+  driver:{i:"🚕",l:"Driver",a:'data-driver=""'}, way:{i:"🧭",l:"Way back",a:'data-way=""'}, mummy:{i:"💬",l:"Mummy",a:'data-askmum="1"'}, drill:{i:"🔤",l:"Phrases",a:'data-drill="1"'}
+};
+const QC_ROWS=[["Nile Bowl",["tout","haggle","camel","flag","taunt"]],["Today",["tab","line","drill","close"]],["Getting around",["driver","way","mummy"]]];
+qcHome=function(){ const d=todayDay()||DAYS[sel]; const inTrip=!!todayDay(); const closed=!!stamps()[d.id]; const tout=(GS.get("tout",{})[d.id])||0;
+  const off=k=>k==="close"&&(closed||!inTrip);
+  const tile=k=>{ const x=QC_ITEMS[k]; return `<button type="button" class="qc-t qc-${k}" ${x.a} ${off(k)?"disabled":""} aria-label="${escA(x.l)}"><span class="qi">${x.i}</span><span class="ql">${esc(x.l)}</span>${k==="tout"&&tout?`<i class="qc-n">${tout}</i>`:""}${k==="close"&&closed?`<i class="qc-n ok">✓</i>`:""}</button>`; };
+  const sug=qcSuggest();
+  return `<div class="qh"><h3>Right now</h3><button type="button" class="x" aria-label="Close">×</button></div>
+  ${sug.length?`<div class="qc-sug">${sug.map(s=>{ const x=QC_ITEMS[s.k]; return `<button type="button" class="qc-s" ${x.a}><span class="qi">${x.i}</span><span><b>${esc(x.l==="Paid"?"Paid for something":x.l==="Mummy"?"Ask the Mummy":x.l==="Driver"?"Show the driver":x.l==="Phrases"?"Phrase drill":x.l==="My friend"?"“My friend” +1":x.l==="Haggle"?"Log a haggle":x.l==="Close day"?"Close the day":x.l==="Way back"?"Way back":x.l)}</b><small>${esc(s.why)}</small></span></button>`; }).join("")}</div>`:""}
+  ${QC_ROWS.map(([lbl,ks])=>`<div class="qc-row"><span class="qc-l">${lbl}</span><div class="qc-g" style="--n:${ks.length}">${ks.map(tile).join("")}</div></div>`).join("")}`; };
+(function(){ const st=document.createElement("style"); st.textContent=`
+.qc-sug{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
+.qc-s{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--fg) 16%,var(--line));background:var(--sand);color:var(--fg);font:inherit;cursor:pointer;min-height:68px}
+.qc-s .qi{font-size:1.35rem;line-height:1}.qc-s b{display:block;font:700 0.8235rem/1.25 var(--body)}.qc-s small{display:block;margin-top:3px;color:var(--muted);font-size:0.7059rem;line-height:1.3}
+.qc-row{margin:0 0 10px}.qc-l{display:block;font:700 0.5882rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 5px 2px}
+.qc-g{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:6px}
+.qc-t{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:62px;padding:8px 2px;border-radius:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:600 0.6765rem/1.15 var(--body);cursor:pointer;text-align:center}
+.qc-t .qi{font-size:1.3rem;line-height:1}.qc-t .ql{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.qc-t:active,.qc-s:active{transform:scale(.97)}
+.qc-t[disabled]{opacity:.4}
+.qc-t.qc-taunt{border-color:color-mix(in srgb,var(--dusk) 55%,var(--line));background:color-mix(in srgb,var(--dusk) 10%,var(--bg))}
+.qc-n{position:absolute;top:4px;right:5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--dusk);color:#fff;font:700 10px/16px var(--mono);font-style:normal}.qc-n.ok{background:var(--ok)}
+html.bigtext .qc-g{grid-template-columns:repeat(3,1fr)!important}html.hugetext .qc-g{grid-template-columns:repeat(2,1fr)!important}html.bigtext .qc-sug{grid-template-columns:1fr}
+`; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
