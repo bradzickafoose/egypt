@@ -2586,7 +2586,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v144)";
+const BUILD = "Oct 9, 2026 (v145)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5176,6 +5176,73 @@ document.addEventListener("change", e=>{ if(e.target.closest("input[data-photo]"
 @keyframes msay{from{transform:scale(.6) translateY(10px);opacity:0}to{transform:none;opacity:1}}
 html.bigtext .mummy .msay{width:240px}
 `; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
+
+// ---------- taunts.js: trash talk that knows where you are in the trip ----------
+// Eight stages, each with its own material — some lines for anyone, some only Brad can send, some only Duane can.
+// The sheet leads with today's material, then one built from the live board, then a classic. "Fire back" adds comebacks.
+const T_STAGES=[
+ {id:"pre", from:"", to:"2026-10-10 00:00", e:"🧳", n:"Pre-game", sub:"nobody has scored, everybody has opinions",
+  any:["Pack light. Your excuses are already overweight.","Kickoff's Sunday breakfast. Start stretching your losing face.","Practise your Arabic: \"la, shukran\" means \"no thanks.\" You'll be saying it to my lead.","I've seen your packing list. Bold of you to bring confidence.","Pre-game report: I'm rested, I'm ready, and I've already downloaded the offline map. You've downloaded nothing but anxiety."],
+  Brad:["I'm flying in from Africa. You're flying in from Philadelphia. One of us is already on the continent of champions.","Cape Town to Cairo: two flights. Norfolk to Cairo: three. Even your route needs extra downs.","Enjoy the Philly airport, Duane. It's the closest you'll get to a playoff atmosphere."],
+  Duane:["Three flights and I'll still beat you to the hotel. That's called clock management.","Brad lands at 2am. Fitting — that's when Steelers fans finally stop crying about the playoffs.","Enjoy your last braai, Brad. Next week you're eating my dust. And koshary."]},
+ {id:"travel", from:"2026-10-10 00:00", to:"2026-10-11 05:00", e:"✈️", n:"Travel day", sub:"jet lag is not an injury report",
+  any:["Whoever clears the visa line first is morally the winner. I've decided.","Jet lag is not an injury report. Suit up.","Somewhere over the Mediterranean I realised I'm going to win this thing. Also that I'm in seat 34E."],
+  Brad:["Tiptoeing into your room at 3am. If you snore, it's going on the board as a penalty.","You'll be asleep by 8, Duane. I land at 2. Some of us play the night game.","Two flights, one layover, zero sleep, and I still have more energy than your offense."],
+  Duane:["I'll leave the door unlocked, Brad. Not the minibar.","I've been in Cairo eight hours longer than you. I've claimed the good pillow and the moral high ground.","Landing at 2am? Classic Steelers: shows up late, wants credit for showing up."]},
+ {id:"cairo", from:"2026-10-11 05:00", to:"2026-10-13 04:00", e:"🐪", n:"Cairo", sub:"pyramids, the Khan, and a man who wants to sell you a camel",
+  any:["Your haggling is like your defense: you give up 90% on the first play.","A man offered me a thousand camels for you. I countered at three. He walked.","The Sphinx lost its nose and still has a better poker face than you.","Cairo traffic has a better offensive line than your team.","You paid tourist price. I could hear the shopkeeper's kids cheering from here.","4,500 years old and the Great Pyramid still has a better structure than your game plan."],
+  Brad:["Who Dey? More like Who Paid Asking Price.","The Bengals have a tiger. Egypt has a sphinx. One of them actually guards something."],
+  Duane:["Black and gold? In the Khan that's the colour of the cheap souvenirs.","Six Super Bowls and not one of them taught you to say \"too expensive\" in Arabic."]},
+ {id:"aswan", from:"2026-10-13 04:00", to:"2026-10-14 12:00", e:"☀️", n:"Aswan & Abu Simbel", sub:"high tea, high heat, a 3:30 alarm",
+  any:["High tea at the Old Cataract: the only time your pinky will be higher than your score.","It's 40° in the shade and you're still colder than your team's offense.","Philae got moved to a new island to save it. Nobody's moving your season.","3:30 alarm for Abu Simbel. Ramses built four giant statues of himself. You can't even build a lead.","Abu Simbel was moved 65 metres uphill. Your score hasn't moved at all."],
+  Brad:["Abu Simbel faces the sunrise. The Bengals face the facts? Never.","Nubian houses are painted bright so people can find them. Your team should try that with the end zone."],
+  Duane:["Ramses II put his name on everything he touched. Like the Steelers with a 1979 trophy.","Even the Aswan sun takes a break at noon. Your excuses work overtime."]},
+ {id:"nile", from:"2026-10-14 12:00", to:"2026-10-17 10:00", e:"⛵", n:"On the Nile", sub:"slow boat, fast mouth",
+  any:["The boat goes five miles an hour. Still faster than your two-minute drill.","No signal on the river. Finally, a place where you can't check the score.","The crew learned my name on day one. They call you \"the other one.\"","Edfu is the best-preserved temple in Egypt. Your losing streak is a close second.","I'd push you overboard, but the crocodiles have standards.","We're moored for the night. Your scoring has been moored since Cairo."],
+  Brad:["Sobek the crocodile god has a better bite than your pass rush.","On a boat with a Bengals fan: the Nile has never seen a slower-moving thing."],
+  Duane:["We sailed past the quarry at Silsila. That's where they dug up your playbook.","Steelers fans and the Nile: both very old, both going in one direction. Down."]},
+ {id:"luxor", from:"2026-10-17 10:00", to:"2026-10-18 19:30", e:"🎈", n:"Luxor", sub:"tombs, a balloon, and the final whistle tonight",
+  any:["Valley of the Kings: 63 tombs and not one trophy of yours either.","The balloon goes up at dawn. First thing on this trip that's gone up for you.","Hatshepsut ruled Egypt in a fake beard. You can't even rule a group chat.","Karnak has 134 columns. Your excuses still outnumber them.","Final whistle tonight. Start practising the words \"I'm buying.\""],
+  Brad:["They buried kings here with everything they'd need in the afterlife. I'll bury you with your Bengals hat.","Tut died at 19 and still has more trophies than Cincinnati."],
+  Duane:["Valley of the Kings. Funny — Pittsburgh hasn't seen one in years.","The mummies here have been wrapped for 3,000 years. Your season's been wrapped since September."]},
+ {id:"final", from:"2026-10-18 19:30", to:"2026-10-19 04:00", e:"🏁", n:"Final whistle", sub:"the board is the board · loser buys dinner",
+  any:["Final whistle. Loser buys. I've already picked the expensive Lebanese place.","Check the board, then check your wallet.","Dinner's on you. So's the shame.","Good game. Not you — the game. The game was good."],
+  Brad:["Last night together and I'm leaving with the trophy and the leftovers."],
+  Duane:["Tomorrow I fly home a champion. You fly to the Red Sea to think about what you've done."]},
+ {id:"split", from:"2026-10-19 04:00", to:"2026-12-31 00:00", e:"🛋️", n:"Overtime", sub:"one of us is on a mountain, one of us is on a couch",
+  any:["The trip's over. The trash talk isn't. That's how rivalries work."],
+  Brad:["You're on the couch. I'm on Mount Sinai at sunrise. Different leagues, as usual.","I'm floating over the Blue Hole. You're sinking into a different blue hole: the Bengals' depth chart.","Sending you a sunrise from Sinai. Moses came down with ten commandments. I came down with one: you lost.","White Desert tonight, stars everywhere. You'd love it. You'd also lose to it."],
+  Duane:["Enjoy the desert, Brad. It's the only place emptier than your trophy case.","Home: my own pillow, my own bathroom, my own bed. Who's really winning?","Send me a photo from the White Desert. I need something to put next to the word \"barren.\"","Mount Sinai at 2am? Even Moses went with a plan."]},
+];
+const T_COMEBACKS=["Bold words from a man currently losing on two continents.","Cute. Did the mummy write that for you?","Noted. Filed. Laughed at.","I'd respond, but the refs only flag unsportsmanlike conduct when it's clever.","That's your best? I've had more pressure from the hotel shower.","Let me guess: you practised that on the camel first."];
+function tStage(){ const n=cairoNow(); const t=n.date+" "+String(n.h).padStart(2,"0")+":"+String(n.m||0).padStart(2,"0"); return T_STAGES.find(s=>(!s.from||t>=s.from)&&t<s.to)||T_STAGES[T_STAGES.length-1]; }
+const tFill=s=>String(s).replace(/\{o\}/g,OTHER()||"you").replace(/\{me\}/g,me()||"me");
+let tauntReplyAt=0; document.addEventListener("click", e=>{ if(e.target.closest("[data-reply]")) tauntReplyAt=Date.now(); }, true);
+tauntPicks=function(){ const S=tStage(); const w=me(); const sh=a=>[...a].sort(()=>Math.random()-.5);
+  const mine=sh((S[w]||[]).map(x=>({t:x,k:"stage"}))), any=sh((S.any||[]).map(x=>({t:x,k:"stage"})));
+  const stage=[...mine.slice(0,2), ...any].slice(0,3);
+  const live=(S.id==="split"||S.id==="pre")?[]:sh((safe(liveTaunts)||[]).map(x=>({t:String(x).replace(/Nice On The Nile you've got here/i,"Nice river you've got here"),k:"live"}))).slice(0,1); const classic=sh(TAUNTS.map(x=>({t:x,k:"classic"}))).slice(0,1);
+  const reply=Date.now()-tauntReplyAt<2500?sh(T_COMEBACKS.map(x=>({t:x,k:"comeback"}))).slice(0,2):[];
+  return [...reply, ...stage, ...live, ...classic].map(x=>({...x, t:tFill(x.t)})); };
+const T_TAG={stage:"", live:"📊", classic:"🏈", comeback:"↩︎"};
+tauntSheet=function(){ const S=tStage(); const picks=tauntPicks(); const o=OTHER()||"him"; const key=typeof mumKey==="function"&&mumKey()&&navigator.onLine; const reply=picks.some(p=>p.k==="comeback");
+  openSheet("sheetQC", `<div class="qh"><h3>${reply?"Fire back":"Trash talk"}</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="qpanel">
+  <div class="t-stage"><span class="t-e">${S.e}</span><div><b>${esc(S.n)}</b><small>${esc(S.sub)}</small></div></div>
+  <div class="taunts">${picks.map(p=>`<button type="button" class="btn taunt t-${p.k}" data-taunt="${escA(p.t)}">${T_TAG[p.k]?`<i class="t-tag">${T_TAG[p.k]}</i>`:""}${esc(p.t)}</button>`).join("")}</div>
+  <div class="row" style="margin:0 0 10px;gap:6px"><button type="button" class="btn mini" id="tauntShuffle">↻ Other lines</button>${key?`<button type="button" class="btn mini" data-tauntai="1">✨ Mummy, write one</button>`:""}</div>
+  <form class="hform" id="tauntForm"><input id="tauntIn" placeholder="Your own line (keep it clean, keep it funny)" maxlength="120" autocomplete="off"><button class="btn primary" type="submit">Send it</button></form>
+  <p class="muted" style="font-size:0.7059rem;margin:6px 0 0">Lands on ${esc(o)}'s jumbotron within half a minute, in your colours.</p></div>`); };
+// the mummy writes one, about right now
+document.addEventListener("click", async e=>{ const b=e.target.closest("[data-tauntai]"); if(!b) return; b.disabled=true; b.textContent="✨ The mummy is thinking…"; const S=tStage(); const w=me(), o=OTHER();
+  let score=""; try{ const a=nileTotal(w), c=nileTotal(o); if(a&&c) score=`Score: ${w} ${a.pts}, ${o} ${c.pts}.`; }catch(x){}
+  let today=""; try{ const d=todayDay(); if(d) today=`Today: ${d.title} (${d.place}).`; }catch(x){}
+  try{ const out=await claudeCall({system:"You write one-line trash talk for two friends on a trip to Egypt, Brad (Steelers fan) and Duane (Bengals fan). Funny, specific, affectionate, clean. Max 120 characters. Reply with only the line, no quotes.", messages:[{role:"user",content:`${w} is sending it to ${o}. Stage of the trip: ${S.n} — ${S.sub}. ${today} ${score} Make it about this stage, not generic football.`}], max_tokens:80, timeout:20000});
+    const line=out.replace(/^["“]|["”]$/g,"").slice(0,140); const box=$("#sheetQC .taunts"); if(box) box.insertAdjacentHTML("afterbegin",`<button type="button" class="btn taunt t-ai" data-taunt="${escA(line)}"><i class="t-tag">✨</i>${esc(line)}</button>`); b.textContent="✨ Another"; b.disabled=false; }
+  catch(err){ b.textContent=err.kind==="offline"?"No signal":"The mummy's busy"; setTimeout(()=>{ if(b.isConnected){ b.textContent="✨ Mummy, write one"; b.disabled=false; } },2500); } });
+(function(){ const st=document.createElement("style"); st.textContent=`
+.t-stage{display:flex;gap:10px;align-items:center;margin:0 0 10px;padding:8px 10px;border-radius:12px;background:var(--sand)}.t-stage .t-e{font-size:1.4rem}.t-stage b{display:block;font:700 0.8824rem var(--display)}.t-stage small{color:var(--muted);font-size:0.7353rem}
+.taunts .t-tag{font-style:normal;margin-right:6px;opacity:.75}.taunts .t-comeback{border-color:var(--dusk)}.taunts .t-ai{border-color:var(--nile)}
+`; document.head.appendChild(st); })();
 
 // ---------- bodyclock.js: Duane's jet-lag plan, one line at a time, on his Now card (Cairo is 7 hours ahead of Norfolk) ----------
 // The idea: the Philadelphia → London flight leaves at 1:45am Cairo time, so it *is* his first Cairo night. Eat before it,
