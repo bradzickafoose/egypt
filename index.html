@@ -2389,7 +2389,7 @@ function renderFlights(){
       ${plan?`<div class="bp-plan">${plan.up?`<span>⏰ up <b>${plan.up}</b></span>`:""}<span>🚗 leave ${esc(f.leave.from.split(" ")[0])} <b>${plan.go}</b></span><span>🛂 airport <b>${plan.at}</b></span><span>🛫 boards <b>≈${plan.board}</b></span></div>`:""}
       ${f.note?`<div class="bp-note">${esc(f.note)}</div>`:""}${safe(()=>onboardHTML(f))||""}${f.arrive?`<div class="bp-note"><b>On landing:</b> ${esc(f.arrive)}</div>`:""}
       ${f.status==="tbd"&&mine?xFlightForm(f):""}
-      ${mine&&f.status==="ok"&&airlineOf(f)?`<form class="pnrf" data-f="${f.id}"><label>Confirmation code</label><input value="${esc(pnrOf(f))}" placeholder="e.g. ABC123" maxlength="8" autocapitalize="characters" autocomplete="off"><button class="btn mini" type="submit">Save</button>${pnrOf(f)?`<button type="button" class="btn mini" data-copy="${esc(pnrOf(f))}">Copy</button>`:""}</form>`:""}
+      ${mine&&f.status==="ok"&&airlineOf(f)?`<form class="pnrf" data-f="${f.id}"><label>Confirmation code</label><input value="${esc(pnrOf(f))}" placeholder="ABC123" maxlength="8" autocapitalize="characters" autocomplete="off"><button class="btn mini" type="submit">Save</button>${pnrOf(f)?`<button type="button" class="btn mini" data-copy="${esc(pnrOf(f))}">Copy</button>`:""}</form>`:""}
       ${f.from.t?`<div class="row bp-acts">${mine?`<a class="btn" href="${flightICS(f)}" download="egypt-flight-${f.id}.ics" data-caltoast="Adding the flight…">📅 Calendar</a>`:""}${mine?airlineLinks(f):""}${statusHref(f)?`<a class="btn ${mine?"":"primary"}" target="_blank" rel="noopener" href="${statusHref(f)}">${mine?"Status":"Track "+esc(f.who)}</a>`:""}${f.x&&mine?`<button type="button" class="btn mini" data-xdel="${f.id}">Remove</button>`:""}<button type="button" class="btn send" data-sendtext="${esc(`✈️ ${f.who}: ${f.no||f.op} ${f.from.ap} ${f.from.t} → ${f.to.ap} ${f.to.t||""} · ${dlab(f.date)}${plan?` · leave ${plan.go}, airport ${plan.at}`:""}`).replace(/"/g,"&quot;")}">Send ↗</button></div>`:""}
     </div>`; }).join("") + `<p class="muted" style="margin:10px 0 0;font-size:0.7941rem">Times are local to each airport. "Up / leave / airport" is worked back from the departure: 2½ h before an international flight, 1¾ h before a domestic one, plus the drive. Confirmation codes you type here never leave this phone — they're for copying into the airline app.</p>`;
 }
@@ -2597,7 +2597,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v160)";
+const BUILD = "Oct 9, 2026 (v161)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5134,7 +5134,7 @@ const MUM_EV={
 };
 const MUM_ACTS=["walk","peek","trip","dance","spin","sleep","selfie","flag"];
 const mumPick=a=>a[Math.floor(Math.random()*a.length)];
-function mumState(){ const s=GS.get("mumst",{})||{}; const t=cairoNow().date; if(s.d!==t){ s.d=t; s.n=0; s.daily=0; s.last=0; s.used=[]; } return s; }
+function mumState(){ const s=GS.get("mumst",{})||{}; const t=cairoNow().date; if(!s.d||t>s.d){ s.d=t; /* only ever forward: the home-clock hour before your midnight is not a new day */ s.n=0; s.daily=0; s.last=0; s.used=[]; } return s; }
 function mumOK(big){ if(RM()) return false; if(document.querySelector(".mummy")) return false; const a=document.activeElement; if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return false; const s=mumState(); if(s.n>=6&&!big) return false; if(!big&&Date.now()-(s.last||0)<120000) return false; return true; }
 function mumNote(){ const s=mumState(); s.n=(s.n||0)+1; s.last=Date.now(); GS.set("mumst",s); }
 function mumLine(kind){ const s=mumState(); const pool=MUM_EV[kind]||[]; const fresh=pool.filter(x=>!(s.used||[]).includes(x)); const l=mumPick(fresh.length?fresh:pool); s.used=(s.used||[]).concat([l]).slice(-30); GS.set("mumst",s); return l; }
