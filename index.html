@@ -2588,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v149)";
+const BUILD = "Oct 9, 2026 (v150)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5819,6 +5819,244 @@ MUM_EV.steps=["Twenty thousand steps. My knees are made of linen and even they'r
 .hl-k{font-size:0.7059rem;margin:6px 0}.hl-steps{font-size:0.7941rem;padding-left:1.2em}.hl-steps li{margin:4px 0}.hl-steps code,.hl-url code{font-size:0.7059rem;background:var(--sand);padding:1px 4px;border-radius:4px;word-break:break-all}
 .hl-url{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin:8px 0}
 .hl-pass{margin:2px 0 0;font:0.6471rem var(--mono);opacity:.75}
+`; document.head.appendChild(st); })();
+
+// ---------- pet.js: the mummy as a shared Tamagotchi. Two grown men, one undead child. ----------
+// Shared: rooms/{room}-pet = {belly, mood, wraps, at, born, sand, dads:{Brad,Duane}, log:[{who,what,at}], stuff:[…]}
+// Needs fall in real time; nothing kills him (he's already dead) but neglect gets very public.
+const PET_RATE={belly:5, mood:4, wraps:2};   // points lost per hour
+const PET_K="egypt.pet";
+const petLocal=()=>lsJ(PET_K,null);
+function petNow(p){ p=p||petLocal()||petNew(); const h=Math.max(0,(Date.now()-Date.parse(p.at||new Date().toISOString()))/3600000); const q=Object.assign({},p);
+  for(const k of ["belly","mood","wraps"]) q[k]=Math.max(0,Math.min(100,Math.round((+p[k]||0)-PET_RATE[k]*h)));
+  q.sand=Math.min(3,(+p.sand||0)+Math.floor(h/3)); return q; }
+function petNew(){ return {belly:70,mood:70,wraps:80,at:new Date().toISOString(),born:new Date().toISOString(),sand:0,dads:{Brad:0,Duane:0},log:[],stuff:[]}; }
+async function petPull(){ const s=await togGet("pet"); if(s&&s.at){ const L=petLocal(); if(!L||String(s.at)>=String(L.at)){ lsJset(PET_K,s); return true; } } return false; }
+async function petSave(p){ p.at=new Date().toISOString(); lsJset(PET_K,p); await togPut("pet","",p); }
+// age → life stage → accessory
+function petAge(p){ return Math.floor((Date.now()-Date.parse((p||petNow()).born))/86400000); }
+const PET_STAGES=[[0,"Larval stage","baby","Born today. Again. Mostly linen and confusion. Has a pacifier he insists is an amulet."],[2,"Toddler of the Two Lands","kid","Propeller hat. Bites tourists. Calls every pyramid \"mine.\""],[4,"Teen, emo, eternal","teen","Sunglasses indoors. Says you'll never understand what it's like to be 3,000 and 14."],[6,"His Royal Wrapness","pharaoh","Wears the headdress. Expects tribute. Tribute is koshary."],[9,"Grandmummy","elder","Beard. Tells the same story about Ramses. Ramses owed him money."]];
+const PET_NAME="Ramses Kevin III";
+const petStage=p=>{ const a=petAge(p); return [...PET_STAGES].reverse().find(s=>a>=s[0]); };
+// what you can do to him
+const PET_ACTS={
+  koshary:{p:"fed him koshary",g:"feed",l:"🍲 Koshary",d:{belly:35,mood:5},say:["Carbs on carbs on carbs. I am a pyramid of starch now.","Lentils, rice, pasta, onions. Three thousand years and nobody thought to embalm me with THIS."],anim:"chomp"},
+  taameya:{p:"fed him ta'ameya",g:"feed",l:"🧆 Ta'ameya",d:{belly:20,mood:8},say:["Green inside. Like me.","Falafel from a cart. My stomach has seen worse. My stomach is in a jar in Luxor."],anim:"chomp"},
+  scarab:{p:"fed him a scarab (crunchy)",g:"feed",l:"🪲 A scarab",d:{belly:5,mood:15},say:["Crunchy. Ancestral. Slightly sacred. Do not tell the priests.","He rolled dung. I ate him. Circle of life."],anim:"chomp"},
+  leftovers:{p:"fed him {o}'s leftovers",g:"feed",l:"🥡 The other guy's leftovers",d:{belly:25,mood:10},say:["{o}'s leftovers. Tastes like losing.","Stolen from {o}. Twice as delicious."],anim:"chomp",steal:true},
+  tickle:{p:"tickled him (a bandage fell off)",g:"play",l:"🤭 Tickle",d:{mood:22,wraps:-6},say:["HEHEHE stop — STOP — you've unwound my left side.","I'm ticklish. I'm also forty percent linen. Pick one."],anim:"laugh"},
+  football:{p:"threw him the ball (face catch)",g:"play",l:"🏈 Throw the ball",d:{mood:15,belly:-4},say:["I caught it with my FACE.","Touchdown, {me}'s team. That's what I'll tell {o}."],anim:"catch"},
+  joke:{p:"told him a joke",g:"play",l:"🗣 Tell him a joke",d:{mood:0},say:[],anim:"laugh",joke:true},
+  rinse:{p:"rinsed him (he screamed)",g:"care",l:"🚿 Rinse him",d:{wraps:12,mood:-12},say:["WATER?! I'M A MUMMY. I'M MADE OF DRY.","You've ruined three millennia of careful dehydration."],anim:"panic"},
+  rewrap:{p:"re-wrapped him in hotel toilet paper",g:"care",l:"🧻 Re-wrap (hotel toilet paper)",d:{wraps:45,mood:5},say:["Two-ply. You spoil me.","Hilton toilet paper. I feel like a pharaoh. A soft, absorbent pharaoh."],anim:"spin"},
+  moist:{p:"moisturised him (pointless, beautiful)",g:"care",l:"🧴 Moisturise him",d:{mood:20,wraps:-4},say:["You can't moisturise a mummy, you absolute optimist. …Do the elbows.","Cocoa butter. Three thousand years too late. I've never felt more alive, which is to say, not at all."],anim:"laugh"},
+  griddy:{p:"taught him the Griddy (his leg came off)",g:"play",l:"🕺 Teach him the Griddy",d:{mood:28,wraps:-12},say:["My left leg came off. I kept going. That's called commitment.","I've hit the Griddy at a pharaoh's funeral. Respectfully. It was MY funeral."],anim:"catch"},
+  selfie:{p:"took a selfie with him (he blinked)",g:"play",l:"🤳 Selfie with him",d:{mood:12},say:["Get my good side. Trick question, they're both terrifying.","Tag me. @RamsesKevinIII. 0 followers. Since 1300 BC."],anim:"catch"},
+  nap:{p:"tucked him in",g:"care",l:"😴 Tuck him in",d:{mood:10,wraps:5},say:["Wake me in another three thousand years. Or for breakfast.","Sarcophagus, please. The comfy one."],anim:"sleep"},
+};
+const PET_JUNK=["🧲 a Luxor fridge magnet","🗿 a plastic pyramid that lights up","👕 an 'I ❤️ Cairo' T-shirt, size XXXL","🐪 a camel keyring that plays music","📜 'genuine' papyrus (banana leaf)","🏺 a vase he insists is his uncle","🪲 a resin scarab, slightly chewed","🕶️ knock-off Ray-Bans","🧿 an evil-eye bracelet","🫖 a teapot from the Khan, missing a lid"];
+function petMood(p){ const lo=Math.min(p.belly,p.mood,p.wraps); const k=lo===p.belly?"belly":lo===p.mood?"mood":"wraps"; return {lo,k}; }
+const PET_NEED={belly:["🍲","Hangry. Has started eating his own bandages. Says they taste like 1300 BC."],mood:["😐","Sulking. Writing poetry about you in hieroglyphs. It's mostly the bird with the angry eyebrows."],wraps:["🧻","Unravelling. There is a mummy-shaped trail from the minibar to the bathroom."]};
+const PET_CONTENT=["Content. Suspiciously.","Practising his walk like an Egyptian. He is an Egyptian. He still can't do it.","Staring at a wall. He says it's a tomb thing.","Humming. It might be a curse. It might be Mr. Brightside.","Counting his own teeth. Eleven. Same as yesterday.","Asleep with his eyes open. They don't close. Long story."];
+// ---------- whose side he's on: the Nile Bowl, and trash talk ----------
+function petSide(){ try{ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const live=GS.get("live",{})||{}; const ev=[...(GS.get("events",[])||[]), ...(((live[o]||{}).events)||[])].filter(e=>e&&String(e.text||"").startsWith("🗣")).sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  const t=ev[0]; if(t&&Date.now()-Date.parse(t.at)<3600000) return {who:t.who, why:"talk", line:String(t.text).replace(/^🗣\s*/,"")};
+  const a=safe(()=>nileTotal(w)), b=safe(()=>nileTotal(o)); if(a&&b&&a.pts!==b.pts) return {who:a.pts>b.pts?w:o, why:"lead", lead:Math.abs(a.pts-b.pts), sc:`${Math.max(a.pts,b.pts)}–${Math.min(a.pts,b.pts)}`};
+  return {who:"", why:"tie"}; }catch(e){ return {who:"",why:"tie"}; } }
+function petSideLine(){ const S=petSide(); const w=me()||"Brad"; const T=x=>(TEAMS[x]||{}).team||x;
+  if(S.why==="talk") return S.who===w?`He's in your jersey for the next hour — your trash talk landed. He's easily impressed.`:`${S.who}'s trash talk got him: he's in a ${T(S.who)} jersey for the next hour. Say something back.`;
+  if(S.why==="lead") return S.who===w?`He's wearing ${T(w)} colours — you lead the Nile Bowl ${S.sc}. Mascots follow the money.`:`He's wearing ${T(S.who)} colours: ${S.who} leads the Nile Bowl ${S.sc}. Traitor. Win something, or trash-talk him back.`;
+  return "Half Steelers, half Bengals until somebody scores or says something cruel."; }
+// ---------- doing things to him ----------
+let petBusy=false;
+async function petDo(id){ if(petBusy) return; petBusy=true; try{ await petPull(); const a=PET_ACTS[id]; const p=petNow(); const w=me()||"Brad", o=OTHER_OF(w)||"Duane";
+  let line=a.say.length?mumPick(a.say):""; let d=Object.assign({},a.d);
+  if(a.joke){ const j=mumPick(typeof GROANS!=="undefined"?GROANS:["Why did the mummy go on holiday? To unwind."]); const r=1+Math.floor(Math.random()*5); d.mood=[-8,2,8,14,25][r-1]; line=`“${j}” — ${"🪲".repeat(r)}${"·".repeat(5-r)} ${["He's filed a complaint with Anubis.","A polite wheeze.","He snorted. Bandage moved.","Genuinely chuckled. Lost a finger wrap.","He is on the floor. He is dead. (Again.)"][r-1]}`; }
+  for(const k in d) p[k]=Math.max(0,Math.min(100,(p[k]||0)+d[k]));
+  p.dads=p.dads||{}; p.dads[w]=(p.dads[w]||0)+1; p.log=[{who:w,what:(a.p||a.l).replace(/\{o\}/g,o),at:new Date().toISOString()}].concat(p.log||[]).slice(0,12);
+  await petSave(p); petRender(line.replace(/\{o\}/g,o).replace(/\{me\}/g,w), a.anim); safe(mumTabRender); safe(()=>sfx(a.anim==="panic"?"saf":a.anim==="laugh"?"xp":"stamp")); }
+  finally{ petBusy=false; } }
+async function petSweep(){ await petPull(); const p=petNow(); if(!p.sand) return; p.sand=0; p.wraps=Math.min(100,p.wraps+5); p.mood=Math.min(100,p.mood+3); const w=me()||"Brad"; p.dads=p.dads||{}; p.dads[w]=(p.dads[w]||0)+1; p.log=[{who:w,what:"swept up his sand",at:new Date().toISOString()}].concat(p.log||[]).slice(0,12); await petSave(p); toast(mumPick(["Swept. He sheds like a golden retriever made of desert.","Sand removed. He says it was 'decorative'.","Clean. For now. He's 3,000 years old; there's more where that came from."])); safe(mumTabRender); petRender(); }
+// real life feeds him too
+async function petGift(src){ try{ await petPull(); const p=petNow(); const it=mumPick(PET_JUNK); p.stuff=[it].concat(p.stuff||[]).slice(0,12); p.mood=Math.min(100,p.mood+12); p.log=[{who:me()||"Brad",what:`brought him ${it.replace(/^\S+\s/,"")} (${src})`,at:new Date().toISOString()}].concat(p.log||[]).slice(0,12); await petSave(p); }catch(e){} }
+async function petWalk(steps){ try{ await petPull(); const p=petNow(); p.mood=Math.min(100,p.mood+Math.min(25,Math.round(steps/1000))); p.belly=Math.max(0,p.belly-8); p.log=[{who:me()||"Brad",what:`took him ${fmtE(steps)} steps (he's hungry now)`,at:new Date().toISOString()}].concat(p.log||[]).slice(0,12); await petSave(p); }catch(e){} }
+// ---------- the Care panel (inside Ask the Mummy) ----------
+function petAgo(t){ const m=Math.round((Date.now()-Date.parse(t))/60000); return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.floor(m/60)}h ago`:`${Math.floor(m/1440)}d ago`; }
+function petHTML(line){ const p=petNow(); const st=petStage(p); const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const da=(p.dads||{})[w]||0, db=(p.dads||{})[o]||0;
+  const bar=(k,ic,l)=>`<div class="pt-m ${p[k]<25?"low":""}"><span>${ic} ${l}</span><i><b style="width:${p[k]}%"></b></i></div>`;
+  const fav=`👕 ${esc(petSideLine())}`;
+  const lo=petMood(p); const need=(p.belly+p.mood+p.wraps===0)?"He has died. He was already dead. Emotionally, nothing has changed. Feed him something.":lo.lo<25?PET_NEED[lo.k][1]:p.sand?`He's shed ${p.sand} pile${p.sand>1?"s":""} of sand. Sweep him.`:mumPick(PET_CONTENT);
+  const g=(gr,t)=>`<div class="pt-g"><small>${t}</small><div>${Object.entries(PET_ACTS).filter(([,a])=>a.g===gr).map(([id,a])=>`<button type="button" class="chip" data-pet="${id}">${esc(a.l)}</button>`).join("")}</div></div>`;
+  return `<div class="pet" id="petBox">
+   <div class="pt-hd"><b>${PET_NAME} <i>· ${esc(st[1])}</i></b><small>day ${petAge(p)+1} of fatherhood · ${esc(st[3])}</small></div>
+   ${line?`<div class="pt-say">${esc(line)}</div>`:`<div class="pt-say quiet">${esc(need)}</div>`}
+   <div class="pt-ms">${bar("belly","🍲","Snack level")}${bar("mood","😂","Will to unlive")}${bar("wraps","🧻","Structural integrity")}</div>
+   ${p.sand?`<button type="button" class="btn mini pt-sweep" data-petsweep="1">🧹 Sweep up ${p.sand} sand pile${p.sand>1?"s":""}</button>`:""}
+   ${g("feed","Feed")}${g("play","Play")}${g("care","Care")}
+   <p class="pt-fav">${fav}</p>
+   ${(p.log||[]).length?`<ul class="pt-log">${p.log.slice(0,5).map(x=>`<li><b>${esc(x.who)}</b> ${esc(x.what)} <i>${petAgo(x.at)}</i></li>`).join("")}</ul>`:""}
+   ${(p.stuff||[]).length?`<p class="pt-stuff"><small>His stuff (from your haggles):</small> ${p.stuff.slice(0,6).map(esc).join(" · ")}</p>`:""}
+  </div>`; }
+function petRender(line, anim){ const box=$("#petBox"); if(box) box.outerHTML=petHTML(line); if(anim){ const st=$("#amStage .am-m"); if(st){ st.className="am-m pt-"+anim; setTimeout(()=>{ if(st.isConnected) st.className="am-m idle"; },1800); } } }
+function petToggle(){ const box=$("#petBox"); if(box){ box.remove(); return; } const log=$("#amLog"); if(!log) return; log.insertAdjacentHTML("beforebegin", petHTML()); petPull().then(ch=>{ if(ch) petRender(); }); }
+document.addEventListener("click", e=>{ const a=e.target.closest("[data-pet]"); if(a){ petDo(a.dataset.pet); return; } if(e.target.closest("[data-petsweep]")){ petSweep(); return; } if(e.target.closest("[data-pettoggle]")){ petToggle(); return; } });
+// ---------- the tab shows his needs; sand piles sit next to him ----------
+(function(){ if(typeof mumTabRender!=="function") return; const R=mumTabRender; mumTabRender=function(){ const r=R.apply(this,arguments); try{ const el=$("#mumTab"); if(!el) return r; const p=petNow(); const lo=petMood(p); const st=petStage(p);
+  ["baby","kid","teen","pharaoh","elder"].forEach(c=>el.classList.toggle("pt-"+c, st[2]===c)); el.classList.toggle("pt-sad", lo.lo<25);
+  const S=petSide(); let jy=el.querySelector(".pt-jersey"); if(!jy){ jy=document.createElement("i"); jy.className="pt-jersey"; el.querySelector(".mt-body").insertBefore(jy, el.querySelector(".me")); }
+  const c=t=>{ const T=TEAMS[t]||{}; return [T.c1||"#333", (T.c2||"#999").toLowerCase()==="#000000"?"#111":T.c2]; };
+  if(S.who){ const [a,b]=c(S.who); jy.style.background=`repeating-linear-gradient(180deg,${a} 0 5px,${b} 5px 8px)`; jy.title=`${S.who}'s colours`; } else { const [a]=c("Brad"), [b]=c("Duane"); jy.style.background=`linear-gradient(90deg,${a} 0 50%,${b} 50%)`; }
+  let acc=el.querySelector(".pt-acc"); if(!acc){ acc=document.createElement("i"); acc.className="pt-acc"; el.querySelector(".mt-body").appendChild(acc); }
+  if(lo.lo<25&&!mumAlert()){ el.classList.add("unread"); el.querySelector(".mt-dot").textContent=PET_NEED[lo.k][0]; }
+  let sand=document.getElementById("petSand"); if(p.sand){ if(!sand){ sand=document.createElement("button"); sand.type="button"; sand.id="petSand"; sand.setAttribute("aria-label","Sweep up his sand"); document.body.appendChild(sand); sand.addEventListener("click",()=>petSweep()); } sand.innerHTML=Array.from({length:p.sand},()=>"<i></i>").join(""); } else if(sand) sand.remove();
+  }catch(e){} return r; }; })();
+setInterval(()=>{ petPull().then(()=>safe(mumTabRender)); }, 5*60000); setTimeout(()=>petPull().then(()=>safe(mumTabRender)), 2500);
+// Care lives in Ask the Mummy: a button in the header
+(function(){ if(typeof amSheetHTML!=="function") return; const A=amSheetHTML; amSheetHTML=function(){ const h=A.apply(this,arguments); const p=petNow(); const lo=petMood(p); return h.replace('<button type="button" class="x" aria-label="Close">×</button></div>',`<button type="button" class="am-new pt-btn ${lo.lo<25||p.sand?"need":""}" data-pettoggle="1">${lo.lo<25?PET_NEED[lo.k][0]:p.sand?"🧹":"🍼"} Care</button><button type="button" class="x" aria-label="Close">×</button></div>`); }; })();
+(function(){ if(typeof sendTaunt!=="function") return; const S=sendTaunt; sendTaunt=function(line){ const r=S.apply(this,arguments); (async()=>{ try{ await petPull(); const p=petNow(); p.mood=Math.min(100,p.mood+(p.mood<25?15:6)); p.log=[{who:me()||"Brad",what:`trash-talked ${OTHER_OF(me())||"him"} (he loved it)`,at:new Date().toISOString()}].concat(p.log||[]).slice(0,12); await petSave(p); safe(mumTabRender); }catch(e){} })(); return r; }; })();
+// hooks: a field goal brings him a souvenir; logged steps take him for a walk
+(function(){ if(typeof jumbo==="function"){ const J=jumbo; jumbo=function(word){ const r=J.apply(this,arguments); try{ if(/field goal/i.test(String(word||""))) petGift("a field-goal haggle"); }catch(e){} return r; }; }
+  if(typeof hlSave==="function"){ const H=hlSave; hlSave=function(d,rec){ const r=H.apply(this,arguments); try{ if(rec&&rec.steps>3000) petWalk(rec.steps); }catch(e){} return r; }; } })();
+// trash talk gets a mascot line
+(function(){ if(typeof tauntPicks!=="function") return; const T=tauntPicks; tauntPicks=function(){ const L=T.apply(this,arguments); try{ const p=petNow(); const S=petSide(); const w=me(); let t="";
+  if(S.why==="lead"&&S.who===w) t=`Even the mummy's wearing my jersey. He's dead and he still picked the right side.`; else if(S.why==="lead") t=`The mummy's only in your colours because you're up ${S.lead}. Mascots are cheap. Like your souvenirs.`; else if(S.why==="talk"&&S.who!==w) t=`The mummy switched jerseys for one trash talk? Took me one sentence. Watch.`; else if(p.belly<25) t=`Our mummy is eating his own bandages and you're out here posting.`;
+  if(t) L.splice(Math.min(3,L.length),0,{t,k:"live"}); }catch(e){} return L; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.pet{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--sand);display:grid;gap:8px}
+.pt-hd b{font:800 0.9412rem var(--display)}.pt-hd small{display:block;color:var(--muted);font-size:0.7059rem}
+.pt-say{font-family:Georgia,serif;font-style:italic;font-size:0.9rem;line-height:1.35}.pt-say.quiet{font-style:normal;font-family:var(--body);font-size:0.7941rem;color:var(--muted)}
+.pt-ms{display:grid;gap:4px}.pt-m{display:grid;grid-template-columns:132px 1fr;align-items:center;gap:8px;font-size:0.7353rem}.pt-m i{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.pt-m b{display:block;height:100%;background:var(--ok);border-radius:4px;transition:width .6s}.pt-m.low b{background:var(--dusk)}.pt-m.low span{color:var(--dusk);font-weight:700}
+.pt-g small{display:block;font:700 0.6176rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.pt-g div{display:flex;flex-wrap:wrap;gap:6px}.pt-g .chip{flex-direction:row;font-family:var(--body);font-size:0.7647rem;padding:6px 10px}
+.pt-fav{font-size:0.7647rem;margin:0}.pt-log{list-style:none;margin:0;padding:0;font-size:0.7353rem;display:grid;gap:2px}.pt-log i{color:var(--muted);font-style:normal}.pt-stuff{font-size:0.7353rem;margin:0}.pt-stuff small{color:var(--muted)}
+.pt-sweep{justify-self:start}.pt-btn.need{border-color:var(--dusk);color:var(--dusk);font-weight:700;animation:mtdot 2s infinite}
+.am-m.pt-chomp{animation:ptchomp .18s ease-in-out 8 alternate}@keyframes ptchomp{to{transform:scaleY(.86) translateY(3px)}}
+.am-m.pt-laugh{animation:ptlaugh .12s linear 12 alternate}@keyframes ptlaugh{to{transform:rotate(8deg) translateY(-2px)}}
+.am-m.pt-panic{animation:ptpanic .07s linear 22 alternate}@keyframes ptpanic{to{transform:translateX(3px) rotate(-4deg)}}
+.am-m.pt-spin{animation:ptspin 1s cubic-bezier(.3,0,.2,1)}@keyframes ptspin{to{transform:rotate(720deg)}}
+.am-m.pt-catch{animation:ptcatch .5s ease-out 2 alternate}@keyframes ptcatch{to{transform:translateY(-10px) rotate(-10deg)}}
+.am-m.pt-sleep{transform:rotate(-90deg) scale(.85)}
+#petSand{position:fixed;left:40px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:36;display:flex;gap:2px;padding:4px 6px;border:0;background:none;cursor:pointer}
+#petSand i{display:block;width:16px;height:8px;border-radius:50% 50% 2px 2px;background:radial-gradient(circle at 40% 30%,#e9d49a,#b8975a);box-shadow:0 1px 1px rgba(0,0,0,.25)}
+html:has(.qs.on) #petSand,html:has(.mummy) #petSand,html.pp-open #petSand,html:has(#sheet.show) #petSand,html.scrolling-down #petSand{display:none}
+.mumtab .pt-acc{position:absolute;pointer-events:none}.mumtab .pt-jersey{position:absolute;left:2px;right:2px;bottom:4px;height:24px;border-radius:2px 8px 8px 2px;opacity:.92;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.mumtab.pt-baby .pt-acc{left:30px;top:33px;width:9px;height:9px;border-radius:50%;background:#7fc3ff;box-shadow:0 0 0 2px #fff}
+.mumtab.pt-kid .pt-acc{left:20px;top:-10px;width:26px;height:12px;border-radius:13px 13px 0 0;background:conic-gradient(#e33 0 25%,#fd3 0 50%,#3b5 0 75%,#39f 0);}
+.mumtab.pt-kid .pt-acc::after{content:"";position:absolute;left:5px;top:-5px;width:16px;height:3px;background:#555;border-radius:2px;animation:ptprop .3s linear infinite}@keyframes ptprop{to{transform:scaleX(-1)}}
+.mumtab.pt-teen .pt-acc{left:18px;top:19px;width:32px;height:10px;border-radius:2px 2px 6px 6px;background:#111;box-shadow:inset 0 2px 0 rgba(255,255,255,.25)}
+.mumtab.pt-pharaoh .pt-acc{left:6px;top:-8px;width:44px;height:30px;border-radius:20px 20px 4px 4px;background:repeating-linear-gradient(180deg,#1f4fa8 0 4px,#e2be67 4px 8px);z-index:-1}
+.mumtab.pt-elder .pt-acc{left:24px;top:40px;width:18px;height:22px;background:#eee;border-radius:0 0 50% 50%;box-shadow:inset 0 -3px 0 #ddd}
+.mumtab.pt-sad .me{transform:translateY(3px) scaleY(.7)}.mumtab.pt-sad .mt-arm{transform:rotate(60deg)}
+`; document.head.appendChild(st); })();
+
+// =====================================================================================================
+// MASCOT OF THE NILE BOWL — on the Games tab, on the stadium ticker, in the scorer's jersey, and he goes home with the winner
+// =====================================================================================================
+function petTeamColors(who){ const T=TEAMS[who]||{}; return [T.c1||"#333",(T.c2||"#999").toLowerCase()==="#000000"?"#111":T.c2]; }
+function petFinal(){ const n=cairoNow(); const t=n.date+" "+String(n.h).padStart(2,"0"); return t>="2026-10-18 20"; }
+function mascotCardHTML(){ const p=petNow(); const S=petSide(); const st=petStage(p); const lo=petMood(p); const w=me()||"Brad", o=OTHER_OF(w)||"Duane";
+  let head=S.who?`In ${(TEAMS[S.who]||{}).team||S.who} colours`:"Half Steelers, half Bengals";
+  let sub=petSideLine();
+  if(petFinal()){ const a=safe(()=>nileTotal(w)), b=safe(()=>nileTotal(o)); if(a&&b&&a.pts!==b.pts){ const win=a.pts>b.pts?w:o; head=`Going home with ${win}`; sub=win===w?`Final whistle. He's coming home with you, in your carry-on, legally ambiguous. ${o} gets visitation on Thanksgiving.`:`Final whistle. He's leaving with ${o}. He didn't even look back. He doesn't have a neck.`; } }
+  const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"];
+  return `<div class="card mascot"><div class="ms-fig" style="--j1:${c1};--j2:${c2}"><div class="am-m idle ${S.who?"":"split"}"><i class="mb"></i><i class="ms-j"></i><i class="me l"></i><i class="me r"></i></div></div>
+    <div class="ms-t"><small>Official mascot · ${esc(PET_NAME)}</small><b>${esc(head)}</b><span>${esc(sub)}</span>
+    <div class="ms-n">${lo.lo<25?`<em>${PET_NEED[lo.k][0]} ${esc(PET_NEED[lo.k][1].split(".")[0])}.</em>`:`<em>${esc(st[1])} · snack ${p.belly}% · will to unlive ${p.mood}%</em>`}<button type="button" class="btn mini" data-mascotcare="1">Care for him</button></div></div></div>`; }
+document.addEventListener("click", e=>{ if(e.target.closest("[data-mascotcare]")){ openAskMummy(); setTimeout(()=>{ if(!$("#petBox")) petToggle(); },200); } });
+(function(){ if(typeof renderGame!=="function") return; const R=renderGame; renderGame=function(){ const r=R.apply(this,arguments); try{ const g=$("#gameBody"); if(g&&!g.querySelector(".card.mascot")){ const h=g.querySelector("h2.sec"); const t=document.createElement("div"); t.innerHTML=mascotCardHTML(); if(h) h.before(t.firstChild); else g.prepend(t.firstChild); } }catch(e){} return r; }; })();
+setInterval(()=>{ try{ const c=document.querySelector("#gameBody .card.mascot"); if(c){ const t=document.createElement("div"); t.innerHTML=mascotCardHTML(); c.replaceWith(t.firstChild); } }catch(e){} }, 60000);
+// the stadium ticker plugs the mascot
+(function(){ if(typeof nbTicker!=="function") return; const N=nbTicker; nbTicker=function(){ let h=N.apply(this,arguments); try{ const p=petNow(); const S=petSide(); const lo=petMood(p); const msg=lo.lo<25?`MASCOT UPDATE: ${PET_NAME.toUpperCase()} IS ${lo.k==="belly"?"EATING HIS OWN BANDAGES":lo.k==="mood"?"SULKING IN A SARCOPHAGUS":"COMING APART AT THE SEAMS"} — SOMEBODY HELP HIM`:S.who?`MASCOT ${PET_NAME.toUpperCase()} NOW IN ${String((TEAMS[S.who]||{}).team||S.who).toUpperCase()} COLOURS${S.why==="talk"?" (BRIBED BY TRASH TALK)":""}`:`MASCOT ${PET_NAME.toUpperCase()} REFUSES TO PICK A SIDE`; h=h.replace('<div class="nb-tick">',`<div class="nb-tick"><span>🧻 ${esc(msg)}</span><i>◆</i>`).replace(/(<\/span><i>◆<\/i>)(?![\s\S]*<span>🧻)/,"$1"); }catch(e){} return h; }; })();
+// when he runs out to celebrate a score, he's in the scorer's jersey
+let mascotTeam=null, mascotTeamAt=0;
+(function(){ if(typeof jumbo!=="function") return; const J=jumbo; jumbo=function(word, who){ try{ if(/field goal|touchdown|two-point|extra point|safety/i.test(String(word||""))&&TEAMS[who]){ mascotTeam=who; mascotTeamAt=Date.now(); } }catch(e){} return J.apply(this,arguments); }; })();
+(function(){ if(typeof mumBuild!=="function") return; const B=mumBuild; mumBuild=function(){ const m=B.apply(this,arguments); try{ const who=Date.now()-mascotTeamAt<9000?mascotTeam:(petSide().who||""); if(who){ const [a,b]=petTeamColors(who); const j=document.createElement("i"); j.className="mm-jersey"; j.style.background=`repeating-linear-gradient(180deg,${a} 0 6px,${b} 6px 10px)`; const mw=m.querySelector(".mw"); mw.insertBefore(j, mw.querySelector(".me")); const n=document.createElement("i"); n.className="mm-num"; n.textContent=who==="Brad"?"7":"9"; mw.appendChild(n); } }catch(e){} return m; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.card.mascot{display:flex;gap:12px;align-items:center;margin-top:12px;padding:12px}
+.ms-fig{position:relative;width:52px;height:70px;flex:none}.ms-fig .am-m{left:10px;top:6px;width:32px;height:58px}.ms-fig .ms-j{position:absolute;left:1px;right:1px;bottom:3px;height:22px;border-radius:2px 2px 8px 8px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.ms-fig .split .ms-j{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
+.ms-fig .am-m{animation:msbob 2.4s ease-in-out infinite}@keyframes msbob{50%{transform:translateY(-3px) rotate(-3deg)}}
+.ms-t{min-width:0}.ms-t small{display:block;font:700 0.6176rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ms-t b{display:block;font:800 1rem var(--display)}.ms-t>span{display:block;font-size:0.7941rem;line-height:1.35;margin-top:2px}
+.ms-n{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:6px}.ms-n em{font-style:normal;font-size:0.7353rem;color:var(--muted)}
+.mummy .mm-jersey{position:absolute;left:12px;width:40px;top:46px;height:30px;border-radius:2px 2px 12px 12px;opacity:.95;pointer-events:none}
+.mummy .mm-num{position:absolute;left:24px;top:52px;font:900 15px var(--display);color:#fff;text-shadow:0 1px 0 #000;font-style:normal;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.ms-fig .am-m{animation:none}}
+`; document.head.appendChild(st); })();
+// tap Games: once the scoreboard lands, the mascot bursts up from behind the tab bar and celebrates like a mummy would
+const MS_CHEERS=["WELCOME TO THE NILE BOWL!","GO TEAM! (WHICHEVER ONE IS WINNING)","DE-FENSE! DE-FENSE! (my knees)","I HAVEN'T BEEN THIS EXCITED SINCE MY EMBALMING","WRAP IT UP! WRAP IT UP!","WALK LIKE A—no. Too on the nose.","MY LEG FELL OFF. WE GO AGAIN.","RA RA RA! (the sun god, also a cheer)","GIMME AN M! GIMME AN U! …I forgot the rest. Brain's in a jar.","THREE THOUSAND YEARS IN A BOX FOR THIS? WORTH IT!"];
+const MS_MOVES=["roof","walk","spin","leg"];
+let msLast=0;
+function mascotCelebrate(){ if(RM()) return; if(document.querySelector(".mummy,.ms-cele")) return; if(document.querySelector(".qs.on, .sheet.on, #sheetCD.on")) return; if(Date.now()-msLast<4000) return; msLast=Date.now();
+  const S=petSide(); const [c1,c2]=S.who?petTeamColors(S.who):["#101820","#FB4F14"]; const mv=mumPick(MS_MOVES);
+  const nav=document.querySelector(".bottom"); const nb=nav?Math.max(0,Math.round(innerHeight-nav.getBoundingClientRect().top)):0;
+  const w=document.createElement("div"); w.className="ms-cele"; w.setAttribute("aria-hidden","true"); w.style.setProperty("--nb",nb+"px");
+  w.innerHTML=`<div class="ms-up"><div class="ms-fig" style="--j1:${c1};--j2:${c2}"><div class="am-m ${S.who?"":"split"}"><i class="mb"></i><i class="ms-j"></i><i class="me l"></i><i class="me r"></i></div></div></div>`;
+  document.body.appendChild(w); const fig=w.querySelector(".ms-fig");
+  setTimeout(()=>{ if(!w.isConnected) return; w.classList.add("cel-"+mv); const fx=document.createElement("div"); fx.className="ms-fx"; fx.innerHTML=Array.from({length:16},(_,i)=>`<i style="--dx:${Math.round(Math.random()*180-90)}px;--dy:${Math.round(-50-Math.random()*110)}px;--r:${Math.round(Math.random()*720-360)}deg;animation-delay:${(i*0.04).toFixed(2)}s"></i>`).join("")+`<b>${esc(mumPick(MS_CHEERS))}</b>`; fig.appendChild(fx); safe(()=>sfx(mv==="leg"?"saf":"td")); }, 520);
+  setTimeout(()=>w.classList.add("down"), 3300); setTimeout(()=>w.remove(), 3900);
+  w.addEventListener("click", ()=>w.classList.add("down")); }
+// fire when the scroll to the Games tab has settled with the scoreboard on screen (smooth scroll takes its own sweet time)
+document.addEventListener("click", e=>{ if(!e.target.closest('.bottom a[data-go="game"], [data-go2="game"]')) return; const t0=Date.now(); let last=null, still=0;
+  const tick=()=>{ const el=document.querySelector("#live .nilebowl")||document.querySelector("#live"); if(!el) return; const r=el.getBoundingClientRect(); const top=Math.round(r.top);
+    if(last!==null&&Math.abs(top-last)<2) still++; else still=0; last=top;
+    if(still>=2&&r.top<innerHeight*0.7&&r.bottom>0){ safe(mascotCelebrate); return; }
+    if(Date.now()-t0<3500) setTimeout(tick,120); };
+  setTimeout(tick,200); });
+(function(){ const st=document.createElement("style"); st.textContent=`
+.ms-fig{overflow:visible}.card.mascot{position:relative}
+.ms-cele{position:fixed;left:62px;bottom:var(--nb,70px);z-index:29;width:52px;height:70px;pointer-events:auto}
+.ms-cele .ms-up{position:absolute;inset:0;transform-origin:50% 100%;scale:1.6;animation:msrise .5s cubic-bezier(.2,1.5,.4,1) both}
+.ms-cele.down .ms-up{animation:msdrop .45s cubic-bezier(.6,0,.9,.4) both}
+@keyframes msrise{from{transform:translateY(calc(var(--nb,70px) + 120px))}to{transform:none}}
+@keyframes msdrop{from{transform:none}to{transform:translateY(calc(var(--nb,70px) + 120px))}}
+.ms-cele .ms-fig{position:absolute;inset:0}
+.ms-cele .ms-fig .am-m{left:10px;top:6px;width:32px;height:58px}
+.ms-cele .ms-fig .ms-j{position:absolute;left:1px;right:1px;bottom:3px;height:22px;border-radius:2px 2px 8px 8px;background:repeating-linear-gradient(180deg,var(--j1) 0 5px,var(--j2) 5px 8px)}.ms-cele .split .ms-j{background:linear-gradient(90deg,#101820 0 50%,#FB4F14 50%)}
+html:has(.ms-cele) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
+.ms-fx{position:absolute;left:26px;top:20px;pointer-events:none}
+.ms-fx i{position:absolute;width:12px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,#efe6cf 0 4px,#c9bc9a 4px 5px);animation:msconf 1.6s cubic-bezier(.2,.7,.4,1) both}
+@keyframes msconf{0%{transform:translate(0,0) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 120px)) rotate(var(--r));opacity:0}}
+.ms-fx b{position:absolute;left:34px;bottom:52px;width:max-content;max-width:calc((100vw - 164px) / 1.6);font:900 0.55rem/1.25 var(--display);letter-spacing:.02em;color:var(--fg);background:var(--card);border:1.5px solid var(--fg);border-radius:9px;padding:3px 7px;transform-origin:left bottom;animation:mscheer 2.6s cubic-bezier(.2,1.4,.4,1) both;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+@keyframes mscheer{0%{transform:scale(0) rotate(-12deg);opacity:1}15%{transform:scale(1.1) rotate(3deg)}25%,88%{transform:none;opacity:1}100%{transform:scale(.9);opacity:0}}
+.cel-roof .ms-fig .am-m{animation:msroof .28s ease-in-out 8 alternate}@keyframes msroof{from{transform:translateY(0)}to{transform:translateY(-12px) rotate(4deg)}}
+.cel-walk .ms-fig .am-m{animation:mswalk .3s steps(2) 8 alternate}@keyframes mswalk{from{transform:translateX(-8px) skewX(10deg)}to{transform:translateX(8px) skewX(-10deg)}}
+.cel-spin .ms-fig .am-m{animation:msspin 1.2s cubic-bezier(.3,0,.2,1) 2}@keyframes msspin{to{transform:rotate(360deg) translateY(-6px)}}
+.cel-leg .ms-fig .am-m{animation:msleg .2s ease-in-out 10 alternate}@keyframes msleg{from{transform:rotate(-8deg)}to{transform:rotate(12deg) translateY(-4px)}}
+.cel-leg .ms-fx::after{content:"";position:absolute;left:4px;top:30px;width:9px;height:22px;border-radius:5px;background:repeating-linear-gradient(0deg,#efe6cf 0 5px,#c9bc9a 5px 6px);animation:msleg2 1.6s cubic-bezier(.3,.6,.5,1) both}@keyframes msleg2{to{transform:translate(-60px,50px) rotate(-260deg);opacity:0}}
+`; document.head.appendChild(st); })();
+
+// =====================================================================================================
+// THE REF — flag a penalty and the walking mummy comes out in stripes, whistle, cap, and throws the flag himself
+// =====================================================================================================
+let refCall=null, refArmed=0;
+const REF_LINES=[
+ "🚩 FLAG ON THE PLAY. {W}. {L}. Safety, two points the other way. Also fifteen yards and a koshary.",
+ "After review, the ruling on the field stands: {L} did it. I didn't review anything. I don't have eyes. I have raisins.",
+ "Personal foul, {L}. {W}. I'm the ref now. Nobody voted. I simply arrived.",
+ "No neck, no eyes, no replay booth. The call stands. {L}, two points.",
+ "{W}?? In MY Egypt?? Safety. Wrap him up. Literally, I brought extra.",
+ "Unsportsmanlike conduct, number {N}, {L}. Repeat the down. Repeat the vacation.",
+ "I've been reffing since the Old Kingdom. That's a flag. {L}, you know what you did.",
+ "The penalty is two points and the ref gets a tip. The ref is me. Tips go in the sarcophagus.",
+ "{L}: {W}. My ruling is final, my whistle is from 1350 BC, and it still works better than your defense."];
+const REF_GENERIC=["Flag on the play! I'm not sure who did it. I'm a mummy. Everybody pays.","I've seen this foul before — 1200 BC, terrible eyesight then too."];
+function refLine(){ const c=refCall&&Date.now()-refCall.at<15000?refCall:null; if(!c) return mumPick(REF_GENERIC); const what=String(c.what||"").split(" — ")[0].replace(/[“”"]/g,""); const pool=what?REF_LINES:REF_LINES.filter(x=>!x.includes("{W}")); return mumPick(pool).replace(/\{W\}/g,what).replace(/\{L\}/g,c.w).replace(/\{N\}/g,c.w==="Brad"?"7":"9"); }
+// your own flag: the forfeit tap (capture, so it's known before the safety call reaches the jumbotron)
+document.addEventListener("click", e=>{ const f=e.target.closest("[data-ff]"); if(!f) return; const F=(typeof FORFEITS!=="undefined"&&FORFEITS[+f.dataset.ff])||null; if(!F||/compulsory|permitted/i.test(F[1])) return; refCall={w:f.dataset.w, what:F[0], at:Date.now()}; }, true);
+// his flag, arriving from the other phone as "<name> scores" with a safety call
+(function(){ if(typeof jumbo!=="function") return; const J=jumbo; jumbo=function(word, who, sub){ const r=J.apply(this,arguments); try{ if(/scores$/i.test(String(word||""))&&/safety|flag/i.test(String(sub||""))){ const m=String(sub).match(/\b(Brad|Duane)\b/); const wm=String(sub).match(/flagged\s*[—:–-]\s*([^—.!]+)/i); refCall={w:m?m[1]:OTHER_OF(who)||"Somebody", what:wm?wm[1].trim().replace(/^./,c=>c.toUpperCase()):"", at:Date.now()}; mumReact("saf",{delay:2600}); } }catch(e){} return r; }; })();
+// every safety reaction comes out as the ref, even over the flag sheet, even if he was out recently
+(function(){ if(typeof mumReact!=="function") return; const R=mumReact; mumReact=function(kind, opts){ if(kind==="saf"){ opts=Object.assign({},opts||{},{big:true,overSheet:true,act:"flag",line:refLine()}); refArmed=Date.now(); } return R.call(this,kind,opts); }; })();
+(function(){ if(typeof mumBuild!=="function") return; const B=mumBuild; mumBuild=function(){ const m=B.apply(this,arguments); try{ if(Date.now()-refArmed<8000){ refArmed=0; m.classList.add("ref"); m.querySelectorAll(".mm-jersey,.mm-num").forEach(x=>x.remove()); const mw=m.querySelector(".mw"); const sh=document.createElement("i"); sh.className="mm-ref"; mw.insertBefore(sh, mw.querySelector(".me")); const cap=document.createElement("i"); cap.className="mm-cap"; mw.appendChild(cap); const wh=document.createElement("i"); wh.className="mm-whistle"; mw.appendChild(wh); } }catch(e){} return m; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.mummy.ref .mm-ref{position:absolute;left:12px;width:40px;top:40px;height:38px;border-radius:4px 4px 12px 12px;background:repeating-linear-gradient(90deg,#111 0 5px,#f4f4f4 5px 10px);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);pointer-events:none}
+.mummy.ref .mm-ref::before{content:"";position:absolute;left:12px;top:0;width:16px;height:8px;background:#111;clip-path:polygon(0 0,100% 0,50% 100%)}
+.mummy.ref .mm-cap{position:absolute;left:14px;top:4px;width:36px;height:13px;border-radius:18px 18px 3px 3px;background:#111;pointer-events:none}
+.mummy.ref .mm-cap::after{content:"";position:absolute;right:-12px;bottom:0;width:16px;height:4px;border-radius:0 4px 4px 0;background:#111}
+.mummy.ref .mm-cap::before{content:"";position:absolute;left:4px;top:3px;width:28px;height:2px;background:#f4f4f4;opacity:.8}
+.mummy.ref .mm-whistle{position:absolute;left:40px;top:33px;width:11px;height:7px;border-radius:2px 5px 5px 2px;background:linear-gradient(#e8e8e8,#9a9a9a);box-shadow:0 0 0 1px #555;pointer-events:none;animation:mwhis .18s ease-in-out 6 alternate}
+.mummy.ref .mm-whistle::before{content:"";position:absolute;left:-14px;top:3px;width:16px;height:1px;background:#111;transform:rotate(25deg);transform-origin:right}
+@keyframes mwhis{to{transform:translateY(-2px) rotate(-8deg)}}
+.mummy.ref{z-index:72}
+.mummy.ref .ma.a1{transform:rotate(-80deg)!important;animation:none}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
