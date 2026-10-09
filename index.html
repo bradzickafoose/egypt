@@ -2541,7 +2541,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v110)";
+const BUILD = "Oct 9, 2026 (v111)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4266,7 +4266,7 @@ const BOATS = [
    chk:[["✓","Dahabiyas carry 5–12 cabins"],["?","2026 walk-up prices"]], photoq:"Aswan Corniche Nile cruise boats moored" }
 ];
 const BOAT_FIT = { exact:["Our dates","ok"], plus1:["+1 day · ends Sat","amber"], wrong:["Wrong days","bad"], gamble:["Long shot","bad"] };
-const BOAT_LS = { mine:"egypt.boat.votes", other:"egypt.boat.other", choice:"egypt.boat.choice", seen:"egypt.boat.seen", showAll:"egypt.boat.showAll" };
+const BOAT_LS = { steps:"egypt.boat.steps", mine:"egypt.boat.votes", other:"egypt.boat.other", choice:"egypt.boat.choice", seen:"egypt.boat.seen", showAll:"egypt.boat.showAll" };
 const bJSON=(k,d)=>{ try{ return JSON.parse(lsGet(k,"")||"null")||d; }catch(e){ return d; } };
 const boatVotes=()=>bJSON(BOAT_LS.mine,{});
 const boatOther=()=>bJSON(BOAT_LS.other,{votes:{}});
@@ -4274,14 +4274,28 @@ const boatRec=()=>bJSON(BOAT_LS.choice,null);   // {id|null, by, at, pushed} —
 const boatChoice=()=>{ const c=boatRec(); return c&&c.id&&BOATS.some(b=>b.id===c.id)?c:null; };
 const boatURL=p=>`${DB_URL}/rooms/${room()}-boat${p?"/"+p:""}.json`;
 let boatFilter="all", boatConfirm="", boatBusy=false;
-async function boatPull(){ if(!liveOK()||boatBusy) return false; boatBusy=true; try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),12000); const r=await fetch(boatURL(),{cache:"no-store",signal:ctl.signal}); clearTimeout(t); if(!r.ok) return false; const d=(await r.json())||{}; let changed=false;
+let boatPullP=null;
+// one pull at a time; a pull asked for while one is running waits for it, then fetches fresh (so opening the sheet always sees the latest)
+async function boatPull(){ if(boatPullP){ try{ await boatPullP; }catch(e){} } boatPullP=boatPull1(); try{ return await boatPullP; } finally{ boatPullP=null; } }
+async function boatPull1(){ if(!liveOK()) return false; boatBusy=true; try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),12000); const r=await fetch(boatURL(),{cache:"no-store",signal:ctl.signal}); clearTimeout(t); if(!r.ok) return false; const d=(await r.json())||{}; let changed=false;
   const o=d[OTHER()]||{votes:{}}; const os=JSON.stringify(o); if(os!==lsGet(BOAT_LS.other,"")){ const before=boatBothUp().map(b=>b.id); lsSet(BOAT_LS.other,os); changed=true; const fresh=boatBothUp().filter(b=>!before.includes(b.id)); if(fresh.length) toast(`It's a match: you both like ${fresh.map(b=>b.name).join(" and ")} ⛵`); }
   const mineSrv=d[me()]; const mineLoc=boatVotes(); if(mineSrv&&mineSrv.votes&&!lsGet("egypt.boat.at","")){ lsSet(BOAT_LS.mine,JSON.stringify(mineSrv.votes)); changed=true; } // new phone: take my votes back
   const cs=d.choice&&d.choice.id?d.choice:null, L=boatRec(); const srvAt=cs?new Date(cs.at||0).getTime():0, locAt=L?new Date(L.at||0).getTime():0;
   if(cs&&srvAt>locAt){ lsSet(BOAT_LS.choice, JSON.stringify({...cs,pushed:true})); changed=true; }
   else if(!cs&&L&&L.id&&L.pushed){ lsSet(BOAT_LS.choice,null); changed=true; }   // the other phone undid it
   else if(L&&!L.pushed){ setTimeout(boatPushChoice,0); }
+  const ss=JSON.stringify(d.steps||{}); if(ss!==JSON.stringify(boatSteps())){ lsSet(BOAT_LS.steps, ss); changed=true; }
   if(changed) boatApply(); return changed; }catch(e){ return false; } finally{ boatBusy=false; } }
+// booking steps after the choice: shared, either phone can tick
+const BOAT_STEPS = b => [
+  ["sent", b.book==="ahead"?`Message sent to ${b.short||b.name}`:"Captain or boat lined up"],
+  ["confirmed","Written confirmation: boat name, twin beds, pickup time and place, price"],
+  ["paid","Deposit paid (card) — the rest in cash on board"],
+  ["hotel","Aswan hotel booked for Tue 13 (Basma or the Old Cataract)"],
+  ["abu","Abu Simbel car booked for Wed 4am — bags in the trunk, drop at the boat"],
+  ["hilton","Hilton Luxor changed to Saturday night only"] ];
+const boatSteps=()=>bJSON(BOAT_LS.steps,{});
+async function boatPushStep(k,v){ if(!liveOK()) return false; try{ const r=await fetch(boatURL("steps/"+k),v?{method:"PUT",body:JSON.stringify(v)}:{method:"DELETE"}); return r.ok; }catch(e){ return false; } }
 async function boatPushVotes(){ lsSet("egypt.boat.at", new Date().toISOString()); if(!liveOK()) return false; try{ const r=await fetch(boatURL(me()),{method:"PUT",body:JSON.stringify({votes:boatVotes(), at:new Date().toISOString()})}); return r.ok; }catch(e){ return false; } }
 async function boatPushChoice(){ if(!liveOK()) return false; const L=boatRec(); if(!L) return true; try{ const r=await fetch(boatURL("choice"),L.id?{method:"PUT",body:JSON.stringify({id:L.id,by:L.by,at:L.at})}:{method:"DELETE"}); if(r.ok){ const cur=boatRec(); if(cur&&cur.at===L.at) lsSet(BOAT_LS.choice, L.id?JSON.stringify({...L,pushed:true}):null); } return r.ok; }catch(e){ return false; } }
 // score: both 👍 floats up; any 👎 sinks
@@ -4290,7 +4304,7 @@ const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().vot
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
-  if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.seller)} · chosen by ${esc(c.by||"?")}${b.when?` · ${esc(b.when.split(" · ")[0])}`:""}</small></div><button type="button" class="btn mini" data-boat-open="1">${b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
+  if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
   const dl=dateDiffDays(now.date,"2026-10-11"); const urg = dl>0?`decide by Sunday night`:dl===0?"decide tonight":"boards Wednesday";
   const seenOther=lsGet(BOAT_LS.seen,""), curOther=lsGet(BOAT_LS.other,""); const fresh = curOther && curOther!==seenOther && Object.keys((boatOther().votes)||{}).length;
   const top=[...BOATS].sort((x,y)=>x.rank-y.rank)[0]; const line = !t.mine&&!t.theirs ? `Our pick: ${esc(top.name)} · vote 👍 or 👎 on ${BOATS.length} options` : `You ${t.mine?`voted on ${t.mine}`:"haven't voted"} · ${esc(o)} ${t.theirs?`voted on ${t.theirs}`:"hasn't voted yet"}${t.both?` · <b>${t.both} you both like</b>`:""}`;
@@ -4305,12 +4319,13 @@ function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes
   const ov_t = !o ? "" : ov>0?`<span class="bv up">${esc(o)} 👍</span>`:ov<0?`<span class="bv dn">${esc(o)} 👎</span>`:`<span class="bv">${esc(o)}: no vote yet</span>`;
   const msg=boatMsg(b); const wa=b.wa?`https://wa.me/${b.wa}${b.ask?`?text=${encodeURIComponent(msg)}`:`?text=${encodeURIComponent("Hello! Two of us want a private felucca from Aswan, Wed 14 Oct after lunch, 2 nights toward Kom Ombo/Edfu. Price for the boat, what's included, and can you send photos of the boat? Thank you!")}`}`:""; const mail=b.email?`mailto:${b.email}?subject=${encodeURIComponent(b.ask==="wed"?"Dahabiya Wed 14 Oct, 2 adults, twin":"Dahabiya Aswan Tue 13 – Fri 16 Oct, 2 adults, twin")}&body=${encodeURIComponent(msg)}`:"";
   const contact = `<div class="bc-ct">${wa?`<a class="btn mini primary" target="_blank" rel="noopener" href="${wa}">WhatsApp ↗</a>`:""}${mail?`<a class="btn mini${wa?"":" primary"}" href="${mail}">Email</a>`:""}${b.web?`<a class="btn mini" target="_blank" rel="noopener" href="${b.web}">${esc(b.webL||"Their page ↗")}</a>`:""}${b.web2?`<a class="btn mini" target="_blank" rel="noopener" href="${b.web2}">${esc(b.web2L||"More ↗")}</a>`:""}${b.ask?`<button type="button" class="btn mini" data-copy-boat="${b.id}">Copy the message</button>`:""}</div>${b.book==="onsite"?`<p class="muted bc-os">Arranged in Aswan, cash. ${b.id==="felucca"?"Message a captain before you fly so Tuesday is a confirmation, not a search.":""}</p>`:""}`;
-  const choose = chosen?`<div class="bc-chosen">✓ Chosen by ${esc(c.by||"?")}${c.at?` · ${new Date(c.at).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}`:""} <button type="button" class="btn mini" data-bundo="1">Undo</button></div>`
+  const st=boatSteps(); const steps = chosen?`<div class="bc-steps"><b>Booking it — ${BOAT_STEPS(b).filter(([k])=>st[k]).length} of ${BOAT_STEPS(b).length} done</b>${BOAT_STEPS(b).map(([k,l])=>`<label class="${st[k]?"on":""}"><input type="checkbox" data-bstep="${k}" ${st[k]?"checked":""}><span>${esc(l)}${st[k]&&st[k].by?`<small> · ${esc(st[k].by)}</small>`:""}</span></label>`).join("")}</div>`:"";
+  const choose = chosen?`<div class="bc-chosen">✓ Chosen by ${esc(c.by||"?")}${c.at?` · ${new Date(c.at).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}`:""} <button type="button" class="btn mini" data-bundo="1">${boatConfirm==="undo"?"Tap again to undo":"Undo"}</button></div>`
      : c ? "" : `<button type="button" class="btn ${boatConfirm===b.id?"primary":""} bc-choose" data-bchoose="${b.id}">${boatConfirm===b.id?`Tap again: choose ${esc(b.name)} for both of us`:both?"Choose this one — you both like it":o&&ov<=0?`Choose this one${ov<0?` (${esc(o)} said no)`:` (${esc(o)} hasn't voted)`}`:"Choose this one"}</button>`;
   const nPl=b.pl.filter(x=>x==="✓").length; const abuT=b.abu==="✓"?"Works":b.abu==="✗"?"Lost":"Ask";
   return `<article class="bc ${chosen?"chosen":""} ${both?"both":""}" data-bid="${b.id}" id="bc-${b.id}">
    <div class="bc-top"><span class="bc-rank" title="Our ranking">#${b.rank}</span>${b.pick?`<span class="bc-pick ${b.abu==="✗"?"bad":""}">${esc(b.pick)}</span>`:""}${both?`<span class="bc-match">You both 👍</span>`:""}<span class="bc-kind">${esc(b.kind)} · ${b.book==="ahead"?"book now":"on site"}</span></div>
-   <h4>${esc(b.name)}</h4><div class="bc-sell">${esc(b.seller)}</div>
+   <h4>${esc(b.name)}</h4><div class="bc-sell">${esc(b.seller)}</div>${chosen?choose+steps:""}
    <div class="bc-keys">
     <div><span>Dates</span><b>${esc(b.datesS||"?")}</b><small class="${b.fit==="exact"?"ok":"amber"}">${b.fit==="exact"?"our dates":b.fit==="plus1"?"off Sat":esc((BOAT_FIT[b.fit]||[""])[0])}</small></div>
     <div><span>Places</span><b>${nPl}/3</b><small class="pls">${["Kom Ombo","Silsila","Edfu"].map((n,i)=>`<i class="${b.pl[i]==="✓"?"y":b.pl[i]==="✗"?"n":"q"}">${b.pl[i]==="✓"?"✓":b.pl[i]==="✗"?"✗":"?"} ${n}</i>`).join("")}</small></div>
@@ -4328,7 +4343,7 @@ function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes
     <dl class="bc-dl"><dt>Route</dt><dd>${esc(b.route)}</dd><dt>Abu Simbel</dt><dd><b>${b.abu==="✓"?"Works":b.abu==="✗"?"Doesn't fit":"Ask"}</b> · ${esc(b.aswan)}</dd><dt>Twin beds</dt><dd>${esc(b.twin)}</dd><dt>Comfort</dt><dd>${esc(b.comfort[1])}</dd><dt>Reviews</dt><dd>${esc(b.reviews)}</dd><dt>The seller</dt><dd>${esc(b.trust)}</dd><dt>Included</dt><dd>${esc(b.incl)}</dd><dt>Risk</dt><dd>${esc(b.risk)}</dd><dt>Our days</dt><dd>${esc(b.impact)}</dd></dl>
     ${b.chk?`<div class="bc-chk"><b>How sure we are</b>${b.chk.map(([m,t])=>`<span class="${m==="✓"?"y":"n"}"><i>${m==="✓"?"✓":"?"}</i>${esc(t)}</span>`).join("")}</div>`:""}
    </details>
-   ${choose}
+   ${chosen?"":choose}
   </article>`; }
 // the whole decision on one screen: tap a row to jump to its card
 function boatGlance(list){ const mv=boatVotes(), ov=boatOther().votes||{}, o=OTHER(); const v=x=>x>0?"👍":x<0?"👎":"·";
@@ -4336,7 +4351,7 @@ function boatGlance(list){ const mv=boatVotes(), ov=boatOther().votes||{}, o=OTH
 function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally(); const showAll=sessionStorage.getItem(BOAT_LS.showAll)==="1";
   let list=[...BOATS].sort((a,b)=>a.rank-b.rank); if(!c){ if(boatFilter==="ahead"||boatFilter==="onsite") list=list.filter(b=>b.book===boatFilter); if(boatFilter==="both") list=list.filter(b=>boatBothUp().includes(b)); }
   const chosenB=c?BOATS.find(b=>b.id===c.id):null; const rest=c?BOATS.filter(b=>b!==chosenB):[];
-  const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`You both 👍 · ${t.both}`]];
+  const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`Both 👍 ${t.both}`]];
   const top3=[...BOATS].sort((x,y)=>x.rank-y.rank).slice(0,3);
   const advice=`<details class="bs-adv" ${c?"":"open"}><summary>Start here — the boat, in plain English</summary><div class="in">
    <p class="bs-lead"><b>We need a boat for 3 nights, Aswan → Luxor.</b> The good boats all leave Aswan on <b>Wednesday</b> and arrive <b>Saturday morning</b>. When a listing says "4 days / 3 nights", that's what it means: Wed to Sat.</p>
@@ -4386,7 +4401,9 @@ document.addEventListener("click", e=>{
   const v=e.target.closest("[data-bvote]"); if(v){ const id=v.dataset.bvote, val=+v.dataset.v; const m=boatVotes(); m[id]=m[id]===val?0:val; if(!m[id]) delete m[id]; lsSet(BOAT_LS.mine, JSON.stringify(m)); renderBoatSheet(true); if(val>0&&m[id]>0&&((boatOther().votes||{})[id]||0)>0){ toast(`It's a match: you both like ${BOATS.find(x=>x.id===id).name} ⛵`); try{ navigator.vibrate&&navigator.vibrate(30); }catch(err){} } boatPushVotes().then(ok=>{ if(!ok&&liveOK()) toast("Saved here — it reaches "+(OTHER()||"the other phone")+" when you're online."); }); return; }
   const jb=e.target.closest("[data-bjump]"); if(jb){ const el=document.getElementById("bc-"+jb.dataset.bjump); const box=document.querySelector("#sheetBoat .qbox"); if(el&&box){ box.scrollTo({top:el.offsetTop-70,behavior:"smooth"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1200); } return; }
   const ch=e.target.closest("[data-bchoose]"); if(ch){ const id=ch.dataset.bchoose; if(boatConfirm!==id){ boatConfirm=id; renderBoatSheet(true); clearTimeout(window.__bct); window.__bct=setTimeout(()=>{ if(boatConfirm===id){ boatConfirm=""; renderBoatSheet(true); } }, 5000); return; } boatConfirm=""; lsSet(BOAT_LS.choice, JSON.stringify({id, by:me()||"?", at:new Date().toISOString()})); sessionStorage.removeItem(BOAT_LS.showAll); boatApply(); renderBoatSheet(true); const b=BOATS.find(x=>x.id===id); toast(`Chosen: ${b.name}. ${b.book==="ahead"?"Now send them the message.":"Sorted on Tuesday in Aswan."}`); boatPushChoice(); const box=document.querySelector("#sheetBoat .qbox"); if(box) box.scrollTop=0; return; }
-  if(e.target.closest("[data-bundo]")){ lsSet(BOAT_LS.choice, JSON.stringify({id:null, at:new Date().toISOString()})); boatApply(); renderBoatSheet(true); boatPushChoice(); toast("Undone — all the options are back."); return; }
+  const sp_=e.target.closest("[data-bstep]"); if(sp_){ const k=sp_.dataset.bstep; const st=boatSteps(); const v=sp_.checked?{by:me()||"?",at:new Date().toISOString()}:null; if(v) st[k]=v; else delete st[k]; lsSet(BOAT_LS.steps, JSON.stringify(st)); renderBoatSheet(true); renderBoatSlot(); boatPushStep(k,v); return; }
+  if(e.target.closest("[data-bundo]")&&boatConfirm!=="undo"){ boatConfirm="undo"; renderBoatSheet(true); clearTimeout(window.__bct); window.__bct=setTimeout(()=>{ if(boatConfirm==="undo"){ boatConfirm=""; renderBoatSheet(true); } },5000); return; }
+  if(e.target.closest("[data-bundo]")){ boatConfirm=""; lsSet(BOAT_LS.choice, JSON.stringify({id:null, at:new Date().toISOString()})); boatApply(); renderBoatSheet(true); boatPushChoice(); toast("Undone — all the options are back."); return; }
   if(e.target.closest("[data-bshowall]")){ sessionStorage.setItem(BOAT_LS.showAll, sessionStorage.getItem(BOAT_LS.showAll)==="1"?"0":"1"); renderBoatSheet(true); return; }
   const cp=e.target.closest("[data-copy-boat]"); if(cp){ const b=BOATS.find(x=>x.id===cp.dataset.copyBoat); const t=boatMsg(b); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into WhatsApp or email")).catch(()=>shareText(t,"The boat")); return; }
 });
@@ -4443,6 +4460,7 @@ html.hugetext .bs-gl th:nth-child(5),html.hugetext .bs-gl td:nth-child(5),html.h
 .vb.on.up{background:var(--ok);border-color:var(--ok);color:#fff}.vb.on.dn{background:var(--dusk);border-color:var(--dusk);color:#fff}
 .bv{font-size:0.7647rem;color:var(--muted);margin-left:auto}.bv.up,.bv.dn{color:var(--fg);font-weight:600;background:var(--sand);border-radius:999px;padding:4px 10px}
 html.bigtext .bv{margin-left:0;flex-basis:100%}
+.bc-chosen{margin-top:10px}.bc-steps{margin:8px 0 4px;border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px;font-size:0.8235rem}.bc-steps>b{font-family:var(--mono);font-size:0.7059rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ok)}.bc-steps label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;min-height:32px}.bc-steps input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--ok)}.bc-steps label.on span{text-decoration:line-through;color:var(--muted)}.bc-steps small{color:var(--ok)}.bc-steps label.on span small{display:inline-block;text-decoration:none}
 .bc-choose{width:100%;margin-top:10px;justify-content:center}
 .bc-chosen{margin-top:10px;color:var(--ok);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bc-chosen .btn{margin-left:auto}
 .bs-rest{width:100%;justify-content:center;margin-bottom:12px}.bs-restl .bc{opacity:.75}
