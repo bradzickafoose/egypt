@@ -2587,7 +2587,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v136)";
+const BUILD = "Oct 9, 2026 (v137)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3770,6 +3770,7 @@ function qcHome(){
     <button type="button" data-qc="line"><span class="qi">✍️</span>One line<small>into today's journal</small></button>
     <button type="button" data-nav="tab"><span class="qi">🧾</span>Paid for something<small>${esc(safe(tabTileLine)||"on the tab")}</small></button>
     <button type="button" data-askmum="1"><span class="qi">🧟</span>Ask the Mummy<small>${typeof mumKey==="function"&&mumKey()?"knows your whole trip":"ghost mode · offline answers"}</small></button>
+    <button type="button" data-drill="1"><span class="qi">🗣️</span>Phrase drill<small>ten cards, works offline</small></button>
     <button type="button" data-qc="close" ${closed||!inTrip?"disabled style=\"opacity:.5\"":""}><span class="qi">🛂</span>Close the day<small>${closed?"already stamped":inTrip?"stamp, rate, write":"not on the trip yet"}</small></button>
   </div>`;
 }
@@ -5348,7 +5349,9 @@ async function flightWatch(force){ if(fsBusy) return; fsBusy=true; try{ let L=[]
 MUM_EV.delay=["Delayed? I've waited three thousand years. You'll survive.","A delay. Time for a coffee. Or, in my case, nothing. Forever.","They moved the departure. I'd complain, but my mouth is bandaged."];
 // the line on the Now card: what the last check said
 function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&&f.from&&f.from.t&&fsWindow(f)&&(f.who===me()||f.who===OTHER_OF(me()))).sort((a,b)=>flightDep(a)-flightDep(b)); const n=nowUTC(); [me(),OTHER_OF(me())].forEach(w=>{ const x=all.find(f=>f.who===w&&(flightArr(f)??flightDep(f)+3*3600000)>n); if(x) L.push(x); }); }catch(e){} if(!L.length) return "";
-  return L.slice(0,2).map(f=>{ const s=f.live; const who=f.who===me()?"":`${f.who} · `;
+  if(!mumKey()){ const off=L.filter(f=>!f.live); if(off.length){ L=L.filter(f=>f.live); L.push({__off:off}); } }
+  return L.slice(0,2).map(f=>{ if(f.__off) return `<div class="fband flive off"><span class="fb-ic">📡</span><div><b>Live delays are off</b><span class="prose">${esc(f.__off.map(x=>(x.who===me()?"":x.who+"'s ")+x.no).join(" and "))} — one phone with the Mummy's key checks for both of you.</span></div><button type="button" class="btn mini" data-askmum="1">Add key</button></div>`;
+    const s=f.live; const who=f.who===me()?"":`${f.who} · `;
     if(!s){ return mumKey()?`<div class="fband flive"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · checking live status…</b><span>Every 20 min until it lands, shared with both phones.</span></div></div>`:`<div class="fband flive off"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · live delays are off</b><span class="prose">One phone with the Mummy's key checks for both of you.</span></div><button type="button" class="btn mini" data-askmum="1">Add key</button></div>`; }
     const ago=Math.max(0,Math.round((Date.now()-Date.parse(s.at))/60000));
     if(s.nf) return `<div class="fband flive"><span class="fb-ic">📡</span><div><b>${esc(who+f.no)} · no live status yet</b><span>checked ${ago<1?"just now":ago+" min ago"} · rechecks every 20 min</span></div>${statusHref(f)?`<a class="btn mini" target="_blank" rel="noopener" href="${statusHref(f)}">Verify</a>`:""}</div>`;
@@ -5398,6 +5401,79 @@ function flightLiveBand(){ let L=[]; try{ const all=allFlights().filter(f=>f.no&
 .now .fband.flive.late{background:rgba(255,170,60,.16);border:1px solid rgba(255,170,60,.45)}.now .fband.flive.bad{background:rgba(255,80,70,.16);border:1px solid rgba(255,80,70,.5)}.now .fband.flive.off{opacity:.85}
 .am-nav{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(90deg,var(--sand),var(--card));color:var(--fg);font:inherit;text-align:left;cursor:pointer}
 .am-nav .am-stage{width:40px;height:46px}.am-nav .am-m{transform:scale(.72);left:5px;top:-4px}.am-nav b{display:block;font:700 0.9412rem var(--display)}.am-nav small{color:var(--muted);font-size:0.7353rem}
+`; document.head.appendChild(st); })();
+
+// ---------- inflight.js: the Now card in the air — progress, what's below, the landing drill, a flight kit, and the phrase drill ----------
+// Everything here works in airplane mode: no network, just the clock and what's already on the phone.
+function myAirFlight(){ try{ const n=nowUTC(); return allFlights().filter(f=>f.who===me()&&f.from&&f.from.t&&f.status!=="tbd").find(f=>{ const a=flightDep(f), b=flightArr(f)??(a+3*3600000); return a<=n&&n<b; })||null; }catch(e){ return null; } }
+// rough boxes, most specific first: good enough for "what's out the window"
+const BELOW=[["the Alps",45.5,47.8,6,13.5],["Switzerland",45.8,47.8,6,10.5],["Ireland",51.4,55.4,-10.5,-6],["the English Channel",49.3,51,-5,1.6],["England",50,55.8,-6,1.8],["Wales",51.3,53.4,-5.4,-2.6],["Sicily",36.6,38.3,12.4,15.7],["Crete",34.8,35.7,23.4,26.4],["the Nile Delta",30,31.6,29.8,32.4],["Cairo",29.8,30.3,31,31.6],["Lake Nasser",21.8,24,31.2,33.5],["Addis Ababa",8.7,9.2,38.5,39.1],["Lake Victoria",-3,0.5,31.5,34.9],["Victoria Falls country",-18.5,-17,25,27],["the Okavango Delta",-20.5,-18.2,21.8,24],["Kilimanjaro country",-3.6,-2.6,36.8,37.8],["Newfoundland",46.5,51.8,-59.5,-52.5],["Nova Scotia",43.3,47.1,-66.5,-59.6],["New England",41,47.5,-73.7,-66.9],["New Jersey",38.9,41.4,-75.6,-73.8],["the Chesapeake",36.8,39.6,-77.4,-75.6],
+  ["France",42.3,51.1,-4.8,8.2],["Italy",36.6,47.1,6.6,18.6],["the Mediterranean",31,42,-5,36],["Greece",34.8,41.8,19.3,28.3],["Libya",19.5,33,9.3,25],["Egypt",22,31.7,25,35],["the Red Sea",12.5,30,32,43.5],["Sudan",8.7,22,21.8,38.6],["Ethiopia",3.4,14.9,33,48],["South Sudan",3.5,12.2,24,36],["Kenya",-4.7,5,33.9,41.9],["Tanzania",-11.7,-1,29.3,40.4],["Zambia",-18.1,-8.2,22,33.7],["Botswana",-26.9,-17.8,20,29.4],["Namibia",-28.9,-17,11.7,25.3],["Zimbabwe",-22.4,-15.6,25.2,33.1],["Angola",-18,-4.4,11.7,24.1],["South Africa",-34.9,-22.1,16.4,32.9],["the Atlantic",-60,65,-70,-6],["Pennsylvania",39.7,42.3,-80.6,-74.7],["Virginia",36.5,39.5,-83.7,-75.2]];
+const belowAt=(lat,lon)=>{ const b=BELOW.find(([,a,b2,c,d])=>lat>=a&&lat<=b2&&lon>=c&&lon<=d); return b?b[0]:(Math.abs(lat)<60?"cloud, probably":"the far north"); };
+const ARRIVE_STEPS={
+  CAI:["Airplane mode off · eSIM on (Airalo)","Visa: $30 cash at the bank window before immigration — or the e-Visa lane","Immigration: passport, visa sticker, a nod","Bag off the belt (if you checked one)","ATM in arrivals for Egyptian pounds — skip the exchange counters","Uber from the signed pickup point — not the men at the door","Text the other one: landed"],
+  LHR:["Purple Flight Connections signs — not Arrivals","Transfer security: liquids and laptop out","Departures board: gate and terminal for the Cairo flight","Breakfast and one coffee (it's Cairo morning)","At the gate by 9:30"],
+  PHL:["Terminal F → A-West for BA: airside, ≈20 min on foot or the shuttle bus","Find the London gate on the board","Dinner before boarding — it's your Cairo night next","Watch to Cairo time"],
+  ADD:["Transfer desk upstairs — same terminal, no visa needed","Find ET 452's gate on the board","Water and a stretch; boarding ≈40 min before"],
+  ASW:["The hotel car meets you — bags go to the hotel, you go to Philae"],LXR:["Car to the Hilton, ≈20 min"],SSH:["Taxi to Dahab: ≈$30–35, agree first; airport drivers open at $70–100"],
+};
+const arrState=()=>lsJ("egypt.arrsteps",{});
+function inflightHTML(){ const f=myAirFlight(); if(!f) return ""; const n=nowUTC(); const a=flightDep(f), b=flightArr(f)??(a+3*3600000); const p=Math.max(0,Math.min(1,(n-a)/(b-a))); const left=Math.round((b-n)/60000);
+  const A=AP_LL[f.from.ap], B=AP_LL[f.to.ap]; const lat=A&&B?A[0]+(B[0]-A[0])*p:null, lon=A&&B?A[1]+(B[1]-A[1])*p:null; const below=lat!=null?belowAt(lat,lon):"";
+  const destTz=(B&&B[2])||TZ; const destNow=clock12(destTz,n); const steps=ARRIVE_STEPS[f.to.ap]||[]; const st=(arrState()[f.id])||{}; const done=steps.filter((_,i)=>st[i]).length;
+  const nextDay=(()=>{ const di=dayIndexFor(cairoNow().date); const d=cairoNow().date<DAYS[0].date?DAYS[0]:(cairoNow().h>=15?DAYS[di+1]:DAYS[di]); return d; })();
+  return `<div class="fmode">
+    <div class="fm-top"><b>✈︎ ${esc(f.no||"")} · ${esc(f.from.ap)} → ${esc(f.to.ap)}</b><span>${left>=60?Math.floor(left/60)+"h "+String(left%60).padStart(2,"0")+"m":left+" min"} to go</span></div>
+    <div class="fm-bar" aria-hidden="true"><i style="width:${(p*100).toFixed(1)}%"></i><span class="fm-pl" style="left:${(p*100).toFixed(1)}%">✈︎</span><em class="l">${esc(f.from.ap)}</em><em class="r">${esc(f.to.ap)}</em></div>
+    <div class="fm-row"><span>${below?`Below, roughly: <b>${esc(below)}</b>`:""}</span><span>${esc((B&&B[3])||f.to.city)} time <b>${esc(destNow)}</b> · lands ${esc(f.to.t||"")}</span></div>
+    <div class="fm-kit"><button type="button" class="chip" data-drill="1">🗣️ Phrase drill · 5 min</button>${nextDay?`<button type="button" class="chip" data-brief="${nextDay.id}">📖 ${esc(nextDay.dow)}'s briefing</button>`:""}<button type="button" class="chip" data-nav="arc">📜 The story</button><button type="button" class="chip" data-nav="signs">𓂀 Your name</button><button type="button" class="chip" data-askmum="1">🧟 Ask the ${mumKey()&&navigator.onLine?"mummy":"ghost"}</button></div>
+    ${steps.length?`<details class="fm-arr"${p>.8?" open":""}><summary>On landing in ${esc((B&&B[3])||f.to.city)} <span class="pill">${done}/${steps.length}</span></summary><ul>${steps.map((s,i)=>`<li><button type="button" class="${st[i]?"on":""}" data-arrstep="${f.id}:${i}"><i>${st[i]?"✓":""}</i>${esc(s)}</button></li>`).join("")}</ul></details>`:""}
+  </div>`; }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-arrstep]"); if(!b) return; const [id,i]=b.dataset.arrstep.split(":"); const s=arrState(); s[id]=s[id]||{}; s[id][i]=!s[id][i]; lsJset("egypt.arrsteps",s); const now=$("#now"); const el=now&&now.querySelector(".fmode"); if(el){ const wasOpen=el.querySelector(".fm-arr")&&el.querySelector(".fm-arr").open; el.outerHTML=inflightHTML(); const d=now.querySelector(".fm-arr"); if(d&&wasOpen) d.open=true; } });
+// the Now card: in the air, the flight panel goes right under the sky (keeping the open/closed state across the 5-second refresh)
+let fmOpen=null;
+document.addEventListener("toggle", e=>{ if(e.target.classList&&e.target.classList.contains("fm-arr")) fmOpen=e.target.open; }, true);
+(function(){ if(typeof renderNow!=="function"||renderNow.__fm) return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ const now=$("#now"); if(now&&!now.querySelector(".fmode")){ const h=inflightHTML(); if(h){ const t=document.createElement("div"); t.innerHTML=h; const el=t.firstChild; const anchor=[...now.querySelectorAll(":scope > .bclock, :scope > .sky")].pop(); if(anchor) anchor.after(el); else now.insertBefore(el, now.firstChild); const d=el.querySelector(".fm-arr"); if(d&&fmOpen!==null) d.open=fmOpen;
+        // the panel replaces the plain "in the air" band for the same flight
+        const f=myAirFlight(); if(f&&f.no) now.querySelectorAll(":scope > .fband:not(.flive):not(.bclock)").forEach(b=>{ if(b.textContent.includes(f.no)&&/in the air/i.test(b.textContent)) b.remove(); }); } } }catch(e){} return r; }; renderNow.__fm=true; })();
+
+// =====================================================================================================
+// THE PHRASE DRILL — ten cards: the English, guess the Arabic, flip, hear it, keep score. Offline.
+// =====================================================================================================
+let drill=null;
+function drillDeck(){ const all=WORDS.flatMap(g=>g[1].map(p=>({lat:p[0],ar:p[1],en:p[2].split(" · ")[0],hint:p[2].split(" · ").slice(1).join(" · ")}))); const known=lsJ("egypt.drill",{}); const pool=all.slice().sort(()=>Math.random()-.5).sort((a,b)=>(known[a.lat]||0)-(known[b.lat]||0)); return pool.slice(0,10); }
+function drillHTML(){ const d=drill; if(!d) return ""; if(d.i>=d.deck.length){ const s=d.got; const line=s>=9?"Nine or ten. The mummy would like to hire you as his interpreter.":s>=6?"Respectable. The touts will hesitate for a full second.":"The mummy learned Greek in a week. Just saying. Again?"; return `<div class="qh"><h3>Phrase drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="drill done"><div class="dr-score">${s}<small>/ ${d.deck.length}</small></div><p>${esc(line)}</p><div class="row"><button type="button" class="btn primary" data-drill="1">Ten more</button><button type="button" class="btn" data-drillx="1">Done</button></div></div>`; }
+  const c=d.deck[d.i]; return `<div class="qh"><h3>Phrase drill</h3><button type="button" class="x" aria-label="Close">×</button></div>
+  <div class="drill"><div class="dr-dots">${d.deck.map((_,k)=>`<i class="${k<d.i?(d.res[k]?"ok":"no"):k===d.i?"on":""}"></i>`).join("")}</div>
+   <div class="dr-card ${d.flip?"flip":""}" data-drillflip="1"><div class="dr-f"><small>How do you say…</small><b>${esc(c.en)}</b><span>tap to flip</span></div><div class="dr-b"><b class="ar">${esc(c.ar)}</b><span>${esc(c.lat)}</span>${c.hint?`<small>${esc(c.hint)}</small>`:""}</div></div>
+   ${d.flip?`<div class="dr-act"><button type="button" class="say" data-say="${escA(c.ar)}" data-latin="${escA(c.lat)}">🔊 Hear it</button><button type="button" class="btn" data-drillans="0">Again ↺</button><button type="button" class="btn primary" data-drillans="1">Got it ✓</button></div>`:`<p class="muted dr-tip">Say it out loud first. The person in 23C has heard worse.</p>`}</div>`; }
+function drillRender(){ const s=$("#sheetDrill .qbox"); if(s) s.innerHTML=drillHTML(); }
+function openDrill(){ drill={deck:drillDeck(), i:0, got:0, res:[], flip:false}; openSheet("sheetDrill", drillHTML()); const s=$("#sheetDrill"); if(s&&!s._dr){ s._dr=1; s.addEventListener("click",e=>{ if(e.target===s||e.target.closest(".qh .x")||e.target.closest("[data-drillx]")) closeSheet("sheetDrill"); }); } }
+document.addEventListener("click", e=>{
+  if(e.target.closest("[data-drill]")){ closeSheet("sheetQC"); openDrill(); return; }
+  if(e.target.closest("[data-drillflip]")&&drill&&!drill.flip){ drill.flip=true; drillRender(); return; }
+  const a=e.target.closest("[data-drillans]"); if(a&&drill){ const ok=a.dataset.drillans==="1"; const c=drill.deck[drill.i]; const k=lsJ("egypt.drill",{}); k[c.lat]=(k[c.lat]||0)+(ok?1:-1); lsJset("egypt.drill",k); drill.res[drill.i]=ok; if(ok) drill.got++; drill.i++; drill.flip=false; drillRender(); if(drill.i>=drill.deck.length) safe(()=>sfx(drill.got>=8?"td":"xp")); return; }
+});
+(function(){ const st=document.createElement("style"); st.textContent=`
+.now .fmode{border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--nile) 14%,transparent);border:1px solid color-mix(in srgb,var(--nile) 40%,transparent);display:grid;gap:8px}
+.fm-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.fm-top b{font:700 0.9412rem var(--display)}.fm-top span{font:600 0.8235rem var(--mono)}
+.fm-bar{position:relative;height:6px;border-radius:3px;background:var(--now-bar);margin:10px 4px 14px}.fm-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--nile)}
+.fm-bar .fm-pl{position:absolute;top:50%;transform:translate(-50%,-55%);font-size:16px;line-height:1}.fm-bar em{position:absolute;top:10px;font:600 0.6176rem var(--mono);font-style:normal;opacity:.7}.fm-bar em.l{left:0}.fm-bar em.r{right:0}
+.fm-row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:0.7647rem;opacity:.9}
+.fm-kit{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.fm-kit .chip{flex:0 0 auto;flex-direction:row;font-family:var(--body);font-size:0.7647rem;padding:6px 10px;background:var(--now-btn);color:inherit;border-color:transparent}
+.fm-arr summary{font-weight:700;font-size:0.8235rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.fm-arr ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:2px}.fm-arr li button{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit;font-size:0.8235rem;padding:5px 0;cursor:pointer}
+.fm-arr li button i{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;opacity:.7;font-style:normal;font-size:11px;display:flex;align-items:center;justify-content:center}.fm-arr li button.on{opacity:.55;text-decoration:line-through}.fm-arr li button.on i{background:var(--ok);border-color:var(--ok);color:var(--on-accent);opacity:1}
+.drill{display:grid;gap:12px}.dr-dots{display:flex;gap:5px;justify-content:center}.dr-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.dr-dots i.on{background:var(--fg)}.dr-dots i.ok{background:var(--ok)}.dr-dots i.no{background:var(--dusk)}
+.dr-card{position:relative;height:200px;perspective:900px;cursor:pointer}
+.dr-card>div{position:absolute;inset:0;border-radius:18px;border:1px solid var(--line);background:var(--sand);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;backface-visibility:hidden;transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
+.dr-card .dr-b{transform:rotateY(180deg)}.dr-card.flip .dr-f{transform:rotateY(-180deg)}.dr-card.flip .dr-b{transform:none}
+.dr-f small{color:var(--muted);font-size:0.7353rem;text-transform:uppercase;letter-spacing:.1em}.dr-f b{font:700 1.35rem var(--display);line-height:1.2}.dr-f span{color:var(--muted);font-size:0.7059rem}
+.dr-b .ar{font:600 2rem/1.3 "Noto Naskh Arabic","Geeza Pro",serif}.dr-b span{font:600 1rem var(--mono)}.dr-b small{color:var(--muted);font-size:0.7647rem}
+.dr-act{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center}.dr-act .btn{justify-content:center}
+.dr-tip{text-align:center;font-size:0.7647rem;margin:0}
+.drill.done{text-align:center}.dr-score{font:800 3.4rem/1 var(--display)}.dr-score small{font-size:1.2rem;color:var(--muted);margin-left:4px}
+@media (prefers-reduced-motion:reduce){.dr-card>div{transition:none}}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
