@@ -2212,6 +2212,7 @@ function renderNavigator(){
       ["flights","✈️","Flights", nextFlightLine()],
       ["lists","✅","Lists", week?`${week} left this week`:"week · bag · bookings"],
       ["notes","📝","Notes", "on this phone"],
+      ["steps","👟","Steps", (()=>{ try{ const r=hlOf(me(),(todayDay()||DAYS[0]).date); return r?fmtE(r.steps)+" today":"you vs him, day by day"; }catch(e){ return "you vs him, day by day"; } })()],
       ["reference","📚","Reference", "boat, costs, booking"]]],
   ];
   el.innerHTML=`<div class="card"><div class="navh"><b>${g.emoji} ${esc(g.city)}</b><span>${d.dow} ${d.num} · ${esc(d.place||"")}</span></div>
@@ -2297,6 +2298,7 @@ function navGo(k){
   if(k==="eat"){ const key=CITY_KEY(DAYS[sel]); const i=GUIDES.findIndex(g=>g.id===key); if(i>=0){ gsel=i; renderGuides(); } to("#guides"); return; }
   if(k==="money"){ to("#tools"); return; }
   if(k==="tab"){ closeSheet("sheetQC"); safe(()=>openTab(false)); return; }
+  if(k==="steps"){ safe(openSteps); return; }
   if(k==="numbers"){ closeSheet("sheetQC"); safe(openNums); return; }
   if(k==="phrases"){ to("#wordsSec"); return; }
   if(k==="who"){ to("#whoSec"); return; }
@@ -2586,7 +2588,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v145)";
+const BUILD = "Oct 9, 2026 (v146)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3138,7 +3140,7 @@ function passportBook(o){
   const entry=d=>{ const s=st[d.id]; const r=rate[d.id]; const L=stampLook(d);
     const marks=r?["food","sight","sleep"].map(k=>r[k]?`<i>${k==="food"?"food":k==="sight"?"sight":"sleep"} ${"|".repeat(r[k])}</i>`:"").filter(Boolean).join(""):"";
     return `<div class="ent ${s?"on":""} ${d.who==="brad"?"solo":""}" data-day="${d.id}" role="link" tabindex="0"><div class="vs">${s?stampHTML(d,s,true):`<div class="visa-ghost" style="--ink:${L[0]}"><span>VISA</span><b>${CITY_OF(d)}</b><small>${d.dow.toUpperCase()} ${d.num} OCT</small></div>`}</div>
-      <div class="et"><b>${d.dow} ${d.num}</b><span>${esc(d.title)}</span>${marks?`<div class="marks" style="--ink:${L[0]}">${marks}</div>`:""}${ch[d.id]&&QUARTER[d.id]?`<em class="td" style="--ink:${L[0]}">TOUCHDOWN</em>`:""}${j(d.id)?`<p class="hand">${esc(j(d.id))}</p>`:""}${!o.archived?(safe(()=>pickPassLine(d))||""):""}${(!o.archived&&photoOf(d.id))?`<div class="polaroid" style="--rot:${((hash(d.id+"p")%7)-3)}deg"><img src="${photoOf(d.id)}" alt=""></div>`:""}</div></div>`; };
+      <div class="et"><b>${d.dow} ${d.num}</b><span>${esc(d.title)}</span>${marks?`<div class="marks" style="--ink:${L[0]}">${marks}</div>`:""}${ch[d.id]&&QUARTER[d.id]?`<em class="td" style="--ink:${L[0]}">TOUCHDOWN</em>`:""}${j(d.id)?`<p class="hand">${esc(j(d.id))}</p>`:""}${!o.archived?(safe(()=>pickPassLine(d))||""):""}${!o.archived?(safe(()=>hlPassLine(d))||""):""}${(!o.archived&&photoOf(d.id))?`<div class="polaroid" style="--rot:${((hash(d.id+"p")%7)-3)}deg"><img src="${photoOf(d.id)}" alt=""></div>`:""}</div></div>`; };
   const pages=[]; for(let i=0;i<DAYS.length;i+=2) pages.push(DAYS.slice(i,i+2));
   const crest=`<svg viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><circle cx="40" cy="40" r="34" opacity=".55"/><circle cx="40" cy="40" r="29"/><path d="M14 56 L40 18 L66 56 Z"/><path d="M27 56 L40 36 L53 56"/><path d="M8 62 Q40 54 72 62"/><circle cx="40" cy="12" r="3.5" fill="currentColor"/></g></svg>`;
   return `<div class="book ${o.archived?"archived":""}"><div class="spread">
@@ -3748,9 +3750,9 @@ function eveningCard(d, ni, now){
   const over = (ni===-1 && now.h>=15) || now.h>=21; if(!over) return "";
   const closed=!!stamps()[d.id]; const nx0=DAYS[dayIndexFor(d.date)+1]; const nx=nx0?(safe(()=>withMe(nx0))||nx0):null;   // my alarm, not the shared one
   const hon=safe(honorific); const nl=safe(nileLine);
-  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span><button type="button" class="btn mini" data-brief="${nx.id}">📖 Tomorrow's briefing</button></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}${safe(()=>pickBand(d))||""}`; }
+  if(closed){ return `<div class="eyebrow">${d.dow} Oct ${d.num} · closed</div><div class="big">Stamped. ${nx?`Tomorrow: ${esc(nx.title)}.`:"That's the trip."}</div>${safe(reviewButtons)?`<div class="row">${safe(reviewButtons)}</div>`:""}${nx?`<div class="row"><span class="cd">⏰ ${esc(nx.alarm)}</span><button type="button" class="btn mini" data-brief="${nx.id}">📖 Tomorrow's briefing</button></div><div class="sub">Carry: ${esc(nx.bag)}</div>`:""}${nl?`<div class="sub">${esc(nl)}</div>`:""}${safe(()=>pickBand(d))||""}${safe(()=>hlBand(d))||""}`; }
   const openPlay = QUARTER[d.id] && !GS.get("chal",{})[d.id] && CHALLENGES[d.id] ? ((PERSONAL[d.id]&&PERSONAL[d.id][me()]&&PERSONAL[d.id][me()].chal)||CHALLENGES[d.id]) : "";
-  return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div>${openPlay?`<div class="fband"><span class="fb-ic">📋</span><div><b>Today's play is still open</b><span class="prose">${esc(openPlay)}</span></div><button type="button" class="btn mini pts-me" data-chal="${d.id}">Did it · +${ptsFor(6,d.id)}</button></div>`:""}${safe(()=>pickBand(d))||""}<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
+  return `<div class="eyebrow">${d.dow} Oct ${d.num} · day's done</div><div class="big">Close the day.</div><div class="sub">Stamp it, rate it, three lines, tomorrow's alarm. Two minutes, every night — that's how this becomes a passport.</div>${openPlay?`<div class="fband"><span class="fb-ic">📋</span><div><b>Today's play is still open</b><span class="prose">${esc(openPlay)}</span></div><button type="button" class="btn mini pts-me" data-chal="${d.id}">Did it · +${ptsFor(6,d.id)}</button></div>`:""}${safe(()=>pickBand(d))||""}${safe(()=>hlBand(d))||""}<div class="row"><button type="button" class="btn big" data-closeday="${d.id}">Close the day</button>${nx?`<span class="cd">tomorrow ⏰ ${esc(nx.alarm)}</span>`:""}</div>`;
 }
 
 // ---------- sheets: quick capture (+) and close-the-day ----------
@@ -3803,6 +3805,7 @@ function closeDaySheet(id){
     ${safe(()=>conversionBox(d))}
     ${safe(()=>rateBox(d))}
     ${safe(()=>pickBoxHTML(d))||""}
+    ${safe(()=>hlBoxHTML(d))||""}
     <div class="journ"><b style="font-family:var(--display);font-stretch:87.5%;font-size:0.7059rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Three lines</b><textarea id="cdj" placeholder="Best moment. Funniest moment. The thing you'd tell someone who wasn't there.">${esc(j)}</textarea></div>
     ${safe(()=>stampBox(d))}
     ${safe(()=>photoBox(d))||""}
@@ -5528,7 +5531,7 @@ document.addEventListener("click", e=>{ if(!e.target.closest("[data-fscheck]")) 
 // =====================================================================================================
 const mumAlert=()=>{ try{ return localStorage.getItem("egypt.mumalert")||""; }catch(e){ return ""; } };
 function mumTabUnread(){ const s=GS.get("mumtab",{})||{}; return !!mumAlert()||s.heard!==cairoNow().date; }
-function mumTabRender(){ let el=$("#mumTab"); if(!el){ el=document.createElement("button"); el.type="button"; el.id="mumTab"; el.className="mumtab"; el.innerHTML=`<span class="mt-body"><i class="mb"></i><i class="me l"></i><i class="me r"></i><i class="mt-arm"></i></span><i class="mt-dot" aria-hidden="true"></i>`; document.body.appendChild(el); }
+function mumTabRender(){ let el=$("#mumTab"); if(!el){ el=document.createElement("button"); el.type="button"; el.id="mumTab"; el.className="mumtab"; el.innerHTML=`<span class="mt-body"><i class="mb"></i><i class="me l"></i><i class="me r"></i><i class="mt-arm"></i><span class="mt-prop"></span></span><i class="mt-dot" aria-hidden="true"></i>`; el.classList.toggle("sleepy", mtNight()); document.body.appendChild(el); }
   const st=amMode(); el.classList.toggle("ghost", st==="ghost"); const unread=mumTabUnread(); el.classList.toggle("unread", unread); el.querySelector(".mt-dot").textContent=mumAlert()?"!":"…";
   el.setAttribute("aria-label", `Ask the Mummy${st==="ghost"?" (ghost mode)":""}${unread?" — he has something to tell you":""}`); }
 // open: today's line (or the alert) goes in first, as his opening words
@@ -5539,7 +5542,31 @@ function mumTabOpen(){ const el=$("#mumTab"); if(el){ el.classList.remove("pop")
     s.heard=today; GS.set("mumtab",s); openAskMummy(); mumTabRender(); }, 160); }
 document.addEventListener("click", e=>{ if(e.target.closest("#mumTab")){ e.preventDefault(); mumTabOpen(); } });
 // idle life: blink (CSS), and every so often a glance or a wave
-setInterval(()=>{ const el=$("#mumTab"); if(!el||document.hidden||RM()) return; const k=Math.random()<.5?"look":"wave"; el.classList.remove("look","wave"); void el.offsetWidth; el.classList.add(k); setTimeout(()=>el.classList.remove(k),1800); }, 23000);
+// idle life: a little repertoire, picked by the hour so it never feels like a loop
+const MT_ACTS={
+  look:{ms:1800}, wave:{ms:1900},
+  yawn:{ms:2200, prop:`<i class="mt-mouth"></i>`},
+  sneeze:{ms:1600, prop:`<i class="mt-puff">achoo!</i><i class="mt-scrap"></i>`},
+  tea:{ms:3400, prop:`<i class="mt-cup"><b></b></i>`, h:[15,18]},
+  coffee:{ms:3400, prop:`<i class="mt-cup mug"><b></b></i>`, h:[6,11]},
+  shades:{ms:4200, prop:`<i class="mt-shades"></i>`, h:[11,17]},
+  fan:{ms:2600, prop:`<i class="mt-puff">phew</i>`, h:[12,17]},
+  peekaboo:{ms:2600},
+  unravel:{ms:2800, prop:`<i class="mt-strip"></i>`},
+  read:{ms:3600, prop:`<i class="mt-scroll"><b></b></i>`, h:[6,11]},
+  knock:{ms:1600, prop:`<i class="mt-ring"></i><i class="mt-ring r2"></i>`},
+  wink:{ms:1200},
+  shiver:{ms:1600, prop:`<i class="mt-puff">brr</i>`},
+  ball:{ms:2600, prop:`<i class="mt-ball">🏈</i>`},
+  stretch:{ms:2200},
+};
+function mtNight(){ const h=cairoNow().h; return h>=23||h<6; }
+function mtIdle(){ const el=$("#mumTab"); if(!el||document.hidden||RM()||el.classList.contains("busy")) return; if(getComputedStyle(el).opacity==="0") return;
+  el.classList.toggle("sleepy", mtNight()); if(mtNight()&&Math.random()<.7) return;   // asleep at night; the odd snore-twitch only
+  const h=cairoNow().h; const pool=Object.entries(MT_ACTS).filter(([k,a])=>!a.h||(h>=a.h[0]&&h<a.h[1])); const timed=pool.filter(([k,a])=>a.h); const pickFrom=timed.length&&Math.random()<.35?timed:pool;
+  let [k,a]=pickFrom[Math.floor(Math.random()*pickFrom.length)]; if(k===el.dataset.last) [k,a]=pool[Math.floor(Math.random()*pool.length)]; el.dataset.last=k;
+  const pr=el.querySelector(".mt-prop"); if(pr) pr.innerHTML=a.prop||""; el.classList.add("busy","act-"+k); setTimeout(()=>{ el.classList.remove("busy","act-"+k); if(pr) pr.innerHTML=""; }, a.ms); }
+(function loop(){ setTimeout(()=>{ safe(mtIdle); loop(); }, 12000+Math.random()*16000); })();
 setInterval(()=>safe(mumTabRender), 60000); addEventListener("online",()=>safe(mumTabRender)); addEventListener("offline",()=>safe(mumTabRender));
 setTimeout(()=>safe(mumTabRender), 900);
 // a delay found by the flight check becomes his next opening line
@@ -5565,7 +5592,57 @@ setTimeout(()=>safe(mumTabRender), 900);
 @keyframes mtpop{0%{transform:rotate(6deg)}40%{transform:rotate(-4deg) translate(10px,-8px) scale(1.1)}100%{transform:rotate(6deg)}}
 html.scrolling-down .mumtab{transform:translateX(-26px) rotate(6deg)}
 html:has(.qs.on) .mumtab,html:has(#review.on) .mumtab,html:has(#whoSheet.on) .mumtab,html.pp-open .mumtab,html:has(.lb[style*="block"]) .mumtab,html:has(.mummy) .mumtab,html:has(#sheet.show) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
-@media (prefers-reduced-motion:reduce){.mumtab .me,.mumtab.unread .mt-dot{animation:none}}
+
+.mumtab .mt-prop{position:absolute;inset:0;pointer-events:none}
+.mumtab .mt-prop i{position:absolute;font-style:normal}
+.mumtab.act-wave .mt-arm{animation:mtwave .45s ease-in-out 4 alternate}
+.mumtab.act-look .me{animation:mtlook 1.8s ease-in-out}
+.mumtab.act-wink .me.r{animation:mtwink 1.2s ease-in-out}
+@keyframes mtwink{30%,60%{transform:scaleY(.1)}}
+.mumtab .mt-mouth{left:28px;top:36px;width:9px;height:4px;border-radius:50%;background:#1a1410;animation:mtyawn 2.2s ease-in-out}
+@keyframes mtyawn{0%{height:2px}40%,70%{height:12px;width:11px}100%{height:2px}}
+.mumtab.act-yawn .me{transform:scaleY(.35)}
+.mumtab.act-sneeze{animation:mtsneeze 1.6s ease-in-out}
+@keyframes mtsneeze{0%,30%{transform:rotate(6deg)}35%{transform:rotate(-4deg) translateX(6px)}45%{transform:rotate(10deg)}60%,100%{transform:rotate(6deg)}}
+.mumtab .mt-puff{left:52px;top:4px;font:700 11px var(--display);color:var(--fg);white-space:nowrap;animation:mtpuff 1.6s ease-out both}
+@keyframes mtpuff{0%,30%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:translate(10px,-10px)}}
+.mumtab .mt-scrap{left:40px;top:30px;width:12px;height:5px;border-radius:3px;background:#e9dfc6;animation:mtscrap 1.6s ease-out both}
+@keyframes mtscrap{0%,35%{opacity:0}40%{opacity:1}100%{opacity:0;transform:translate(46px,30px) rotate(260deg)}}
+.mumtab .mt-cup{left:48px;top:44px;width:13px;height:10px;border-radius:2px 2px 6px 6px;background:#f6f2ea;box-shadow:inset 0 -3px 0 #b5322b;animation:mtcup 3.4s ease-in-out both}.mumtab .mt-cup.mug{background:#2f2a24;box-shadow:inset 0 2px 0 #7a4b28}
+.mumtab .mt-cup b{position:absolute;left:3px;top:-12px;width:7px;height:10px;border-radius:50%;border-left:2px solid rgba(200,200,200,.6);animation:mtsteam 1.2s ease-in-out infinite}
+@keyframes mtcup{0%{opacity:0;transform:translateY(8px)}15%,40%{opacity:1;transform:none}55%{transform:translate(-14px,-12px) rotate(-30deg)}70%,85%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes mtsteam{50%{transform:translateY(-4px);opacity:.3}}
+.mumtab.act-tea .mt-arm,.mumtab.act-coffee .mt-arm{animation:mtsip 3.4s ease-in-out}
+@keyframes mtsip{40%,60%{transform:rotate(-55deg)}}
+.mumtab .mt-shades{left:18px;top:19px;width:32px;height:10px;border-radius:2px 2px 6px 6px;background:#111;box-shadow:inset 0 2px 0 rgba(255,255,255,.25);animation:mtshades 4.2s ease both}
+@keyframes mtshades{0%{opacity:0;transform:translateY(-20px)}12%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-20px)}}
+.mumtab.act-fan .mt-arm{animation:mtwave .16s ease-in-out 14 alternate}
+.mumtab.act-peekaboo{animation:mtpeek 2.6s ease-in-out}
+@keyframes mtpeek{0%{transform:rotate(6deg)}25%,55%{transform:translateX(-46px) rotate(6deg)}70%{transform:translateX(6px) rotate(2deg) scale(1.06)}100%{transform:rotate(6deg)}}
+.mumtab.act-peekaboo .me{animation:mtwide 2.6s ease-in-out}
+@keyframes mtwide{65%,85%{transform:scale(1.35)}}
+.mumtab .mt-strip{left:30px;top:6px;width:7px;height:4px;border-radius:3px;background:repeating-linear-gradient(0deg,#efe6cf 0 5px,#c9bc9a 5px 6px);transform-origin:top center;animation:mtstrip 2.8s ease-in-out both}
+@keyframes mtstrip{0%{height:2px}35%,55%{height:44px;transform:rotate(8deg)}80%{height:6px}100%{height:2px;opacity:0}}
+.mumtab.act-unravel .mt-arm{animation:mttug 2.8s ease-in-out}
+@keyframes mttug{55%{transform:rotate(-70deg)}70%{transform:rotate(-20deg)}}
+.mumtab .mt-scroll{left:42px;top:30px;width:24px;height:20px;background:#efe0b8;border-radius:2px;border-left:3px solid #b99c66;border-right:3px solid #b99c66;animation:mtcup 3.6s ease-in-out both}.mumtab .mt-scroll b{position:absolute;left:4px;right:4px;top:5px;height:2px;background:#7a6238;box-shadow:0 4px 0 #7a6238,0 8px 0 #7a6238}
+.mumtab.act-read .me{animation:mtread 3.6s ease-in-out}
+@keyframes mtread{20%,40%{transform:translate(3px,3px)}50%,70%{transform:translate(0,3px)}}
+.mumtab .mt-ring{left:50px;top:40px;width:10px;height:10px;border-radius:50%;border:2px solid rgba(255,255,255,.7);animation:mtring .8s ease-out both}.mumtab .mt-ring.r2{animation-delay:.5s}
+@keyframes mtring{from{transform:scale(.3);opacity:1}to{transform:scale(2.4);opacity:0}}
+.mumtab.act-knock .mt-arm{animation:mtknock .25s ease-in-out 6 alternate}
+@keyframes mtknock{from{transform:rotate(-10deg) translateX(0)}to{transform:rotate(-10deg) translateX(5px)}}
+.mumtab.act-shiver{animation:mtshiver .08s linear 18}
+@keyframes mtshiver{50%{transform:rotate(6deg) translateX(1.5px)}}
+.mumtab .mt-ball{left:44px;top:6px;font-size:13px;animation:mtball 2.6s ease-in-out both}
+@keyframes mtball{0%{opacity:0;transform:translateY(30px)}10%{opacity:1}20%{transform:translateY(-16px) rotate(180deg)}35%{transform:translateY(18px) rotate(360deg)}50%{transform:translateY(-14px) rotate(540deg)}65%{transform:translateY(18px) rotate(720deg)}85%{opacity:1;transform:translateY(-10px) rotate(900deg)}100%{opacity:0;transform:translateY(-40px) rotate(1080deg)}}
+.mumtab.act-ball .mt-arm{animation:mtwave .32s ease-in-out 8 alternate}
+.mumtab.act-stretch .mt-body{animation:mtstretch 2.2s ease-in-out;transform-origin:left bottom}
+@keyframes mtstretch{40%,60%{transform:scaleY(1.12) scaleX(.94)}}
+.mumtab.act-stretch .mt-arm{animation:mtsip 2.2s ease-in-out}
+.mumtab.sleepy .me{height:2px;top:26px;border-radius:2px;box-shadow:none;animation:none}
+.mumtab.sleepy::after{content:"z";position:absolute;left:44px;top:-4px;font:700 13px var(--display);color:var(--fg);animation:mzz 2.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.mumtab .me,.mumtab.unread .mt-dot,.mumtab::after{animation:none}}
 .am-chips .chip.am-chip{font-family:var(--body)!important;letter-spacing:0}
 `; document.head.appendChild(st); })();
 
@@ -5649,6 +5726,65 @@ document.addEventListener("click", e=>{
 .dr-tip{text-align:center;font-size:0.7647rem;margin:0}
 .drill.done{text-align:center}.dr-score{font:800 3.4rem/1 var(--display)}.dr-score small{font-size:1.2rem;color:var(--muted);margin-left:4px}
 @media (prefers-reduced-motion:reduce){.dr-card>div{transition:none}}
+`; document.head.appendChild(st); })();
+
+// ---------- health.js: steps (and distance, floors) for both of you, day by day ----------
+// A web app can't read Apple Health, so two routes in: type today's steps in Close the day (ten seconds),
+// or an iPhone Shortcut that reads Health every night and sends it straight to the trip's server.
+// Server: rooms/{room}-health/{Brad|Duane}/{yyyy-mm-dd} = {steps, km, floors, src, at}
+const HL_K="egypt.health";
+const hlAll=()=>lsJ(HL_K,{});   // {Brad:{date:rec}, Duane:{…}}
+const hlOf=(w,d)=>((hlAll()[w]||{})[d])||null;
+let hlPullAt=0;
+async function hlSync(force){ if(!force&&Date.now()-hlPullAt<60000) return false; hlPullAt=Date.now(); const srv=await togGet("health"); if(!srv) return false; const A=hlAll(); let ch=false;
+  for(const w of ["Brad","Duane"]){ for(const [d,r] of Object.entries(srv[w]||{})){ A[w]=A[w]||{}; const cur=A[w][d]; if(r&&(!cur||String(r.at||"")>String(cur.at||""))){ A[w][d]=Object.assign({},r,{steps:+r.steps||0,km:r.km!=null?+r.km:null,floors:r.floors!=null?+r.floors:null}); ch=true; } } }
+  if(ch) lsJset(HL_K,A); return ch; }
+function hlSave(d, rec){ const w=me(); if(!w) return; const A=hlAll(); A[w]=A[w]||{}; const r=Object.assign({}, A[w][d]||{}, rec, {src:"typed", at:new Date().toISOString()}); A[w][d]=r; lsJset(HL_K,A); togPut("health",`${w}/${d}`,r);
+  if(r.steps>=20000) safe(()=>mumReact("steps",{line:r.steps>=30000?`${fmtE(r.steps)} steps. I haven't walked that far since they carried me out of Thebes.`:`${fmtE(r.steps)} steps? I've been lying down for three thousand years and I'm still more rested than you.`,act:"dance",delay:900,overSheet:true})); }
+const hlFmt=r=>r?`${fmtE(r.steps||0)} steps${r.km?` · ${(+r.km).toFixed(1)} km`:""}${r.floors?` · ${r.floors} floors`:""}`:"—";
+// ---------- Close the day: one line ----------
+function hlBoxHTML(d){ if(!d||!me()) return ""; const r=hlOf(me(),d.date); return `<div class="hl-box"><b>👟 Steps today</b><div class="hl-in"><input id="hlSteps" inputmode="numeric" placeholder="from the Health app" value="${r&&r.steps?r.steps:""}" autocomplete="off"><button type="button" class="btn" data-hlsave="${d.date}">${r&&r.steps?"Update":"Save"}</button></div><small class="muted">${r&&r.src==="shortcut"?"Sent by your Shortcut — type to override.":"Health app → Steps → today's number. Or set up the Shortcut once (Guide → Steps) and never type it again."}</small></div>`; }
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-hlsave]"); if(!b) return; const v=parseInt(String(($("#hlSteps")||{}).value||"").replace(/[^\d]/g,""),10); if(!(v>0&&v<150000)){ toast("Just the number of steps."); return; } hlSave(b.dataset.hlsave,{steps:v}); b.textContent="Saved ✓"; toast(`${fmtE(v)} steps logged.`); safe(renderPassport); safe(renderNow); });
+// ---------- the evening band and the passport ----------
+function hlBand(d){ if(!d||!me()) return ""; hlSync(false).then(ch=>{ if(ch) safe(renderNow); }); const w=me(), o=OTHER_OF(w); const a=hlOf(w,d.date), b=o?hlOf(o,d.date):null; if(!a&&!b) return "";
+  const lead=a&&b?(a.steps>b.steps*1.15?`You outwalked ${o} by ${fmtE(a.steps-b.steps)}.`:b.steps>a.steps*1.15?`${o} outwalked you by ${fmtE(b.steps-a.steps)}. Suspicious.`:"Dead heat. Stride for stride."):a?`${o} hasn't logged yet.`:`${o} logged ${fmtE(b.steps)}. Yours?`;
+  return `<div class="fband hlband"><span class="fb-ic">👟</span><div><b>${a?fmtE(a.steps):"—"} you${b?` · ${fmtE(b.steps)} ${esc(o)}`:""}</b><span class="prose">${esc(lead)}</span></div><button type="button" class="btn mini" data-nav="steps">Steps</button></div>`; }
+function hlPassLine(d){ const r=hlOf(me(),d.date); return r&&r.steps?`<p class="hl-pass">👟 ${fmtE(r.steps)}${r.km?` · ${(+r.km).toFixed(1)} km`:""}${r.floors?` · ${r.floors} fl`:""}</p>`:""; }
+// ---------- the Steps sheet (Guide → Trip admin) ----------
+function hlSheetHTML(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const days=DAYS.filter(d=>w==="Brad"||d.who!=="brad"); const A=hlAll();
+  const tot=x=>days.reduce((s,d)=>s+(((A[x]||{})[d.date]||{}).steps||0),0); const ta=tot(w), tb=tot(o);
+  const best=x=>days.map(d=>({d,r:(A[x]||{})[d.date]})).filter(y=>y.r&&y.r.steps).sort((p,q)=>q.r.steps-p.r.steps)[0];
+  const ba=best(w); const url=`${DB_URL}/rooms/${room()}-health/${w}/`;
+  return `<div class="qh"><h3>Steps</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hl">
+   <div class="hl-tot"><div><small>${esc(w)}</small><b>${fmtE(ta)}</b></div><div><small>${esc(o)}</small><b>${fmtE(tb)}</b></div></div>
+   <p class="muted" style="margin:0 0 8px">${ta||tb?(ta>tb?`You're ahead by ${fmtE(ta-tb)} steps — about ${Math.round((ta-tb)*0.75/1000)} km of extra Egypt.`:tb>ta?`${esc(o)} is ahead by ${fmtE(tb-ta)} steps. The mummy has questions.`:"Exactly level. Unsettling."):"No steps yet. Log tonight's in Close the day, or set up the Shortcut below."}${ba?` Your best: ${ba.d.dow} ${ba.d.num}, ${fmtE(ba.r.steps)}.`:""}</p>
+   <table class="hl-t"><thead><tr><th></th><th>${esc(w)}</th><th>${esc(o)}</th></tr></thead><tbody>${days.map(d=>{ const a=(A[w]||{})[d.date], b=(A[o]||{})[d.date]; return `<tr><td>${d.dow} ${d.num}<small>${esc((d.place||"").split(/ → | · /)[0])}</small></td><td>${a&&a.steps?fmtE(a.steps):"·"}${a&&a.src==="shortcut"?"<i>⚡</i>":""}</td><td>${d.who==="brad"?"<span class='muted'>home</span>":b&&b.steps?fmtE(b.steps):"·"}</td></tr>`; }).join("")}</tbody></table>
+   <p class="muted hl-k">⚡ = sent automatically by the Shortcut.</p>
+   <details class="fold hl-sc"><summary>⚡ Send steps automatically (iPhone Shortcut, 5 minutes once)</summary><div class="in">
+    <p class="muted">A web app can't read Apple Health — Apple only lets installed apps do that. The Shortcuts app can, and it can send the numbers here every night.</p>
+    <ol class="hl-steps">
+     <li>Open <b>Shortcuts</b> → <b>+</b> → name it <b>Egypt steps</b>.</li>
+     <li>Add <b>Find Health Samples</b>: Type <b>Steps</b>, Start Date <b>is today</b>. Then <b>Calculate Statistics</b> → <b>Sum</b>.</li>
+     <li>Optional: the same for <b>Walking + Running Distance</b> (km) and <b>Flights Climbed</b>.</li>
+     <li>Add <b>Format Date</b>: Current Date, custom format <code>yyyy-MM-dd</code>.</li>
+     <li>Add <b>Get Contents of URL</b>: paste the address below, then tap the end of it and insert the <b>Formatted Date</b>, then type <code>.json</code>. Method <b>PUT</b>. Request Body <b>JSON</b> with fields: <code>steps</code> (Number → the Sum), <code>km</code>, <code>floors</code>, <code>src</code> = <code>shortcut</code>, <code>at</code> = Current Date.</li>
+     <li>Automation tab → <b>+</b> → <b>Time of Day</b> 11:30 pm, daily → <b>Run Immediately</b> → Egypt steps.</li>
+    </ol>
+    <div class="hl-url"><code>${esc(url)}</code><button type="button" class="btn mini" data-hlcopy="${escA(url)}">Copy</button></div>
+    <p class="muted" style="font-size:0.7059rem">This address is ${esc(w)}'s, for this phone. Duane sets up his own from his phone. Run it once by hand to test — your number shows here within a minute.</p>
+   </div></details></div>`; }
+function openSteps(){ openSheet("sheetQC", hlSheetHTML()); hlSync(true).then(ch=>{ if(ch){ const b=$("#sheetQC .qbox"); if(b&&b.querySelector(".hl")) b.innerHTML=hlSheetHTML(); } }); }
+document.addEventListener("click", e=>{ const c=e.target.closest("[data-hlcopy]"); if(!c) return; try{ navigator.clipboard.writeText(c.dataset.hlcopy).then(()=>toast("Copied. Paste it into Get Contents of URL.")); }catch(x){ toast("Couldn't copy here."); } });
+MUM_EV.steps=["Twenty thousand steps. My knees are made of linen and even they're impressed."];
+(function(){ const st=document.createElement("style"); st.textContent=`
+.hl-box{margin:12px 0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--sand)}.hl-box b{display:block;font:700 0.7059rem var(--display);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.hl-in{display:grid;grid-template-columns:1fr auto;gap:6px}.hl-in input{font:inherit;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);min-width:0}.hl-box small{display:block;margin-top:6px;font-size:0.7059rem}
+.hl-tot{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.hl-tot div{background:var(--sand);border-radius:12px;padding:10px 12px}.hl-tot small{display:block;color:var(--muted);font:600 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase}.hl-tot b{font:800 1.5rem var(--display);font-variant-numeric:tabular-nums}
+.hl-t{width:100%;border-collapse:collapse;font-size:0.8235rem}.hl-t th{text-align:right;font:600 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:4px 0}.hl-t th:first-child{text-align:left}
+.hl-t td{padding:6px 0;border-top:1px solid var(--line);text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}.hl-t td:first-child{text-align:left;font-family:var(--body)}.hl-t td small{display:block;color:var(--muted);font-size:0.6471rem}.hl-t td i{font-style:normal;margin-left:3px;font-size:0.6471rem}
+.hl-k{font-size:0.7059rem;margin:6px 0}.hl-steps{font-size:0.7941rem;padding-left:1.2em}.hl-steps li{margin:4px 0}.hl-steps code,.hl-url code{font-size:0.7059rem;background:var(--sand);padding:1px 4px;border-radius:4px;word-break:break-all}
+.hl-url{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin:8px 0}
+.hl-pass{margin:2px 0 0;font:0.6471rem var(--mono);opacity:.75}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
