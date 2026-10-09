@@ -2533,7 +2533,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v98)";
+const BUILD = "Oct 9, 2026 (v99)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3336,12 +3336,13 @@ const PERSONAL = {
            // times are Cairo time (Cape Town is an hour behind); lt is the Cape Town clock, shown in the list
            agenda:[
             {t:"08:00",lt:"07:00",title:"Up. Finish packing",note:"Passport, $30 cash for the Cairo visa, phone charger, the boots if you bought them. Coffee waits for the farm."},
-            {t:"08:40",lt:"07:40",title:"Check out early, leave the bags at the desk",note:"Checkout is 10, but do it now and ask the desk to hold the bags until ≈10:45. Then you walk the markets with nothing but a tote. If they won't hold them, leave the bags in the room and be back by 10 — cut the Mill at 9:40."},
+            {t:"08:40",lt:"07:40",title:"Bags packed and left in the room",note:"Checkout is 10:30, so the room is yours all morning — go out with nothing but a tote. Confirm the 10:30 at the desk on the way out."},
             {t:"08:45",lt:"07:45",title:"Uber to the Waterfront",note:"Pickup at the hotel, drop at Dock Rd and Granger Bay Blvd."},
             {t:"09:00",lt:"08:00",title:"Oranjezicht City Farm Market opens",note:"The new timber barn on the Breakwater parking garage, corner of Dock Rd and Granger Bay Blvd. Saturdays 8–2:30. Coffee, breakfast, the farm's own veg, the harbour out the windows. Out by 9.",map:"Oranjezicht City Farm Market V&A Waterfront"},
             {t:"10:00",lt:"09:00",title:"Uber to the Old Biscuit Mill",note:"≈10–15 min to Woodstock. Pickup on Dock Rd."},
-            {t:"10:15",lt:"09:15",title:"Neighbourgoods Market at the Old Biscuit Mill",note:"Saturdays 9–3: food stalls, makers, the design shops. An espresso at Espresso Lab on the way in if the farm's didn't do it. Cards everywhere. Out by 10:20.",map:"The Old Biscuit Mill Woodstock Cape Town"},
-            {t:"11:20",lt:"10:20",title:"Uber back to the hotel for the bags",note:"Keep the same driver waiting if you can, or book the airport ride from the lobby."},
+            {t:"10:15",lt:"09:15",title:"Neighbourgoods Market at the Old Biscuit Mill",note:"Saturdays 9–3: food stalls, makers, the design shops. An espresso at Espresso Lab on the way in if the farm's didn't do it. Cards everywhere. Out by 10:15.",map:"The Old Biscuit Mill Woodstock Cape Town"},
+            {t:"11:15",lt:"10:15",title:"Uber back to the hotel",note:"≈15 min. Book the airport ride from the lobby once you're down with the bags."},
+            {t:"11:30",lt:"10:30",title:"Check out",note:"Bags down, key in, last look around the room for chargers."},
             {t:"11:45",lt:"10:45",title:"Bags into the Uber, to Cape Town International",note:"≈20–30 min on the N2 from the city.",map:"Cape Town International Airport"},
             {t:"12:20",lt:"11:20",title:"Check in for ET 844 — bag tagged through to Cairo",note:"International departures. Ask them to check the bag all the way to CAI so you don't touch it in Addis. On wifi, open this app once so it's current."},
             {t:"14:50",lt:"13:50",title:"✈ ET 844 to Addis Ababa, lands 21:15",note:"Left-side window for Table Mountain on the climb-out, if it's clear."},
