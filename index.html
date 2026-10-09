@@ -2542,7 +2542,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v118)";
+const BUILD = "Oct 9, 2026 (v119)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3361,7 +3361,9 @@ const PERSONAL = {
             {t:"10:40",lt:"08:40",ltz:"London",title:"Heathrow — the BA terminal (usually 5; it's on the boarding pass), bag through to Cairo",note:"If you came in from Norfolk this morning, follow Flight Connections; allow 90 min if you're changing terminals."},
             {t:"12:10",lt:"10:10",ltz:"London",title:"✈ AA 6838 (flown by BA) Heathrow → Cairo, lands 5:20pm",note:"Four and a half hours. Window on the left for the Alps if it's clear. Brad takes off from Cape Town about when you're over the Mediterranean."}],
            mission:"Land 5:20, visa, Uber, eat something good, sleep. Tell the desk Brad arrives ≈3:30am so they key him in.", chal:"Say shukran to five different people before bed — airport, driver, desk, waiter, anyone."} },
- sun11:{ Brad:{alarm:"≈8:30 · you landed at 2"}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
+ sun11:{ Brad:{alarm:"≈8:30 · you landed at 2", agendaPre:[
+            {t:"02:05",title:"Land in Cairo — visa, bag, Uber",note:"Visa: $30 cash at the bank window before immigration, or the e-Visa lane. The bag was checked through from Cape Town — it comes off here. Uber from the arrivals curb, ≈$15, 30–40 min to Garden City at this hour.",map:"Cairo International Airport"},
+            {t:"03:15",title:"Hilton Cairo Grand Nile — the room is in Duane's name",note:"The desk has been told you're coming; ask for a key to Duane's room. Quietly. Phone on silent, alarm ≈8:30.",map:"Hilton Cairo Grand Nile"}]}, Duane:{alarm:"7:30 · Brad slept in, you didn't"} },
  mon19:{ Brad:{alarm:"8:20 · up at 4:15 for the hug", mission:"Hug at 4:30, back to bed, car at 9. CAI→Sharm, taxi to Dahab, in the sea by 2.", chal:"In the sea before lunch. Send Duane the proof."},
          Duane:{alarm:"4:00", mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
 };
@@ -5039,7 +5041,7 @@ function extrasFor(d){ return EXTRAS[d.id]||[]; }
 function extrasBlock(d){ const L=extrasFor(d); if(!L.length) return ""; const kinds=[...new Set(L.map(x=>x[0]))];
   return `<details class="fold extras"><summary>${kinds.map(k=>EX_ICON[k]).join("")} ${kinds.map(k=>EX_LABEL[k]).join(" · ")} <span class="pill">${L.length}</span></summary><div class="in"><div class="exl">${L.map(([k,n,where,when,why,q])=>`<div class="ex ${k}"><span class="ex-i">${EX_ICON[k]}</span><div class="ex-b"><b>${esc(n)}</b><small>${esc(where)}${when==="am"?" · morning":when==="pm"?" · later":""}</small><span>${esc(why)}</span>${q?mapBtns(q,null,false):""}</div></div>`).join("")}</div></div></details>`; }
 // the morning line on the Now card: today's coffee, before 11
-function extrasMorning(d, now){ if(!d||now.h>=11) return ""; const c=extrasFor(d).find(x=>x[0]==="coffee"&&x[3]!=="pm"); return c?`☕ Coffee: ${c[1]} — ${c[2]}`:""; }
+function extrasMorning(d, now){ if(!d||now.h>=11||now.h<6) return ""; const c=extrasFor(d).find(x=>x[0]==="coffee"&&x[3]!=="pm"); return c?`☕ Coffee: ${c[1]} — ${c[2]}`:""; }
 
 // ---------- the larger story: nine days as nine chapters of one 4,600-year narrative ----------
 // Each chapter: title, where we are in time, "so far" (what the previous chapters established), the chapter itself,
