@@ -2599,7 +2599,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v169)";
+const BUILD = "Oct 10, 2026 (v170)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6367,11 +6367,11 @@ const spots=()=>{ try{ return JSON.parse(localStorage.getItem(SPOTS_K)||"[]")||[
 const LANDMARKS=[["Great Pyramid",29.9792,31.1342],["Khan el-Khalili",30.0477,31.2622],["Tahrir Square",30.0444,31.2357],["Karnak Temple",25.7188,32.6573],["Luxor Temple",25.6995,32.6390],["Cairo airport",30.1120,31.4000]];
 let wayT=null, wayPos=null, wayHead=null, wayWatch=null, wayOrient=null;
 function wayTargets(){ const S=spots().map(s=>({k:"spot:"+s.id, n:s.n, lat:s.lat, lng:s.lng, saved:true})); const L=LANDMARKS.map(([n,lat,lng])=>({k:"lm:"+n,n,lat,lng}));
-  if(!wayPos) return S.concat(L); return S.concat(L.filter(t=>wayDist(wayPos,t)<80000)); }
+  if(!wayPos) return S.concat(L); const by=a=>a.slice().sort((x,y)=>wayDist(wayPos,x)-wayDist(wayPos,y)); const near=by(S).filter(t=>wayDist(wayPos,t)<80000); return near.concat(by(S).filter(t=>!near.includes(t))).concat(by(L)); }
 function wayDist(a,b){ const R=6371000, r=x=>x*Math.PI/180; const dLa=r(b.lat-a.lat), dLo=r(b.lng-a.lng); const h=Math.sin(dLa/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
 function wayBear(a,b){ const r=x=>x*Math.PI/180, d=x=>x*180/Math.PI; const y=Math.sin(r(b.lng-a.lng))*Math.cos(r(b.lat)); const x=Math.cos(r(a.lat))*Math.sin(r(b.lat))-Math.sin(r(a.lat))*Math.cos(r(b.lat))*Math.cos(r(b.lng-a.lng)); return (d(Math.atan2(y,x))+360)%360; }
 const wayCard=b=>["north","northeast","east","southeast","south","southwest","west","northwest"][Math.round(b/45)%8];
-function wayFmt(m){ return m<1000?`${Math.round(m/10)*10} m`:`${(m/1000).toFixed(m<10000?1:0)} km`; }
+function wayFmt(m){ return m<1000?`${Math.round(m/10)*10} m`:m<10000?`${(m/1000).toFixed(1)} km`:`${Math.round(m/1000).toLocaleString("en-US")} km`; }
 function wayHTML(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT)||T[0]; if(t) wayT=t.k;
   const chips=T.map(x=>`<button type="button" class="chip ${x.k===wayT?"on":""}" data-wayt="${escA(x.k)}">${x.saved?"📍 ":""}${esc(x.n)}</button>`).join("");
   return `<p class="bc-k">Find your way</p>
@@ -6379,7 +6379,7 @@ function wayHTML(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT)||T[0]; i
    <h2 class="way-d" id="wayD">${wayPos?"…":"Finding you…"}</h2><p class="way-s" id="wayS">${t?esc(t.n):"Save a spot first"}</p>
    <div class="bc-other way-t">${chips}</div>
    <div class="way-save"><button type="button" class="btn" data-waysave="hotel">📍 I'm at the hotel — save it</button><button type="button" class="btn" data-waysave="other">📍 Save this spot…</button></div>
-   <p class="way-note" id="wayNote">GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8.</p>`; }
+   <p class="way-cmp" id="wayCmp"></p><p class="way-note" id="wayNote">GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8.</p>`; }
 function wayUpdate(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT); const A=document.getElementById("wayArrow"), D=document.getElementById("wayD"), S=document.getElementById("wayS"), N=document.getElementById("wayN"); if(!A||!D) return;
   if(!wayPos){ A.style.opacity=".18"; D.textContent="Finding you…"; return; } A.style.opacity=t&&wayPos?"1":".18"; if(!t){ D.textContent="📍"; S.textContent="Nothing saved near here yet. Save this spot and the arrow leads back to it from anywhere."; return; }
   const dist=wayDist(wayPos,t), b=wayBear(wayPos,t); const walk=Math.round(dist/80);
@@ -6388,17 +6388,23 @@ function wayUpdate(){ const T=wayTargets(); const t=T.find(x=>x.k===wayT); const
   else { A.style.transform=`rotate(${b}deg)`; N.style.transform="translateY(-118px)"; const note=document.getElementById("wayNote"); if(note&&!note.dataset.nc){ note.dataset.nc=1; note.textContent="No compass reading — the arrow is relative to north (the N). Turn until the top of your phone points north, then follow it."; } }
   if(dist<40){ D.textContent="You're here"; } }
 async function openWay(target){ wayT=target||wayT;
-  bigCard(wayHTML(),"way");
-  // motion permission must be asked from the tap itself on iPhone
-  try{ if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=="granted") wayHead=null; } }catch(e){}
-  if(!wayOrient){ wayOrient=e=>{ let h=null; if(typeof e.webkitCompassHeading==="number") h=e.webkitCompassHeading; else if(e.absolute&&typeof e.alpha==="number") h=(360-e.alpha)%360; if(h!=null){ const first=wayHead==null; wayHead=h; if(first){ const note=document.getElementById("wayNote"); if(note){ delete note.dataset.nc; note.textContent="GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8."; } } wayUpdate(); } };
+  // iPhone: the compass permission must be requested inside the tap — before anything else is awaited
+  const ask=wayAskCompass();
+  bigCard(wayHTML(),"way"); wayCmpState("checking");
+  await ask;
+  if(!wayOrient){ wayOrient=e=>{ let h=null; if(typeof e.webkitCompassHeading==="number") h=e.webkitCompassHeading; else if(e.absolute&&typeof e.alpha==="number") h=(360-e.alpha)%360; if(h!=null){ const first=wayHead==null; wayHead=h; if(first){ wayCmpState("on"); const note=document.getElementById("wayNote"); if(note){ delete note.dataset.nc; note.textContent="GPS works with no signal. Hold the phone flat; if the arrow drifts, wave it in a figure-8."; } } wayUpdate(); } };
     addEventListener("deviceorientationabsolute",wayOrient); addEventListener("deviceorientation",wayOrient); }
   if(navigator.geolocation&&wayWatch==null){ wayWatch=navigator.geolocation.watchPosition(p=>{ const first=!wayPos; wayPos={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}; if(first){ /* now we know where you are: only show what's near */ const box=document.querySelector("#bigCard .way-t"); const T=wayTargets(); if(!T.find(x=>x.k===wayT)) wayT=T[0]?T[0].k:null; if(box) box.innerHTML=T.map(x=>`<button type=\"button\" class=\"chip ${x.k===wayT?"on":""}\" data-wayt=\"${escA(x.k)}\">${x.saved?"📍 ":""}${esc(x.n)}</button>`).join(""); } wayUpdate(); },err=>{ const D=document.getElementById("wayD"); if(D) D.textContent=err.code===1?"Location is off for this app":"No GPS fix yet"; const S=document.getElementById("wayS"); if(S&&err.code===1) S.textContent="Settings → Privacy → Location Services → Safari Websites → While Using"; },{enableHighAccuracy:true,maximumAge:5000,timeout:20000}); }
   wayUpdate(); }
+async function wayAskCompass(){ try{ if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){ const p=await DeviceOrientationEvent.requestPermission(); wayPerm=p; if(p!=="granted"){ wayCmpState("denied"); return false; } } }catch(e){ wayPerm="error"; } setTimeout(()=>{ if(wayHead==null) wayCmpState(wayPerm==="granted"||wayPerm==null?"none":"ask"); },2500); return true; }
+let wayPerm=null;
+function wayCmpState(k){ const el=document.getElementById("wayCmp"); if(!el) return; const needsAsk=typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function";
+  el.innerHTML=k==="on"?"🧭 Compass on — the arrow points the real way":k==="checking"?"":k==="denied"?`🧭 Compass is off. <button type=\"button\" class=\"btn mini\" data-waycompass=\"1\">Turn it on</button><br><small>If nothing pops up: close the app fully, reopen, and tap Allow on “Motion & Orientation”.</small>`:needsAsk?`🧭 Compass not on yet <button type=\"button\" class=\"btn mini\" data-waycompass=\"1\">Turn on compass</button>`:"🧭 No compass on this device — the arrow is relative to the N"; }
 function wayStop(){ if(wayWatch!=null&&navigator.geolocation){ navigator.geolocation.clearWatch(wayWatch); wayWatch=null; } }
 (function(){ const B=bigClose; bigClose=function(){ wayStop(); return B.apply(this,arguments); }; })();
 document.addEventListener("click",e=>{
   const w=e.target.closest("[data-way]"); if(w){ e.preventDefault(); const v=w.dataset.way||""; let t=""; if(v.startsWith("hotel:")){ const nm=v.slice(6).replace(/ \(.*\)/,""); const s=spots().find(x=>x.n===nm); t=s?"spot:"+s.id:""; if(!s) toast("Save the hotel once you're there — then this arrow always leads back."); } else { const s=spots().find(x=>x.hotel); if(s) t="spot:"+s.id; } safe(()=>closeSheet("sheetQC")); openWay(t); return; }
+  if(e.target.closest("[data-waycompass]")){ wayAskCompass(); return; }
   const t=e.target.closest("[data-wayt]"); if(t){ wayT=t.dataset.wayt; document.querySelectorAll("#bigCard [data-wayt]").forEach(c=>c.classList.toggle("on",c===t)); wayUpdate(); return; }
   const s=e.target.closest("[data-waysave]"); if(s){ if(!wayPos){ toast("Still finding you — give it a few seconds outdoors."); return; }
     let n; if(s.dataset.waysave==="hotel"){ const h=driverHotel(); n=h?h.n.replace(/ \(.*\)/,""):"The hotel"; } else { n=(prompt("Name this spot (the car, the café, the meeting point):","Meeting point")||"").trim(); if(!n) return; }
@@ -6432,6 +6438,7 @@ html.big-open .mumtab,html.big-open .pptab,html.big-open #obPill{display:none}
 .way-d{font:800 2.6rem/1.1 var(--display);margin:6px 0 2px}.way-s{margin:0 0 12px;opacity:.75;font-size:0.9412rem}
 .way-save{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.way-save .btn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)}
 #bigCard.way .chip{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18)}#bigCard.way .chip.on{background:#f2c14e;color:#111}
+.way-cmp{font-size:0.8235rem;margin:10px 0 0;opacity:.85}.way-cmp .btn{margin-left:6px;background:#f2c14e;color:#111;border-color:#f2c14e}.way-cmp small{opacity:.6}
 .way-note{font-size:0.7353rem;opacity:.55;margin:12px 0 0}
 #bigCard.driver .chip,#bigCard.code .chip{background:#f1ece0;color:#111;border-color:#d9cfb8}#bigCard.driver .btn{background:#111;color:#fff;border-color:#111}
 .hdrv{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
