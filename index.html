@@ -1324,6 +1324,7 @@ html.hugetext .bp-on em{grid-column:2}
 <div class="wrap">
   <section id="now" class="now" aria-live="polite"><div class="eyebrow">Egypt</div><div class="big">Loading today…</div></section>
   <div class="hint" id="hint"><span id="hintText">Add this to your home screen and it opens like an app, signal or not.</span><button id="hintX" aria-label="Dismiss">✕</button></div>
+  <section id="boatSlot" aria-live="polite"></section>
   <section id="today"><div class="card" id="dayCard"></div></section>
 
   <section id="guide" class="group">
@@ -1439,9 +1440,9 @@ html.hugetext .bp-on em{grid-column:2}
       <ul>
         <li><b>A dahabiya is a sailing boat, not a cruise ship.</b> 5–8 cabins, 10–16 guests, a crew of about ten, two lateen sails and a tug when the wind drops. Big cruise boats have 60 cabins, a buffet, a pool and a timetable. A dahabiya has a deck, a cook and time. It stops at islands, quarries and villages the big boats can't reach.</li>
         <li><b>It leaves from Aswan, not Cairo,</b> and runs downstream toward Luxor. The operator drives the last hour from Edfu or Esna.</li>
-        <li><b>Why Tuesday works on a dahabiya and not on a cruise boat:</b> cruise boats keep fixed weekly timetables (Aswan departures Mon/Wed/Fri). Dahabiyas sail when their guests say.</li>
+        <li><b>Tuesday is the hard part:</b> shared boats, big and small, keep fixed weekly departures from Aswan (dahabiyas Wednesday or Friday, ships Mon/Wed/Fri/Sat), and none we found leaves on a Tuesday. A private charter sails when we say. The comparison is on the Today screen under <b>Decide the boat</b>.</li>
         <li><b>The one thing to pin down when booking: the first night.</b> The standard shared itinerary sails Tuesday after lunch. We want the boat to stay moored in Aswan Tuesday night so Abu Simbel at dawn Wednesday works and we sail at 1pm. A private charter does whatever we want; a shared boat may or may not. Ask it exactly that way.</li>
-        <li><b>Cost:</b> four agencies quote $920–1,050 per person for 3 nights in a shared cabin, usually including temple tickets, guide, transfers and all meals. A regular cruise boat is $500–700 for the same nights with tickets extra, so the sail costs about $300 more than the ship.</li>
+        <li><b>Cost (checked Oct 9):</b> published dahabiya prices are $899–1,815 per person for 3 nights sharing a cabin, usually with temple tickets, guide, transfers and all meals. Big cruise ships list from €326 to $1,920 per person for 3 nights.</li>
         <li><b>Confirm each:</b> cabin, all meals, Egyptologist guide, airport meet and transfers, Philae and High Dam on day 1, Kom Ombo, Gebel el-Silsila, Edfu, the transfer to Luxor. Ask whether entry fees are in (≈$35 if not). Abu Simbel is always extra: ≈$180 for the car and guide for two, plus ≈$25 each entry.</li>
         <li><b>Before paying anything:</b> get the boat's name and read its TripAdvisor page. "A 5-star dahabiya" is not a boat.</li>
         <li><b>Where to book:</b> email the Egyptian agencies directly (Egypt Tours Portal, Memphis Tours, Djed Egypt Travel) and ask two of them the same question. Deposit by card, balance in cash on board.</li>
@@ -1463,7 +1464,7 @@ html.hugetext .bp-on em{grid-column:2}
     <details class="fold"><summary>What it costs, per person</summary><div class="in tblwrap">
       <table>
         <tr><th>Item</th><th>Each</th></tr>
-        <tr><td>Dahabiya, 3 nights, shared cabin, its temple tickets included</td><td class="num">≈$1,000</td></tr>
+        <tr><td>Dahabiya, 3 nights, shared cabin, its temple tickets included</td><td class="num">≈$900–1,800</td></tr>
         <tr><td>Abu Simbel: private car, guide, entry (split)</td><td class="num">≈$120</td></tr>
         <tr><td>Flights CAI→ASW + LXR→CAI</td><td class="num">≈$200</td></tr>
         <tr><td>Cairo guide + car, Sun full day + Mon (split)</td><td class="num">≈$160</td></tr>
@@ -1912,7 +1913,7 @@ const HOTEL_HOWTO = [
 const WEEK = [
  {k:"w1",who:"Both",t:"Booking details for the boat: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
- {k:"w3",who:"Either",t:"Dahabiya: board Tue Oct 13, night 1 moored in Aswan, Abu Simbel Wed dawn, off the boat Fri morning → Luxor West Bank.",s:"Shared cabin ≈$1,000 each; ask for a private quote too. Get the boat's name."},
+ {k:"w3",who:"Either",t:"The boat: vote and choose on the Today screen (Decide the boat), then send the message from its card.",s:"Published prices $899–1,815 each for 3 nights. Get the boat's name, twin beds and the terms in writing."},
  {k:"w4",who:"Brad",t:"Domestic flights ✓ booked — NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Tick when the codes are in the app."},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)'},
  {k:"w6",who:"Both",t:"e-Visa, or $30 USD cash on arrival, exact bills",h:'<a href="https://visa2egypt.gov.eg" target="_blank" rel="noopener">e-Visa</a>, or $30 USD cash on arrival, exact bills'},
@@ -2382,7 +2383,7 @@ function preNow(now, days){
     const landTxt=`${esc(arrive.to.t)}${arrive.to.date&&arrive.to.date!==first.date?"&nbsp;Sun":""}`;
     const connecting = w==="Duane" && first.from.ap==="LHR"; // no Norfolk leg added yet
     const band = connecting
-      ? `<div class="fband"><span class="fb-ic">🔁</span><div><b>Connecting at Heathrow · boards ≈${mmhh(hm(first.from.t)-40)}</b><span>BA, T5 unless the app says 3 · purple Flight Connections signs</span><span class="prose">Add your Norfolk → London flight and this counts down from home.</span></div><button type="button" class="btn mini primary" data-nav="flights">Add it</button></div>`
+      ? `<div class="fband"><span class="fb-ic">🔁</span><div><b>Connecting at Heathrow · boards ≈${mmhh(hm(first.from.t)-40)} <small class="tzl">London time</small></b><span>BA, T5 unless the app says 3 · purple Flight Connections signs</span><span class="prose">Add your Norfolk → London flight and this counts down from home.</span></div><button type="button" class="btn mini primary" data-nav="flights">Add it</button></div>`
       : (mine.length>1
         ? `<div class="fband"><span class="fb-ic">🛂</span><div><b>At ${esc(ap(first))} by ${at(first)}</b><span>${early(first)} · then ${mine.slice(1).map(f=>`${esc(f.from.ap)} ${esc(f.from.t)}`).join(", ")}${w==="Duane"?" from T5, BA":""}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`
         : `<div class="fband"><span class="fb-ic">🛂</span><div><b>At ${esc(ap(first))} by ${at(first)}</b><span>${early(first)}</span></div><button type="button" class="btn mini" data-nav="flights">Details</button></div>`);
@@ -2479,7 +2480,7 @@ function toast(msg, opt){ if(msg==null||msg==="") return; const t=$("#toast"); o
   t.classList.add("show"); toastT=setTimeout(()=>t.classList.remove("show","undo"), opt.undo?7000:1400); }
 document.addEventListener("click",e=>{
   const c = e.target.closest("[data-copy]"); if(c){ const v=c.dataset.copy; (navigator.clipboard?.writeText(v)||Promise.reject()).then(()=>toast("Copied "+v)).catch(()=>{ const s=c.previousElementSibling; if(s){ const r=document.createRange(); r.selectNodeContents(s); const selx=getSelection(); selx.removeAllRanges(); selx.addRange(r); toast("Selected — long-press to copy"); } }); }
-  const chip = e.target.closest(".chip"); if(chip){
+  const chip = e.target.closest(".chip"); if(chip && (chip.dataset.i!==undefined || chip.closest("#dayStrip"))){
     // the tab you're on stays the tab you're on: a date tapped from Map re-draws the map for that day, from Guide the guide; otherwise it's the day card
     const tab=(document.querySelector(".bottom a.on")||{}).dataset||{}; const stay = tab.go==="map"||tab.go==="guide" ? tab.go : "";
     if(chip.dataset.pre){ goPre(!stay); if(stay) setTimeout(()=>scrollToEl(document.getElementById(stay)),140); }
@@ -2540,7 +2541,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v101)";
+const BUILD = "Oct 9, 2026 (v102)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -2845,7 +2846,7 @@ function makeAwards(){
 
 function gameWire(){
   document.addEventListener("click", e=>{
-    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); safe(()=>renderFlights()); safe(()=>renderGuideFront()); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
+    const m=e.target.closest("[data-me]"); if(m){ GS.set("me",m.dataset.me); setTimeout(()=>{ try{ memOffer(true); }catch(x){} }, 1200); safe(teamCSS); renderGame(); renderPassport(); renderNow(); renderDay(); renderStrip(); safe(personalizeStatic); safe(()=>renderFlights()); safe(()=>renderGuideFront()); toast("Salaam, "+m.dataset.me+". "+pickDaily(HONORIFICS,m.dataset.me)+"."); return; }
     if(e.target.closest("#meChip")){ whoSheet(true); return; }
     const b=e.target.closest("[data-bingo]"); if(b){ const set=new Set(GS.get("bingo",[12])); const i=+b.dataset.bingo; const before=bingoLines(set); const wasBlackout=set.size>=25; set.has(i)?set.delete(i):set.add(i); GS.set("bingo",[...set]); const after=bingoLines(set); if(set.size>=25 && !GS.get("blackoutDay","")){ GS.set("blackoutDay",(DAYS[dayIndexFor(cairoNow().date)]||DAYS[sel]).id); } if(wasBlackout && set.size<25){ GS.set("blackoutDay",""); overturn(/BLACKOUT/, "blackout touchdown taken back"); toast("Overturned. The card is open again."); renderGame(); return; } renderGame(); if(set.has(i)) toast(set.size>=25?"BLACKOUT. Touchdown.":`+${YDS_PER_SQUARE} yards. ${(set.size-1)*YDS_PER_SQUARE} on the trip.`); if(set.size>=25){ const ln=call("BO", callVars(me())); jumbo("Blackout · Touchdown", me(), `+${ptsFor(6,GS.get("blackoutDay","sun18"))} · ${ln}`); safe(()=>burst(me(),40)); } if(after>before){ safe(()=>logEvent(set.size>=25?`BLACKOUT — the whole card. Touchdown. ${call("BO", callVars(me()))}`:"a bingo line — bragging rights")); } return; }
     const c=e.target.closest("[data-chal]"); if(c){ const ch=GS.get("chal",{}); const id=c.dataset.chal; ch[id]=!ch[id]; GS.set("chal",ch); renderGame(); if(DAYS[sel]&&DAYS[sel].id===id) renderDay(); safe(renderNow); const takeBack=()=>{ const ch2=GS.get("chal",{}); delete ch2[id]; GS.set("chal",ch2); renderGame(); if(DAYS[sel]&&DAYS[sel].id===id) renderDay(); safe(renderNow); overturn(new RegExp("touchdown — challenge done, "+dayLabel(id)), `touchdown, ${dayLabel(id)}, taken back`); toast("Overturned. Six off the board."); }; if(!ch[id]){ if(QUARTER[id]){ overturn(new RegExp("touchdown — challenge done, "+dayLabel(id)), `touchdown, ${dayLabel(id)}, taken back`); toast("Overturned. Six off the board."); } return; } if(ch[id]){ toast(QUARTER[id]?"TOUCHDOWN. Six. Now the conversion.":"Done. (Overtime — no score.)", QUARTER[id]?{undo:takeBack}:undefined); if(QUARTER[c.dataset.chal]){ safe(()=>sfx("td")); const ln=call("TD", callVars(me())); jumbo("Touchdown", me(), `+${ptsFor(6,c.dataset.chal)} · ${ln}`); safe(()=>logEvent(`touchdown — challenge done, ${dayLabel(c.dataset.chal)}. ${ln}`)); safe(()=>burst(me(),28)); } else safe(()=>logEvent("challenge done (overtime), "+dayLabel(c.dataset.chal))); } return; }
@@ -3369,7 +3370,7 @@ function whoSheet(force){
   if(!force && me()) return; if($("#whoSheet")) return;
   const s=document.createElement("div"); s.id="whoSheet"; s.innerHTML=`<div class="wbox"><div class="wk">One question</div><h3>Who's holding this phone?</h3><p>The app greets you by name, shows your flights first, keeps your score and stamps your passport.</p><div class="wbtn"><button type="button" data-me="Brad" style="background:#101820;color:#FFB612">Brad<small>Steelers</small></button><button type="button" data-me="Duane" style="background:#FB4F14;color:#000">Duane<small>Bengals</small></button></div><button type="button" class="wlater" id="whoLater">Not now</button></div>`;
   document.body.appendChild(s); requestAnimationFrame(()=>s.classList.add("on"));
-  s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250); if(e.target.closest("[data-me]")) setTimeout(()=>{ try{ sessionStorage.removeItem("egypt.memOffered"); memOffer(); }catch(x){} }, 1200); } });
+  s.addEventListener("click", e=>{ if(e.target.closest("[data-me]")||e.target.id==="whoLater"||e.target===s){ s.classList.remove("on"); setTimeout(()=>s.remove(),250);  } });
 }
 function personalizeStatic(){
   const w=me(), o=OTHER(); safe(teamCSS);
@@ -4075,13 +4076,13 @@ async function memRestore(){ if(!liveOK()){ toast("Pick whose phone this is firs
   }catch(e){ toast("Couldn't reach the server — try again with signal."); } }
 function memAgo(){ const a=localStorage.getItem("egypt.memAt"); if(!a) return ""; const m=Math.round((Date.now()-new Date(a))/60000); return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.round(m/60)} h ago`:new Date(a).toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
 function memStatus(err){ const el=document.getElementById("memStatus"); if(!el) return; const a=memAgo(); el.textContent = err?"Couldn't back up just now — it retries on its own.": a?`Backed up to the server ${a}. A new phone gets it all back.`:(liveOK()?"Backs up on its own once there's signal.":"Pick whose phone this is to turn on backup."); }
-// a fresh phone with a backup worth having: offer it — once. "Not now" (or ✕) is remembered on this phone,
-// and it only asks again if the server later holds MORE than it did when you said no.
-// "Worth having" = stamps, journal lines, ratings, visited places or photos — not just settings.
-let memOffered=null;
+// The restore offer has exactly one trigger: you pick your name (the who-sheet, or the name pill) on a phone that
+// holds none of your keepsakes, and the server holds some from another phone. Never on launch, never on resume.
+// Shown once per backup: closing it in any way (Not now, ✕, tapping outside) counts as "no" until the server holds more.
+let memOffered=null, memAsking=false;
 const MEM_MEANS=/^egypt\.(journal\.|game\.rate|game\.stamp|visited|photo\.|fav$|portrait$)/;
-async function memOffer(){ try{ if(!liveOK()||sessionStorage.getItem("egypt.memOffered")) return; sessionStorage.setItem("egypt.memOffered","1");
-  const has=Object.keys(stamps()).length || [...Array(localStorage.length).keys()].some(i=>{ const k=localStorage.key(i)||""; return k.startsWith("egypt.journal.")||k.startsWith("egypt.photo."); }); if(has) return;
+const memHasLocal=()=>{ try{ if(Object.keys(stamps()).length) return true; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i)||""; if(!MEM_MEANS.test(k)) continue; const v=localStorage.getItem(k); if(v&&v!=="{}"&&v!=="[]"&&v!=="null") return true; } }catch(e){} return false; };
+async function memOffer(fromPick){ if(!fromPick||memAsking) return; memAsking=true; try{ if(!liveOK()||memHasLocal()) return;
   const d=await memFetchMeta(); const keys=memKeys(d); if(!keys) return;
   let nPics=0; try{ const r=await fetch(memURL("pics",d.dev)+"?shallow=true",{cache:"no-store"}); if(r.ok) nPics=Object.keys((await r.json())||{}).length; }catch(e){}
   const nStamps=(()=>{ try{ return Object.keys(JSON.parse(keys["egypt.game.stamp"]||"{}")).length; }catch(e){ return 0; } })();
@@ -4089,12 +4090,233 @@ async function memOffer(){ try{ if(!liveOK()||sessionStorage.getItem("egypt.memO
   if(!nMean) return;   // nothing but settings on the server: nothing to bring back
   const weight=nStamps*100+nMean; let no=0; try{ no=+(localStorage.getItem("egypt.memNo")||0); }catch(e){}
   if(weight<=no) return;   // already said no to this much
-  memOffered=weight;
+  memOffered=weight; try{ localStorage.setItem("egypt.memNo", String(weight)); }catch(e){}   // asked once; any close = no
   const when=d.saved?new Date(d.saved).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):"";
   const what=[nStamps?`${nStamps} stamp${nStamps===1?"":"s"}`:"", nPics?`${nPics} photo${nPics===1?"":"s"}`:"", "your notes"].filter(Boolean).join(", ");
-  openSheet("sheetQC", `<div class="qh"><h3>Welcome back, ${esc(me())}</h3><button type="button" class="x" data-mem-close="1" aria-label="Close">✕</button></div><p>Your trip is saved on the server${when?` (last backed up ${esc(when)})`:""} — ${esc(what)}. Bring it onto this phone?</p><div class="row"><button type="button" class="btn primary" data-mem-restore="1">Restore my trip</button><button type="button" class="btn" data-mem-close="1">Not now</button></div><p class="muted" style="font-size:0.7647rem;margin-top:10px">This won't ask again unless there's more saved. It's always under Passport → back page → Consular services.</p>`); }catch(e){} }
+  openSheet("sheetQC", `<div class="qh"><h3>Welcome back, ${esc(me())}</h3><button type="button" class="x" data-mem-close="1" aria-label="Close">✕</button></div><p>Your trip is saved on the server${when?` (last backed up ${esc(when)})`:""} — ${esc(what)}. Bring it onto this phone?</p><div class="row"><button type="button" class="btn primary" data-mem-restore="1">Restore my trip</button><button type="button" class="btn" data-mem-close="1">Not now</button></div><p class="muted" style="font-size:0.7647rem;margin-top:10px">This won't ask again unless there's more saved. It's always under Passport → back page → Consular services.</p>`); }catch(e){} finally{ memAsking=false; } }
 document.addEventListener("click", e=>{ if(e.target.closest("[data-mem-restore]")){ closeSheet("sheetQC"); memRestore(); return; } if(e.target.closest("[data-mem-close]")){ closeSheet("sheetQC"); if(memOffered){ try{ localStorage.setItem("egypt.memNo", String(memOffered)); }catch(err){} } return; } if(e.target.closest("[data-mem-now]")){ memBackup(true).then(ok=>toast(ok?"Backed up.":"No signal — it'll try again.")); } });
-(function(){ const tick=()=>{ if(document.hidden) return; memBackup(false); }; setTimeout(()=>{ memOffer(); tick(); }, 4000); setInterval(tick, 120000); document.addEventListener("visibilitychange",()=>{ if(document.hidden) memBackup(false); else { memOffer(); } }); addEventListener("online",()=>memBackup(false)); })();
+(function(){ const tick=()=>{ if(document.hidden) return; memBackup(false); }; setTimeout(tick, 4000); setInterval(tick, 120000); document.addEventListener("visibilitychange",()=>{ if(document.hidden) memBackup(false); }); addEventListener("online",()=>memBackup(false)); })();
+
+// ---------- The boat decision: Tue 13 → Fri 16. Researched Oct 9, 2026. Both phones vote 👍/👎; either can choose; the rest fold away.
+// Sync: rooms/{room}-boat/{Brad|Duane} = {votes:{id:1|-1}, at}, rooms/{room}-boat/choice = {id, by, at} (newest wins).
+const BOAT_ASK_TUE = "Board in Aswan Tue 13 Oct around 12:30 (we land 9:25). We need the boat to stay moored in Aswan Tuesday night — we go to Abu Simbel by road at 4am Wednesday and are back about 12:30 — then sail Wed afternoon: Kom Ombo, Gebel el-Silsila, Edfu. Off the boat Fri 16 Oct morning at Edfu or Esna, with a transfer to Luxor.";
+const BOAT_ASK_WED = "Your Wednesday 14 Oct departure from Aswan (3 nights). We're at Abu Simbel by road that morning and can be on board by 1pm — is that OK?";
+const boatMsg = o => `Hello! Two adults (two friends) — we need TWIN beds, or two cabins. ${o.ask==="wed"?BOAT_ASK_WED:BOAT_ASK_TUE}${o.askX?" "+o.askX:""} Please confirm in writing: the boat's name, cabin type, price per person, what's included (entrance fees, guide, transfers, drinks), and the deposit and cancellation terms. We can pay a card deposit now and the balance in cash on board. Thank you!`;
+// Every claim was checked against its source on Oct 9, 2026. chk: ✓ = on the seller's page, ? = not confirmed / estimate / contradicts itself.
+const BOATS = [
+ { id:"pasha", book:"ahead", kind:"Dahabiya", name:"El Pasha", seller:"Ask-Aladdin (agent)", pick:"Our dates",
+   fit:"exact", when:"Tue 13 → Fri 16 · Aswan → Esna", ask:"tue",
+   price:"No price published", est:"≈$900–1,500 each — our estimate", priceN:1200,
+   route:"Aswan · Kom Ombo · Gebel el-Silsila · Edfu (horse carriage) · Esna",
+   aswan:"Ask — it sails Tuesday, so ask them to hold the mooring until Wed 1pm",
+   twin:"Not mentioned — the page lists king beds only. Ask for twin, or two cabins",
+   incl:"Not listed on the boat's page. Ask-Aladdin's general dahabiya page lists transfers, tea/coffee/water and wifi, tips extra — confirm for this boat.",
+   reviews:"None found", risk:"The page contradicts itself: \"4 days/3 nights from Aswan\" in the headline, but a 6-day plan starting in Esna below it; \"7 cabins\" but only 4 cabins and a suite described. Get the boat's photos and Tripadvisor page before paying.",
+   impact:"None — the plan stays as written.",
+   pros:["The only Tuesday Aswan sailing we found","Silsila and Edfu — the stops we planned"], cons:["No price until they answer","Twin beds not mentioned","Its own page contradicts itself"],
+   chk:[["✓","\"Every Tuesday from Aswan to Luxor (Esna)\", 4 days/3 nights"],["✓","Kom Ombo, Silsila, Edfu by horse carriage, Esna"],["✓","info@ask-aladdin.com and +1 617 933 9330"],["?","WhatsApp number is from Ask-Aladdin's general dahabiya page, not this boat's"],["?","\"From $250\" with no basis; the same page says \"No pricing information available\""],["?","Day-by-day plan on the page runs 6 days from Esna"]],
+   wa:"201066503161", email:"info@ask-aladdin.com", web:"https://ask-aladdin.com/all-destinations/egypt/travel-cruises/dahabiya-nile-cruise-pacha" },
+ { id:"merit", book:"ahead", kind:"Dahabiya", name:"Merit I / Merit II", seller:"Pure Nile Tours", pick:"Safest",
+   fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Luxor", ask:"wed",
+   price:"From $999 each, 3 nights", est:"The same boat is $1,815 each via Luxor & Aswan Travel", priceN:999, verified:true,
+   route:"Aswan (night 1) · Kom Ombo · sails past Edfu · Esna lock · Luxor temples · West Bank",
+   aswan:"Yes — night 1 in Aswan (Merit I page; Merit II says \"a quiet overnight on the Nile\")",
+   twin:"Luxor & Aswan Travel: 6 of 8 cabins twin. Pure Nile lists Merit I with 10 cabins, twins not stated — ask",
+   incl:"Full board, guide, entrance fees, transfers. Abu Simbel, extra drinks and tips are not included. Heated open-air jacuzzi on deck.",
+   reviews:"None found for the boat", risk:"Low: a real boat sold by several agents.",
+   impact:"Tuesday night in an Aswan hotel (≈$60–120 for the room). Abu Simbel Wed 4am from the hotel, board by 1pm. Off the boat Sat in Luxor, and the boat does Luxor's temples and West Bank for us. Friday's Luxor day becomes boat time; the balloon moves to Sunday dawn if Duane's flight allows.",
+   pros:["Twin cabins (per one seller)","Luxor temples and West Bank included","A named boat at a fair price"], cons:["No Edfu temple, no Silsila — it sails past","An extra hotel night in Aswan","Ends a day later"],
+   chk:[["✓","\"Aswan departure · Every Wednesday\", 4 days/3 nights, ends in Luxor"],["✓","\"Start from $999 USD / person\""],["✓","$1,815 per person double, Sep–Apr (Luxor & Aswan Travel)"],["✓","Full board, guide, entrance fees, transfers; Abu Simbel optional"],["✓","booking@pureniletours.com, WhatsApp +20 112 877 5545"],["?","Twin count is from one seller; the cabin counts differ (8 vs 10)"]],
+   wa:"201128775545", email:"booking@pureniletours.com", web:"https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/" },
+ { id:"akhnaton", book:"ahead", kind:"Dahabiya", name:"Akhnaton", seller:"Pure Nile Tours", pick:"Cheapest",
+   fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Esna", ask:"wed",
+   price:"From $899 each, 3 nights", est:"", priceN:899, verified:true,
+   route:"Aswan or nearby (night 1) · toward Edfu (night 2) · night 3 not named · off at Esna, car to Luxor",
+   aswan:"\"In Aswan or a nearby quiet mooring\"", twin:"Not stated — \"according to final cabin allocation\"",
+   incl:"Full board, entrance fees, a private Egyptologist, private transfers. Abu Simbel, extra drinks and tips are not included.",
+   reviews:"None found", risk:"Low–medium: a real agency, thin boat details. Ask whether Edfu temple is a stop and where night 3 is.",
+   impact:"Tuesday night in an Aswan hotel; board Wed after Abu Simbel; off at Esna Sat morning, Luxor by noon. Friday's Luxor day moves to Saturday afternoon.",
+   pros:["Cheapest named boat","Same seller as Merit — one message, two quotes"], cons:["Edfu and Silsila not confirmed","Twin beds not promised","Ends a day later"],
+   chk:[["✓","\"Aswan departure · Every Wednesday\", 4 days/3 nights"],["✓","\"Start from $899 USD / person\""],["✓","Off near Esna, private transfer to Luxor"],["?","Night 3's mooring isn't named; Edfu temple visit not stated"],["?","Twin beds: \"according to final cabin allocation\""]],
+   wa:"201128775545", email:"booking@pureniletours.com", web:"https://pureniletours.com/tour/akhnaton-dahabiya-nile-cruise/" },
+ { id:"tec", book:"ahead", kind:"Dahabiya", name:"Tour Egypt Club dahabiya", seller:"Tripadvisor / Viator", pick:"Best route",
+   fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Luxor", ask:"wed",
+   price:"$1,366.85 on a Viator reseller", est:"$1,500 list; per person not stated", priceN:1367, verified:true,
+   route:"Philae · Kom Ombo · Gebel el-Silsila · Edfu · El Kab · Esna · Luxor",
+   aswan:"Ask", twin:"Ask",
+   incl:"Entrance fees, guide, air-conditioned transfers, tea, coffee and bottled water.",
+   reviews:"4.6★ from 35 reviews · operator 4.8★ from 364",
+   risk:"The boat is assigned, not chosen (reviews name Turquoise, Loulia, Karnak, Royal Cleopatra). Tripadvisor: full refund only 7+ days out — we're inside that.",
+   impact:"Same as the other Wednesday boats: Aswan hotel Tuesday, off the boat Saturday.",
+   pros:["Best route of all — Silsila and El Kab","The only one with real reviews","Pay through the platform — someone to complain to"], cons:["Priciest Wednesday boat","Can't pick the boat","Inside the refund window already"],
+   chk:[["✓","Route incl. Silsila and El Kab (Tripadvisor itinerary)"],["✓","4.6★ · 35 reviews; operator 4.8★ · 364"],["✓","Boats named in reviews, 2023–2026"],["✓","\"Wednesday or Friday\" Oct–Apr — reseller page only"],["?","Price only on the reseller, per person not stated; Tripadvisor shows none"]],
+   web:"https://www.tripadvisor.com/AttractionProductReview-g294204-d24031600-Dahabiya_Nile_Cruise_Aswan_to_Luxor_4_Days_3_Nights-Aswan_Aswan_Governorate_Nile_R.html" },
+ { id:"custom", book:"ahead", kind:"Dahabiya", name:"A Tuesday boat, built to order", seller:"Egypt Tours Portal · Pyramids Land",
+   fit:"exact", when:"Tue 13 → Fri 16 · if they say yes", ask:"tue", askX:"If a shared Tuesday boat can't stay moored in Aswan, please quote a private charter.",
+   price:"From $945 each (Egypt Tours Portal, shared)", est:"Private charter: no price published — ask", priceN:1400, verified:true,
+   route:"Their version: nights at Kom Ombo, Edfu, Esna; Luxor's West Bank and Karnak on day 4. We'd ask for Aswan night 1",
+   aswan:"Not in their standard trip — it sleeps at Kom Ombo night 1", twin:"Ask",
+   incl:"Egypt Tours Portal: entrance fees between Aswan and Luxor, Egyptologist guide. Abu Simbel isn't mentioned either way.",
+   reviews:"Pyramids Land shows 4.9★ · 2,678 reviews in one place, 4.5★ Trustpilot in another", risk:"No boat name (\"5-star Dahabiya\"). Pyramids Land shows no price, days or cancellation terms, and its page still has an unfinished \"[VERIFY]\" note. Insist on the boat's name and Tripadvisor page.",
+   impact:"None, if they hold the Aswan mooring.",
+   pros:["Keeps the plan, and day 4 includes Luxor sights","\"Everyday\" departures"], cons:["The boat is unknown","Standard version skips the Aswan night"],
+   chk:[["✓","Egypt Tours Portal: \"Everyday\", \"From $945 / person\""],["✓","Nights at Kom Ombo, Edfu, Esna; no Silsila"],["?","Abu Simbel: not mentioned"],["?","Pyramids Land: no price, days or terms; inconsistent review counts"]],
+   web:"https://www.egypttoursportal.com/en-nz/egypt-nile-cruises/3-nights-dahabiya-aswan", web2:"https://www.pyramidsland.com/tour/4-day-dahabiya-nile-cruise-aswan-to-esna" },
+ { id:"felucca", book:"onsite", kind:"Felucca", name:"A private felucca", seller:"A captain on the Aswan Corniche, or via the hotel", pick:"Best on site",
+   fit:"exact", when:"Wed 14 → Fri 16 · 2 nights on deck",
+   price:"≈$75 each per night (one listing: $150/night for up to 5)", est:"≈$150–300 each, all in — our estimate", priceN:250,
+   route:"Aswan → Kom Ombo (→ Edfu if the wind's kind) · car on to Edfu / Luxor",
+   aswan:"An Aswan hotel Tuesday; sail Wed after Abu Simbel", twin:"Mattress pads across the deck, under the stars",
+   incl:"Usually meals and blankets. Temple tickets, drinking water and the onward car are usually extra — agree it all first.",
+   reviews:"Routard posters: My Dream Feluca \"absolutely perfect\" (Mar 2025); Imaginative Felucca good (Nov 2025) — but no wind, so the crew drove them on",
+   risk:"Wind decides how far you sail. No shower; bring toilet paper. The captain needs passport copies for the police licence — bring several. Middlemen pose as captains: see the boat first.",
+   impact:"Tuesday night in an Aswan hotel; sail Wed; car to Luxor Fri morning. Silsila only if the wind gets us that far.",
+   pros:["A fraction of the price","The most Nile you can get","Easy to arrange on Tuesday"], cons:["No cabin, no shower","Two nights, not three","The wind decides"],
+   chk:[["✓","Classic trip: 3 days/2 nights to Kom Ombo (Wikivoyage, Migrationology)"],["✓","Passport copies for the police licence (Wikivoyage)"],["✓","Routard reviews, Mar and Nov 2025"],["✓","$150 per night for 1–5 people (GetMyBoat listing)"],["?","Walk-up price: no 2024–26 figure found"]] },
+ { id:"ship", book:"onsite", kind:"Cruise ship", name:"Walk onto a big cruise ship", seller:"Ship receptions on the Corniche",
+   fit:"wrong", when:"Mon, Wed, Fri or Sat from Aswan — no Tuesday",
+   price:"≈$45–55 each per night (one 2021 report, via a hostel owner)", est:"Online: €326 to $1,920 each for 3 nights", priceN:400,
+   route:"Kom Ombo · Edfu · Esna · Luxor — with 60 cabins and everyone else",
+   aswan:"Ask the ship", twin:"Yes, standard",
+   incl:"Full board. Tickets and guide usually extra at the dock price.",
+   reviews:"Varies by ship — \"5-star\" means little", risk:"Walk-up prices aren't confirmed for 2026. Walk the ship and see the cabin before paying.",
+   impact:"Aswan hotel Tuesday; Wednesday ship; off in Luxor Saturday.",
+   pros:["Cheapest with a real cabin","A shower, a pool"], cons:["Not a dahabiya","Big-boat timetable: every temple at the same minute as 600 people","No Tuesday departure"],
+   chk:[["✓","Sonesta and Mövenpick ships leave Aswan Fridays; others Mon/Wed"],["✓","No Tuesday departure found"],["✓","Online: Greca from €326, Civitatis from $535, Mövenpick $840–1,920"],["?","Dock price is a 2021 report, not confirmed for 2026"]] },
+ { id:"quay", book:"onsite", kind:"Dahabiya", name:"A dahabiya, found on the quay", seller:"Aswan agencies and the moorings",
+   fit:"gamble", when:"Tue 13 or Wed 14 — if anything's empty",
+   price:"No last-minute discount expected", est:"Same as booking ahead, if a boat has space", priceN:1700,
+   route:"Whatever's sailing",
+   aswan:"Depends on the boat", twin:"Depends on the boat",
+   incl:"As the boat's package.",
+   reviews:"No 2023–26 report found of anyone walking onto one", risk:"Very high. Dahabiyas carry 5–12 cabins, sell through agents, and none we found leaves Aswan on a Tuesday.",
+   impact:"Probably Tuesday in a hotel and a felucca anyway.",
+   pros:["You see the boat before paying"], cons:["Near-zero odds on a Tuesday","Mid-October is the start of high season"],
+   chk:[["✓","5–12 cabins (Abundance 5 … Nour El Nil 10–12)"],["✓","No Tuesday Aswan departure on any schedule checked"],["?","Odds of a walk-up: no recent report either way"]] }
+];
+const BOAT_FIT = { exact:["Our dates","ok"], plus1:["+1 day · ends Sat","amber"], wrong:["Wrong days","bad"], gamble:["Long shot","bad"] };
+const BOAT_LS = { mine:"egypt.boat.votes", other:"egypt.boat.other", choice:"egypt.boat.choice", seen:"egypt.boat.seen", showAll:"egypt.boat.showAll" };
+const bJSON=(k,d)=>{ try{ return JSON.parse(lsGet(k,"")||"null")||d; }catch(e){ return d; } };
+const boatVotes=()=>bJSON(BOAT_LS.mine,{});
+const boatOther=()=>bJSON(BOAT_LS.other,{votes:{}});
+const boatRec=()=>bJSON(BOAT_LS.choice,null);   // {id|null, by, at, pushed} — id:null is an undo waiting to sync
+const boatChoice=()=>{ const c=boatRec(); return c&&c.id&&BOATS.some(b=>b.id===c.id)?c:null; };
+const boatURL=p=>`${DB_URL}/rooms/${room()}-boat${p?"/"+p:""}.json`;
+let boatFilter="all", boatConfirm="", boatBusy=false;
+async function boatPull(){ if(!liveOK()||boatBusy) return false; boatBusy=true; try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),12000); const r=await fetch(boatURL(),{cache:"no-store",signal:ctl.signal}); clearTimeout(t); if(!r.ok) return false; const d=(await r.json())||{}; let changed=false;
+  const o=d[OTHER()]||{votes:{}}; const os=JSON.stringify(o); if(os!==lsGet(BOAT_LS.other,"")){ lsSet(BOAT_LS.other,os); changed=true; }
+  const mineSrv=d[me()]; const mineLoc=boatVotes(); if(mineSrv&&mineSrv.votes&&!lsGet("egypt.boat.at","")){ lsSet(BOAT_LS.mine,JSON.stringify(mineSrv.votes)); changed=true; } // new phone: take my votes back
+  const cs=d.choice&&d.choice.id?d.choice:null, L=boatRec(); const srvAt=cs?new Date(cs.at||0).getTime():0, locAt=L?new Date(L.at||0).getTime():0;
+  if(cs&&srvAt>locAt){ lsSet(BOAT_LS.choice, JSON.stringify({...cs,pushed:true})); changed=true; }
+  else if(!cs&&L&&L.id&&L.pushed){ lsSet(BOAT_LS.choice,null); changed=true; }   // the other phone undid it
+  else if(L&&!L.pushed){ setTimeout(boatPushChoice,0); }
+  if(changed) boatApply(); return changed; }catch(e){ return false; } finally{ boatBusy=false; } }
+async function boatPushVotes(){ lsSet("egypt.boat.at", new Date().toISOString()); if(!liveOK()) return false; try{ const r=await fetch(boatURL(me()),{method:"PUT",body:JSON.stringify({votes:boatVotes(), at:new Date().toISOString()})}); return r.ok; }catch(e){ return false; } }
+async function boatPushChoice(){ if(!liveOK()) return false; const L=boatRec(); if(!L) return true; try{ const r=await fetch(boatURL("choice"),L.id?{method:"PUT",body:JSON.stringify({id:L.id,by:L.by,at:L.at})}:{method:"DELETE"}); if(r.ok){ const cur=boatRec(); if(cur&&cur.at===L.at) lsSet(BOAT_LS.choice, L.id?JSON.stringify({...L,pushed:true}):null); } return r.ok; }catch(e){ return false; } }
+// score: both 👍 floats up; any 👎 sinks
+function boatScore(b){ const m=boatVotes()[b.id]||0, o=(boatOther().votes||{})[b.id]||0; return (m>0&&o>0?100:0)+(m+o)*10-(BOATS.indexOf(b)); }
+const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().votes||{})[b.id]||0)>0);
+function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
+// ---------- the slot on Today: one line of status, one button
+function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
+  if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.seller)} · chosen by ${esc(c.by||"?")}${b.when?` · ${esc(b.when.split(" · ")[0])}`:""}</small></div><button type="button" class="btn mini" data-boat-open="1">${b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
+  const days=Math.max(0, dateDiffDays(now.date,"2026-10-13")); const urg = days<=1?"boards tomorrow":days<=4?`boards in ${days} days — book this weekend`:`boards in ${days} days`;
+  const seenOther=lsGet(BOAT_LS.seen,""), curOther=lsGet(BOAT_LS.other,""); const fresh = curOther && curOther!==seenOther && Object.keys((boatOther().votes)||{}).length;
+  const line = !t.mine&&!t.theirs ? "8 options compared · vote 👍 or 👎, then pick one" : `You ${t.mine?`voted on ${t.mine}`:"haven't voted"} · ${esc(o)} ${t.theirs?`voted on ${t.theirs}`:"hasn't voted yet"}${t.both?` · <b>${t.both} you both like</b>`:""}`;
+  return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">Decide the boat · ${urg}</span><b>Dahabiya, felucca or ship?</b><small>${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
+// undecided and still time to book: it goes above the Now card; once decided (or from Monday) it sits quietly below it
+function renderBoatSlot(){ const el=document.getElementById("boatSlot"); if(!el) return; el.innerHTML=safe(boatSlotHTML)||""; const now=document.getElementById("now"); if(!now) return;
+  const top=!boatChoice() && cairoNow().date<="2026-10-11"; const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("top", top); }
+// ---------- the sheet
+function boatCard(b, opts){ const mv=boatVotes()[b.id]||0, ov=(boatOther().votes||{})[b.id]||0, o=OTHER(); const [fitL,fitC]=BOAT_FIT[b.fit]||["",""]; const c=boatChoice(); const chosen=c&&c.id===b.id; const both=mv>0&&ov>0;
+  const ov_t = !o ? "" : ov>0?`<span class="bv up">${esc(o)} 👍</span>`:ov<0?`<span class="bv dn">${esc(o)} 👎</span>`:`<span class="bv">${esc(o)}: no vote yet</span>`;
+  const msg=boatMsg(b); const wa=b.wa?`https://wa.me/${b.wa}?text=${encodeURIComponent(msg)}`:""; const mail=b.email?`mailto:${b.email}?subject=${encodeURIComponent(b.ask==="wed"?"Dahabiya Wed 14 Oct, 2 adults, twin":"Dahabiya Aswan Tue 13 – Fri 16 Oct, 2 adults, twin")}&body=${encodeURIComponent(msg)}`:"";
+  const contact = b.book==="ahead" ? `<div class="bc-ct">${wa?`<a class="btn mini primary" target="_blank" rel="noopener" href="${wa}">WhatsApp them ↗</a>`:""}${mail?`<a class="btn mini" href="${mail}">Email</a>`:""}${b.web?`<a class="btn mini" target="_blank" rel="noopener" href="${b.web}">${wa||mail?"Their page":"Book / ask ↗"}</a>`:""}${b.web2?`<a class="btn mini" target="_blank" rel="noopener" href="${b.web2}">Pyramids Land ↗</a>`:""}<button type="button" class="btn mini" data-copy-boat="${b.id}">Copy the message</button></div>`
+    : `<div class="bc-ct"><span class="muted">Arranged in Aswan, cash. ${b.id==="felucca"?"Message a captain before you fly so Tuesday is a confirmation, not a search.":""}</span></div>`;
+  return `<article class="bc ${chosen?"chosen":""} ${both?"both":""}" data-bid="${b.id}">
+   <div class="bc-top"><span class="bc-tag ${fitC}">${esc(fitL)}</span><span class="bc-kind">${esc(b.kind)} · ${b.book==="ahead"?"book now":"on site"}</span>${b.pick?`<span class="bc-pick">${esc(b.pick)}</span>`:""}</div>
+   <h4>${esc(b.name)}</h4><div class="bc-sell">${esc(b.seller)} · ${esc(b.when)}</div>
+   <div class="bc-price"><b>${esc(b.price)}</b>${b.est?`<small>${esc(b.est)}</small>`:""}${b.verified?`<i title="Published on the seller's page">published</i>`:""}</div>
+   <dl class="bc-dl"><dt>Route</dt><dd>${esc(b.route)}</dd><dt>Aswan Tue night</dt><dd>${esc(b.aswan)}</dd><dt>Twin beds</dt><dd>${esc(b.twin)}</dd><dt>Reviews</dt><dd>${esc(b.reviews)}</dd></dl>
+   <ul class="bc-pc">${b.pros.map(x=>`<li class="p">${esc(x)}</li>`).join("")}${b.cons.map(x=>`<li class="c">${esc(x)}</li>`).join("")}</ul>
+   ${b.chk?`<div class="bc-chk"><b>How sure we are</b>${b.chk.map(([m,t])=>`<span class="${m==="✓"?"y":"n"}"><i>${m==="✓"?"✓":"?"}</i>${esc(t)}</span>`).join("")}</div>`:""}<details class="bc-more"><summary>What's included, the risk, what changes</summary><p><b>Included:</b> ${esc(b.incl)}</p><p><b>Risk:</b> ${esc(b.risk)}</p><p><b>What changes in the plan:</b> ${esc(b.impact)}</p></details>
+   ${contact}
+   <div class="bc-vote" role="group" aria-label="Your vote on ${esc(b.name)}"><button type="button" class="vb ${mv>0?"on up":""}" data-bvote="${b.id}" data-v="1" aria-pressed="${mv>0}">👍<span>${mv>0?"You like it":"Like"}</span></button><button type="button" class="vb ${mv<0?"on dn":""}" data-bvote="${b.id}" data-v="-1" aria-pressed="${mv<0}">👎<span>${mv<0?"You're out":"Not for me"}</span></button>${ov_t}</div>
+   ${chosen?`<div class="bc-chosen">✓ Chosen by ${esc(c.by||"?")}${c.at?` · ${new Date(c.at).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}`:""} <button type="button" class="btn mini" data-bundo="1">Undo</button></div>`
+     : c ? "" : `<button type="button" class="btn ${boatConfirm===b.id?"primary":""} bc-choose" data-bchoose="${b.id}">${boatConfirm===b.id?`Tap again: choose ${esc(b.name)} for both of us`:"Choose this one"}</button>`}
+  </article>`; }
+function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally(); const showAll=sessionStorage.getItem(BOAT_LS.showAll)==="1";
+  let list=[...BOATS]; if(!c){ list.sort((a,b)=>boatScore(b)-boatScore(a)); if(boatFilter==="ahead"||boatFilter==="onsite") list=list.filter(b=>b.book===boatFilter); if(boatFilter==="both") list=boatBothUp(); }
+  const chosenB=c?BOATS.find(b=>b.id===c.id):null; const rest=c?BOATS.filter(b=>b!==chosenB):[];
+  const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`You both 👍 · ${t.both}`]];
+  const advice=`<details class="bs-adv" ${c?"":"open"}><summary>The short answer</summary><div class="in">
+   <p><b>Book a dahabiya now, this weekend — the quay won't have one on a Tuesday.</b> Of the dahabiyas we checked, none leaves Aswan on a Tuesday: they go Wednesday or Friday (Sonesta's on Saturday; Nour El Nil's only from Esna). They carry 5–12 cabins and sell through agents. Turning up only works for a felucca or a big ship.</p>
+   <p><b>The choice is really: keep Tuesday, or slide a day.</b> Tuesday-to-Friday exists only as El Pasha (one agent page that contradicts itself) or a boat built to order — no price until they answer. Wednesday-to-Saturday is easy: Merit, Akhnaton or the Tour Egypt Club boat, $899–1,367 each on their pages, with an Aswan hotel on Tuesday and a day less in Luxor.</p>
+   <table class="bs-tbl"><tr><th></th><th>Book now</th><th>On site</th></tr><tr><td>Dahabiya, 3 nights</td><td>$899–1,815 each (published)</td><td>Near-zero odds</td></tr><tr><td>Felucca, 2 nights</td><td>—</td><td>≈$150–300 each (estimate)</td></tr><tr><td>Cruise ship, 3 nights</td><td>€326–$1,920 each</td><td>≈$150 each (2021 report), never Tuesday</td></tr><tr><td>Money back</td><td>Inside 7 days: usually 50–100% gone</td><td>Pay on boarding</td></tr></table>
+   <p><b>Do this today:</b> send the message (each card has it) to El Pasha, Pure Nile and Egypt Tours Portal at once. Take the first that confirms in writing a <i>named</i> boat, twin beds, and — for Tuesday — the Aswan mooring. Card deposit, balance in cash on board. If nobody confirms by Sunday night: Aswan hotel Tuesday and a felucca from Wednesday.</p>
+  </div></details>`;
+  const head=`<div class="qh"><h3>The boat · ${c?esc(chosenB.when.split(" · ")[0]):"Tue 13 → Fri 16"}</h3><button type="button" class="x" aria-label="Close">✕</button></div>
+   <div class="bs-who">${c?`<b>Decided:</b> ${esc(chosenB.name)} — ${esc(chosenB.seller)}.`:`<span>You: ${t.mine?`${t.mine} vote${t.mine>1?"s":""}`:"no votes yet"}</span><span>${esc(o)}: ${t.theirs?`${t.theirs} vote${t.theirs>1?"s":""}`:"no votes yet"}</span>${t.both?`<span class="both">Both 👍: ${boatBothUp().map(b=>esc(b.name)).join(", ")}</span>`:""}`}${liveOK()?"":`<span class="muted">Pick whose phone this is (top of the app) so your votes reach ${esc(o)}.</span>`}</div>`;
+  const body = c
+   ? `${boatCard(chosenB)}<button type="button" class="btn bs-rest" data-bshowall="1">${showAll?"Hide":"Show"} the ${rest.length} we didn't pick</button>${showAll?`<div class="bs-restl">${rest.map(b=>boatCard(b)).join("")}</div>`:""}`
+   : `<div class="bs-f" role="tablist">${filters.map(([k,l])=>`<button type="button" role="tab" class="chip ${boatFilter===k?"on":""}" data-bfilter="${k}" aria-selected="${boatFilter===k}">${l}</button>`).join("")}</div>${list.length?list.map(b=>boatCard(b)).join(""):`<p class="muted bs-empty">${boatFilter==="both"?`Nothing you both like yet. Vote on a few — ${esc(o)} sees your votes on his phone.`:"Nothing here."}</p>`}`;
+  return head + (c?"":advice) + body + `<p class="muted bs-src">Researched and fact-checked Oct 9, 2026 against each seller's own page, Tripadvisor and traveller forums. ✓ means we read it on the source; ? means it isn't confirmed, is our estimate, or the source contradicts itself. Prices change and no seller publishes availability — the message asks for both in writing.</p>`; }
+function renderBoatSheet(keep){ const s=document.getElementById("sheetBoat"); const open=s&&s.classList.contains("on"); if(!open&&keep) return; const box=s&&s.querySelector(".qbox"); const top=box?box.scrollTop:0;
+  if(open){ box.innerHTML=boatSheetHTML(); box.scrollTop=top; } else { openSheet("sheetBoat", boatSheetHTML()); setTimeout(()=>{ const b=document.querySelector("#sheetBoat .qbox"); if(b) b.classList.add("boatbox"); },0); }
+  lsSet(BOAT_LS.seen, lsGet(BOAT_LS.other,"")); renderBoatSlot(); }
+function boatOpen(){ renderBoatSheet(false); boatPull().then(ch=>{ if(ch){ renderBoatSheet(true); boatApply(); } }); }
+// the chosen boat becomes the bed's name everywhere
+function boatApply(){ try{ const c=boatChoice(); const h=HOTELS.find(x=>/^Dahabiya/i.test(x.n)); if(!h) return; if(!h._n0) h._n0=h.n; const b=c&&BOATS.find(x=>x.id===c.id); h.n = b ? (b.kind==="Dahabiya"?`Dahabiya — ${b.name}`:h._n0.replace("(name TBC)", `→ ${b.name.toLowerCase()} instead`)) : h._n0; if(typeof renderHotels==="function") safe(renderHotels); }catch(e){} }
+document.addEventListener("click", e=>{
+  if(e.target.closest("[data-boat-open]")){ boatOpen(); return; }
+  const f=e.target.closest("[data-bfilter]"); if(f){ boatFilter=f.dataset.bfilter; boatConfirm=""; renderBoatSheet(true); return; }
+  const v=e.target.closest("[data-bvote]"); if(v){ const id=v.dataset.bvote, val=+v.dataset.v; const m=boatVotes(); m[id]=m[id]===val?0:val; if(!m[id]) delete m[id]; lsSet(BOAT_LS.mine, JSON.stringify(m)); renderBoatSheet(true); boatPushVotes().then(ok=>{ if(!ok&&liveOK()) toast("Saved here — it reaches "+(OTHER()||"the other phone")+" when you're online."); }); return; }
+  const ch=e.target.closest("[data-bchoose]"); if(ch){ const id=ch.dataset.bchoose; if(boatConfirm!==id){ boatConfirm=id; renderBoatSheet(true); return; } boatConfirm=""; lsSet(BOAT_LS.choice, JSON.stringify({id, by:me()||"?", at:new Date().toISOString()})); sessionStorage.removeItem(BOAT_LS.showAll); boatApply(); renderBoatSheet(true); const b=BOATS.find(x=>x.id===id); toast(`Chosen: ${b.name}. ${b.book==="ahead"?"Now send them the message.":"Sorted on Tuesday in Aswan."}`); boatPushChoice(); const box=document.querySelector("#sheetBoat .qbox"); if(box) box.scrollTop=0; return; }
+  if(e.target.closest("[data-bundo]")){ lsSet(BOAT_LS.choice, JSON.stringify({id:null, at:new Date().toISOString()})); boatApply(); renderBoatSheet(true); boatPushChoice(); toast("Undone — all the options are back."); return; }
+  if(e.target.closest("[data-bshowall]")){ sessionStorage.setItem(BOAT_LS.showAll, sessionStorage.getItem(BOAT_LS.showAll)==="1"?"0":"1"); renderBoatSheet(true); return; }
+  const cp=e.target.closest("[data-copy-boat]"); if(cp){ const b=BOATS.find(x=>x.id===cp.dataset.copyBoat); const t=boatMsg(b); (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast("Copied — paste it into WhatsApp or email")).catch(()=>shareText(t,"The boat")); return; }
+});
+(function(){ const css=`
+#boatSlot:empty{display:none}#boatSlot.top .boatslot{margin:0 0 12px}
+.boatslot{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:12px;border:1.5px solid var(--nile);background:var(--nile-soft)}
+.boatslot.chosen{border-color:var(--ok);background:var(--card)}
+.boatslot .bs-ic{font-size:1.5rem;flex:none}.boatslot .bs-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.boatslot .k{font-family:var(--mono);font-size:0.6765rem;letter-spacing:.06em;text-transform:uppercase;color:var(--nile-ink)}.boatslot.chosen .k{color:var(--ok)}
+.boatslot b{font-family:var(--display);font-size:1rem}.boatslot small{color:var(--muted);font-size:0.7647rem}
+.bs-new{font-style:normal;background:var(--dusk);color:#fff;border-radius:999px;padding:1px 7px;font-size:0.6765rem;margin-left:4px;white-space:nowrap}
+html.hugetext .boatslot{flex-wrap:wrap}html.hugetext .boatslot .btn{margin-left:auto}
+#sheetBoat .qbox{max-height:94vh}
+#sheetBoat .qh{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-16px;background:var(--card);padding:6px 0;z-index:2}#sheetBoat .qh h3{margin:0;font-family:var(--display)}
+.bs-who{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:0.8235rem;margin:2px 0 10px}.bs-who span{white-space:nowrap}.bs-who .both{color:var(--ok);font-weight:600;white-space:normal}
+.bs-adv{border:1px solid var(--line);border-radius:var(--r);background:var(--sand);margin-bottom:12px}.bs-adv>summary{padding:10px 12px;font-weight:700;cursor:pointer}.bs-adv .in{padding:0 12px 10px}.bs-adv p{margin:6px 0;font-size:0.8824rem}
+.bs-tbl{width:100%;table-layout:fixed;border-collapse:collapse;font-size:0.7941rem;margin:8px 0}.bs-tbl th,.bs-tbl td{overflow-wrap:anywhere;hyphens:auto;text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}.bs-tbl td:first-child{font-weight:600}
+.bs-f{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.bs-f .chip{flex-direction:row;white-space:nowrap}
+.bc{border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:12px;background:var(--card)}
+.bc.both{border:2px solid var(--ok)}.bc.chosen{border:2px solid var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 18%,transparent)}
+.bc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.7059rem;font-family:var(--mono)}
+.bc-tag{padding:2px 8px;border-radius:999px;font-weight:700}.bc-tag.ok{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}.bc-tag.amber{background:var(--dusk-soft);color:var(--dusk)}.bc-tag.bad{background:var(--dusk);color:#fff}
+.bc-kind{color:var(--muted)}.bc-pick{margin-left:auto;background:var(--fg);color:var(--bg);padding:2px 8px;border-radius:999px}
+.bc h4{margin:6px 0 0;font-family:var(--display);font-size:1.1765rem;line-height:1.2}.bc-sell{color:var(--muted);font-size:0.7941rem}
+.bc-price{margin:8px 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}.bc-price b{font-size:1rem}.bc-price small{color:var(--muted);font-size:0.7647rem}.bc-price i{font-style:normal;font-family:var(--mono);font-size:0.6471rem;border:1px solid var(--ok);color:var(--ok);border-radius:999px;padding:0 6px}
+.bc-dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 10px;margin:0 0 8px;font-size:0.8235rem}.bc-dl dt{color:var(--muted);font-size:0.7647rem}.bc-dl dd{margin:0}
+html.bigtext .bc-dl{grid-template-columns:1fr}html.bigtext .bc-dl dd{margin-bottom:4px}
+.bc-pc{list-style:none;padding:0;margin:0 0 8px;font-size:0.8235rem}.bc-pc li{padding-left:20px;position:relative;margin:2px 0}.bc-pc li.p::before{content:"✓";position:absolute;left:2px;color:var(--ok);font-weight:700}.bc-pc li.c::before{content:"✕";position:absolute;left:2px;color:var(--dusk);font-weight:700}
+.bc-chk{display:flex;flex-direction:column;gap:3px;font-size:0.7647rem;background:var(--sand);border-radius:10px;padding:8px 10px;margin:0 0 8px}.bc-chk b{font-size:0.7059rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.bc-chk span{display:flex;gap:6px}.bc-chk i{font-style:normal;font-weight:700;flex:none;width:1em;text-align:center}.bc-chk .y i{color:var(--ok)}.bc-chk .n i{color:var(--dusk)}.bc-chk .n{color:var(--muted)}
+.bc-more{font-size:0.8235rem;margin-bottom:8px}.bc-more summary{cursor:pointer;color:var(--nile-ink);font-weight:600}.bc-more p{margin:6px 0}
+.bc-ct{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;font-size:0.7941rem}
+.bc-vote{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-top:1px dashed var(--line);padding-top:10px}
+.vb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:7px 12px;font:inherit;font-size:0.8235rem;cursor:pointer;min-height:40px}
+.vb.on.up{background:var(--ok);border-color:var(--ok);color:#fff}.vb.on.dn{background:var(--dusk);border-color:var(--dusk);color:#fff}
+.bv{font-size:0.7647rem;color:var(--muted);margin-left:auto}.bv.up,.bv.dn{color:var(--fg);font-weight:600;background:var(--sand);border-radius:999px;padding:4px 10px}
+html.bigtext .bv{margin-left:0;flex-basis:100%}
+.bc-choose{width:100%;margin-top:10px;justify-content:center}
+.bc-chosen{margin-top:10px;color:var(--ok);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bc-chosen .btn{margin-left:auto}
+.bs-rest{width:100%;justify-content:center;margin-bottom:12px}.bs-restl .bc{opacity:.75}
+.bs-src{font-size:0.7059rem;margin-top:8px}.bs-empty{padding:16px 0}
+`; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
+// first paint + keep both phones in step while it's still undecided or before boarding
+(function(){ const tick=async()=>{ if(document.hidden) return; if(cairoNow().date>"2026-10-15") return; const ch=await boatPull(); if(ch){ boatApply(); renderBoatSlot(); renderBoatSheet(true); } };
+  setTimeout(()=>{ boatApply(); renderBoatSlot(); tick(); }, 300); setInterval(tick, 45000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) tick(); }); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
 // one line per stop that points at the thing nobody notices, keyed dayId|HH:MM
@@ -4512,9 +4734,9 @@ const EXTRAS = {
   ["coffee","Nubian coffee — jabana","Gharb Soheil (Kerma Nubian Restaurant or any house café)","pm","Charcoal-roasted, ground with ginger and cardamom, poured from a clay pot. Ask for 'gabana'. The best coffee ritual of the trip, in the village tonight.","Gharb Soheil Nubian Village Aswan"],
   ["coffee","Old Cataract terrace","Old Cataract (now a Mandarin Oriental), Aswan","pm","Already on the plan for sunset. Order coffee instead of tea if you like; the view's the same.","Sofitel Legend Old Cataract Aswan"]],
  wed14:[
-  ["coffee","Dawn coffee on deck","The dahabiya","am","Ask the crew the night before for Turkish coffee at first light. Sails up, river silent, cup in hand: no café on earth beats it."]],
+  ["coffee","A thermos for the 4am car","From the boat's galley","am","Ask the crew tonight for a thermos of Turkish coffee and two cups for the Abu Simbel car. Drink it as the sun hits Ramses. Deck coffee waits for tomorrow."]],
  thu15:[
-  ["coffee","Dawn coffee on deck, again","The dahabiya","am","Same request, better because you know the crew's names now (that's today's play)."],
+  ["coffee","Dawn coffee on deck","The dahabiya","am","Ask the crew the night before for Turkish coffee at first light. Sails up, river silent, cup in hand: no café on earth beats it. Kom Ombo opens at 7, so take it to go."],
   ["heat","The river, for a cold plunge","Mooring stops","pm","If the crew says the swimming spot is safe, the Nile in October is cool, not cold. A plunge you might actually like."]],
  fri16:[
   ["coffee","Golden Mug","8 Mohamed Farid St, by Marhaba Market, Luxor","am","Luxor's best-reviewed coffee: proper espresso in a town of instant. Ten minutes by taxi from the Hilton.","Golden Mug Luxor"],
