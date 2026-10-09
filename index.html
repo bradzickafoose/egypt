@@ -2541,7 +2541,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v111)";
+const BUILD = "Oct 9, 2026 (v112)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4394,14 +4394,43 @@ function renderBoatSheet(keep){ const s=document.getElementById("sheetBoat"); co
   lsSet(BOAT_LS.seen, lsGet(BOAT_LS.other,"")); renderBoatSlot(); }
 function boatOpen(){ renderBoatSheet(false); boatPull().then(ch=>{ if(ch){ renderBoatSheet(true); boatApply(); } }); }
 // the chosen boat becomes the bed's name everywhere
-function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0); const c=boatChoice(); const h=HOTELS.find(x=>/^Dahabiya/i.test(x.n)); if(!h) return; if(!h._n0) h._n0=h.n; const b=c&&BOATS.find(x=>x.id===c.id); h.n = b ? (b.kind==="Dahabiya"?`Dahabiya — ${b.name}`:h._n0.replace("(name TBC)", `→ ${b.name.toLowerCase()} instead`)) : h._n0; if(typeof renderHotels==="function") safe(renderHotels); }catch(e){} }
+// Tue/Wed schedule lines that change with a Wednesday boat: [day, time, title, note]
+const BOAT_AGENDA=[
+ ["tue13","09:25","Land. A car takes the bags to the hotel; we go on to Philae.","Basma or the Old Cataract (whichever we booked) — 15 min from the airport, on the way to Philae. Check-in is later; they'll hold the bags."],
+ ["tue13","12:30","Hotel: check in, lunch","The bags are already here. Ask the desk to confirm tomorrow's 4am car and a breakfast box."],
+ ["wed14","04:00",b=>`Private car from the hotel — bags in the trunk`,b=>`Check out at 3:45. The driver waits at Abu Simbel, then takes us and the bags ${b&&b.id==="orient"?"to Kom Ombo to join The Orient (≈50 min past Aswan)":"straight to the boat"}. ≈$180–250 for both; arrange it with the boat or the hotel.`],
+ ["wed14","12:30",b=>b?`Board ${b.name}. Lunch. We sail.`:"Board the boat. Lunch. We sail.",b=>b&&b.id==="orient"?"At Kom Ombo, if Djed has agreed the join — otherwise in Aswan at their pickup point.":"The car drops us at the gangway; the crew takes the bags."]
+];
+// the chosen boat (or, while undecided, the Wednesday plan both top picks share) flows into the beds list and "Tonight" lines
+function boatApply(){ try{ setTimeout(()=>{ try{ boatDayNote(); }catch(e){} },0);
+  const c=boatChoice(); const b=c&&BOATS.find(x=>x.id===c.id); const wed=!b||b.fit!=="exact"; const st=boatSteps();
+  const H=HOTELS; const dh=H.find(x=>/^Dahabiya/i.test(x._n0||x.n)); const hl=H.find(x=>/^Hilton Luxor/.test(x.n));
+  if(dh&&!dh._n0){ dh._n0=dh.n; dh._d0=dh.d; dh._fit0=dh.fit; } if(hl&&!hl._d0){ hl._d0=hl.d; hl._fit0=hl.fit; }
+  const day=id=>DAYS.find(x=>x.id===id); ["tue13","fri16"].forEach(id=>{ const d=day(id); if(d&&d._sleep0===undefined){ d._sleep0=d.sleep; d._sleepq0=d.sleepq; } });
+  const ai=H.findIndex(x=>x._boatHotel);
+  if(dh) dh.n = b ? (b.kind==="Dahabiya"?`Dahabiya — ${b.name}`:dh._n0.replace("(name TBC)", `→ ${b.name.toLowerCase()} instead`)) : (wed?"The Nile boat (deciding)":dh._n0);
+  if(wed){
+    if(ai<0&&dh){ H.splice(H.indexOf(dh),0,{ _boatHotel:1, n:"Aswan hotel (Basma or the Old Cataract)", q:"Basma Hotel Aswan", d:"", fit:["Tue 13: from the airport, the bags go here on the way to Philae.","Wed 14: out at 4am — the bags ride in the Abu Simbel car's trunk to the boat."], amen:"Basma: east-bank Corniche, pool, next door to the Old Cataract. The Old Cataract: the famous one; our high tea is there anyway. Not the Mövenpick (island = a ferry with every bag)." }); }
+    const ah=H.find(x=>x._boatHotel); if(ah) ah.d=`Tue 13 · ${st.hotel?"booked ✅":"not booked yet ⬜"}`;
+    if(dh){ dh.d=`Wed 14 – Fri 16 · 3 nights${b?"":" · pick on the Today screen"} ${st.confirmed?"✅":"⬜"}`; dh.fit=b?[`Wed 14: ${b.id==="orient"?"join at Kom Ombo after Abu Simbel (if Djed agrees)":"board after Abu Simbel, ≈1pm"}.`,"Sat 17: off the boat ≈11am–noon; the transfer takes us and the bags to the Hilton."]:["Wed 14: board after Abu Simbel.","Sat 17: off the boat ≈11am–noon, transfer to the Hilton."]; }
+    if(hl){ hl.d = st.hilton ? "Sat 17 · $50/night ✅" : "Sat 17 · $50/night ✅ — drop Fri 16 (we're on the boat) ⬜"; hl.fit=["Sat 17: off the boat ≈11am–noon, here before check-in — message ahead from the boat.", ...(hl._fit0||[]).filter(x=>!/^Fri 16/.test(x))]; }
+    const t=day("tue13"); if(t){ t.sleep="an Aswan hotel (Basma or the Old Cataract)"; t.sleepq="Basma Hotel Aswan"; }
+    BOAT_AGENDA.forEach(([id,tm,title,note])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(!it) return; if(it._t0===undefined){ it._t0=it.title; it._n0=it.note; } it.title=typeof title==="function"?title(b):title; it.note=typeof note==="function"?note(b):note; });
+    const f=day("fri16"); if(f){ f.sleep="the boat (Esna or Luxor)"; f.sleepq=""; }
+  } else {
+    if(ai>=0) H.splice(ai,1);
+    if(dh){ dh.d=dh._d0; dh.fit=dh._fit0; } if(hl){ hl.d=hl._d0; hl.fit=hl._fit0; }
+    ["tue13","fri16"].forEach(id=>{ const d=day(id); if(d){ d.sleep=d._sleep0; d.sleepq=d._sleepq0; } });
+    BOAT_AGENDA.forEach(([id,tm])=>{ const d=day(id); const it=d&&d.agenda.find(x=>x.t===tm); if(it&&it._t0!==undefined){ it.title=it._t0; it.note=it._n0; } });
+  }
+  if(typeof renderHotels==="function") safe(renderHotels); if(typeof renderNow==="function") safe(renderNow); }catch(e){} }
 document.addEventListener("click", e=>{
   if(e.target.closest("[data-boat-open]")){ boatOpen(); return; }
   const f=e.target.closest("[data-bfilter]"); if(f){ boatFilter=f.dataset.bfilter; boatConfirm=""; renderBoatSheet(true); return; }
   const v=e.target.closest("[data-bvote]"); if(v){ const id=v.dataset.bvote, val=+v.dataset.v; const m=boatVotes(); m[id]=m[id]===val?0:val; if(!m[id]) delete m[id]; lsSet(BOAT_LS.mine, JSON.stringify(m)); renderBoatSheet(true); if(val>0&&m[id]>0&&((boatOther().votes||{})[id]||0)>0){ toast(`It's a match: you both like ${BOATS.find(x=>x.id===id).name} ⛵`); try{ navigator.vibrate&&navigator.vibrate(30); }catch(err){} } boatPushVotes().then(ok=>{ if(!ok&&liveOK()) toast("Saved here — it reaches "+(OTHER()||"the other phone")+" when you're online."); }); return; }
   const jb=e.target.closest("[data-bjump]"); if(jb){ const el=document.getElementById("bc-"+jb.dataset.bjump); const box=document.querySelector("#sheetBoat .qbox"); if(el&&box){ box.scrollTo({top:el.offsetTop-70,behavior:"smooth"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1200); } return; }
   const ch=e.target.closest("[data-bchoose]"); if(ch){ const id=ch.dataset.bchoose; if(boatConfirm!==id){ boatConfirm=id; renderBoatSheet(true); clearTimeout(window.__bct); window.__bct=setTimeout(()=>{ if(boatConfirm===id){ boatConfirm=""; renderBoatSheet(true); } }, 5000); return; } boatConfirm=""; lsSet(BOAT_LS.choice, JSON.stringify({id, by:me()||"?", at:new Date().toISOString()})); sessionStorage.removeItem(BOAT_LS.showAll); boatApply(); renderBoatSheet(true); const b=BOATS.find(x=>x.id===id); toast(`Chosen: ${b.name}. ${b.book==="ahead"?"Now send them the message.":"Sorted on Tuesday in Aswan."}`); boatPushChoice(); const box=document.querySelector("#sheetBoat .qbox"); if(box) box.scrollTop=0; return; }
-  const sp_=e.target.closest("[data-bstep]"); if(sp_){ const k=sp_.dataset.bstep; const st=boatSteps(); const v=sp_.checked?{by:me()||"?",at:new Date().toISOString()}:null; if(v) st[k]=v; else delete st[k]; lsSet(BOAT_LS.steps, JSON.stringify(st)); renderBoatSheet(true); renderBoatSlot(); boatPushStep(k,v); return; }
+  const sp_=e.target.closest("[data-bstep]"); if(sp_){ const k=sp_.dataset.bstep; const st=boatSteps(); const v=sp_.checked?{by:me()||"?",at:new Date().toISOString()}:null; if(v) st[k]=v; else delete st[k]; lsSet(BOAT_LS.steps, JSON.stringify(st)); renderBoatSheet(true); renderBoatSlot(); boatApply(); boatPushStep(k,v); return; }
   if(e.target.closest("[data-bundo]")&&boatConfirm!=="undo"){ boatConfirm="undo"; renderBoatSheet(true); clearTimeout(window.__bct); window.__bct=setTimeout(()=>{ if(boatConfirm==="undo"){ boatConfirm=""; renderBoatSheet(true); } },5000); return; }
   if(e.target.closest("[data-bundo]")){ boatConfirm=""; lsSet(BOAT_LS.choice, JSON.stringify({id:null, at:new Date().toISOString()})); boatApply(); renderBoatSheet(true); boatPushChoice(); toast("Undone — all the options are back."); return; }
   if(e.target.closest("[data-bshowall]")){ sessionStorage.setItem(BOAT_LS.showAll, sessionStorage.getItem(BOAT_LS.showAll)==="1"?"0":"1"); renderBoatSheet(true); return; }
@@ -4901,7 +4930,7 @@ const EXTRAS = {
   ["coffee","Nubian coffee — jabana","Gharb Soheil (Kerma Nubian Restaurant or any house café)","pm","Charcoal-roasted, ground with ginger and cardamom, poured from a clay pot. Ask for 'gabana'. The best coffee ritual of the trip, in the village tonight.","Gharb Soheil Nubian Village Aswan"],
   ["coffee","Old Cataract terrace","Old Cataract (now a Mandarin Oriental), Aswan","pm","Already on the plan for sunset. Order coffee instead of tea if you like; the view's the same.","Sofitel Legend Old Cataract Aswan"]],
  wed14:[
-  ["coffee","A thermos for the 4am car","From the boat's galley","am","Ask the crew tonight for a thermos of Turkish coffee and two cups for the Abu Simbel car. Drink it as the sun hits Ramses. Deck coffee waits for tomorrow."]],
+  ["coffee","A thermos for the 4am car","Ask the night before","am","Ask the hotel desk (or the crew, if we're already aboard) tonight for a thermos of Turkish coffee and two cups for the Abu Simbel car. Drink it as the sun hits Ramses. Deck coffee waits for tomorrow."]],
  thu15:[
   ["coffee","Dawn coffee on deck","The dahabiya","am","Ask the crew the night before for Turkish coffee at first light. Sails up, river silent, cup in hand: no café on earth beats it. Kom Ombo opens at 7, so take it to go."],
   ["heat","The river, for a cold plunge","Mooring stops","pm","If the crew says the swimming spot is safe, the Nile in October is cool, not cold. A plunge you might actually like."]],
