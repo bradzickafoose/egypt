@@ -2215,7 +2215,6 @@ function renderNavigator(){
       ["reference","📚","Reference", "boat, costs, booking"]]],
   ];
   el.innerHTML=`<div class="card"><div class="navh"><b>${g.emoji} ${esc(g.city)}</b><span>${d.dow} ${d.num} · ${esc(d.place||"")}</span></div>
-    <button type="button" class="am-nav" data-askmum="1"><span class="am-stage">${typeof amFace==="function"?amFace("idle"):""}</span><span><b>Ask the Mummy</b><small>${typeof mumKey==="function"&&mumKey()?"today, prices, scams, “what is this?” — with a photo":"ghost mode: plan, prices, phrases, numbers · add a key to wake him"}</small></span></button>
     ${groups.map(([gl,tiles])=>`<div class="ng-h">${esc(gl)}</div><div class="navg">${tiles.map(([k,i,l,s])=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span><span class="nl">${l}<small>${esc(s)}</small></span></button>`).join("")}</div>`).join("")}
     <button type="button" class="navsos" data-nav="sos"><span>🆘</span><b>Emergency</b><small>126 tourist police · 123 ambulance · all numbers ›</small></button></div>`;
 }
@@ -2587,7 +2586,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v142)";
+const BUILD = "Oct 9, 2026 (v143)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -3769,7 +3768,7 @@ function qcHome(){
     <button type="button" data-qc="taunt"><span class="qi">🗣</span>Trash talk<small>to his jumbotron</small></button>
     <button type="button" data-qc="line"><span class="qi">✍️</span>One line<small>into today's journal</small></button>
     <button type="button" data-nav="tab"><span class="qi">🧾</span>Paid for something<small>${esc(safe(tabTileLine)||"on the tab")}</small></button>
-    <button type="button" data-askmum="1"><span class="qi">🧟</span>Ask the Mummy<small>${typeof mumKey==="function"&&mumKey()?"knows your whole trip":"ghost mode · offline answers"}</small></button>
+    <button type="button" data-askmum="1"><span class="qi">💬</span>Ask the Mummy<small>${typeof mumKey==="function"&&mumKey()?"knows your whole trip":"ghost mode · offline answers"}</small></button>
     <button type="button" data-drill="1"><span class="qi">🗣️</span>Phrase drill<small>ten cards, works offline</small></button>
     <button type="button" data-qc="close" ${closed||!inTrip?"disabled style=\"opacity:.5\"":""}><span class="qi">🛂</span>Close the day<small>${closed?"already stamped":inTrip?"stamp, rate, write":"not on the trip yet"}</small></button>
   </div>`;
@@ -5494,7 +5493,7 @@ setTimeout(()=>safe(mumTabRender), 900);
 @keyframes mtdot{50%{transform:scale(1.12)}}
 @keyframes mtpop{0%{transform:rotate(6deg)}40%{transform:rotate(-4deg) translate(10px,-8px) scale(1.1)}100%{transform:rotate(6deg)}}
 html.scrolling-down .mumtab{transform:translateX(-26px) rotate(6deg)}
-html:has(.qs.on) .mumtab,html:has(#review.on) .mumtab,html:has(#whoSheet.on) .mumtab,html.pp-open .mumtab,html:has(.lb[style*="block"]) .mumtab,html:has(.mummy) .mumtab{opacity:0;pointer-events:none}
+html:has(.qs.on) .mumtab,html:has(#review.on) .mumtab,html:has(#whoSheet.on) .mumtab,html.pp-open .mumtab,html:has(.lb[style*="block"]) .mumtab,html:has(.mummy) .mumtab,html:has(#sheet.show) .mumtab{opacity:0;pointer-events:none;transform:translateX(-60px) rotate(6deg)}
 @media (prefers-reduced-motion:reduce){.mumtab .me,.mumtab.unread .mt-dot{animation:none}}
 .am-chips .chip.am-chip{font-family:var(--body)!important;letter-spacing:0}
 `; document.head.appendChild(st); })();
@@ -5531,7 +5530,7 @@ function inflightHTML(){ const f=myAirFlight(); if(!f) return ""; const n=nowUTC
     <div class="fm-top"><b>✈︎ ${esc(f.no||"")} · ${esc(f.from.ap)} → ${esc(f.to.ap)}</b><span>${left>=60?Math.floor(left/60)+"h "+String(left%60).padStart(2,"0")+"m":left+" min"} to go</span></div>
     <div class="fm-bar" aria-hidden="true"><i style="width:${(p*100).toFixed(1)}%"></i><span class="fm-pl" style="left:${(p*100).toFixed(1)}%">✈︎</span><em class="l">${esc(f.from.ap)}</em><em class="r">${esc(f.to.ap)}</em></div>
     <div class="fm-row"><span>${below?`Below, roughly: <b>${esc(below)}</b>`:""}</span><span>${esc((B&&B[3])||f.to.city)} time <b>${esc(destNow)}</b> · lands ${esc(f.to.t||"")}</span></div>
-    <div class="fm-kit"><button type="button" class="chip" data-drill="1">🗣️ Phrase drill · 5 min</button>${nextDay?`<button type="button" class="chip" data-brief="${nextDay.id}">📖 ${esc(nextDay.dow)}'s briefing</button>`:""}<button type="button" class="chip" data-nav="arc">📜 The story</button><button type="button" class="chip" data-nav="signs">𓂀 Your name</button><button type="button" class="chip" data-askmum="1">🧟 Ask the ${mumKey()&&navigator.onLine?"mummy":"ghost"}</button></div>
+    <div class="fm-kit"><button type="button" class="chip" data-drill="1">🗣️ Phrase drill · 5 min</button>${nextDay?`<button type="button" class="chip" data-brief="${nextDay.id}">📖 ${esc(nextDay.dow)}'s briefing</button>`:""}<button type="button" class="chip" data-nav="arc">📜 The story</button><button type="button" class="chip" data-nav="signs">𓂀 Your name</button><button type="button" class="chip" data-askmum="1">💬 Ask the ${mumKey()&&navigator.onLine?"mummy":"ghost"}</button></div>
     ${steps.length?`<details class="fm-arr"${p>.8?" open":""}><summary>On landing in ${esc((B&&B[3])||f.to.city)} <span class="pill">${done}/${steps.length}</span></summary><ul>${steps.map((s,i)=>`<li><button type="button" class="${st[i]?"on":""}" data-arrstep="${f.id}:${i}"><i>${st[i]?"✓":""}</i>${esc(s)}</button></li>`).join("")}</ul></details>`:""}
   </div>`; }
 document.addEventListener("click", e=>{ const b=e.target.closest("[data-arrstep]"); if(!b) return; const [id,i]=b.dataset.arrstep.split(":"); const s=arrState(); s[id]=s[id]||{}; s[id][i]=!s[id][i]; lsJset("egypt.arrsteps",s); const now=$("#now"); const el=now&&now.querySelector(".fmode"); if(el){ const wasOpen=el.querySelector(".fm-arr")&&el.querySelector(".fm-arr").open; el.outerHTML=inflightHTML(); const d=now.querySelector(".fm-arr"); if(d&&wasOpen) d.open=true; } });
