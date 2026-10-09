@@ -2533,7 +2533,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 9, 2026 (v99)";
+const BUILD = "Oct 9, 2026 (v100)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -4035,7 +4035,7 @@ async function frameSync(){ const changed=await framePull(); if(changed) renderF
 
 // ---------- Cloud memory: the trip's keepsakes (stamps, journal, ratings, photos, passport photo, the frame pick, visited places, notes)
 // are copied to the room's server space, so a new phone can bring them back. Small data in one document; each photo in its own.
-const MEM_SKIP = /^egypt\.(wx|favOther|memsent|memAt|room|dev$|game\.(me|live|livePushed|livePulled|liveFail|sound|resetSeen|ppHint|confetti|seenOther|digHint))/;
+const MEM_SKIP = /^egypt\.(wx|favOther|memsent|memAt|memNo|room|dev$|game\.(me|live|livePushed|livePulled|liveFail|sound|resetSeen|ppHint|confetti|seenOther|digHint))/;
 const MEM_PIC = /^egypt\.(photo\.|portrait$|fav$)/;
 // each phone writes to its own slot, so a fresh phone can never overwrite a full one
 function memDev(){ let d=""; try{ d=localStorage.getItem("egypt.dev")||""; if(!d){ d=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); localStorage.setItem("egypt.dev",d); } }catch(e){ d="nodev"; } return d; }
@@ -4068,11 +4068,25 @@ async function memRestore(){ if(!liveOK()){ toast("Pick whose phone this is firs
   }catch(e){ toast("Couldn't reach the server — try again with signal."); } }
 function memAgo(){ const a=localStorage.getItem("egypt.memAt"); if(!a) return ""; const m=Math.round((Date.now()-new Date(a))/60000); return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.round(m/60)} h ago`:new Date(a).toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
 function memStatus(err){ const el=document.getElementById("memStatus"); if(!el) return; const a=memAgo(); el.textContent = err?"Couldn't back up just now — it retries on its own.": a?`Backed up to the server ${a}. A new phone gets it all back.`:(liveOK()?"Backs up on its own once there's signal.":"Pick whose phone this is to turn on backup."); }
-// a fresh phone (nothing stamped, no journal) with a backup waiting: offer it once per session
-async function memOffer(){ try{ if(!liveOK()||sessionStorage.getItem("egypt.memOffered")) return; const has=Object.keys(stamps()).length || [...Array(localStorage.length).keys()].some(i=>{ const k=localStorage.key(i)||""; return k.startsWith("egypt.journal.")||k.startsWith("egypt.photo."); }); if(has) return; const d=await memFetchMeta(); const keys=memKeys(d); if(!keys) return; sessionStorage.setItem("egypt.memOffered","1");
-  const when=d.saved?new Date(d.saved).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):""; const nStamps=(()=>{ try{ return Object.keys(JSON.parse(keys["egypt.game.stamp"]||"{}")).length; }catch(e){ return 0; } })();
-  openSheet("sheetQC", `<div class="qh"><h3>Welcome back, ${esc(me())}</h3><button type="button" class="x" data-mem-close="1" aria-label="Close">✕</button></div><p>Your trip is saved on the server${when?` (last backed up ${esc(when)})`:""}${nStamps?` — ${nStamps} stamp${nStamps===1?"":"s"}, your journal and photos`:""}. Bring it onto this phone?</p><div class="row"><button type="button" class="btn primary" data-mem-restore="1">Restore my trip</button><button type="button" class="btn" data-mem-close="1">Not now</button></div><p class="muted" style="font-size:0.7647rem;margin-top:10px">It's also under Passport → back page → Consular services.</p>`); }catch(e){} }
-document.addEventListener("click", e=>{ if(e.target.closest("[data-mem-restore]")){ closeSheet("sheetQC"); memRestore(); return; } if(e.target.closest("[data-mem-close]")){ closeSheet("sheetQC"); return; } if(e.target.closest("[data-mem-now]")){ memBackup(true).then(ok=>toast(ok?"Backed up.":"No signal — it'll try again.")); } });
+// a fresh phone with a backup worth having: offer it — once. "Not now" (or ✕) is remembered on this phone,
+// and it only asks again if the server later holds MORE than it did when you said no.
+// "Worth having" = stamps, journal lines, ratings, visited places or photos — not just settings.
+let memOffered=null;
+const MEM_MEANS=/^egypt\.(journal\.|game\.rate|game\.stamp|visited|photo\.|fav$|portrait$)/;
+async function memOffer(){ try{ if(!liveOK()||sessionStorage.getItem("egypt.memOffered")) return; sessionStorage.setItem("egypt.memOffered","1");
+  const has=Object.keys(stamps()).length || [...Array(localStorage.length).keys()].some(i=>{ const k=localStorage.key(i)||""; return k.startsWith("egypt.journal.")||k.startsWith("egypt.photo."); }); if(has) return;
+  const d=await memFetchMeta(); const keys=memKeys(d); if(!keys) return;
+  let nPics=0; try{ const r=await fetch(memURL("pics",d.dev)+"?shallow=true",{cache:"no-store"}); if(r.ok) nPics=Object.keys((await r.json())||{}).length; }catch(e){}
+  const nStamps=(()=>{ try{ return Object.keys(JSON.parse(keys["egypt.game.stamp"]||"{}")).length; }catch(e){ return 0; } })();
+  const nMean=Object.entries(keys).filter(([k,v])=>MEM_MEANS.test(k)&&v&&v!=="{}"&&v!=="[]").length + nPics;
+  if(!nMean) return;   // nothing but settings on the server: nothing to bring back
+  const weight=nStamps*100+nMean; let no=0; try{ no=+(localStorage.getItem("egypt.memNo")||0); }catch(e){}
+  if(weight<=no) return;   // already said no to this much
+  memOffered=weight;
+  const when=d.saved?new Date(d.saved).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):"";
+  const what=[nStamps?`${nStamps} stamp${nStamps===1?"":"s"}`:"", nPics?`${nPics} photo${nPics===1?"":"s"}`:"", "your notes"].filter(Boolean).join(", ");
+  openSheet("sheetQC", `<div class="qh"><h3>Welcome back, ${esc(me())}</h3><button type="button" class="x" data-mem-close="1" aria-label="Close">✕</button></div><p>Your trip is saved on the server${when?` (last backed up ${esc(when)})`:""} — ${esc(what)}. Bring it onto this phone?</p><div class="row"><button type="button" class="btn primary" data-mem-restore="1">Restore my trip</button><button type="button" class="btn" data-mem-close="1">Not now</button></div><p class="muted" style="font-size:0.7647rem;margin-top:10px">This won't ask again unless there's more saved. It's always under Passport → back page → Consular services.</p>`); }catch(e){} }
+document.addEventListener("click", e=>{ if(e.target.closest("[data-mem-restore]")){ closeSheet("sheetQC"); memRestore(); return; } if(e.target.closest("[data-mem-close]")){ closeSheet("sheetQC"); if(memOffered){ try{ localStorage.setItem("egypt.memNo", String(memOffered)); }catch(err){} } return; } if(e.target.closest("[data-mem-now]")){ memBackup(true).then(ok=>toast(ok?"Backed up.":"No signal — it'll try again.")); } });
 (function(){ const tick=()=>{ if(document.hidden) return; memBackup(false); }; setTimeout(()=>{ memOffer(); tick(); }, 4000); setInterval(tick, 120000); document.addEventListener("visibilitychange",()=>{ if(document.hidden) memBackup(false); else { memOffer(); } }); addEventListener("online",()=>memBackup(false)); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
