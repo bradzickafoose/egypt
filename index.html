@@ -5517,7 +5517,7 @@ function mumKnowledge(){ const w=me()||"Brad"; const L=[]; const cut=(s,k)=>{ s=
   try{ L.push("TO-DO LIST (this week): "+WEEK.map(x=>`[${x.k}] ${x.who}: ${cut(x.t,140)}`).join(" | ")); }catch(e){}
   try{ if(typeof GEM_STOPS!=="undefined") L.push("GEM GUIDE (their 12 stops, in order): "+GEM_STOPS.map(x=>x.n+" ["+x.where+"] — look for: "+cut(x.look,120)).join(" | ")); }catch(e){}
   try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")} — ${cut(e.honest,160)}`).join(" | ")); }catch(e){}
-  try{ if(typeof FAITHS!=="undefined") L.push("OTHER FAITHS ON THE ROUTE (Guide → Faiths of the Nile; say plainly what is scripture, history, tradition or speculation): "+faithMine().map(e=>`${e.t} [${e.f.join("/")}; ${e.plan==="on"?(faithDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] — ${cut(e.honest,140)}`).join(" | ")); }catch(e){}
+  try{ if(typeof FAITHS!=="undefined") L.push("OTHER FAITHS ON THE ROUTE (Guide → Faith on the Nile; say plainly what is scripture, history, tradition or speculation): "+faithMine().map(e=>`${e.t} [${e.f.join("/")}; ${e.plan==="on"?(faithDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] — ${cut(e.honest,140)}`).join(" | ")); }catch(e){}
   try{ if(typeof NILE!=="undefined") L.push("LIFE ALONG THE NILE (Guide → Life along the Nile, 12 chapters): "+nileMine().map(e=>`${e.n} (${e.era}; ${nileDays(e).map(d=>d.dow+" "+d.num).join("/")||"any time"})`).join(" | ")); }catch(e){}
   return L.join("\n\n"); }
 function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cairoNow(); const R=egpRate(); const L=[];
@@ -5607,7 +5607,7 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
   if(has("bible","biblical","moses","jesus","joseph","scripture","holy family","israel","exodus","pharaoh's daughter","church","sinai")&&typeof bibleMine==="function"){ const d=todayDay(); const L=bibleMine(); const today=d?L.filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)):[]; const e=today[0]||L.find(e=>e.plan==="on"&&bibleDays(e).some(x=>x.date>=cairoNow().date))||L[0];
     return `${today.length?"Today's biblical ground":"Next on your route"}: ${e.t}. ${e.refs[0][0]} — “${e.refs[0][1]}” ${e.pause} Guide → The Bible in Egypt has every place, and which bits are scripture, history or tradition.`; }
   if(has("islam","muslim","mosque","quran","qur'an","sufi","dervish","prayer","adhan","jewish","judaism","synagogue","maimonides","buddh","ashoka","akhenaten","aten","isis","coptic","copt","faith","religion")&&typeof faithMine==="function"){ const d=todayDay(); const L=faithMine(); const today=d?L.filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)):[]; const k=Object.keys(FAITH_KINDS).find(k=>q.includes(k==="old"?"isis":k.slice(0,5)))||""; const e=today.find(e=>!k||e.f.includes(k))||L.find(e=>k&&e.f.includes(k))||today[0]||L[0];
-    return `${today.length?"Today":"On the trip"}: ${e.t}. ${String(e.story).split(/(?<=\.)\s/).slice(0,2).join(" ")} ${e.pause} Guide → Faiths of the Nile has all ${L.length}, each marked scripture, history, tradition or guess.`; }
+    return `${today.length?"Today":"On the trip"}: ${e.t}. ${String(e.story).split(/(?<=\.)\s/).slice(0,2).join(" ")} ${e.pause} Guide → Faith on the Nile has all ${L.length}, each marked scripture, history, tradition or guess.`; }
   if(has("taxi","uber","careem","ride","cab")){ return "Uber or Careem — the app sets the price, so there's nothing to haggle and nothing to argue about. Cairo airport to the Hilton ≈$15, allow an hour in evening traffic. A street taxi: agree the price before the door closes, and have small notes."; }
   if(has("cost","price","how much","pay","fair","haggle")){ const f=fairFor(q); if(f) return `${f.n}: a fair price is ${fmtE(f.lo)}–${fmtE(f.hi)} EGP (≈$${Math.round(f.lo/R)}–${Math.round(f.hi/R)}). Open at a third of whatever they ask; walk at ${fmtE(f.hi)}+.`; return "Tell me the thing — lantern, scarf, papyrus, cartouche, spices — and I'll tell you the fair price. Rule of the dead: open at a third of the first ask."; }
   { const k=Object.keys(PLACES||{}).find(k=>{ const n=(PLACES[k].n||k).toLowerCase().split(/[—(,]/)[0].trim(); return n.length>4&&q.includes(n.replace(/^the /,"")); }); if(k){ const P=PLACES[k]; return `${P.n}: ${String(P.what||"").split(/(?<=\.)\s/).slice(0,2).join(" ")}${P.know&&P.know[0]?" Know: "+P.know[0]:""} Full page: tap About on that stop.`; } }
@@ -7126,7 +7126,7 @@ const NILE = [
  { id:"duffgordon", n:"Lucie Duff Gordon — a house on top of Luxor Temple", era:"1864–69", m:"^luxor temple", who:"both", once:true,
    src:[["Lucie Duff Gordon, Letters from Egypt (1865) ≈","She wrote home that she loved the people of Luxor more than any she had met — and that they had made her one of their own."]],
    story:"In the 1860s Luxor Temple was still buried, with the village living on top of it, and on the roof between the columns stood a ramshackle building called the French House. In 1864 an English writer named Lucie Duff Gordon, dying of tuberculosis and sent south for the dry air, moved in. She stayed until 1869. She learned Arabic, ran a free clinic from her house, sat with the sheikhs, and wrote letters home that are still in print — the first warm, ordinary, unromantic picture of Egyptian village life written by a European, and furious about the forced labour and taxes squeezing the fellahin. Luxor called her Noor ala Noor, “light upon light”. She died in Cairo in 1869; the French House was pulled down when the temple was excavated.",
-   honest:"History. The house is gone; the mosque of Abu el-Haggag, her neighbour, is still there (see Faiths of the Nile).",
+   honest:"History. The house is gone; the mosque of Abu el-Haggag, her neighbour, is still there (see Faith on the Nile).",
    pause:"Standing in the temple court at night, look up to where the ground used to be — the level of the mosque door. A sick woman lived up there, running a clinic, for five years." },
  { id:"deirmedina", n:"Deir el-Medina — the village that built the Valley", era:"c. 1500–1070 BC", m:"^lunch on the west bank|^hatshepsut", who:"both", once:true,
    q:"Deir el-Medina, Luxor West Bank",
@@ -7161,7 +7161,7 @@ function nileCard(e,i,open){ const ds=nileDays(e); const dl=ds.map(d=>`<button t
     <div class="row">${dl}${e.q?`<a class="btn mini" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(e.q)}">Directions</a>`:""}</div></div></details>`; }
 function renderNile(){ const el=document.getElementById("nile"); if(!el) return; const L=nileMine();
   el.innerHTML=`<p class="muted" style="margin:0 0 10px">${esc(NILE_INTRO)}</p>${L.map((e,i)=>nileCard(e,i===0?"✦":i===L.length-1?"✦":i)).join("")}
-  <p class="muted bib-foot">Quotations from public-domain translations; lines marked “paraphrase” are summaries. The monuments' own stories are on each place's About page; the faiths are in Faiths of the Nile.</p>`; }
+  <p class="muted bib-foot">Quotations from public-domain translations; lines marked “paraphrase” are summaries. The monuments' own stories are on each place's About page; the faiths are in Faith on the Nile.</p>`; }
 document.addEventListener("click",e=>{ const o=e.target.closest("[data-nlopen]"); if(o){ e.preventDefault(); openNile(o.dataset.nlopen); } });
 function openNile(id){ safe(renderNile); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("nileSec"); const card=id&&document.getElementById("nl-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="nile"){ openNile(""); return; } return N.apply(this,arguments); }; })();
@@ -7438,7 +7438,7 @@ function fgHero(){ try{ const p=fgPick(); if(!p) return ""; const P=PLACES[p.s.k
   const hero=fgHero(); g.classList.add("ng-look"); let top=false; try{ const p=fgPick(); top=!!(p&&(p.when==="now"||p.when==="first")&&cairoNow().h>=6); }catch(e){}
   const card=el0(); const old=card&&card.querySelector(".ng-top"); if(old) old.remove();
   if(top&&hero&&card){ const first=card.querySelector(".ng-h"); if(first) first.insertAdjacentHTML("beforebegin",`<div class="navg ng-top">${hero}</div>`); }
-  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("nile","⛵","Life along the Nile","12 chapters, in the order you travel")+t("faiths","🪷","Faiths of the Nile","Islam, Judaism, Buddhism, the old gods");
+  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("nile","⛵","Life along the Nile","12 chapters, in the order you travel")+t("faiths","🪷","All faiths on the Nile","Islam, Judaism, Buddhism, the old gods");
  }catch(e){} return r; }; })();
 // keep the drill counts fresh when the drill sheet closes
 (function(){ if(typeof closeSheet!=="function") return; const C=closeSheet; closeSheet=function(){ const r=C.apply(this,arguments); safe(hubFeet); return r; }; })();
@@ -8171,7 +8171,7 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v212";
+const APP_VER="v213";
 const WHATS_NEW=[
  {v:"v203", d:"Sat Oct 10", items:[
   ["🛍","Gift shop","Gifts for the stop you're at, with a budget, a walk-away limit and receipts. Each phone keeps its own list, and nothing syncs."]]},
