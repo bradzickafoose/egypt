@@ -4474,7 +4474,7 @@ function boatScore(b){ const m=boatVotes()[b.id]||0, o=(boatOther().votes||{})[b
 const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().votes||{})[b.id]||0)>0);
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
-const BOAT_FOLLOW="Hello — following up on my email about The Orient, departing Aswan Wed 14 Oct. Two adults, twin beds, private en-suite. Could we join the boat at Kom Ombo around 1pm Wednesday, after an early Abu Simbel visit? We need to confirm by Sunday evening. Thank you! — Brad";
+const BOAT_FOLLOW="Hello — following up on my email about The Orient for Wed 14 Oct. I understand the shared cabins are sold out, so I'd like a quote for a private charter of the whole boat for two adults, from Aswan on Wed 14 Oct. Please include the price, what's included, and the pickup point. We need to confirm by Sunday evening. Thank you! — Brad";
 const BOAT_STATUS="Two quotes asked · soft budget $3,000 for two · decide Sun 9pm";
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
@@ -4749,8 +4749,8 @@ html.bigtext .bv{margin-left:0;flex-basis:100%}
 // ---------- the latest thinking on the days themselves: Tue–Sun carry a note until the boat is decided
 const BOAT_DAYNOTE = {
  tue13:"We don't board today. Philae, high tea and the Nubian village as planned, then a night in an Aswan hotel (Basma or the Old Cataract). A car takes the bags straight to the hotel from the airport.",
- wed14:"Abu Simbel by private car at 4am from the hotel, bags in the trunk — then onto the boat: Merit in Aswan, The Orient at Kom Ombo (≈50 min on).",
- thu15:"On board all day. The Orient: Gebel el-Silsila, Edfu and a campfire on an island. Merit: Kom Ombo, then a night at al-Ramady island.",
+ wed14:"Abu Simbel by private car at 4am from the hotel, bags in the trunk — then onto the boat: Merit in Aswan, or The Orient on a private charter (pickup point pending Djed's quote).",
+ thu15:"On board all day. The Orient, if we charter it: Gebel el-Silsila, Edfu and a campfire on an island. Merit: Kom Ombo, then a night at al-Ramady island.",
  fri16:b=>`This day is rewritten for a Wednesday boat — ${b?`with ${b.name}`:"shown for The Orient until we choose (Merit's version: the Esna lock, then Karnak and Luxor Temple)"}. No drive to Luxor and no Hilton tonight.`,
  sat17:b=>`Rewritten for a Wednesday boat — ${b?`with ${b.name}`:"shown for The Orient until we choose (Merit does the West Bank this morning, then a pool afternoon)"}. The balloon moved to Sunday.`,
  sun18:b=>`Rewritten for a Wednesday boat: balloon at dawn — with no spare morning if it's windy — then ${b&&b.id==="merit"?"a free morning":"Karnak"}, fly 15:40.`
@@ -5481,7 +5481,7 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   try{ const st=stamps(), rt=GS.get("rate",{})||{}; const ds=DAYS.filter(d=>st[d.id]||rt[d.id]); if(ds.length) L.push("DAYS DONE (stamped; ratings out of 5): "+ds.map(d=>{ const r=rt[d.id]||{}; return `${d.dow} ${d.num}${st[d.id]?" stamped":""}${r.food||r.sight||r.sleep?` (food ${r.food||"–"}, sights ${r.sight||"–"}, sleep ${r.sleep||"–"})`:""}`; }).join("; ")+"."); }catch(e){}
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
-  try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's pick is The Orient (dahabiya, Wed–Sat), then Merit"}.`); }catch(e){}
+  try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's first choice is The Orient on a private charter (quote pending), then Merit"}.`); }catch(e){}
   return L.join("\n\n"); }
 const MUM_SYS_TXT=()=>`You are the Mummy — the mascot of Brad and Duane's Egypt trip app. A 3,000-year-old Egyptian mummy: dry, deadpan, a little vain, fond of both of them, obsessed with their Steelers (Brad) vs Bengals (Duane) rivalry.
 How you answer:
@@ -8089,8 +8089,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v188";
+const APP_VER="v189";
 const WHATS_NEW=[
+ {v:"v189", d:"Sat Oct 10", items:[
+  ["✉️","Follow-up email matches the charter ask","The ready-to-send note to The Orient now asks for a private charter quote for two, with price, inclusions and pickup point, since the shared cabins are sold out."]]},
  {v:"v188", d:"Sat Oct 10", items:[
   ["🧭","Plan text matches the boat status","Every mention of The Orient now reflects that its shared cabins are sold out for Wed 14. The boat is pending two quotes, and the no-boat fallback stays in the plan."]]},
  {v:"v187", d:"Sat Oct 10", items:[
