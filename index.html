@@ -5371,7 +5371,7 @@ function bodyClockBand(){ const b=bodyClock(); if(!b) return ""; return `<div cl
 
 // ---------- askmummy.js: Ask the Mummy (Claude, with a key kept on this phone) + his ghost (offline answers) + live flight delays ----------
 // The key lives only in this phone's localStorage ("egypt.mumkey"): never in the code, never in the server backup.
-const MUM_KEY="egypt.mumkey", MUM_MODEL="claude-haiku-5-5", MUM_MODEL_EYES="claude-sonnet-5-5";   // Haiku for talk and flight checks (fast, cheapest); Sonnet only when there's a photo to read
+const MUM_KEY="egypt.mumkey", MUM_MODEL="claude-haiku-5-5", MUM_MODEL_EYES="claude-sonnet-5-5", MUM_MODEL_TALK="claude-sonnet-5-5";   // Haiku for talk and flight checks (fast, cheapest); Sonnet only when there's a photo to read
 const MUM_PRICE={"claude-haiku-5-5":[1,5],"claude-sonnet-5-5":[3,15]};   // $ per million tokens in/out — an estimate for the meter, not a bill
 const mumKey=()=>{ try{ return (localStorage.getItem(MUM_KEY)||"").trim(); }catch(e){ return ""; } };
 class MumErr extends Error{ constructor(kind,msg){ super(msg||kind); this.kind=kind; } }
@@ -5388,16 +5388,17 @@ async function claudeCall({system, messages, tools, max_tokens, timeout, model})
 // the last few calls, kept on the phone so a freeze can be diagnosed (shown under the key, copyable)
 function mumDiag(x){ try{ const L=lsJ("egypt.mumdiag",[]); L.unshift(Object.assign({at:new Date().toISOString(), v:BUILD}, x)); lsJset("egypt.mumdiag", L.slice(0,6)); }catch(e){} }
 // streaming: words appear as they arrive; if nothing arrives for 15 s mid-answer, stop and say so (keeps what came)
-async function claudeStream({system, messages, max_tokens, model, onText, stallMs}){ model=model||MUM_MODEL; const key=mumKey(); if(!key) throw new MumErr("nokey"); if(!navigator.onLine) throw new MumErr("offline");
+async function claudeStream({system, messages, max_tokens, model, onText, stallMs, tools}){ model=model||MUM_MODEL; const key=mumKey(); if(!key) throw new MumErr("nokey"); if(!navigator.onLine) throw new MumErr("offline");
   const ctl=new AbortController(); let first=setTimeout(()=>ctl.abort(), 25000); let r;
-  try{ r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",signal:ctl.signal,headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model,max_tokens:max_tokens||400,system,messages,stream:true})}); }
+  try{ r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",signal:ctl.signal,headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model,max_tokens:max_tokens||400,system,messages,stream:true,...(tools?{tools}:{})})}); }
   catch(e){ clearTimeout(first); throw new MumErr(e.name==="AbortError"?"timeout":(navigator.onLine?"network":"offline")); }
   if(!r.ok){ clearTimeout(first); let msg=""; try{ msg=((await r.json()).error||{}).message||""; }catch(e){} mumDiag({ok:false, http:r.status, msg:msg.slice(0,120)}); throw new MumErr(r.status===401||r.status===403?"auth":(r.status===429||r.status===529||r.status>=500)?"busy":r.status===400&&/credit|balance/i.test(msg)?"credit":"error", msg); }
-  if(!/event-stream/.test(r.headers.get("content-type")||"")||!r.body||!r.body.getReader){ clearTimeout(first); const j=await r.json().catch(()=>({})); const t=(j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim(); if(t) try{ onText&&onText(t); }catch(e){} return {text:t, stop:j.stop_reason||"", stalled:false}; }   /* a proxy that won't stream: take the whole answer */
+  if(!/event-stream/.test(r.headers.get("content-type")||"")||!r.body||!r.body.getReader){ clearTimeout(first); const j=await r.json().catch(()=>({})); const t=(j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join(" ").replace(/\s+([.,;:!?])/g,"$1").trim(); if(t) try{ onText&&onText(t); }catch(e){} return {text:t, stop:j.stop_reason||"", stalled:false}; }   /* a proxy that won't stream: take the whole answer */
   const rd=r.body.getReader(), dec=new TextDecoder(); let buf="", text="", stop="", usage={}, stalled=false;
-  const t0=Date.now(); let wd=null; const next=()=>new Promise((res,rej)=>{ clearTimeout(wd); wd=setTimeout(()=>rej(new MumErr("stall")), Date.now()-t0>60000?10:(stallMs||15000)); rd.read().then(v=>{ clearTimeout(wd); res(v); },e=>{ clearTimeout(wd); rej(e); }); });
+  const t0=Date.now(); let wd=null; const next=()=>new Promise((res,rej)=>{ clearTimeout(wd); wd=setTimeout(()=>rej(new MumErr("stall")), Date.now()-t0>(tools?150000:90000)?10:(stallMs||(tools?35000:15000))); rd.read().then(v=>{ clearTimeout(wd); res(v); },e=>{ clearTimeout(wd); rej(e); }); });
   try{ for(;;){ let chunk; try{ chunk=await next(); }catch(e){ stalled=true; try{ ctl.abort(); }catch(x){} break; } clearTimeout(first); if(chunk.done) break; buf+=dec.decode(chunk.value,{stream:true});
       let i; while((i=buf.indexOf("\n\n"))>=0){ const ev=buf.slice(0,i); buf=buf.slice(i+2); const line=ev.split("\n").find(l=>l.startsWith("data:")); if(!line) continue; let d; try{ d=JSON.parse(line.slice(5).trim()); }catch(e){ continue; }
+        if(d.type==="content_block_start"&&d.content_block&&d.content_block.type==="text"&&text&&!/\s$/.test(text)){ text+=" "; }
         if(d.type==="content_block_delta"&&d.delta&&d.delta.type==="text_delta"){ text+=d.delta.text; try{ onText&&onText(text); }catch(e){} }
         else if(d.type==="message_start"&&d.message) usage=Object.assign(usage,d.message.usage||{});
         else if(d.type==="message_delta"){ if(d.delta&&d.delta.stop_reason) stop=d.delta.stop_reason; usage=Object.assign(usage,d.usage||{}); }
@@ -5407,6 +5408,22 @@ async function claudeStream({system, messages, max_tokens, model, onText, stallM
   try{ const P=MUM_PRICE[model]||[3,15]; const cost=((usage.input_tokens||0)+(usage.cache_creation_input_tokens||0)*1.25+(usage.cache_read_input_tokens||0)*.1)/1e6*P[0]+(usage.output_tokens||0)/1e6*P[1]; const m=lsJ("egypt.mumuse",{}); const d=cairoNow().date; m[d]=m[d]||{n:0,c:0}; m[d].n++; m[d].c+=cost; m.all=(m.all||0)+cost; lsJset("egypt.mumuse",m); }catch(e){}
   if(!text&&stalled) throw new MumErr("timeout"); if(!text) throw new MumErr("error","empty answer"); return {text:text.trim(), stop, stalled}; }
 // ---------- what the mummy knows: the trip, right now (no booking codes, nothing private beyond the plan) ----------
+// the trip book: everything the app knows that doesn't change minute to minute — every day, every stop, hotels, food, places, prices.
+// Sent once and cached by the API, so a question costs little and the mummy never has to guess about another day.
+function mumKnowledge(){ const w=me()||"Brad"; const L=[]; const cut=(s,k)=>{ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>k?s.slice(0,k)+"…":s; };
+  try{ L.push("THE WHOLE ITINERARY (as "+w+" sees it; times are Cairo time unless a local time is given; days marked BRAD ONLY are Brad's solo week after Duane flies home):\n"+DAYS.filter(d=>w!=="Duane"||d.who!=="brad").map(d0=>{ const x=safe(()=>withMe(d0))||d0;
+    return `== ${x.dow} ${x.num} Oct (${x.date})${x.who==="brad"?" · BRAD ONLY":""} — ${x.title} · ${x.place||""}\n  Sleep: ${x.sleep||"—"} · Alarm: ${x.alarm||"—"} · Wear: ${cut(x.dress,80)} · Bring: ${cut(x.bag,100)} · Cash: ${x.cash||"—"}\n  Mission: ${cut(x.mission,220)}\n`+(x.agenda||[]).map(a=>`  ${a.lt?a.lt+" "+(a.ltz||"local")+" time":a.t}${a.approx?"≈":""} ${cut(a.title,110)}${a.note?" — "+cut(a.note,230):""}`).join("\n")+((x.know||[]).length?`\n  Know: ${(x.know||[]).map(k=>cut(k,140)).join(" | ")}`:"")+(x.planb?`\n  Plan B: ${cut(x.planb,320)}`:""); }).join("\n")); }catch(e){}
+  try{ L.push("HOTELS:\n"+HOTELS.map(h=>`  ${h.n} · ${h.d||""} · ${h.addr||""}${h.telD?" · tel "+h.telD:""}${h.email?" · "+h.email:""} · check-in ${h.cin||"?"}, out ${h.cout||"?"}${(h.fit||[]).length?" · "+h.fit.map(f=>cut(f,140)).join(" / "):""}`).join("\n")); }catch(e){}
+  try{ L.push("EAT & SHOP (the app's picks, by city):\n"+GUIDES.map(g=>`== ${g.city} (${g.when})\n`+["eat","shop","buy"].flatMap(k=>(g[k]||[]).map(x=>`  [${k}] ${x.n} — ${cut(x.where,90)} — ${cut(x.what,170)}${x.fit?" → "+cut(x.fit,80):""}`)).join("\n")).join("\n")); }catch(e){}
+  try{ L.push("PLACES (what each stop is, and what to know):\n"+Object.values(PLACES).map(P=>`  ${P.n}: ${cut(P.what,240)}${(P.know||[]).length?" Know: "+(P.know||[]).slice(0,3).map(k=>cut(k,120)).join(" | "):""}`).join("\n")); }catch(e){}
+  try{ L.push("FAIR PRICES (EGP, what a reasonable haggler pays): "+FAIR.map(f=>`${f.n} ${f.lo}–${f.hi}`).join("; ")+". Rule: counter at a third of the first ask; deals land at 40–60%."); }catch(e){}
+  L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
+  try{ L.push("TO-DO LIST (this week): "+WEEK.map(x=>`[${x.k}] ${x.who}: ${cut(x.t,140)}`).join(" | ")); }catch(e){}
+  try{ if(typeof GEM_STOPS!=="undefined") L.push("GEM GUIDE (their 12 stops, in order): "+GEM_STOPS.map(x=>x.n+" ["+x.where+"] — look for: "+cut(x.look,120)).join(" | ")); }catch(e){}
+  try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")} — ${cut(e.honest,160)}`).join(" | ")); }catch(e){}
+  try{ if(typeof FAITHS!=="undefined") L.push("OTHER FAITHS ON THE ROUTE (Guide → Faiths of the Nile; say plainly what is scripture, history, tradition or speculation): "+faithMine().map(e=>`${e.t} [${e.f.join("/")}; ${e.plan==="on"?(faithDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] — ${cut(e.honest,140)}`).join(" | ")); }catch(e){}
+  try{ if(typeof NILE!=="undefined") L.push("LIFE ALONG THE NILE (Guide → Life along the Nile, 12 chapters): "+nileMine().map(e=>`${e.n} (${e.era}; ${nileDays(e).map(d=>d.dow+" "+d.num).join("/")||"any time"})`).join(" | ")); }catch(e){}
+  return L.join("\n\n"); }
 function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cairoNow(); const R=egpRate(); const L=[];
   const cut=(s,k)=>{ s=String(s||"").replace(/\s+/g," "); return s.length>k?s.slice(0,k)+"…":s; };
   L.push(`Asking: ${w} (${(TEAMS[w]||{}).team||""} fan). Travel partner: ${o} (${(TEAMS[o]||{}).team||""}). Cairo time now: ${(typeof cairoNowRaw==="function"?cairoNowRaw():n).date} ${String((typeof cairoNowRaw==="function"?cairoNowRaw():n).h).padStart(2,"0")}:${String(n.m||0).padStart(2,"0")}. Exchange rate ≈ ${R} EGP per USD.`);
@@ -5423,36 +5440,56 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date;
   const dayTxt=(d,full)=>{ if(!d) return ""; const x=safe(()=>withMe(d))||d; return `${x.dow} ${x.num} Oct — ${x.title} (${x.place||""}). Sleep: ${x.sleep||"—"}. Alarm: ${x.alarm||"—"}.\n`+(x.agenda||[]).slice(0,full?14:5).map(a=>`  ${a.lt?a.lt+" "+(a.ltz||"local"):a.t} ${cut(a.title,90)}${full&&a.note?" — "+cut(a.note,110):""}`).join("\n"); };
   if(pre) L.push("Before the trip. First day:\n"+dayTxt(DAYS[0],true)); else { L.push("TODAY:\n"+dayTxt(DAYS[di],true)); if(DAYS[di+1]) L.push("TOMORROW:\n"+dayTxt(DAYS[di+1],false)); }
-  try{ L.push("HOTELS:\n"+HOTELS.map(h=>`  ${h.n} · ${h.d||""}${h.telD?" · tel "+h.telD:""}${h.addr?" · "+h.addr:""}`).join("\n")); }catch(e){}
   try{ L.push("FLIGHTS (times local to each airport):\n"+allFlights().filter(f=>f.no&&f.from&&f.from.t).map(f=>{ const n=nowUTC(), d0=flightDep(f), d1=flightArr(f)??(d0+3*3600000); return `  ${f.who}: ${f.no} ${f.from.ap} (${f.from.city}) ${f.date} ${f.from.t} → ${f.to.ap} (${f.to.city}) ${f.to.t||"?"} — ${n>=d1?"flown":n>=d0?"IN THE AIR NOW":"not yet"}${f.live&&f.live.status&&f.live.status!=="unknown"?" ["+f.live.status+"]":""}`; }).join("\n")); }catch(e){}
-  try{ L.push("FAIR PRICES (EGP, what a reasonable haggler pays): "+FAIR.map(f=>`${f.n} ${f.lo}–${f.hi}`).join("; ")+". Rule: counter at a third of the first ask; deals land at 40–60%."); }catch(e){}
-  L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
-  try{ if(typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); L.push("GEM GUIDE (their 12 stops, in order; ✓=seen): "+GEM_STOPS.map(x=>(S[x.id]?"✓":"·")+x.n+" ["+x.where+"]").join(" | ")); } }catch(e){}
-  try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (the app's Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")}`).join(" | ")); }catch(e){}
-  try{ if(typeof FAITHS!=="undefined") L.push("OTHER FAITHS ON THE ROUTE (Guide → Faiths of the Nile: Islam, Judaism, Buddhism, the old gods, Greece & Rome, the Copts; say plainly what is scripture, history, tradition or speculation): "+faithMine().map(e=>`${e.t} [${e.f.join("/")}; ${e.plan==="on"?(faithDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}]`).join(" | ")); }catch(e){}
+  try{ if(typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); const k=GEM_STOPS.filter(x=>S[x.id]); if(k.length) L.push("GEM stops already seen: "+k.map(x=>x.n).join(", ")); } }catch(e){}
+  try{ const done=JSON.parse(localStorage.getItem("egypt.list.week")||"{}"); const ks=Object.keys(done).filter(k=>done[k]); L.push("TO-DO items ticked done: "+(ks.join(", ")||"none")); }catch(e){}
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
   try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's pick is The Orient (dahabiya, Wed–Sat), then Merit"}.`); }catch(e){}
   return L.join("\n\n"); }
 const MUM_SYS_TXT=()=>`You are the Mummy — the mascot of Brad and Duane's Egypt trip app. A 3,000-year-old Egyptian mummy: dry, deadpan, a little vain, fond of both of them, obsessed with their Steelers (Brad) vs Bengals (Duane) rivalry.
 How you answer:
-- Lead with the useful answer in 1–3 short sentences. Then at most one short joke in character. Usually under 80 words.
+- Lead with the useful answer in 1–3 short sentences. Then at most one short joke in character. Usually under 90 words; up to 200 if they ask for detail or a list of times.
+- The TRIP BOOK below has every day of the trip. For a question about any day, stop, meal, hotel, place, price or booking, answer from it — name the day and the time. Read it carefully before saying something isn't planned.
+- RIGHT NOW (the last block) wins over the trip book for anything about the present: the time, where each of them is, today, flight states, the score, the tab.
+- You have web search. Use it only for things that change and aren't in the trip book: opening hours today, closures, weather, a match result, news, a place that isn't listed. Never search for what the plan already says. Don't narrate the search; just give the answer and, if it came from the web, say so in a few words ("per the museum's site").
 - Use the trip context below exactly (times, prices, phone numbers, hotel names, airports). Where someone is and whether a flight has happened come ONLY from the WHERE THEY ARE RIGHT NOW lines — never infer it.
 - Talk to the person asking, by name. Never invent bookings, prices or times that aren't there; if you don't know, say so and say who would (the hotel desk, the guide, the airline app).
 - Safety, health, or legal trouble: be plain and serious, no jokes — tourist police 126, ambulance 123, the hotel desk, the US Embassy.
 - Scams and touts: name the trick, give the line to say back.
 - Prices: EGP first, ≈USD after. Haggling: open at about a third of the first ask.
 - Arabic: write any phrase they should say as [[Arabic script|transliteration]] (e.g. [[لا، شكراً|la, shukran]]) so the app can play it aloud.
-- Plain text only: no markdown, no headings, no bullet lists unless asked.
+- Plain text only: no markdown, no headings. Short line breaks are fine when giving several times.
+- If the question is ambiguous (which day? which of you?), answer the likeliest reading and say which you took.
 
-TRIP CONTEXT
-${mumContext()}`;
-const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemeral"}}];
+TRIP BOOK
+${mumKnowledge()}`;
+// two blocks: the trip book (big, steady — cached, so it's cheap after the first question) and RIGHT NOW (small, fresh every time)
+const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemeral"}},{type:"text",text:"RIGHT NOW\n"+mumContext()}];
 
 // ---------- the ghost: answers from the trip data when the AI can't be reached ----------
 function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date; const d0=pre?DAYS[0]:DAYS[di]; const d=safe(()=>withMe(d0))||d0; const R=egpRate(); const w=me()||"Brad";
   const has=(...a)=>a.some(x=>q.includes(x)); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; };
   if(has("police","ambulance","emergency","hospital","help","embassy","stolen","lost my")) return "Tourist police 126 · ambulance 123 · police 122 · US Embassy Cairo +20 2 2797 3300. The hotel desk can call for you. No jokes on this one.";
+  // ---- the ghost reads the whole plan: a named day, a meal, or "when is…" ----
+  { const vis=DAYS.filter(x=>w!=="Duane"||x.who!=="brad"); const X=x=>safe(()=>withMe(x))||x; const today=pre?DAYS[0].date:n.date;
+    const tm=a=>a.lt?`${f12(a.lt)} ${a.ltz||"local"} time`:f12(a.t); const short=t=>String(t).split(/ — | \(/)[0]; const first=t=>String(t||"").split(/(?<=\.)\s/)[0];
+    const DOW={Sun:/\bsunday\b/,Mon:/\bmon(day)?\b/,Tue:/\btues?(day)?\b/,Wed:/\bwed(nesday)?\b/,Thu:/\bthu(rs?(day)?)?\b/,Fri:/\bfri(day)?\b/,Sat:/\bsat(urday)?\b/};
+    let day=null; const mn=q.match(/\boct(?:ober)?\.?\s*(\d{1,2})\b|\b(\d{1,2})(?:st|nd|rd|th)\b|\bthe\s+(\d{1,2})\b/); if(mn){ const k=+(mn[1]||mn[2]||mn[3]); day=vis.find(x=>+x.num===k)||null; if(!day){ const bx=DAYS.find(x=>+x.num===k&&x.who==="brad"); if(bx) return `${bx.dow} ${bx.num} is Brad's solo week — ${bx.title}. You'll be home by then, telling people about the boat.`; } }
+    if(!day){ const k=Object.keys(DOW).find(k=>DOW[k].test(q)); if(k) day=vis.find(x=>x.dow===k&&x.date>=today)||vis.find(x=>x.dow===k)||null; }
+    if(!day&&has("tonight","this evening")) day=d0;
+    const meal=["breakfast","lunch","dinner","high tea","tea"].find(m=>new RegExp("\\b"+m+"\\b").test(q));
+    if(!day&&meal){ const re=new RegExp(meal,"i"); const t=X(d0); const left=(t.agenda||[]).filter(a=>(pre||toMins(a.t)>n.mins-30)&&re.test(a.title)); day=left.length?d0:(vis.find(v=>v.date>t.date&&(X(v).agenda||[]).some(a=>re.test(a.title)))||DAYS[di+1]||d0); }
+    if(day){ const x=X(day); const lbl=`${x.dow} ${x.num}`;
+      if(meal){ const it=(x.agenda||[]).filter(a=>new RegExp(meal,"i").test(a.title)); return it.length?it.map(a=>`${lbl}, ${tm(a)}: ${a.title}.${a.note?" "+first(a.note):""}`).join(" "):`Nothing called ${meal} on the plan for ${lbl}. The day: ${(x.agenda||[]).slice(0,5).map(a=>tm(a)+" "+short(a.title)).join(" · ")}.`; }
+      if(has("alarm","wake","what time do i get up","get up")) return `${lbl}: alarm ${x.alarm||"—"}. First up: ${(x.agenda||[])[0]?tm(x.agenda[0])+" "+short(x.agenda[0].title):"—"}.`;
+      if(has("wear","pack","bring","carry","clothes")) return `${lbl} — wear: ${x.dress||"—"}. Bring: ${x.bag||"—"}. Cash: ${x.cash||"—"}.`;
+      if(has("sleep","hotel","staying","bed")) return `${lbl}, you sleep at: ${x.sleep||"—"}.`;
+      return `${lbl} — ${x.title}. Alarm ${x.alarm||"—"}.\n${(x.agenda||[]).slice(0,8).map(a=>tm(a)+" "+short(a.title)).join("\n")}${(x.agenda||[]).length>8?"\n…and more on the day card":""}\nSleep: ${x.sleep||"—"}.`; }
+    if(has("when","what time","which day","what day")){ const stop=new Set("when what time which does do we is are the our for and with day get to at go going there that this have does from".split(" ")); const words=q.replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(x=>x.length>3&&!stop.has(x));
+      if(words.length){ const hits=[]; vis.forEach(v=>{ const x=X(v); (x.agenda||[]).forEach(a=>{ const t=(a.title+" "+(a.map||"")).toLowerCase(); const sc=words.filter(k=>t.includes(k)).length; if(sc) hits.push({sc,x,a}); }); });
+        hits.sort((a,b)=>b.sc-a.sc||String(a.x.date).localeCompare(String(b.x.date))); const best=hits.filter(h=>h.sc===((hits[0]||{}).sc)).slice(0,3);
+        if(best.length) return best.map(h=>`${h.x.dow} ${h.x.num}, ${tm(h.a)}: ${h.a.title}.`).join(" "); } } }
   if(has("gem","museum","tutankhamun","tut ","mask","khufu's boat","solar boat")&&typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); const hit=GEM_STOPS.find(x=>q.toLowerCase().includes(x.n.toLowerCase().split(" ").slice(-1)[0].replace(/[^a-z]/g,"")))||GEM_STOPS.find(x=>!S[x.id])||GEM_STOPS[0];
     return `${hit.n} (${hit.where}). Look for: ${hit.look} ${hit.story} — ${GEM_STOPS.filter(x=>S[x.id]).length}/${GEM_STOPS.length} seen; the GEM guide is in the + menu while you're there.`; }
   if(has("bible","biblical","moses","jesus","joseph","scripture","holy family","israel","exodus","pharaoh's daughter","church","sinai")&&typeof bibleMine==="function"){ const d=todayDay(); const L=bibleMine(); const today=d?L.filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)):[]; const e=today[0]||L.find(e=>e.plan==="on"&&bibleDays(e).some(x=>x.date>=cairoNow().date))||L[0];
@@ -5478,7 +5515,7 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
   if(has("score","winning","bowl")){ const a=safe(()=>nileTotal(w)), b=safe(()=>nileTotal(OTHER_OF(w))); return a&&b?`Nile Bowl: you ${a.pts}, ${OTHER_OF(w)} ${b.pts}. ${a.pts>=b.pts?"Don't get comfortable.":"Plenty of time. Not that much time."}`:"The board's on the Games tab."; }
   if(has("sunset","sunrise","dark","light")){ const s=safe(()=>{ const ll=LL[d.id]; return ll&&sunTimes(d.date,ll[0],ll[1]); }); return s?`Sunrise ${s.rise}, sunset ${s.set} (${d.place||"today"}).`:"The sky strip on the Today card knows."; }
   if(has("say","arabic","how do i","phrase","thank","hello","no thanks","word")){ const all=WORDS.flatMap(g=>g[1]); const hit=all.find(p=>q.split(/\W+/).filter(x=>x.length>3).some(x=>p[2].toLowerCase().includes(x))); const p=hit||all[0]; return `[[${p[1]}|${p[0]}]] — ${p[2]}. Forty more under Guide → Words.`; }
-  return "My ghost only remembers the trip itself. Try: what's next · tomorrow · what should a scarf cost · tips · tonight's hotel · how do I say thank you · the tab · emergency numbers."; }
+  return "My ghost only remembers the trip itself. Try: what's next · what's on Thursday · when is Karnak · where's dinner · what should a scarf cost · tips · tonight's hotel · how do I say thank you · the tab."; }
 
 async function amTestKey(){ const out=$("#amTestOut"); const say=t=>{ if(out) out.textContent=t; }; say("Testing…");
   try{ await claudeCall({system:"Reply with OK.", messages:[{role:"user",content:"ping"}], max_tokens:5, timeout:20000}); }catch(e){ say(e.kind==="auth"?"✗ Key refused":e.kind==="credit"?"✗ Out of credit":e.kind==="offline"?"✗ No signal":`✗ ${e.message||e.kind}`); return; }
@@ -5527,15 +5564,25 @@ function openAskMummy(prefill){ document.querySelectorAll(".mummy").forEach(m=>m
 async function amAsk(text, mode, opt){ opt=opt||{}; if(amBusy) return; text=String(text||"").trim(); const img=amPhoto; if(!text&&!img) return; amBusy=true; amPhoto=null; const pv=$("#amPv"); if(pv){ pv.hidden=true; pv.innerHTML=""; }
   if(!opt.hidden) amAppend({role:"user", text: mode==="curse"?`Curse ${OTHER_OF(me())}.`:mode==="settle"?`⚖️ ${text}`:text, img:img?img.url:null}); amModeBar("");
   const log=$("#amLog"); if(log){ log.insertAdjacentHTML("beforeend",`<div class="am-a typing" id="amTyping"><i></i><i></i><i></i></div>`); log.scrollTop=log.scrollHeight; } amStage("think");
-  const prior=amHist.slice(0,-1).filter(m=>!m.ghost&&!m.dead&&m.text).slice(-6).map(m=>({role:m.role==="user"?"user":"assistant",content:m.text}));
+  // last 10 real turns; the API needs user/assistant to alternate, so a failed turn (no reply) is merged, never sent twice in a row
+  const prior=[]; (opt.hidden?amHist:amHist.slice(0,-1)).filter(m=>!m.ghost&&!m.dead&&m.text).slice(-10).forEach(m=>{ const role=m.role==="user"?"user":"assistant"; const last=prior[prior.length-1]; if(last&&last.role===role) last.content+="\n"+m.text; else prior.push({role,content:m.text}); });
+  while(prior.length&&prior[0].role!=="user") prior.shift(); if(prior.length&&prior[prior.length-1].role==="user") prior.pop();
   let ask=text; if(mode==="curse") ask=`Write ONE trash-talk line (max 120 characters) for ${me()} to send ${OTHER_OF(me())} — Steelers vs Bengals, mummy-flavoured, about something from today's plan or the score. Reply with only the line, no quotes.`;
   if(mode==="settle") ask=`Settle this argument between Brad and Duane, as the judge. Rule clearly for one of them in the first sentence, then the reason. The argument: ${text}`;
   const content=img?[{type:"image",source:{type:"base64",media_type:"image/jpeg",data:img.b64}},{type:"text",text:ask||"What is this? Say what it is; translate or read any writing (Arabic, hieroglyphs, a cartouche); then anything useful — a fair price, what to order, what to look for."}]:ask;
   const btn=$("#amForm button[type=submit]"); if(btn){ btn.disabled=true; btn.textContent="…"; }
   let live=null, pend=null, raf=0, done=false; const paint=t=>{ if(done) return; const ty=$("#amTyping"); if(ty) ty.remove(); if(!live||!live.isConnected){ const log=$("#amLog"); if(!log) return; log.insertAdjacentHTML("beforeend",`<div class="am-a streaming" id="amLive"></div>`); live=$("#amLive"); amStage("talk"); } live.innerHTML=amRich(t)+`<i class="am-caret"></i>`; const log=$("#amLog"); if(log&&log.scrollHeight-log.scrollTop-log.clientHeight<140) log.scrollTop=log.scrollHeight; };
   const onText=t=>{ pend=t; if(!raf) raf=requestAnimationFrame(()=>{ raf=0; try{ paint(pend); }catch(e){} }); };
-  const call=()=>claudeStream({onText, system:MUM_SYS(), messages:prior.concat([{role:"user",content}]), max_tokens:mode==="curse"?100:img?500:350, model:img?MUM_MODEL_EYES:MUM_MODEL});
-  try{ let res; try{ res=await call(); }catch(e1){ if(e1.kind!=="busy"&&e1.kind!=="network") throw e1; await mwait(2000); res=await call(); }
+  const SEARCH=[{type:"web_search_20250305",name:"web_search",max_uses:2}];
+  const call=(o)=>{ o=o||{}; return claudeStream({onText, system:MUM_SYS(), messages:prior.concat([{role:"user",content}]), max_tokens:mode==="curse"?100:img?700:800, model:o.model||(img?MUM_MODEL_EYES:MUM_MODEL_TALK), tools:(o.noSearch||img||mode)?undefined:SEARCH}); };
+  try{ let res;
+    // the ladder: Sonnet with search → (search refused) Sonnet without → (busy) Haiku → (dropped) once more
+    try{ res=await call(); }
+    catch(e1){ let e=e1; mumDiag({ok:false, kind:e1.kind, msg:String(e1.message||"").slice(0,120), step:1});
+      if(e.kind==="error"&&!img&&!mode){ try{ res=await call({noSearch:true}); e=null; }catch(e2){ e=e2; } }
+      if(e&&(e.kind==="busy"||e.kind==="stall")){ await mwait(1200); try{ res=await call({model:MUM_MODEL, noSearch:true}); e=null; }catch(e3){ e=e3; } }
+      if(e&&(e.kind==="network"||e.kind==="timeout")&&navigator.onLine){ await mwait(1500); try{ res=await call({noSearch:true}); e=null; }catch(e4){ e=e4; } }
+      if(e) throw e; }
     done=true; if(raf) cancelAnimationFrame(raf); $("#amTyping")&&$("#amTyping").remove(); if(live) live.remove(); const lv=$("#amLive"); if(lv) lv.remove(); amStage("talk"); let t=res.text.replace(/^["“]|["”]$/g,""); if(res.stalled) t+=" … (he lost the thread — the signal dropped. Ask again for the rest.)"; else if(res.stop==="max_tokens") t+=" …"; amAppend({role:"assistant", text:t, taunt:mode==="curse"?t.slice(0,140):null}); setTimeout(()=>amStage("idle"),2400); }
   catch(e){ done=true; try{ if(raf) cancelAnimationFrame(raf); const lv=$("#amLive"); if(lv) lv.remove(); }catch(x){} const kind=e.kind||"error"; if(kind!=="nokey"&&kind!=="offline") mumDiag({ok:false, kind, msg:String(e.message||"").slice(0,120)}); if(kind==="nokey"||kind==="offline") await mwait(450); $("#amTyping")&&$("#amTyping").remove(); amStage("dead"); safe(()=>sfx("mummy")); const sub=$("#amSub"); if(sub) sub.textContent=kind==="auth"?"Key problem · his ghost is answering":kind==="offline"?"No signal · ghost answering":kind==="nokey"?"Ghost mode · trip notes only":"The afterlife hiccuped · ghost answering";
     const g=img?"My ghost can't see photos. Wake me (a key, and signal) and ask again.":mode==="curse"?((typeof TAUNTS!=="undefined"&&mumPick(TAUNTS))||"Your defence is a sarcophagus: closed and full of dead things."):mode==="settle"?"The ghost doesn't rule on arguments. Coin of Ra, Games tab: winner's right.":ghostAnswer(text);
