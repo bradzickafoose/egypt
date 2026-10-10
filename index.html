@@ -1059,6 +1059,8 @@ td,th{text-align:left;padding:7px 6px;border-top:1px solid var(--line);vertical-
 th{font-size:0.7059rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:0}
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tblwrap{overflow-x:auto}
+.seg{display:flex;background:rgba(120,120,128,.14);border-radius:10px;padding:3px;gap:2px;margin:6px 0 12px}.seg button{flex:1;border:0;background:none;color:var(--fg);font:600 0.85rem var(--body);padding:7px 4px;border-radius:8px;cursor:pointer}.seg button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.tt-card{padding:0;margin-bottom:10px}.tt-open{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:0;background:none;color:var(--fg);font:inherit;text-align:left;cursor:pointer}.tt-ico{font-size:1.5rem}.tt-txt{flex:1;display:flex;flex-direction:column;gap:2px}.tt-txt b{font-size:1rem}.tt-txt small{color:var(--muted,#777);font-size:0.8rem}.tt-go{font-size:1.4rem;color:var(--muted,#777)}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
 .bottom .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr auto 1fr 1fr;gap:4px;align-items:center}
 .bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:0.7059rem;font-weight:600;letter-spacing:.02em;padding:6px 2px;border-radius:10px;white-space:nowrap}
@@ -1358,7 +1360,7 @@ html.hugetext .bp-on em{grid-column:2}
   <section id="now" class="now" aria-live="polite"><div class="eyebrow">Egypt</div><div class="big">Loading today…</div></section>
   <div class="hint" id="hint"><span id="hintText">Add this to your home screen and it opens like an app, signal or not.</span><button id="hintX" aria-label="Dismiss">✕</button></div>
   <section id="boatSlot" aria-live="polite"></section>
-  <section id="today"><div class="card" id="dayCard"></div></section>
+  <section id="today"><div class="card tt-card" id="ttCard"><button type="button" class="tt-open" id="ttOpen"><span class="tt-ico">🧭</span><span class="tt-txt"><b>Trip tools</b><small>Gift shop, phrases, offline checklists, hidden spots</small></span><span class="tt-go">›</span></button></div><div class="card" id="dayCard"></div></section>
 
   <section id="guide" class="group">
     <h2 class="sec">Guide</h2>
@@ -8144,8 +8146,12 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v206";
+const APP_VER="v208";
 const WHATS_NEW=[
+ {v:"v208", d:"Sat Oct 10", items:[
+  ["🧭","Simpler Trip tools","Four sections in one row: Here, Plan, Guides (phrases and offline lists) and Game (hidden spots and wrap-up)."]]},
+ {v:"v207", d:"Sat Oct 10", items:[
+  ["🧭","Trip tools moved to Today","The floating Trip tools button is gone. It is now one card at the top of Today, so the bottom of the screen stays clean."]]},
  {v:"v206", d:"Sat Oct 10", items:[
   ["🧭","One place for trip tools","Extras and Shop are now one Trip tools button. The Here screen has an EGP/USD switch, a single budget line, a hide button, and a way to correct the price estimates. Planning is under Plan."]]},
  {v:"v205", d:"Sat Oct 10", items:[
@@ -8288,6 +8294,7 @@ function xtBody(tab){
 }
 function xtOpen(tab){ openSheet("sheetXtra", `<div class="qh"><h3>Extras</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetXtra')">×</button></div><div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0 10px"><button type="button" class="btn mini" data-xt="phrase">Phrase</button><button type="button" class="btn mini" data-xt="off">Offline</button><button type="button" class="btn mini" data-xt="spots">Hidden</button><button type="button" class="btn mini" data-xt="wrap">Wrap-up</button></div><div id="xtBody">${xtBody(tab||"phrase")}</div>`); }
 window.xtBody=xtBody; window.xtOpen=xtOpen;
+document.getElementById("ttOpen").addEventListener("click",function(){ window.toolsOpen("shop"); });
 // clicks inside the extras sheet
 document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); if(t){ const body=document.getElementById("xtBody"); if(body){ body.innerHTML=xtBody(t.dataset.xt); } return; }
   const f=e.target.closest("[data-xfind]"); if(f){ const id=f.dataset.xfind; const l=xtFound(); if(l.indexOf(id)<0){ l.push(id); xtSaveFound(l); } const body=document.getElementById("xtBody"); if(body) body.innerHTML=xtBody("spots"); return; }
@@ -8353,10 +8360,9 @@ function shopPlan(){ const st=shopState(); const prof=st.profile||{}; const boug
 let shopTab="shop", shopIdle=null;
 function shopClear(){ if(shopIdle){ clearTimeout(shopIdle); shopIdle=null; } }
 function shopArm(){ shopClear(); shopIdle=setTimeout(()=>{ const body=document.getElementById("toolBody"); if(body&&shopTab==="shop"&&document.getElementById("sheetTools")?.classList.contains("on")){ body.innerHTML=`<div style="text-align:center;padding:60px 10px"><button type="button" class="btn" data-shop-reveal="1">Tap to show the list</button></div>`; } },30000); }
-function toolsBody(){ if(shopTab==="shop") return shopHere(); if(shopTab==="plan") return shopPlan(); const x=(typeof window.xtBody==="function")?window.xtBody(shopTab):""; return `<div id="xtBody">${x}</div>`; }
+function toolsBody(){ if(shopTab==="shop") return shopHere(); if(shopTab==="plan") return shopPlan(); if(shopTab==="guides"||shopTab==="game"){ const parts=shopTab==="guides"?["phrase","off"]:["spots","wrap"]; return `<div id="xtBody">${parts.map(t=>(typeof window.xtBody==="function")?window.xtBody(t):"").join("")}</div>`; } const x=(typeof window.xtBody==="function")?window.xtBody(shopTab):""; return `<div id="xtBody">${x}</div>`; }
 function toolsRender(){ const body=document.getElementById("toolBody"); if(!body) return; body.innerHTML=toolsBody(); document.querySelectorAll("#sheetTools [data-tool]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===shopTab?"true":"false")); shopArm(); }
-function toolsOpen(tab){ shopTab=tab||"shop"; openSheet("sheetTools", `<div class="qh"><h3>Trip tools</h3><button type="button" class="x" aria-label="Close" onclick="shopClear();closeSheet('sheetTools')">×</button></div><div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0 10px"><button type="button" class="btn mini" data-tool="shop">Here</button><button type="button" class="btn mini" data-tool="plan">Plan</button><button type="button" class="btn mini" data-tool="phrase">Phrases</button><button type="button" class="btn mini" data-tool="off">Offline</button><button type="button" class="btn mini" data-tool="spots">Hidden</button><button type="button" class="btn mini" data-tool="wrap">Wrap-up</button></div><div id="toolBody"></div>`); setTimeout(toolsRender,0); }
-(function(){ try{ const b=document.createElement("button"); b.id="toolsBtn"; b.type="button"; b.textContent="🧭 Trip tools"; b.setAttribute("aria-label","Trip tools"); b.style.cssText="position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",()=>toolsOpen("shop")); document.body.appendChild(b); }catch(e){} })();
+window.toolsOpen=function toolsOpen(tab){ shopTab=tab||"shop"; openSheet("sheetTools", `<div class="qh"><h3>Trip tools</h3><button type="button" class="x" aria-label="Close" onclick="shopClear();closeSheet('sheetTools')">×</button></div><div class="seg" role="group" aria-label="Trip tools sections"><button type="button" data-tool="shop">Here</button><button type="button" data-tool="plan">Plan</button><button type="button" data-tool="guides">Guides</button><button type="button" data-tool="game">Game</button></div><div id="toolBody"></div>`); setTimeout(toolsRender,0); };
 document.addEventListener("click", e=>{
   const tl=e.target.closest("[data-tool]"); if(tl){ shopTab=tl.dataset.tool; toolsRender(); return; }
   const bt=e.target.closest("[data-shop-bought]"); if(bt){ const st=shopState(); st.bought=st.bought||{}; const id=bt.dataset.shopBought; st.bought[id]=!st.bought[id]; if(!st.bought[id]){ if(st.paid) delete st.paid[id]; if(st.receipts) delete st.receipts[id]; } shopSave(st); toolsRender(); return; }
