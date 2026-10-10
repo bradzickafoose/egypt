@@ -1855,12 +1855,13 @@ const DAYS = [
    {t:"08:00",title:"Breakfast on the Masbat promenade",note:"Any café with cushions on the water. Fresh juice, shakshuka, coffee. Dahab runs on ≈$5 meals.",map:"Masbat Bay Dahab",approx:true},
    {t:"09:30",title:"Jeep to the Blue Hole — it's a competition day",note:"20 minutes up the coast; a seat in a shared jeep is ≈$10, entry ≈$10–25, US dollars in clean notes. : the best freedivers in the world going down a line to 80–100 m on one breath, a safety team, a loudspeaker, a crowd on the beach. Part of the lagoon is roped off for them; the Bells drift is unaffected and the show is free from the shore.",map:"Blue Hole Dahab"},
    {t:"10:15",photo:"The Blue Hole from the cliff path above the Bells: the circle of blue inside the reef. Then a mask-on selfie at the lip.",title:"Snorkel the Bells → Blue Hole drift",note:"Walk 10 minutes north along the shore to the Bells, drop in, and let the current carry you south along the wall and over the lip of the hole. 40 minutes in the water. Mask, fins and a vest rent at the cafés on the beach for ≈$5. Divers: 2 tanks with a shop like Blue Hole Dahab or Scuba Seekers, ≈$80.",map:"Blue Hole Dahab"},
+   {t:"11:00",title:"Freediving intro with a licensed instructor (book before you go)",note:"Two hours in the shallows at the Blue Hole with a certified instructor from a Dahab school. Never freedive the Blue Hole alone. Stay in the shallow end for a first session.",approx:true},
    {t:"12:30",title:"Lunch at the Blue Hole cafés",note:"Grilled fish or a Bedouin tea in the shade. Read the memorial plaques on the cliff while you're there; the story is in About.",map:"Blue Hole Dahab",approx:true},
    {t:"14:30",title:"Back to Dahab. Siesta.",approx:true},
    {t:"17:00",title:"Sunset walk, the Lighthouse reef",note:"Dahab's house reef at the north end of the promenade; snorkel from the shore if you want a second swim, or just watch the Saudi mountains go pink across the gulf.",map:"Lighthouse Reef Dahab",approx:true},
    {t:"19:30",title:"Early dinner on the water",note:"Ali Baba for grilled seafood by weight, or any of the Bedouin-cushion places. ≈$10–15. Eat properly; the mountain is tonight.",map:"Ali Baba Restaurant Dahab",approx:true},
    {t:"22:30",title:"Up and dressed for the mountain",alarm:true,note:"Fleece, hat, gloves, headlamp, water, snacks, passport."},
-   {t:"23:00",title:"Pickup in Dahab for Mount Sinai",note:"Shared minibus with a licensed guide, booked through the guesthouse or any Dahab agency, ≈$40–50 including the monastery. 2 hours to St Catherine village. Sleep on the bus.",map:"Saint Catherine Egypt",photo:"The minibus crowd at 11pm, everyone in borrowed fleeces: the before picture."}],
+   {t:"23:00",title:"Pickup in Dahab for Mount Sinai",note:"Book a Bedouin guide for the climb (ask a Dahab shop or the guesthouse by name) if you want more than the shared group. Shared minibus with a licensed guide, booked through the guesthouse or any Dahab agency, ≈$40–50 including the monastery. 2 hours to St Catherine village. Sleep on the bus.",map:"Saint Catherine Egypt",photo:"The minibus crowd at 11pm, everyone in borrowed fleeces: the before picture."}],
   know:["The Blue Hole kills divers who go through the Arch at 56 m; snorkelling the surface and the drift is safe and spectacular","Reef shoes: the entry is sharp coral","Dahab is the cheapest place in Egypt and the calmest; nobody hassles anyone"],
   planb:"Wind or a jellyfish day → the Lighthouse reef or Eel Garden from the shore, both walkable. Certified and want more → the Canyon and the Islands are the other two world-class shore dives, both ≈$40 a tank. Want to learn → Dahab is the freediving capital of the world; a one-day intro course is ≈$90 and you'll be at 10 m by the afternoon."},
  {id:"wed21",who:"brad",sleep:"Dahab guesthouse",sleepq:"Dahab",date:"2026-10-21",dow:"Wed",num:21,title:"Sunrise on Mount Sinai",place:"St Catherine",emoji:"⛰️",
@@ -1908,7 +1909,7 @@ const DAYS = [
    {t:"07:30",title:"Breakfast, strike camp, a last walk among the shapes",approx:true},
    {t:"09:00",title:"Drive back: Bahariya, then the highway",note:"Lunch at Bahariya. Dust in everything.",approx:true},
    {t:"16:30",title:"Cairo. Le Méridien Cairo Airport.",note:"Long shower. Repack for the flight: liquids, the USD you didn't use, the receipts.",map:"Le Meridien Cairo Airport",approx:true},
-   {t:"19:00",title:"Last night: the Arab Music Festival at the Opera House, or a last koshary",note:"The 34th Arab Music Festival runs Oct 20–30 (some nights in Alexandria and Damanhour, and the line-up was reshuffled after withdrawals) — check the Opera House programme for the 24th; if the programme has something, it's a 40-minute Uber and the most Egyptian way to end. Otherwise Abou Tarek for koshary, or the hotel. Back by 10.",map:"Cairo Opera House",approx:true},
+   {t:"19:00",title:"Last night: Coptic Cairo at dusk, or a last koshary",note:"Option one, 30–40 minutes by taxi from the hotel: the Hanging Church and Ben Ezra Synagogue, then the Khan for a real papyrus. Option two, the Arab Music Festival at the Opera House. The 34th Arab Music Festival runs Oct 20–30 (some nights in Alexandria and Damanhour, and the line-up was reshuffled after withdrawals) — check the Opera House programme for the 24th; if the programme has something, it's a 40-minute Uber and the most Egyptian way to end. Otherwise Abou Tarek for koshary, or the hotel. Back by 10.",map:"Cairo Opera House",approx:true},
    {t:"22:00",title:"Bed. Alarm 6:30. Check in online for the 10:20.",approx:true}],
   know:["Checked bag goes through to Orlando on the single United ticket; confirm at the EgyptAir desk","The Heathrow connection is 1 hour, same terminal — tight; confirm UA 928's time in the United app; the bag is the airline's problem, you just walk"],
   planb:"Tour runs late → dinner at the hotel and nothing else; Sunday is the only thing that matters now."},
@@ -8139,8 +8140,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v196";
+const APP_VER="v197";
 const WHATS_NEW=[
+ {v:"v197", d:"Sat Oct 10", items:[
+  ["🤿","Brad's solo days","Tuesday has a freediving intro, the Sinai climb has a Bedouin guide option, and Saturday evening has Coptic Cairo as an option."]]},
  {v:"v196", d:"Sat Oct 10", items:[
   ["🗺️","Thursday in Cairo, not the airport","Brad now sleeps in Zamalek on Thu 22 for a walkable evening in Cairo. The airport hotel is kept for Sat 24. Alexandria is the fallback if the desert tour cancels."]]},
  {v:"v195", d:"Sat Oct 10", items:[
