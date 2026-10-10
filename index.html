@@ -8139,8 +8139,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v194";
+const APP_VER="v195";
 const WHATS_NEW=[
+ {v:"v195", d:"Sat Oct 10", items:[
+  ["⏰","Sunday reminders","Sunday has three reminders on its agenda: calls at 9am, the 6pm budget check, and the 9pm decision. The boat sheet has the full order."]]},
  {v:"v194", d:"Sat Oct 10", items:[
   ["📞","A Sunday plan for the boat","The boat sheet now has a Sunday call order, a bookings table with deadlines (Aswan, Luxor, the car), and the Abu Simbel options."]]},
  {v:"v193", d:"Sat Oct 10", items:[
@@ -8206,6 +8208,9 @@ const WHATS_NEW=[
  ["tue13",{t:"09:00",title:"Save offline maps: Aswan and Abu Simbel",note:"Google Maps → Offline maps → Aswan, which also covers Philae and the Nubian village. Add Abu Simbel for Wednesday's 4am drive. Save both on the hotel wifi tonight, not on the road.",_off:1}],
  ["sat17",{t:"11:30",title:"Save offline maps: Luxor and the West Bank (hotel wifi)",note:"Google Maps → Offline maps → Luxor. Covers Karnak, Luxor Temple, the Valley of the Kings and the West Bank. Do it at the hotel before the West Bank, since the tombs have no signal.",_off:1}],
  ["mon19",{t:"07:30",title:"Save offline maps: Sinai and Dahab (before you leave Cairo)",note:"Google Maps → Offline maps → Dahab and South Sinai. Covers St Catherine's, Mount Sinai and the Blue Hole. Coverage in the mountains is patchy, so save it while you still have hotel wifi.",_off:1}],
+ ["sun11",{t:"09:00",title:"Sunday calls: Djed and Pure Nile",note:"Djed (Thowiba): the whole-boat charter quote for three nights, the Aswan pickup point, and whether it runs Wed 14 to Sat 17. Pure Nile: written totals for two for the Star Goddess and La Terrasse. Boat sheet → Sunday plan has the full list.",_off:1}],
+ ["sun11",{t:"18:00",title:"6pm check: any boat quote in budget?",note:"If neither quote is within $3,000 for two or workable, start the no-boat plan: Aswan hotel Tuesday, Abu Simbel early Wednesday, and the car to Luxor on Thursday. Confirm the Aswan and Luxor bookings still hold.",_off:1}],
+ ["sun11",{t:"21:00",title:"9pm: decide the boat",note:"Choose one only with its quote in writing (name, twin or double cabin, pickup, total for two). Then tap Choose this one in the boat sheet. If nothing is confirmed, the no-boat plan stands.",_off:1}],
  ["fri23",{t:"06:00",title:"Save offline maps: Western Desert (the White Desert)",note:"Google Maps → Offline maps → Bahariya and the Western Desert. There is no signal at the White Desert, so this is the last chance until Sunday. Save it on Thursday's hotel wifi if you can.",_off:1}]
 ];
 if(typeof withMe==="function"){ const W=withMe; withMe=function(d){ const r=W.apply(this,arguments); try{ const ex=OFF.filter(([id])=>d&&id===d.id).map(([,i])=>i); if(ex.length&&r&&r.agenda&&!r.agenda.some(x=>x._off)) r.agenda=r.agenda.concat(ex).sort((a,b)=>String(a.t||"").localeCompare(String(b.t||""))); }catch(e){} return r; }; }
