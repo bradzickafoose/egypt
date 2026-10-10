@@ -2605,7 +2605,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v174)";
+const BUILD = "Oct 10, 2026 (v175)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6758,6 +6758,123 @@ function gemNowHTML(){ try{ const n=document.getElementById("now"); if(!n) retur
 .gem-s .in p,.gem-prac .in p{font-size:0.8529rem;line-height:1.5;margin:8px 0}
 .gem-look{padding:8px 10px;border-radius:10px;background:var(--sand)}.gem-look b{display:block;font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#b07612;margin-bottom:2px}
 .gem-prac .in p b{display:block;font-size:0.8235rem}
+`; document.head.appendChild(st); })();
+
+// ---------- history.js: making 3,000 years stick — nine anchor dates, the words guides use (tap them anywhere), and a ten-card daily drill ----------
+const ANCHORS=[
+ {y:"c. 3100 BC", e:"Narmer unites Upper and Lower Egypt", hook:"Writing starts about here too. History, in the strict sense, begins in Egypt.", world:"Sumer is building the first cities; Stonehenge is a ditch.", see:"Every king after him wears the double crown that marks it."},
+ {y:"c. 2560 BC", e:"The Great Pyramid", hook:"Cleopatra lived closer in time to the Moon landing than to the building of the Great Pyramid.", world:"Stonehenge's great stones go up around the same time.", see:"Giza, Mon 12 — and Saqqara and Dahshur, Sun 11, the experiments that led to it."},
+ {y:"1550 BC", e:"The New Kingdom: Egypt's empire", hook:"Thebes becomes the capital of the world; kings stop building pyramids and hide in the Valley of the Kings.", world:"Mycenaean Greece; the age the Trojan War stories remember.", see:"Karnak, Luxor Temple, the Valley of the Kings, Hatshepsut."},
+ {y:"1332–1323 BC", e:"Tutankhamun", hook:"A boy king who reigned about ten years, famous because his tomb was the one the robbers missed.", world:"Akhenaten's one-god experiment has just failed — the boy undid it.", see:"Everything from his tomb is at the GEM, Mon 12."},
+ {y:"1279–1213 BC", e:"Ramesses II", hook:"Sixty-six years on the throne, more statues than any king, and the pharaoh most people picture in Exodus.", world:"His son Merenptah's stele, 1208 BC, is the first mention of Israel outside the Bible.", see:"Abu Simbel, Wed 14; his colossus at the GEM; Luxor Temple; Karnak."},
+ {y:"332 BC", e:"Alexander the Great takes Egypt", hook:"Then his general Ptolemy's family rules for 300 years, speaking Greek and building the most Egyptian-looking temples of all.", world:"Rome is still a republic fighting its neighbours.", see:"Philae, Kom Ombo, Edfu — all Ptolemaic, Tue 13 – Fri 16."},
+ {y:"30 BC", e:"Cleopatra dies; Egypt becomes Roman", hook:"The last pharaoh. A generation later, Matthew says, the Holy Family fled here.", world:"Octavian — soon to be Augustus — takes Egypt for Rome.", see:"Roman emperors dressed as pharaohs on the walls at Kom Ombo and Philae."},
+ {y:"AD 641 · 969", e:"The Arab conquest; Cairo founded", hook:"Christian Egypt becomes Muslim over centuries; the Fatimids found al-Qahira, “the Victorious”, in 969.", world:"Vikings are raiding England.", see:"Islamic Cairo: the Citadel, Sultan Hassan, Al-Muizz, the Khan — Sun 11."},
+ {y:"1922", e:"Howard Carter opens Tutankhamun's tomb", hook:"“Wonderful things.” The discovery that made the world fall for ancient Egypt.", world:"The same year Egypt gains (partial) independence from Britain.", see:"The GEM, Mon 12, and KV62 in the Valley, Sat 17."}
+];
+const GLOSSARY=[
+ ["Upper / Lower Egypt","Upper is the south, Lower is the north (the Delta), because the Nile flows north. Aswan is Upper Egypt; Cairo is near the top of Lower. The single most confusing fact in Egyptology."],
+ ["Dynasty","A ruling family. Egyptian history is counted in about thirty of them, a system from the priest Manetho, writing in Greek around 280 BC."],
+ ["Pharaoh","From per-aa, “great house” — the palace. Used for the king himself only from the New Kingdom on."],
+ ["Cartouche","The rope-loop oval drawn around a king's name. If you see one on a wall, you're reading a royal name."],
+ ["Pylon","The huge twin-towered gateway at the front of a temple, shaped like the hieroglyph for the horizon the sun rises between."],
+ ["Hypostyle","A hall whose roof is held up by a forest of columns. Karnak's has 134."],
+ ["Obelisk","A single tapering stone with a pyramid tip, sacred to the sun. Raised in pairs at temple gates; Rome, Paris, London and New York each took one."],
+ ["Mastaba","Arabic for “bench”: the flat-topped tomb that came before pyramids. Djoser's Step Pyramid is mastabas stacked six high."],
+ ["Necropolis","A “city of the dead”: a cemetery. Saqqara is Memphis's; the Valley of the Kings is Thebes's."],
+ ["Sarcophagus","The stone outer box that holds the coffins. Greek for “flesh-eater”."],
+ ["Canopic jars","Four jars for the liver, lungs, stomach and intestines; the lids are the four sons of Horus. The heart stayed in the body — it would be weighed."],
+ ["Ushabti","Little mummy-shaped figures put in tombs to do the dead person's chores in the afterlife. Rich tombs had 365, one a day, plus overseers."],
+ ["Ka","Your life-force, born with you as a double. It needed food after death; the false doors in tombs are for it."],
+ ["Ba","Your personality, shown as a bird with your face, free to fly out of the tomb by day."],
+ ["Ma'at","Truth, justice and the order of the universe — shown as a goddess with an ostrich feather. Kings ruled to keep it."],
+ ["Weighing of the heart","After death your heart is weighed against Ma'at's feather before Osiris. Heavy with wrongdoing, and the monster Ammit eats it."],
+ ["Book of the Dead","A collection of spells, written on papyrus or tomb walls, to get the dead safely through the underworld."],
+ ["Stela","An upright carved slab with text and pictures — a monument, a boundary marker or a tombstone. Plural: stelae."],
+ ["Sunk relief","Carving cut into the wall rather than standing out from it — made for strong sun, which casts deep shadows in it."],
+ ["Serdab","A sealed room for a tomb owner's statue, with eye-holes so it can see out. There's one at Djoser's Step Pyramid."],
+ ["Uraeus","The rearing cobra on a king's forehead, ready to spit fire at his enemies."],
+ ["Nemes","The striped royal headcloth — the one on Tutankhamun's mask and the Sphinx."],
+ ["Double crown","The white crown of the south fitted into the red crown of the north: one king, two lands."],
+ ["Ankh","The looped cross meaning “life”. Gods hold it to the king's nose — the breath of life."],
+ ["Scarab","The dung beetle, rolling the sun across the sky like a ball of dung. A symbol of the sunrise and of rebirth."],
+ ["Barque","The sacred boat a god's statue rode in, carried by priests on poles. Temples have a barque shrine at their heart."],
+ ["Causeway","The raised road from a pyramid's valley temple by the river up to the temple at the pyramid itself."],
+ ["Hieratic · Demotic","The handwriting versions of hieroglyphs: hieratic for priests and scribes, demotic for everyday business. The Rosetta Stone carries hieroglyphs, demotic and Greek — the key that cracked the code."],
+ ["Coptic","The last form of the Egyptian language, written in Greek letters. Still sung in Egypt's churches today."],
+ ["Opet","The festival when Amun's statue sailed from Karnak to Luxor Temple, nearly two miles, to renew the king's power. The sphinx avenue between them is its road."]
+];
+const GLOSS_MAP=new Map(GLOSSARY.map(([t,d])=>[t,d]));
+// ---- tap a word anywhere: the guide just said “hypostyle” and you're nodding ----
+const GL_TERMS=GLOSSARY.flatMap(([t])=>t.split(/\s*[\/·]\s*/).map(x=>[x.trim(),t])).filter(([x])=>x.length>2).sort((a,b)=>b[0].length-a[0].length);
+const GL_RE=new RegExp("\\b("+GL_TERMS.map(([x])=>x.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")).join("|")+")s?\\b","i");
+const GL_SCOPE="#dayCard .agenda, #dayCard .mission, #dayCard .know, #sheet .pn, #sheetQC .qbox, #arc, #who, #eras, #bible";
+function glLink(root){ try{ const seen=new Set([...root.querySelectorAll(".gl")].map(x=>x.dataset.gl)); const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(!p||p.closest("button,a,input,textarea,summary,.gl,.qh,code,.bib-q cite,.gem-tick,.learn,.hd,.hd-done,#glPop")) return NodeFilter.FILTER_REJECT; return GL_RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP; }});
+  const nodes=[]; while(walk.nextNode()) nodes.push(walk.currentNode);
+  const GRE=new RegExp(GL_RE.source,"gi");
+  nodes.forEach(n=>{ let m=null, key=null; for(const mm of n.nodeValue.matchAll(GRE)){ const hit=GL_TERMS.find(([x])=>x.toLowerCase()===mm[1].toLowerCase()); if(hit&&!seen.has(hit[1])){ m=mm; key=hit[1]; break; } } if(!m) return; seen.add(key);
+    const i=m.index, a=n.nodeValue.slice(0,i), w=m[0], b=n.nodeValue.slice(i+w.length); const span=document.createElement("span"); span.className="gl"; span.dataset.gl=key; span.tabIndex=0; span.setAttribute("role","button"); span.textContent=w;
+    const f=document.createDocumentFragment(); if(a) f.appendChild(document.createTextNode(a)); f.appendChild(span); if(b) f.appendChild(document.createTextNode(b)); n.replaceWith(f); }); }catch(e){} }
+let glT=0; new MutationObserver(()=>{ clearTimeout(glT); glT=setTimeout(()=>document.querySelectorAll(GL_SCOPE).forEach(glLink),250); }).observe(document.body,{childList:true,subtree:true});
+function glPop(key){ let el=document.getElementById("glPop"); if(!el){ el=document.createElement("div"); el.id="glPop"; el.setAttribute("role","dialog"); document.body.appendChild(el); }
+  el.innerHTML=`<b>${esc(key)}</b><p>${esc(GLOSS_MAP.get(key)||"")}</p><div class="row"><button type="button" class="btn mini" data-learn="1">All the words · nine dates · drill</button><button type="button" class="btn mini" data-glx="1">Got it</button></div>`; el.classList.add("on"); }
+document.addEventListener("click",e=>{ const g=e.target.closest(".gl"); if(g){ e.preventDefault(); e.stopPropagation(); glPop(g.dataset.gl); return; }
+  const p=document.getElementById("glPop"); if(p&&p.classList.contains("on")&&(e.target.closest("[data-glx]")||!e.target.closest("#glPop"))){ p.classList.remove("on"); if(e.target.closest("[data-glx]")) return; }
+  if(e.target.closest("[data-learn]")){ e.preventDefault(); if(p) p.classList.remove("on"); openLearn(); } }, true);
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("gl")) glPop(e.target.dataset.gl); });
+// ---- the drill: ten cards a day, the ones you miss come back sooner (a Leitner box) ----
+const HD_K="egypt.histdrill";
+function hdCards(){ const C=[]; ANCHORS.forEach((a,i)=>C.push({id:"a"+i, f:`When? ${a.e}`, b:a.y, x:a.hook}));
+  GLOSSARY.forEach(([t,d],i)=>C.push({id:"g"+i, f:`What does “${t}” mean?`, b:d.split(". ")[0]+".", x:d.split(". ").slice(1).join(". ")}));
+  try{ WHO.forEach(([grp,items])=>items.forEach(([n,cue,what],j)=>C.push({id:"w"+grp+j, f:grp==="Gods"?`Which god? ${cue}`:`Who is ${n}?`, b:grp==="Gods"?n:what.split(". ")[0]+".", x:grp==="Gods"?what:cue}))); }catch(e){}
+  return C; }
+const HD_GAP=[0,1,2,4,7];   // days before a card in box n is due again
+function hdState(){ try{ return JSON.parse(localStorage.getItem(HD_K)||"{}")||{}; }catch(e){ return {}; } }
+function hdDeck(){ const S=hdState(); const now=Date.now(); const C=hdCards(); const due=C.filter(c=>{ const s=S[c.id]; return s&&now-s.t>=HD_GAP[s.b]*86400000; }); const fresh=C.filter(c=>!S[c.id]);
+  // anchors first for a newcomer, then a mix
+  fresh.sort((a,b)=>(a.id[0]==="a"?0:a.id[0]==="g"?1:2)-(b.id[0]==="a"?0:b.id[0]==="g"?1:2));
+  return due.sort(()=>Math.random()-.5).concat(fresh).slice(0,10); }
+let hd=null;
+function hdHTML(){ if(!hd) return ""; if(hd.i>=hd.deck.length){ const S=hdState(); const C=hdCards(); const known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length;
+    return `<div class="qh"><h3>History drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hd-done"><b>${hd.got} of ${hd.deck.length}</b><p>${hd.got>=9?"The guide is going to struggle to surprise you.":hd.got>=6?"Solid. The misses come back tomorrow.":"The misses come back tomorrow — that's the whole trick."}</p><p class="muted">${known} of ${C.length} cards known well.</p><div class="row"><button type="button" class="btn primary" data-hdgo="1">Ten more</button><button type="button" class="btn" data-learn="1">Nine dates · words</button></div></div>`; }
+  const c=hd.deck[hd.i]; return `<div class="qh"><h3>History drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hd">
+   <div class="hd-dots">${hd.deck.map((_,i)=>`<i class="${i<hd.i?(hd.res[i]?"ok":"no"):i===hd.i?"on":""}"></i>`).join("")}</div>
+   <button type="button" class="hd-card ${hd.flip?"flip":""}" data-hdflip="1"><small>${hd.flip?"":"tap to see"}</small><b>${esc(c.f)}</b>${hd.flip?`<span class="hd-b">${esc(c.b)}</span>${c.x?`<span class="hd-x">${esc(c.x)}</span>`:""}`:""}</button>
+   ${hd.flip?`<div class="row hd-r"><button type="button" class="btn" data-hdans="0">Again</button><button type="button" class="btn primary" data-hdans="1">Knew it</button></div>`:`<p class="muted hd-tip">Say the answer in your head first. Getting it wrong is how it sticks.</p>`}</div>`; }
+function openHistDrill(){ hd={deck:hdDeck(), i:0, got:0, res:[], flip:false}; safe(()=>closeSheet("sheetQC")); setTimeout(()=>openSheet("sheetQC", hdHTML()),40); }
+function hdRender(){ const b=document.querySelector("#sheetQC .qbox"); if(b) b.innerHTML=hdHTML(); }
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-hdgo]")){ openHistDrill(); return; }
+  if(e.target.closest("[data-hdflip]")&&hd&&!hd.flip){ hd.flip=true; hdRender(); return; }
+  const a=e.target.closest("[data-hdans]"); if(a&&hd){ const ok=a.dataset.hdans==="1"; const c=hd.deck[hd.i]; const S=hdState(); const s=S[c.id]||{b:0}; s.b=ok?Math.min(4,(s.b||0)+1):0; s.t=Date.now(); S[c.id]=s; try{ localStorage.setItem(HD_K,JSON.stringify(S)); }catch(x){} hd.res.push(ok); if(ok) hd.got++; hd.i++; hd.flip=false; hdRender(); if(hd.i>=hd.deck.length) safe(()=>sfx(hd.got>=8?"relic":"stamp")); return; }
+});
+// ---- the Learn page: seven dates, the words, the drill ----
+function learnHTML(){ const S=hdState(); const C=hdCards(); const known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length;
+  return `<div class="qh"><h3>Learn Egypt</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="learn">
+   <button type="button" class="hd-start" data-hdgo="1"><span>🧠</span><span><b>History drill · ten cards</b><small>${known?`${known} of ${C.length} known well · the misses come back sooner`:"dates, words, gods and kings · two minutes"}</small></span></button>
+   <h4>Nine dates hold the whole story</h4>
+   <ol class="anc">${ANCHORS.map(a=>`<li><b>${esc(a.y)}</b><span class="anc-e">${esc(a.e)}</span><span class="anc-h">${esc(a.hook)}</span><span class="anc-w"><i>Elsewhere:</i> ${esc(a.world)}</span><span class="anc-s"><i>On the trip:</i> ${esc(a.see)}</span></li>`).join("")}</ol>
+   <h4>The words guides use</h4><p class="muted" style="margin:-4px 0 8px;font-size:0.7647rem">These are underlined wherever they turn up in the app — tap one for the meaning.</p>
+   <dl class="gls">${GLOSSARY.map(([t,d])=>`<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join("")}</dl>
+  </div>`; }
+function openLearn(){ safe(()=>closeSheet("sheetQC")); setTimeout(()=>openSheet("sheetQC", learnHTML()),40); }
+// entry points: a Guide tile, and the How-old-is-this section gets a button
+(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-learn]')){ const S=hdState(); const n=Object.keys(S).length; g.insertAdjacentHTML("beforeend",`<button type="button" data-learn="1"><span class="qi">🧠</span><span class="nl">Learn Egypt<small>${n?"drill · dates · words":"nine dates, the words, a drill"}</small></span></button>`); } }catch(e){} return r; }; })();
+(function(){ if(typeof renderEras!=="function") return; const R=renderEras; renderEras=function(){ const r=R.apply(this,arguments); try{ const el=document.getElementById("eras"); if(el&&!el.querySelector("[data-learn]")) el.insertAdjacentHTML("beforeend",`<div class="row" style="margin-top:10px"><button type="button" class="btn" data-learn="1">🧠 Nine dates that hold it all · the drill</button></div>`); }catch(e){} return r; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.gl{border-bottom:1.5px dotted color-mix(in srgb,#c9a24a 80%,transparent);cursor:help;-webkit-tap-highlight-color:transparent}
+#glPop{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:95;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:0 14px 34px -10px rgba(0,0,0,.45);transform:translateY(16px);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:520px;margin:0 auto}
+#glPop.on{opacity:1;transform:none;pointer-events:auto}#glPop b{font:800 1rem var(--display)}#glPop p{margin:6px 0 10px;font-size:0.8824rem;line-height:1.45}#glPop .row{display:flex;gap:8px;flex-wrap:wrap}
+.learn h4{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.hd-start{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--sand);color:var(--fg);font:inherit;cursor:pointer}.hd-start>span:first-child{font-size:1.6rem}.hd-start b{display:block}.hd-start small{color:var(--muted);font-size:0.7353rem}
+.anc{list-style:none;padding:0;margin:0;border-left:2px solid #c9a24a;padding-left:12px}.anc li{position:relative;margin:0 0 12px}.anc li::before{content:"";position:absolute;left:-18px;top:5px;width:10px;height:10px;border-radius:50%;background:#c9a24a}
+.anc b{display:block;font:800 0.8824rem var(--mono)}.anc span{display:block;font-size:0.8235rem;line-height:1.4}.anc-e{font-weight:700}.anc-h{margin-top:2px}.anc-w,.anc-s{color:var(--muted);font-size:0.7647rem!important}.anc i{font-style:normal;font-weight:700}
+.gls{margin:0}.gls dt{font-weight:700;font-size:0.8529rem;margin-top:10px}.gls dd{margin:2px 0 0;font-size:0.8235rem;line-height:1.45;color:var(--fg);opacity:.85}
+.hd-dots{display:flex;gap:5px;justify-content:center;margin:2px 0 12px}.hd-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.hd-dots i.on{background:var(--fg)}.hd-dots i.ok{background:var(--ok)}.hd-dots i.no{background:#d0442f}
+.hd-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;min-height:220px;padding:20px;border-radius:18px;border:1px solid var(--line);background:var(--sand);color:var(--fg);font:inherit;text-align:center;cursor:pointer}
+.hd-card small{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.hd-card b{font:700 1.1rem/1.35 var(--display)}.hd-b{font:800 1.15rem/1.35 var(--display);color:#b07612}.hd-x{font-size:0.8235rem;line-height:1.45;opacity:.8}
+.hd-r{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.hd-tip{text-align:center;font-size:0.7647rem;margin-top:12px}
+.hd-done{text-align:center;padding:10px 0}.hd-done b{font:800 2rem var(--display)}.hd-done .row{display:flex;gap:8px;justify-content:center;margin-top:12px}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
