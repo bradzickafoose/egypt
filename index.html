@@ -1413,22 +1413,7 @@ html.hugetext .bp-on em{grid-column:2}
     <div id="guideCity" class="gtabs" role="tablist"></div>
     <div id="guideBody"></div>
   </section>
-  <div class="gch" id="g-see"><b>What you're looking at</b><span>the story first, then how to read the walls, then the Bible</span></div>
-  <section id="storySec" class="hub" data-hub="story">
-    <h2 class="sec">The story of Egypt</h2>
-    <div class="card hubc">
-      <p class="hub-lede">Three ways into five thousand years. Start with our nine days; the other two hang everything on a frame.</p>
-      <div class="hubtabs" role="tablist" aria-label="The story of Egypt">
-        <button type="button" role="tab" data-hubtab="arc">Our nine days</button>
-        <button type="button" role="tab" data-hubtab="dates">Nine dates</button>
-        <button type="button" role="tab" data-hubtab="eras">The ages</button>
-      </div>
-      <section id="arcSec" class="hubp" data-pane="arc" role="tabpanel"><p class="hub-sub">The trip as one story, a chapter a day — what happened here, and why it's the next thing you see.</p><div id="arc"></div></section>
-      <section id="datesSec" class="hubp" data-pane="dates" role="tabpanel"><p class="hub-sub">Learn these nine and every guide's sentence has somewhere to land.</p><div id="dates"></div></section>
-      <section id="eraSec" class="hubp" data-pane="eras" role="tabpanel"><p class="hub-sub">How old is this? Egypt's ages in order — the ones you're standing in today are lit up.</p><div id="eras"></div></section>
-      <div class="hub-foot" data-drillfoot></div>
-    </div>
-  </section>
+  <div class="gch" id="g-see"><b>What you're looking at</b><span>where you're standing first, then how to read it, then the long story</span></div>
   <section id="wallsSec" class="hub" data-hub="walls">
     <h2 class="sec">Reading the walls</h2>
     <div class="card hubc">
@@ -1441,6 +1426,21 @@ html.hugetext .bp-on em{grid-column:2}
       <section id="whoSec" class="hubp" data-pane="who" role="tabpanel"><p class="hub-sub">The names you'll hear a hundred times, with the one thing to recognise each by.</p><div id="who"></div></section>
       <section id="signsSec" class="hubp" data-pane="signs" role="tabpanel"><p class="hub-sub">What's written on today's walls, the royal names in real glyphs, the alphabet, and your own name in a cartouche.</p><div id="signs"></div></section>
       <section id="termsSec" class="hubp" data-pane="terms" role="tabpanel"><p class="hub-sub">Underlined wherever they turn up in the app — tap one anywhere for the meaning.</p><div id="terms"></div></section>
+      <div class="hub-foot" data-drillfoot></div>
+    </div>
+  </section>
+  <section id="storySec" class="hub" data-hub="story">
+    <h2 class="sec">The story of Egypt</h2>
+    <div class="card hubc">
+      <p class="hub-lede">Three ways in: the trip told as one story, nine dates to hang it on, and the age each site belongs to.</p>
+      <div class="hubtabs" role="tablist" aria-label="The story of Egypt">
+        <button type="button" role="tab" data-hubtab="arc">Our nine days</button>
+        <button type="button" role="tab" data-hubtab="dates">Nine dates</button>
+        <button type="button" role="tab" data-hubtab="eras">The ages</button>
+      </div>
+      <section id="arcSec" class="hubp" data-pane="arc" role="tabpanel"><p class="hub-sub">The trip as one story, a chapter a day — what happened here, and why it's the next thing you see.</p><div id="arc"></div></section>
+      <section id="datesSec" class="hubp" data-pane="dates" role="tabpanel"><p class="hub-sub">Learn these nine and every guide's sentence has somewhere to land.</p><div id="dates"></div></section>
+      <section id="eraSec" class="hubp" data-pane="eras" role="tabpanel"><p class="hub-sub">How old is this? Egypt's ages in order — the ones you're standing in today are lit up.</p><div id="eras"></div></section>
       <div class="hub-foot" data-drillfoot></div>
     </div>
   </section>
@@ -2893,6 +2893,7 @@ function renderGame(){
 
   <h2 class="sec" style="margin-top:18px">Sidelines</h2><p class="secsub">No points. Just glory, tea and who pays.</p>
   ${safe(()=>funBox())}
+  ${(typeof practiceHTML==="function"&&safe(practiceHTML))||""}
   <h2 class="sec" style="margin-top:18px">After the whistle</h2>
   <details class="fold"><summary>The Nile Bowl — final</summary><div class="in">
     <p class="muted">Built from your day ratings, the journal, bingo and the scoreboard. Press it on the plane home — or any night, to see where it stands.</p>
@@ -5247,6 +5248,29 @@ document.addEventListener("change", e=>{ if(e.target.closest("input[data-photo]"
 @keyframes msay{from{transform:scale(.6) translateY(10px);opacity:0}to{transform:none;opacity:1}}
 html.bigtext .mummy .msay{width:240px}
 `; const st=document.createElement("style"); st.textContent=css; document.head.appendChild(st); })();
+// ---- more material: he's been workshopping these since the Middle Kingdom ----
+(function(){ const add=(k,xs)=>{ if(Array.isArray(MUM_EV[k])) MUM_EV[k].push(...xs); else MUM_EV[k]=xs; };
+  add("fg",["Forty percent off. The vendor is now telling his cousin about 'the tough one'. That's you. You're the tough one.","You haggled him down and he still made money. Everybody wins. Mostly him.","Field goal. I'd do a victory lap, but it would take until Thursday."]);
+  add("td",["TOUCHDOWN! I'd spike the ball but I'd lose a finger.","Six points! Somewhere, Anubis just knocked over the scales.","Touchdown. I'm crying. It's not tears, it's resin. Still counts."]);
+  add("saf",["Flag. The replay booth is a priest with a mirror. It's going to take a while.","Penalty. Back fifteen cubits."]);
+  add("stamp",["Stamped. I'd frame it, but I'm already framed. Glass case, Cairo, 1920s. Long story.","Another stamp. My passport just says 'Deceased'. Customs is very relaxed about it."]);
+  add("photo",["Lovely. Now take one where I'm in it. Hold on. I'll lie down. That's my best angle.","Another photo of a wall. The wall is 3,000 years old and it still looks better than me."]);
+  add("tout",["'My friend!' I had a friend once. Then he wrapped me in linen and left.","That man has called you his friend three times. You've known me for days and I'm still 'that mummy'."]);
+  add("night",["Lights out. I'll keep watch. I'm literally incapable of anything else.","Go to bed. I'll stand guard by the minibar. Nobody gets the Toblerone."]);
+  add("early",["Up before the sun? Ra is going to be furious. He likes to be first.","Morning! I didn't sleep either. I've been asleep for three thousand years and frankly I'm done with it."]);
+  add("poke",["That's a load-bearing bandage.","I bruise. Slowly. Over centuries.","Do that again and I tell everyone your step count."]);
+  add("find",["You found it. The guide is pretending he was about to point at it.","Ticked off. I'd tick things off too, but my list is just 'lie down' and I finished it in 1323 BC.","Every single one. Even I didn't find all of those, and I've had time.","Found it. Look at you, doing archaeology. Carter took six years. You took a coffee break."]);
+  add("drill",["Ten for ten? Thoth wants your number.","You know more dates than I do now. Rude. I was there.","Studying on holiday. I've never been more proud or more concerned."]);
+  const more={sun11:["The Bent Pyramid: proof that even pharaohs had a 'we'll fix it in post' phase.","Saqqara has my old neighbours. Say hi. Not too loud. Some of them are light sleepers. Most of them aren't."],
+    mon12:["The GEM has 100,000 objects. I've been told I'm 'not a priority'. Fine.","At the pyramids a man will say his camel is called Michael Jackson. They're all called Michael Jackson.","Khufu built the biggest pyramid and the smallest statue of himself. Three inches. Nobody's sure why. I am. Just saying."],
+    tue13:["Aswan granite is the hardest stone in Egypt. The second hardest is a Nubian spice dealer on commission."],
+    wed14:["Ramses had over a hundred children. And I can't even keep a houseplant. Mainly because I'm dead.","Twice a year the sun lights up Ramses' face inside Abu Simbel. Nobody's ever lit up my face. On purpose."],
+    thu15:["Kom Ombo has a carving of surgical tools. Don't look too closely. I had a few of those used on me."],
+    sat17:["Tut's tomb is small. He died young. They panicked. I've been to weddings planned with more care.","The Valley of the Kings. Sixty-odd tombs. All empty. Grave robbers: the original tour groups."],
+    sun18:["Last full day together. If either of you cries, I'm putting it in the scoreboard."]};
+  Object.keys(more).forEach(k=>{ if(Array.isArray(MUM_DAY[k])) MUM_DAY[k].push(...more[k]); });
+  try{ MUMMY_LINES.push("I'm not cursed. I'm just very, very well-preserved and a bit dramatic.","My mother said I'd never amount to anything. Now I'm in a museum. Who's laughing, Mum.","People ask if it's hot in here. It's linen, sand and resin. I'm basically a croissant.","The Rosetta Stone took twenty years to decode. My handwriting is worse."); }catch(e){}
+})();
 
 // ---------- taunts.js: trash talk that knows where you are in the trip ----------
 // Eight stages, each with its own material — some lines for anyone, some only Brad can send, some only Duane can.
@@ -6688,7 +6712,6 @@ const BIBLE_PLACE={"Karnak Temple":"karnak","Great Pyramid of Giza":"giza","Step
 document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-bibopen],#shBody [data-gemopen]")) safe(closePlace); }, true);
 (function(){ const st=document.createElement("style"); st.textContent=`
 .bib-place{margin:12px 0;padding:12px;border-radius:14px;border:1px solid color-mix(in srgb,#c9a24a 40%,var(--line));background:color-mix(in srgb,#c9a24a 6%,var(--card))}.bib-place>b{display:block;font-size:0.9412rem}.bib-place>p{margin:6px 0 8px;font-size:0.8529rem;line-height:1.45}
-.navg button[data-learn]{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px;min-height:54px}
 `; document.head.appendChild(st); })();
 
 // ---------- gem.js: the Grand Egyptian Museum, in your pocket — a route for your three hours, the stories at each stop, tick as you go ----------
@@ -6869,7 +6892,7 @@ function hdRender(){ const b=document.querySelector("#sheetQC .qbox"); if(b) b.i
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-hdgo]")){ openHistDrill(); return; }
   if(e.target.closest("[data-hdflip]")&&hd&&!hd.flip){ hd.flip=true; hdRender(); return; }
-  const a=e.target.closest("[data-hdans]"); if(a&&hd){ const ok=a.dataset.hdans==="1"; const c=hd.deck[hd.i]; const S=hdState(); const s=S[c.id]||{b:0}; s.b=ok?Math.min(4,(s.b||0)+1):0; s.t=Date.now(); S[c.id]=s; try{ localStorage.setItem(HD_K,JSON.stringify(S)); }catch(x){} hd.res.push(ok); if(ok) hd.got++; hd.i++; hd.flip=false; hdRender(); if(hd.i>=hd.deck.length) safe(()=>sfx(hd.got>=8?"relic":"stamp")); return; }
+  const a=e.target.closest("[data-hdans]"); if(a&&hd){ const ok=a.dataset.hdans==="1"; const c=hd.deck[hd.i]; const S=hdState(); const s=S[c.id]||{b:0}; s.b=ok?Math.min(4,(s.b||0)+1):0; s.t=Date.now(); S[c.id]=s; try{ localStorage.setItem(HD_K,JSON.stringify(S)); }catch(x){} hd.res.push(ok); if(ok) hd.got++; hd.i++; hd.flip=false; hdRender(); if(hd.i>=hd.deck.length){ safe(()=>sfx(hd.got>=8?"relic":"stamp")); if(hd.got>=8) safe(()=>mumReact("drill",{overSheet:true,act:"peek",delay:900,line:hd.got===10?"Ten for ten? Thoth wants your number.":undefined})); } return; }
 });
 // ---- the Learn page: seven dates, the words, the drill ----
 function learnHTML(){ const S=hdState(); const C=hdCards(); const known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length;
@@ -6909,20 +6932,29 @@ function hubShow(hub, pane, save){ const sec=document.querySelector(`.hub[data-h
   sec.querySelectorAll(".hubp").forEach(p=>{ p.hidden=p.dataset.pane!==pane; });
   if(pane==="signs") safe(renderSigns); if(pane==="eras") safe(renderEras); if(pane==="arc") safe(storyArc); if(pane==="dates") safe(renderDates); if(pane==="terms") safe(renderTerms);
   if(save!==false){ const S=hubState(); S[hub]=pane; try{ localStorage.setItem(HUB_K,JSON.stringify(S)); }catch(e){} } }
-function renderDates(){ const el=document.getElementById("dates"); if(!el||el.dataset.done) return; el.dataset.done="1";
-  el.innerHTML=`<ol class="anc">${ANCHORS.map(a=>`<li><b>${esc(a.y)}</b><span class="anc-e">${esc(a.e)}</span><span class="anc-h">${esc(a.hook)}</span><span class="anc-w"><i>Elsewhere:</i> ${esc(a.world)}</span><span class="anc-s"><i>On the trip:</i> ${esc(a.see)}</span></li>`).join("")}</ol>`; }
-function renderTerms(){ const el=document.getElementById("terms"); if(!el||el.dataset.done) return; el.dataset.done="1";
+function hubDay(){ return DAYS[sel]||DAYS[0]; }
+function hubDayTag(d){ return `${d.dow} ${d.num}`; }
+function renderDates(){ const el=document.getElementById("dates"); if(!el) return; const d=hubDay(); const tag=hubDayTag(d);
+  const hit=a=>new RegExp("\\b"+tag+"\\b").test(a.see); const n=ANCHORS.filter(hit).length;
+  el.innerHTML=`${n?`<div class="hub-today"><b>📍 Where ${esc(tag)} stands</b><div class="tt-chips">${ANCHORS.map((x,i)=>hit(x)?`<button type="button" class="tt-chip" data-anjump="${i}">${esc(x.y.replace(/^c\. /,""))} · ${esc(x.e.split(/[:;]/)[0])}</button>`:"").join("")}</div></div>`:""}<ol class="anc">${ANCHORS.map(a=>`<li id="anc-${ANCHORS.indexOf(a)}" class="${hit(a)?"td":""}"><b>${esc(a.y)}${hit(a)?`<em class="td-tag">${esc(tag)}</em>`:""}</b><span class="anc-e">${esc(a.e)}</span><span class="anc-h">${esc(a.hook)}</span><span class="anc-w"><i>Elsewhere:</i> ${esc(a.world)}</span><span class="anc-s"><i>On the trip:</i> ${esc(a.see)}</span></li>`).join("")}</ol>`; }
+function hubTodayTerms(d){ let txt=""; try{ txt=JSON.stringify([d.title,d.mission,d.know,d.agenda,(typeof STORY!=="undefined"&&STORY[d.id])||"",(d.agenda||[]).map(a=>{ const k=a.p||a.map; return (k&&typeof PLACES!=="undefined"&&PLACES[k])||""; })]); }catch(e){}
+  const out=[]; GL_TERMS.forEach(([x,k])=>{ if(out.includes(k)) return; const re=new RegExp("\\b"+x.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")+"s?\\b","i"); if(re.test(txt)) out.push(k); }); return GLOSSARY.map(g=>g[0]).filter(k=>out.includes(k)&&k!=="Pharaoh").slice(0,9); }
+function renderTerms(){ const el=document.getElementById("terms"); if(!el) return; const d=hubDay(); const T=hubTodayTerms(d);
   const G=[...GLOSSARY].sort((a,b)=>a[0].localeCompare(b[0]));
-  el.innerHTML=`<dl class="gls">${G.map(([t,d])=>`<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join("")}</dl>`; }
-function drillFoot(){ let known=0, total=0; try{ const S=hdState(); const C=hdCards(); total=C.length; known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length; }catch(e){}
-  return `<button type="button" class="hub-drill" data-hdgo="1"><span>🧠</span><span><b>Test yourself · ten cards</b><small>${known?`${known} of ${total} known well · the misses come back sooner`:"dates, gods, kings and words · two minutes"}</small></span><em>›</em></button>`; }
-function hubFeet(){ document.querySelectorAll("[data-drillfoot]").forEach(f=>f.innerHTML=drillFoot()); }
+  el.innerHTML=`${T.length?`<div class="hub-today"><b>📍 You'll hear these ${esc(hubDayTag(d))}</b><div class="tt-chips">${T.map(k=>`<button type="button" class="tt-chip" data-termjump="${escA(k)}">${esc(k)}</button>`).join("")}</div></div>`:""}<dl class="gls">${G.map(([t,dd])=>`<dt id="term-${escA(t.replace(/\W+/g,"-"))}" class="${T.includes(t)?"td":""}">${esc(t)}</dt><dd>${esc(dd)}</dd>`).join("")}</dl>`; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-termjump],[data-anjump]"); if(!b) return; const dt=document.getElementById(b.dataset.anjump!=null?"anc-"+b.dataset.anjump:"term-"+b.dataset.termjump.replace(/\W+/g,"-")); if(dt){ scrollToEl(dt); dt.classList.remove("flash"); void dt.offsetWidth; dt.classList.add("flash"); } });
+function drillKnown(){ try{ const S=hdState(); const C=hdCards(); return [C.filter(c=>S[c.id]&&S[c.id].b>=3).length, C.length]; }catch(e){ return [0,0]; } }
+function drillFoot(){ const [k,n]=drillKnown(); return `<button type="button" class="hub-drill" data-hdgo="1"><span>🧠</span><span><b>Done reading? Ten-card check</b><small>${k?`${k} of ${n} known well`:"two minutes, for the bus or the hotel"}</small></span><em>›</em></button>`; }
+function renderPractice(){ const el=document.querySelector("#gameBody .prac"); if(el) el.outerHTML=practiceHTML(); }
+function practiceHTML(){ const [k,n]=drillKnown();
+  return `<div class="card prac"><div class="prac-h"><b>Practice</b><span>solo · no points · works offline</span></div><div class="prac-g"><button type="button" data-hdgo="1"><span class="qi">🧠</span><span><b>History check</b><small>${k?`${k} of ${n} known`:"ten cards: dates, gods, words"}</small></span></button><button type="button" data-drill="1"><span class="qi">🗣️</span><span><b>Phrase drill</b><small>ten Arabic cards</small></span></button></div></div>`; }
+function hubFeet(){ document.querySelectorAll("[data-drillfoot]").forEach(f=>f.innerHTML=drillFoot()); safe(renderPractice); }
 function hubInit(){ const S=hubState(); Object.keys(HUB_DEF).forEach(h=>hubShow(h, S[h]||HUB_DEF[h], false)); hubFeet(); }
 document.addEventListener("click",e=>{ const b=e.target.closest("[data-hubtab]"); if(!b) return; const sec=b.closest(".hub"); hubShow(sec.dataset.hub, b.dataset.hubtab);
   const r=sec.getBoundingClientRect(); if(r.top<topH()-4) scrollToEl(sec,false); });
 document.addEventListener("keydown",e=>{ const b=e.target.closest&&e.target.closest("[data-hubtab]"); if(!b||!/^Arrow(Left|Right)$/.test(e.key)) return; const all=[...b.parentElement.querySelectorAll("[data-hubtab]")]; const i=all.indexOf(b)+(e.key==="ArrowRight"?1:-1); const n=all[(i+all.length)%all.length]; n.click(); n.focus(); });
 // anything that scrolls to a pane (navGo "who", openPlace links, the glossary) opens that tab first and lands on the hub's tabs
-(function(){ const S0=scrollToEl; scrollToEl=function(el, smooth){ try{ const p=el&&el.closest&&el.closest(".hubp"); if(p){ const hub=p.closest(".hub"); hubShow(hub.dataset.hub, p.dataset.pane); if(el===p) el=hub; } }catch(e){} return S0.call(this, el, smooth); }; })();
+(function(){ const S0=scrollToEl; scrollToEl=function(el, smooth){ try{ const p=el&&el.closest&&el.closest(".hubp"); if(p){ const hub=p.closest(".hub"); if(p.hidden) hubShow(hub.dataset.hub, p.dataset.pane); if(el===p) el=hub; } }catch(e){} return S0.call(this, el, smooth); }; })();
 const HUB_OF={arc:"story",dates:"story",eras:"story",who:"walls",signs:"walls",terms:"walls"};
 function hubGo(pane){ safe(()=>closeSheet("sheetQC")); const hub=HUB_OF[pane]; if(!hub) return; hubShow(hub,pane); setTimeout(()=>scrollToEl(document.querySelector(`.hub[data-hub="${hub}"]`)),60); }
 openLearn=function(which){ hubGo(which==="terms"?"terms":"dates"); };
@@ -6931,33 +6963,128 @@ openLearn=function(which){ hubGo(which==="terms"?"terms":"dates"); };
   if(k==="histdrill"){ return safe(openHistDrill); }
   if(HUB_OF[k]){ return hubGo(k); }
   return N.apply(this,arguments); }; })();
-// the Guide's navigator: one tidy group for this section, in reading order
+// the Guide's navigator: where you're standing comes first; the reading comes after
+function el0(){ return document.querySelector("#navigator .card"); }
+function fgHero(){ try{ const p=fgPick(); if(!p) return ""; const P=PLACES[p.s.k]; const F=fgFound()[p.s.k]||{}; const n=(P.ask||[]).length; const got=Object.keys(F).length;
+  const lbl=p.when==="tomorrow"?`Tomorrow · ${p.d.dow} ${p.d.num}`:p.when==="day"?`${p.d.dow} ${p.d.num} · first stop`:p.when==="first"?"Up first today":"Right here";
+  return `<button type="button" class="ng-here" data-fieldgo="1"><span class="nh-k">📍 ${esc(lbl)}</span><b>${esc(P.n.replace(/ \(.*\)/,""))}</b><small>${n?`${got?`${got} of ${n} found`:`${n} things to find`} · `:""}the walls · who's who · the words</small><em>›</em></button>`; }catch(e){ return ""; } }
 (function(){ const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{
   const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(!g) return r;
-  let known=0; try{ const S=hdState(); known=hdCards().filter(c=>S[c.id]&&S[c.id].b>=3).length; }catch(e){}
   let gem=""; try{ if(cairoNow().date<="2026-10-12"){ const S=gemSeen(); const k=GEM_STOPS.filter(s=>S[s.id]).length; gem=`<button type="button" class="ng-wide" data-gemopen="1"><span class="qi">🏛️</span><span class="nl">The GEM, inside<small>${k?`${k}/${GEM_STOPS.length} seen · Mon 12`:"12 stops and their stories · Mon 12"}</small></span></button>`; } }catch(e){}
   const t=(k,i,l,s)=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span><span class="nl">${l}<small>${esc(s)}</small></span></button>`;
-  g.innerHTML=t("story","📖","The story","our days · nine dates · the ages")+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("histdrill","🧠","Test yourself",known?`${known} cards known well`:"ten cards, two minutes")+gem;
+  const hero=fgHero(); g.classList.add("ng-look"); let top=false; try{ const p=fgPick(); top=!!(p&&(p.when==="now"||p.when==="first")&&cairoNow().h>=6); }catch(e){}
+  const card=el0(); const old=card&&card.querySelector(".ng-top"); if(old) old.remove();
+  if(top&&hero&&card){ const first=card.querySelector(".ng-h"); if(first) first.insertAdjacentHTML("beforebegin",`<div class="navg ng-top">${hero}</div>`); }
+  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened");
  }catch(e){} return r; }; })();
 // keep the drill counts fresh when the drill sheet closes
 (function(){ if(typeof closeSheet!=="function") return; const C=closeSheet; closeSheet=function(){ const r=C.apply(this,arguments); safe(hubFeet); return r; }; })();
+(function(){ const R=renderGuideFront; renderGuideFront=function(){ const r=R.apply(this,arguments); safe(renderDates); safe(renderTerms); safe(hubFeet); return r; }; })();
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",hubInit); else hubInit();
 (function(){ const st=document.createElement("style"); st.textContent=`
 .hubc{padding:14px 14px 12px}
 .hub-lede{margin:0 0 12px;font-size:0.8235rem;line-height:1.45}
 .hubtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:12px;background:color-mix(in srgb,var(--fg) 7%,var(--bg));margin:0 0 12px}
 .hubtabs button{border:0;background:none;color:var(--muted);border-radius:9px;padding:9px 4px;font:700 0.7647rem/1.15 var(--body);cursor:pointer;min-height:38px}
-.hubtabs button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px var(--line)}
+.hubtabs button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.16),0 0 0 1px color-mix(in srgb,var(--fg) 24%,transparent)}
 .hubp[hidden]{display:none!important}
 .hub-sub{margin:0 0 10px;font-size:0.7647rem;color:var(--muted);line-height:1.4}
 .hub-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
-.hub-drill{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:var(--sand);color:var(--fg);font:inherit;cursor:pointer}
-.hub-drill>span:first-child{font-size:1.4rem;line-height:1}.hub-drill b{display:block;font-size:0.8235rem}.hub-drill small{display:block;color:var(--muted);font-size:0.7059rem;margin-top:1px}.hub-drill em{margin-left:auto;font-style:normal;color:var(--muted);font-size:1.2rem}
+.hub-drill{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:4px 2px;border:0;background:none;color:var(--fg);font:inherit;cursor:pointer}
+.hub-drill>span:first-child{font-size:1.15rem;line-height:1;opacity:.85}.hub-drill b{display:block;font-size:0.8235rem}.hub-drill small{display:block;color:var(--muted);font-size:0.7059rem;margin-top:1px}.hub-drill em{margin-left:auto;font-style:normal;color:var(--muted);font-size:1.2rem}
 .hub-drill:active{transform:scale(.98)}
 .navg button.ng-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px;min-height:54px}
+.navg.ng-look>button[data-nav="bible"]{grid-column:1/-1;flex-direction:row}
+.navg.ng-top{margin:4px 0 2px}
+.navg button.ng-here{grid-column:1/-1;display:grid!important;grid-template-columns:1fr auto;align-items:center;text-align:left;gap:2px 10px;padding:13px 14px;min-height:0;border-color:color-mix(in srgb,#c9a24a 60%,var(--line));background:color-mix(in srgb,#c9a24a 13%,var(--card))}
+.ng-here .nh-k{grid-column:1;font:700 0.5882rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ng-here b{grid-column:1;font:800 1.05rem/1.2 var(--display)}.ng-here small{grid-column:1;font-size:0.7059rem;color:var(--muted)}
+.ng-here em{grid-column:2;grid-row:1/4;font-style:normal;font-size:1.4rem;color:var(--muted)}
 #dates .anc{margin-left:4px}
 .anc span.gl{display:inline!important;font:inherit}
 html.hugetext .hubtabs{grid-template-columns:1fr}
+.prac{margin-top:14px}.prac-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}.prac-h b{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase}.prac-h span{font-size:0.7059rem;color:var(--muted)}
+.prac-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.prac-g button{display:flex;gap:9px;align-items:center;text-align:left;padding:11px;border-radius:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.prac-g .qi{font-size:1.3rem}.prac-g b{display:block;font-size:0.7941rem}.prac-g small{display:block;font-size:0.6765rem;color:var(--muted)}
+html.bigtext .prac-g{grid-template-columns:1fr}
+.hub-today{margin:0 0 12px;padding:9px 11px;border-radius:11px;background:color-mix(in srgb,#c9a24a 14%,var(--card));font-size:0.7941rem;line-height:1.4}
+.hub-today b{display:block;font-size:0.7647rem;margin-bottom:6px}
+.tt-chips{display:flex;flex-wrap:wrap;gap:6px}.tt-chip{border:1px solid color-mix(in srgb,#c9a24a 55%,var(--line));background:var(--card);color:var(--fg);border-radius:999px;padding:5px 10px;font:600 0.7353rem var(--body);cursor:pointer}
+.anc li.td::before{box-shadow:0 0 0 4px color-mix(in srgb,#c9a24a 30%,transparent)}
+.td-tag{margin-left:8px;padding:1px 7px;border-radius:999px;background:#c9a24a;color:#1d1a14;font:700 0.6176rem/1.5 var(--mono);font-style:normal;vertical-align:2px}
+.gls dt.td::after{content:"today";margin-left:7px;padding:1px 6px;border-radius:999px;background:color-mix(in srgb,#c9a24a 30%,transparent);font:700 0.5882rem/1.5 var(--mono);text-transform:uppercase;letter-spacing:.08em;vertical-align:2px}
+.gls dt.flash{animation:ttf 1.4s ease-out}@keyframes ttf{0%{background:color-mix(in srgb,#c9a24a 45%,transparent)}100%{background:transparent}}
+.gls dt{border-radius:6px}.anc li.flash{animation:ttf 1.4s ease-out;border-radius:8px}
+`; document.head.appendChild(st); })();
+
+// ---------- fieldguide.js: "Right here" — the guide that guides. One sheet for the site you're standing in: what to find, what's on the walls, who's who, the words you'll hear. Opens in one tap, closes in one, and you're back to exploring. ----------
+const FG_K="egypt.find";
+function fgFound(){ try{ return JSON.parse(localStorage.getItem(FG_K)||"{}"); }catch(e){ return {}; } }
+function fgSleep(){ try{ return new Set(PLACE_INDEX.filter(([n])=>n==="Sleeping"||n==="Eating").flatMap(g=>g[1])); }catch(e){ return new Set(); } }
+// the sightseeing stops of a day, in order, with their times
+function fgSites(d){ if(!d) return []; const zz=fgSleep(); const out=[]; (d.agenda||[]).forEach(a=>{ const k=[a.p,a.map,a.title].find(x=>x&&PLACES[x]); if(!k||zz.has(k)) return; const P=PLACES[k]; if(!(P.ask&&P.ask.length)&&!fgWall(d,k)) return; if(!out.find(x=>x.k===k)) out.push({k, t:a.t||""}); }); return out; }
+function fgWall(d,k){ try{ const S=SITE_SIGNS[d.id]; if(!S) return null; const P=PLACES[k]; const hay=(k+" "+(P&&P.n||"")).toLowerCase();
+  return S.find(([n])=>hay.includes(n.toLowerCase()))||S.find(([n])=>hay.includes(n.toLowerCase().split(" ")[0]))||null; }catch(e){ return null; } }
+// what "right here" means: today, the stop you're at by the clock; in the evening, tomorrow's first; on another day, that day's first
+function fgPick(){ try{ const n=cairoNow(); const td=todayDay(); const d=DAYS[sel]||DAYS[0];
+    if(td&&td.id===d.id){ const S=fgSites(d); const hm=`${String(n.h).padStart(2,"0")}:${String(n.m||0).padStart(2,"0")}`;
+      if(S.length&&n.h<19){ let cur=S[0]; S.forEach(s=>{ if(s.t&&s.t<=hm) cur=s; }); return {d, s:cur, when:S[0].t>hm?"first":"now"}; }
+      const i=DAYS.indexOf(d); for(let j=i+1;j<Math.min(DAYS.length,i+3);j++){ const S2=fgSites(DAYS[j]); if(S2.length) return {d:DAYS[j], s:S2[0], when:"tomorrow"}; }
+      return null; }
+    const S=fgSites(d); return S.length?{d, s:S[0], when:"day"}:null; }catch(e){ return null; } }
+function fgText(d,k){ const P=PLACES[k]||{}; const w=fgWall(d,k); return [P.n,P.what,(P.ask||[]).join(" "),w?w[1]:""].join(" "); }
+function fgWho(txt){ const out=[]; try{ WHO.slice(0,2).forEach(([g,list])=>list.forEach(([n,cue])=>{ const base=n.split(/[ (\/]/)[0]; if(base.length>2&&new RegExp("\\b"+base+"\\b").test(txt)&&!out.find(x=>x[0]===n)) out.push([n,cue]); })); }catch(e){} return out.slice(0,5); }
+function fgTerms(txt){ const out=[]; try{ GL_TERMS.forEach(([x,k])=>{ if(out.includes(k)||k==="Pharaoh") return; if(new RegExp("\\b"+x.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")+"s?\\b","i").test(txt)) out.push(k); }); }catch(e){} return GLOSSARY.map(g=>g[0]).filter(k=>out.includes(k)).slice(0,7); }
+let fgCur=null;
+function fgHTML(d,k,when){ const P=PLACES[k]; const S=fgSites(d); const F=fgFound()[k]||{}; const ask=P.ask||[]; const got=ask.filter((_,i)=>F[i]).length; const w=fgWall(d,k); const txt=fgText(d,k);
+  const who=fgWho(txt); const terms=fgTerms(txt); const bib=(typeof BIBLE_PLACE!=="undefined")&&BIBLE_PLACE[k]; const gem=k==="Grand Egyptian Museum";
+  const lbl=when==="tomorrow"?`Tomorrow · ${d.dow} ${d.num}`:when==="day"?`${d.dow} ${d.num}`:when==="first"?`Up first today`:`Right here`;
+  return `<div class="qh"><h3>📍 ${esc(P.n.replace(/ \(.*\)/,""))}</h3><button type="button" class="x" aria-label="Close">×</button></div>
+  <div class="fg">
+   <div class="fg-k">${esc(lbl)}${S.length>1?" · tap another stop":""}</div>
+   ${S.length>1?`<div class="fg-sites">${S.map(s=>`<button type="button" class="${s.k===k?"on":""}" data-fgsite="${escA(s.k)}" data-fgday="${d.id}">${s.t?`<i>${esc(s.t)}</i>`:""}${esc(PLACES[s.k].n.replace(/ \(.*\)|Temple of |Pyramids of /g,"").replace(/ \+ .*/,""))}</button>`).join("")}</div>`:""}
+   ${gem?`<button type="button" class="fg-gem" data-gemopen="1"><span>🏛️</span><span><b>Walk the GEM route</b><small>12 stops in order, with the story at each</small></span><em>›</em></button>`:""}
+   ${ask.length?`<div class="fg-h"><b>Find these</b><span>${got?`${got} of ${ask.length} found`:"tick them off as you go"}</span></div><ul class="fg-find">${ask.map((x,i)=>`<li><button type="button" class="${F[i]?"got":""}" data-fgfind="${i}" data-fgk="${escA(k)}" aria-pressed="${!!F[i]}"><span class="fg-box">${F[i]?"✓":""}</span><span>${esc(x)}</span></button></li>`).join("")}</ul>`:""}
+   ${w?`<div class="fg-h"><b>${/Museum/.test(k)?"Written on the objects":"On the walls"}</b><button type="button" class="fg-more" data-nav="signs">glyph guide ›</button></div><p class="fg-wall">${hieroWrap(esc(w[1]))}</p>`:""}
+   ${who.length?`<div class="fg-h"><b>Who you'll meet</b><button type="button" class="fg-more" data-nav="who">all of them ›</button></div><ul class="fg-who">${who.map(([n,c])=>`<li><b>${esc(n)}</b> <span>${esc(c)}</span></li>`).join("")}</ul>`:""}
+   ${terms.length?`<div class="fg-h"><b>Words you'll hear</b><span>tap one</span></div><div class="tt-chips">${terms.map(t=>`<button type="button" class="tt-chip" data-fgterm="${escA(t)}">${esc(t)}</button>`).join("")}</div>`:""}
+   ${bib?`<button type="button" class="fg-bib" data-bibopen="${escA(bib)}">🕊️ Biblical ground here — the passage and a moment to pause ›</button>`:""}
+   <div class="fg-foot"><button type="button" class="btn" data-fgstory="${escA(k)}">The full story ›</button><button type="button" class="btn primary" data-fgclose="1">Back to exploring</button></div>
+  </div>`; }
+function openField(k, dayId, when){ let d, w=when; if(k){ d=DAYS.find(x=>x.id===dayId)||DAYS[sel]||DAYS[0]; } else { const p=fgPick(); if(!p) return; d=p.d; k=p.s.k; w=p.when; }
+  fgCur={k, d:d.id, when:w}; safe(()=>closePlace()); safe(()=>closeSheet("sheetQC")); setTimeout(()=>openSheet("sheetQC", fgHTML(d,k,w)),40); }
+function fgRender(){ if(!fgCur) return; const b=document.querySelector("#sheetQC .qbox"); if(!b||!b.querySelector(".fg")) return; const y=document.getElementById("sheetQC").scrollTop; b.innerHTML=fgHTML(DAYS.find(x=>x.id===fgCur.d),fgCur.k,fgCur.when); document.getElementById("sheetQC").scrollTop=y; }
+document.addEventListener("click",e=>{ const t=e.target;
+  const f=t.closest("[data-fgfind]"); if(f){ const k=f.dataset.fgk, i=f.dataset.fgfind; const A=fgFound(); A[k]=A[k]||{}; if(A[k][i]) delete A[k][i]; else { A[k][i]=1; safe(()=>sfx("stamp")); const n=((PLACES[k]||{}).ask||[]).length; const got=Object.keys(A[k]).length; if(got===n||Math.random()<.25) safe(()=>mumReact("find",{overSheet:true,act:"peek",big:got===n,delay:700})); } try{ localStorage.setItem(FG_K,JSON.stringify(A)); }catch(x){} fgRender(); return; }
+  const s=t.closest("[data-fgsite]"); if(s){ fgCur={k:s.dataset.fgsite, d:s.dataset.fgday, when:fgCur&&fgCur.when}; fgRender(); return; }
+  const g=t.closest("[data-fgterm]"); if(g){ e.preventDefault(); safe(()=>glPop(g.dataset.fgterm)); return; }
+  if(t.closest("[data-fgclose]")){ closeSheet("sheetQC"); return; }
+  const st=t.closest("[data-fgstory]"); if(st){ closeSheet("sheetQC"); setTimeout(()=>openPlace(st.dataset.fgstory),60); return; }
+  const o=t.closest("[data-fieldgo]"); if(o){ e.preventDefault(); openField(o.dataset.fieldk||"", o.dataset.fieldd||"", o.dataset.fieldw||""); return; }
+  if(t.closest("#sheetQC .fg [data-nav]")) closeSheet("sheetQC");
+});
+// the place sheet points the other way: on site? here's the short version
+(function(){ const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const d=DAYS.find(x=>fgSites(x).some(s=>s.k===k)); if(d){ const b=document.getElementById("shBody"); if(b&&!b.querySelector(".fg-pill")) b.insertAdjacentHTML("afterbegin",`<button type="button" class="fg-pill" data-fieldgo="1" data-fieldk="${escA(k)}" data-fieldd="${d.id}" data-fieldw="day">📍 <b>On site?</b> The quick version: what to find, the walls, the words ›</button>`); } }catch(e){} return r; }; })();
+// the + menu offers it while you're out at a site
+(function(){ try{ QC_ITEMS.field={i:"📍",l:"Right here",a:'data-fieldgo="1"'}; const Q=qcSuggest; qcSuggest=function(){ const out=Q.apply(this,arguments); try{ const n=cairoNow(); const p=fgPick(); if(p&&p.when!=="tomorrow"&&p.when!=="day"&&n.h>=6&&n.h<19&&!out.find(x=>x.k==="field")){ out.unshift({k:"field", why:`${PLACES[p.s.k].n.replace(/ \(.*\)/,"")} — what to find, the walls`}); out.length=Math.min(out.length,2); } }catch(e){} return out; }; }catch(e){} })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.fg-k{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:-2px 0 8px}
+.fg-sites{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 12px;padding:2px}
+.fg-sites button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:7px 12px;font:600 0.7647rem var(--body);cursor:pointer;white-space:nowrap}.fg-sites button i{font:600 0.6471rem var(--mono);font-style:normal;color:var(--muted);margin-right:6px}
+.fg-sites button.on{background:var(--fg);color:var(--bg);border-color:transparent}.fg-sites button.on i{color:inherit;opacity:.7}
+.fg-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:16px 0 7px}.fg-h b{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase}.fg-h span{font-size:0.7059rem;color:var(--muted)}
+.fg-more{border:0;background:none;color:var(--muted);font:600 0.7059rem var(--body);cursor:pointer;padding:4px 0}
+.fg-find{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.fg-find button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:400 0.8235rem/1.4 var(--body);cursor:pointer}
+.fg-box{flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid color-mix(in srgb,var(--fg) 35%,transparent);display:flex;align-items:center;justify-content:center;font:700 0.75rem var(--body);margin-top:1px}
+.fg-find button.got{background:color-mix(in srgb,var(--ok) 10%,var(--bg));border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}.fg-find button.got .fg-box{background:var(--ok);border-color:var(--ok);color:#fff}.fg-find button.got>span:last-child{opacity:.6}
+.fg-wall{margin:0;padding:10px 12px;border-left:3px solid #c9a24a;background:color-mix(in srgb,#c9a24a 9%,var(--bg));border-radius:0 10px 10px 0;font-size:0.8235rem;line-height:1.5}
+.fg-who{list-style:none;margin:0;padding:0}.fg-who li{font-size:0.8235rem;line-height:1.4;padding:5px 0;border-bottom:1px solid var(--line)}.fg-who li:last-child{border:0}.fg-who span{color:var(--muted)}
+.fg-gem,.fg-bib{display:flex;gap:10px;align-items:center;width:100%;text-align:left;margin:4px 0 6px;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:var(--sand);color:var(--fg);font:600 0.8235rem/1.35 var(--body);cursor:pointer}
+.fg-gem>span:first-child{font-size:1.4rem}.fg-gem b{display:block}.fg-gem small{display:block;font-weight:400;color:var(--muted);font-size:0.7353rem}.fg-gem em{margin-left:auto;font-style:normal;color:var(--muted)}
+.fg-bib{margin-top:16px;font-weight:500}
+.fg-foot{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:18px}
+.fg-pill{display:block;width:100%;text-align:left;margin:0 0 12px;padding:10px 12px;border-radius:12px;border:1px solid color-mix(in srgb,#c9a24a 55%,var(--line));background:color-mix(in srgb,#c9a24a 12%,var(--card));color:var(--fg);font:400 0.8235rem/1.4 var(--body);cursor:pointer}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
