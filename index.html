@@ -4475,7 +4475,7 @@ const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().vot
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
 const BOAT_FOLLOW="Hello — following up on my email about The Orient for Wed 14 Oct. I understand the shared cabins are sold out, so I'd like a quote for a private charter of the whole boat for two adults, from Aswan on Wed 14 Oct. Please include the price, what's included, and the pickup point. We need to confirm by Sunday evening. Thank you! — Brad";
-const BOAT_STATUS="Merit wants us to pick a ship (from $700–$1,500 pp, full board) · Djed private-charter quote pending · decide Sun 9pm";
+const BOAT_STATUS="Sent Pure Nile two ship options (Star Goddess, La Terrasse) · Djed private-charter quote pending · decide Sun 9pm";
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
   const dl=dateDiffDays(now.date,"2026-10-11"); if(now.date>"2026-10-14") return ""; // the boat has sailed
@@ -4532,7 +4532,7 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
    <ol class="bs-todo">
     <li><b>Done:</b> The Orient's shared cabins are sold out for Wed 14. We asked Thowiba (Djed) for a private charter of the whole boat. Merit (Pure Nile) replied: pick a ship from their list (Wed–Sat, full board, $700–$1,500 pp) and they check availability.</li>
     <li><b>Our budget:</b> $1,500 per person, $3,000 total for two, as a soft limit. We'll go over for the right boat, and decide on value, not the number alone.</li>
-    <li><b>Next:</b> send Pure Nile our ship pick today, with the total for two, in writing. <b>Waiting:</b> the Djed charter quote, most likely Sunday morning.</li>
+    <li><b>Sent:</b> our email to Pure Nile asking for written quotes for the Star Goddess and La Terrasse. <b>Waiting:</b> their reply and the Djed charter quote, most likely Sunday morning.</li>
     <li><b>Sunday ≈6pm Cairo:</b> nothing under budget yet? Take the no-boat plan: Aswan hotel Tuesday, Abu Simbel early Wednesday, a car to Luxor via Kom Ombo and Edfu Thursday.</li>
     <li><b>Sunday 9pm at the latest:</b> pick one. When a quote is confirmed in writing (boat name, twin beds, pickup, price), tap <i>Choose this one</i>.</li>
    </ol>
@@ -8089,8 +8089,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v190";
+const APP_VER="v191";
 const WHATS_NEW=[
+ {v:"v191", d:"Sat Oct 10", items:[
+  ["✉️","Pure Nile email sent","We asked Pure Nile for written quotes on the Sonesta Star Goddess and MS Royal La Terrasse. The boat sheet now shows we are waiting for their reply."]]},
  {v:"v190", d:"Sat Oct 10", items:[
   ["⛵","Merit replied: pick a ship","Pure Nile needs a ship from their list (Wed–Sat, full board, $700–$1,500 pp) before they check availability. The boat sheet now shows the next step, and Merit still needs our pick today."]]},
  {v:"v189", d:"Sat Oct 10", items:[
