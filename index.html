@@ -4261,18 +4261,18 @@ const boatMsg = o => o.ask==="hotel" ? BOAT_HOTEL_MSG : `Hello! Two adults (two 
 // rank = our order for what you said you want: Abu Simbel is a must (done on our own Wed dawn), then the places (Kom Ombo, Silsila, Edfu), then comfort, then keeping the plan (Abu Simbel, Edfu/Silsila), then a seller we can trust, then price.
 // comfort: [1–5, why]. abu: does the Wed-dawn Abu Simbel plan still work?
 const BOATS = [
- { id:"merit", exp:[4, "The calmest and surest: a top-reviewed boat, no logistics risk, and Luxor done for us. Misses Edfu (the best-preserved temple in Egypt) and Silsila."], lux:["easy", "The boat does Karnak, Luxor Temple and the West Bank (Valley of the Kings) with its guide on Fri–Sat. Off Sat ≈noon. Sat: pool, Luxor Museum at 5. Sun: balloon at dawn, a free morning. Sacrifice: almost nothing in Luxor — we see it at the boat's pace, not ours."], prices:[["$1,815 — Luxor & Aswan Travel","https://www.luxorandaswan.com/en/cruise/Merit-Dahabiya"],["$999 — Pure Nile","https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/"]], short:"Merit", rank:2, pl:["✓","✗","✗"], book:"ahead", kind:"Dahabiya", name:"Merit", seller:"Luxor & Aswan Travel or Pure Nile Tours", pick:"Calmest",
-   why:"The simplest plan: it spends its first night in Aswan, so we board after Abu Simbel with no rush. The best-reviewed boat (4.9★ from 60), twin cabins, and it does Luxor's temples and West Bank for us. But it sails past Edfu and Gebel el-Silsila.",
+ { id:"merit", exp:[4, "The calmest and surest: a ship from Pure Nile (Merit), full board, Luxor done for us. Visits Kom Ombo and Edfu, misses Silsila."], lux:["easy", "The boat does Karnak, Luxor Temple and the West Bank (Valley of the Kings) with its guide on Fri–Sat. Off Sat ≈noon. Sat: pool, Luxor Museum at 5. Sun: balloon at dawn, a free morning. Sacrifice: almost nothing in Luxor — we see it at the boat's pace, not ours."], prices:[["$700–$1,500 pp, Wed–Sat — Pure Nile ship list (brochure)","https://pureniletours.com/"],["Earlier Merit I dahabiya quotes: $1,815 (Luxor & Aswan) and $999 (Pure Nile)","https://pureniletours.com/tour/merit-i-dahabiya-nile-cruise/"]], short:"Merit", rank:2, pl:["✓","✗","✗"], book:"ahead", kind:"Dahabiya", name:"Merit", seller:"Luxor & Aswan Travel or Pure Nile Tours", pick:"Pick a ship first",
+   why:"Pure Nile replied: they need us to choose a vessel from their list, then they check availability. Eight ships, all full board, from $700 to $1,500 each — every one fits our budget. Transfer from our Aswan hotel to the boat is included. It does Kom Ombo, Edfu (by stagecoach) and the Esna lock, then Luxor's temples and West Bank. Silsila is missed.",
    fit:"plus1", when:"Wed 14 → Sat 17 · Aswan → Luxor, 3 nights", datesS:"Wed–Sat", ask:"wed",
-   price:"$1,815 each (Luxor & Aswan Travel) · from $999 (Pure Nile)", est:"3 nights sharing a cabin, Sep–Apr rates", priceS:"$999–1,815", priceN:1400, verified:true,
+   price:"$700–$1,500 each, full board (Pure Nile ship list)", est:"Wed–Sat, 3 nights, full board; drinks, tips and Abu Simbel extra", priceS:"$700–1,500", priceN:1100, verified:true,
    comfort:[5,"4.9★ from 60 Tripadvisor reviews, mostly 5★ Nov 2024–Apr 2026. Twin cabins, heated jacuzzi on deck. Gripes: slippery shower tiles, big diesel boats nearby."],
-   abu:"✓", stops:"Kom Ombo · Edfu ✗ · Silsila ✗ · Luxor ✓",
-   route:"Aswan (night 1) · Kom Ombo · sails past Edfu · Esna lock · Luxor temples · West Bank",
-   aswan:"night 1 is moored in Aswan; ask to board by 1pm", twin:"Yes — 6 of 8 cabins twin (Luxor & Aswan Travel)",
-   incl:"Full board, guide, entrance fees, transfers. Abu Simbel, extra drinks and tips not included.",
+   abu:"✓", stops:"Kom Ombo ✓ · Edfu ✓ (stagecoach) · Silsila ✗ · Luxor ✓",
+   route:"Aswan (day 1: High Dam and Philae, which we can drop) · Kom Ombo · Edfu by stagecoach · Esna lock · Luxor temples · West Bank",
+   aswan:"Pure Nile recommends a Tuesday night hotel in Aswan; we board Wednesday after Abu Simbel", twin:"Ask each ship: twin or king for two",
+   incl:"Full board (breakfast, lunch, dinner) and transfer from the Aswan hotel. Not included: alcohol, soft drinks, tea, mineral water, tips, and Abu Simbel (we book it). Bottled water for teeth and a small fridge in the cabin.",
    reviews:"Boat: 4.9★ · 60 reviews (Tripadvisor)",
    trust:"Luxor & Aswan Travel: online since 1999, licence #1119 — but its visible reviews stop in 2022. Pure Nile Tours: no independent reviews found; its London address looks like a mail drop. Cheaper, riskier: card deposit only.",
-   risk:"Low for the boat. If you book via Pure Nile, pay a small card deposit and the rest on board.",
+   risk:"Ship and final price not confirmed until Pure Nile checks availability. Ask for the total for two, in writing, with the Day-1 Philae visit dropped or the boat boarding by 1pm.",
    impact:"Tuesday night in an Aswan hotel (Mövenpick ≈$120, Basma ≈$160). Abu Simbel Wed 4am from the hotel, on board by 1pm. Off Sat in Luxor, and the boat does Luxor's temples and West Bank. Friday's Luxor day becomes boat time; the balloon moves to Sunday dawn if Duane's flight allows.",
    pros:["Real recent reviews, almost all 5★","Twin cabins and a jacuzzi","Luxor sights included"], cons:["No Edfu temple, no Silsila","A hotel night in Aswan first","Ends a day later"],
    chk:[["✓","\"Every Wednesday\" from Aswan, 3 nights, ends Luxor"],["✓","4.9★ from 60 Tripadvisor reviews"],["✓","$1,815 double Sep–Apr (L&A); \"from $999 / person\" (Pure Nile)"],["✓","Six twin-bedded cabins (L&A)"],["?","Pure Nile: no independent reputation found"]],
@@ -4475,7 +4475,7 @@ const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().vot
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
 const BOAT_FOLLOW="Hello — following up on my email about The Orient for Wed 14 Oct. I understand the shared cabins are sold out, so I'd like a quote for a private charter of the whole boat for two adults, from Aswan on Wed 14 Oct. Please include the price, what's included, and the pickup point. We need to confirm by Sunday evening. Thank you! — Brad";
-const BOAT_STATUS="Two quotes asked · soft budget $3,000 for two · decide Sun 9pm";
+const BOAT_STATUS="Merit wants us to pick a ship (from $700–$1,500 pp, full board) · Djed private-charter quote pending · decide Sun 9pm";
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
   const dl=dateDiffDays(now.date,"2026-10-11"); if(now.date>"2026-10-14") return ""; // the boat has sailed
@@ -4530,9 +4530,9 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
   const advice=`<details class="bs-adv" ${c?"":"open"}><summary>Start here — the boat, in plain English</summary><div class="in">
 <div class="bs-now">   <p class="bs-h">Where it stands · Saturday 10 Oct</p>
    <ol class="bs-todo">
-    <li><b>Done:</b> The Orient's shared cabins are sold out for Wed 14. We asked Thowiba (Djed) for a private charter of the whole boat, and messaged Merit for a shared Wed 14 departure.</li>
+    <li><b>Done:</b> The Orient's shared cabins are sold out for Wed 14. We asked Thowiba (Djed) for a private charter of the whole boat. Merit (Pure Nile) replied: pick a ship from their list (Wed–Sat, full board, $700–$1,500 pp) and they check availability.</li>
     <li><b>Our budget:</b> $1,500 per person, $3,000 total for two, as a soft limit. We'll go over for the right boat, and decide on value, not the number alone.</li>
-    <li><b>Waiting:</b> both replies, most likely Sunday morning. Check the Merit price is for both of us, not each.</li>
+    <li><b>Next:</b> send Pure Nile our ship pick today, with the total for two, in writing. <b>Waiting:</b> the Djed charter quote, most likely Sunday morning.</li>
     <li><b>Sunday ≈6pm Cairo:</b> nothing under budget yet? Take the no-boat plan: Aswan hotel Tuesday, Abu Simbel early Wednesday, a car to Luxor via Kom Ombo and Edfu Thursday.</li>
     <li><b>Sunday 9pm at the latest:</b> pick one. When a quote is confirmed in writing (boat name, twin beds, pickup, price), tap <i>Choose this one</i>.</li>
    </ol>
@@ -8089,8 +8089,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v189";
+const APP_VER="v190";
 const WHATS_NEW=[
+ {v:"v190", d:"Sat Oct 10", items:[
+  ["⛵","Merit replied: pick a ship","Pure Nile needs a ship from their list (Wed–Sat, full board, $700–$1,500 pp) before they check availability. The boat sheet now shows the next step, and Merit still needs our pick today."]]},
  {v:"v189", d:"Sat Oct 10", items:[
   ["✉️","Follow-up email matches the charter ask","The ready-to-send note to The Orient now asks for a private charter quote for two, with price, inclusions and pickup point, since the shared cabins are sold out."]]},
  {v:"v188", d:"Sat Oct 10", items:[
