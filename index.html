@@ -4554,6 +4554,26 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
    <p><b>Boat or the Hilton on Friday?</b> The boat. The Friday night comes with the cruise anyway (the Hilton night was $50), and we wake up on the Nile instead of by a pool. We keep the Hilton for Saturday.</p>
    <p class="bs-pick"><b>Status: shared cabins sold out for Wed 14. We asked Djed for a private charter quote; Merit is the other option. The Orient</b> — if Djed's private-charter quote fits our budget. A real sailing boat for 10 guests, every temple we want (Kom Ombo, Silsila, Edfu, El Kab), a night at Silsila and a campfire dinner on an island; ≈€990 each, nearly everything included. The price: Luxor gets squeezed into Saturday afternoon and Sunday morning.<br><b>If they say no — or if we'd rather have calm days: Merit.</b> The surest, most relaxed choice: a top-reviewed boat, no logistics risk, and it does Luxor's big sites for us. It misses Edfu and Silsila.</p>
    <p class="bs-dl"><b>Deadline: Sunday night.</b> No boat confirmed by then → no boat: two nights in an Aswan hotel, Abu Simbel Wednesday, and a private car to Luxor on Thursday via Kom Ombo and Edfu.</p>
+   <details class="bs-adv"><summary>Sunday plan: calls, bookings and Abu Simbel</summary><div class="in">
+   <p class="bs-h">Sunday, in order</p>
+   <ol class="bs-todo">
+    <li><b>9am Cairo:</b> Duane calls Djed (Thowiba) for the Orient charter quote. Ask for the total for the whole boat for three nights, the Aswan pickup point, and whether it can be ours from Wed 14 to Sat 17.</li>
+    <li><b>9am:</b> Duane or the hotel desk calls Pure Nile about the Star Goddess and La Terrasse. Ask for written totals for two, in a twin or double cabin.</li>
+    <li><b>Noon:</b> compare the totals with $3,000 for two. Ask Pure Nile whether they can do Tuesday-night boarding, and whether they can arrange Abu Simbel.</li>
+    <li><b>6pm:</b> if neither quote is within budget or workable, start the no-boat plan.</li>
+    <li><b>9pm:</b> decide, then tap <i>Choose this one</i> once the quote is in writing.</li>
+   </ol>
+   <p class="bs-h">Bookings and deadlines</p>
+   <table class="bs-days"><tr><th>Booking</th><th>Needed for</th><th>When to act</th></tr>
+    <tr><td>Aswan hotel, Tue 13</td><td>Both plans</td><td>Book now as a fallback. Not needed if we board Tuesday night</td></tr>
+    <tr><td>Luxor hotel, Fri 16</td><td>No-boat plan only</td><td>Keep until a boat is confirmed in writing, then cancel</td></tr>
+    <tr><td>Luxor hotel, Sat 17</td><td>Both plans</td><td>Keep. Cancel only if we stay on board until Sunday</td></tr>
+    <tr><td>Abu Simbel, Wed 14</td><td>Both plans</td><td>Ask Pure Nile first. Otherwise book it ourselves</td></tr>
+    <tr><td>Car, Wed 14 before dawn</td><td>Abu Simbel</td><td>Include it in the Abu Simbel booking</td></tr>
+    <tr><td>Car, Thu 15 (no-boat plan)</td><td>Aswan to Luxor via Kom Ombo and Edfu</td><td>Book only if no boat is confirmed by Sunday night</td></tr></table>
+   <p class="bs-h">Abu Simbel</p>
+   <p>A must-see, and we're flexible on how it happens. Options: Pure Nile arranges it, with a private car from the Aswan hotel, a guide and tickets (ask for the price for two). Or we book it ourselves through Djed, Memphis Tours or a local driver. Either way we leave Aswan before dawn, because the tourist convoy goes early.</p>
+   </div></details>
    <details class="bs-more"><summary>More detail — the ranking, Abu Simbel options, bags, money</summary>
     <p><b>The ranking:</b> the overall experience — places, the boat, relaxed days, and how sure we are it works — then price. Tour Egypt Club also goes everywhere, but the boat is assigned and you can only reach them through Tripadvisor — hard to confirm by Sunday.</p>
     <p><b>Abu Simbel:</b> a private car at 4am Wednesday (≈$180–250 for both), back ≈12:30. Or the plane: EgyptAir 08:00 from Aswan, back 12:40 (≈$170–190 each, flights get suspended sometimes — check egyptair.com). Entry 822 EGP each.</p>
@@ -8119,8 +8139,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v193";
+const APP_VER="v194";
 const WHATS_NEW=[
+ {v:"v194", d:"Sat Oct 10", items:[
+  ["📞","A Sunday plan for the boat","The boat sheet now has a Sunday call order, a bookings table with deadlines (Aswan, Luxor, the car), and the Abu Simbel options."]]},
  {v:"v193", d:"Sat Oct 10", items:[
   ["🗣","Sharper trash talk","The Aswan, Nile and Luxor lines are rewritten around the places we're actually visiting, not the same football jokes. The to-do list now covers the boat decision, Sunday calls, and the Luxor and Aswan hotels."]]},
  {v:"v192", d:"Sat Oct 10", items:[
