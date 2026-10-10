@@ -8144,8 +8144,12 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v203";
+const APP_VER="v205";
 const WHATS_NEW=[
+ {v:"v205", d:"Sat Oct 10", items:[
+  ["📍","Buttons moved","Extras and Shop now sit in the bottom-right corner, so they no longer cover the header."]]},
+ {v:"v204", d:"Sat Oct 10", items:[
+  ["🧾","Shop: profiles, receipts, last chance","Each person has a budget and notes. Bought items can take a price and a receipt photo, and the screen shows what's left. A banner flags the last chance in each city."]]},
  {v:"v203", d:"Sat Oct 10", items:[
   ["🛍","Shop: gifts for the stop you're at","A new Shop button shows what to buy at today's stop, with a price estimate, a walk-away limit, a bag tag, and Brad's rule. Each list is private to its phone."]]},
  {v:"v202", d:"Sat Oct 10", items:[
@@ -8282,7 +8286,7 @@ function xtBody(tab){
 }
 function xtOpen(tab){ openSheet("sheetXtra", `<div class="qh"><h3>Extras</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetXtra')">×</button></div><div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0 10px"><button type="button" class="btn mini" data-xt="phrase">Phrase</button><button type="button" class="btn mini" data-xt="off">Offline</button><button type="button" class="btn mini" data-xt="spots">Hidden</button><button type="button" class="btn mini" data-xt="wrap">Wrap-up</button></div><div id="xtBody">${xtBody(tab||"phrase")}</div>`); }
 // the button, top right
-(function(){ try{ const b=document.createElement("button"); b.id="xtraBtn"; b.type="button"; b.textContent="✨ Extras"; b.setAttribute("aria-label","Extras"); b.style.cssText="position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",()=>xtOpen("phrase")); document.body.appendChild(b); }catch(e){} })();
+(function(){ try{ const b=document.createElement("button"); b.id="xtraBtn"; b.type="button"; b.textContent="✨ Extras"; b.setAttribute("aria-label","Extras"); b.style.cssText="position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 62px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",()=>xtOpen("phrase")); document.body.appendChild(b); }catch(e){} })();
 // clicks inside the extras sheet
 document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); if(t){ const body=document.getElementById("xtBody"); if(body){ body.innerHTML=xtBody(t.dataset.xt); } return; }
   const f=e.target.closest("[data-xfind]"); if(f){ const id=f.dataset.xfind; const l=xtFound(); if(l.indexOf(id)<0){ l.push(id); xtSaveFound(l); } const body=document.getElementById("xtBody"); if(body) body.innerHTML=xtBody("spots"); return; }
@@ -8291,7 +8295,7 @@ document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); i
 document.addEventListener("change", e=>{ const c=e.target.closest("[data-xoff]"); if(!c) return; const st=xtOff(); st[c.dataset.xoff]=c.checked; xtSet("egypt.xt.off",st); });
 })();
 
-// ---------- shop: phase one — the "Here" screen for gifts and treats, private to each phone ----------
+// ---------- shop: phases one and two — the Here screen, profiles, receipts, the last-chance sweep. Private to each phone ----------
 (function(){
 const SHOP_STOPS=[
  {d:"2026-10-11",city:"Cairo",name:"The Khan el-Khalili",items:[
@@ -8310,37 +8314,49 @@ const SHOP_STOPS=[
  {d:"2026-10-24",city:"Cairo",name:"Cairo last chance: the Khan again",items:[
   {id:"papr2",who:"Brad",name:"A real papyrus card for your sister or niece",why:"Last chance before the flight home.",bag:"carry-on",local:true,small:true,egp:[100,300]}]}
 ];
+const DEPART={Duane:"2026-10-19",Brad:"2026-10-25"};
 const SHOP_KEY=()=>"egypt.shop."+(me()||"me");
 function shopState(){ try{ return JSON.parse(localStorage.getItem(SHOP_KEY()))||{}; }catch(e){ return {}; } }
-function shopSave(st){ try{ localStorage.setItem(SHOP_KEY(), JSON.stringify(st)); }catch(e){} }
-function shopStop(){ const today=(typeof cairoNow==="function"?cairoNow().date:""); const here=SHOP_STOPS.find(x=>x.d===today); if(here) return {s:here,now:true}; const next=SHOP_STOPS.find(x=>x.d>today); return {s:next||SHOP_STOPS[SHOP_STOPS.length-1],now:false}; }
+function shopSave(st){ try{ localStorage.setItem(SHOP_KEY(), JSON.stringify(st)); }catch(e){ try{ toast("Couldn't save on this phone. Storage may be full."); }catch(x){} } }
 function shopRate(){ try{ return egpRate(); }catch(e){ return 50; } }
-function shopHTML(){ const st=shopState(); const w=me()||"you"; const r=shopRate(); const hereInfo=shopStop(); const stop=hereInfo.s; const rule=!!st.rule;
+function shopToday(){ return (typeof cairoNow==="function"?cairoNow().date:""); }
+function shopStop(){ const today=shopToday(); const here=SHOP_STOPS.find(x=>x.d===today); if(here) return {s:here,now:true}; const next=SHOP_STOPS.find(x=>x.d>today); return {s:next||SHOP_STOPS[SHOP_STOPS.length-1],now:false}; }
+function shopMine(){ const w=me(); return SHOP_STOPS.map((st,i)=>({st,i,items:(st.items||[]).filter(it=>it.who===w||it.who==="Both")})); }
+function shopLastChance(stop){ const w=me(); const today=shopToday(); const later=SHOP_STOPS.filter(x=>x.city===stop.city && x.d>stop.d && x.d<=(DEPART[w]||"2026-12-31")); if(later.length) return false; const nextDay=(()=>{ const t=new Date(stop.d+"T12:00:00Z"); t.setUTCDate(t.getUTCDate()-1); return t.toISOString().slice(0,10); })(); return (today===stop.d||today===nextDay); }
+function shopSpent(st){ return Object.values(st.paid||{}).reduce((a,b)=>a+(Number(b)||0),0); }
+function shopHTML(){ const st=shopState(); const w=me()||"you"; const r=shopRate(); const info=shopStop(); const stop=info.s; const rule=!!st.rule; const prof=st.profile||{}; const bought=st.bought||{}; const paid=st.paid||{}; const rec=st.receipts||{};
   const mine=(stop.items||[]).filter(it=>it.who===me()||it.who==="Both").filter(it=>!rule||(it.local&&it.small));
-  const left=mine.filter(it=>!(st.bought||{})[it.id]);
-  const head=hereInfo.now?`You're in ${stop.city}: ${stop.name}.`:`Next stop: ${stop.city}, ${stop.name} (${stop.d.slice(5).replace("-","/")}).`;
-  const cards=mine.length?mine.map(it=>{ const b=(st.bought||{})[it.id]; const lim=(st.limit||{})[it.id]||it.egp[1];
-    const usd=[Math.round(it.egp[0]/r),Math.round(it.egp[1]/r)];
-    return `<div class="shop-card" style="border:1px solid var(--line,#ccc);border-radius:12px;padding:10px;margin:8px 0;${b?"opacity:.6":""}">
+  const unb=mine.filter(it=>!bought[it.id]);
+  const head=info.now?`You're in ${stop.city}: ${stop.name}.`:`Next stop: ${stop.city}, ${stop.name} (${stop.d.slice(5).replace("-","/")}).`;
+  const banner=(shopLastChance(stop)&&unb.length)?`<div style="background:var(--fg);color:var(--bg);border-radius:10px;padding:8px 10px;margin:6px 0"><b>Last chance in ${esc(stop.city)}:</b> ${unb.length} still to buy.</div>`:"";
+  const spent=shopSpent(st); const budgetE=(Number(prof.budget)||0)*r; const left=budgetE-spent;
+  const bud=`<div class="muted" style="margin:6px 0">Budget ${prof.budget?`$${Number(prof.budget).toLocaleString()} (≈EGP ${Math.round(budgetE).toLocaleString()})`:"not set"} · spent EGP ${Math.round(spent).toLocaleString()}${prof.budget?` · left ≈$${Math.round(left/r).toLocaleString()}`:""}</div>`;
+  const cards=mine.length?mine.map(it=>{ const b=bought[it.id]; const lim=(st.limit||{})[it.id]||it.egp[1]; const usd=[Math.round(it.egp[0]/r),Math.round(it.egp[1]/r)];
+    return `<div class="shop-card" style="border:1px solid var(--line,#ccc);border-radius:12px;padding:10px;margin:8px 0;${b?"opacity:.75":""}">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><b>${esc(it.name)}</b><span class="muted" style="font-size:.75rem;white-space:nowrap">${esc(it.bag==="checked"?"checked bag":it.bag==="wrap"?"wrap carefully":"carry-on")}</span></div>
       <p class="muted" style="margin:4px 0">${esc(it.why)}</p>
       <p style="margin:4px 0"><b>EGP ${it.egp[0].toLocaleString()}–${it.egp[1].toLocaleString()}</b> (≈$${usd[0]}–${usd[1]}) <span class="muted">estimate; check the shop</span></p>
       <p style="margin:4px 0">Start near EGP ${it.egp[0].toLocaleString()}. Walk away above <input type="number" data-shop-limit="${it.id}" value="${lim}" style="width:90px"> EGP.</p>
-      <button type="button" class="btn mini" data-shop-bought="${it.id}">${b?"✓ Bought (undo)":"Mark bought"}</button></div>`; }).join(""):`<p class="muted">Nothing on your list at ${esc(stop.city)} ${rule?"(Brad's rule is hiding the rest)":""}.</p>`;
-  return `<div class="shop-here"><p class="bs-h">${esc(head)}</p><label style="display:block;margin:6px 0"><input type="checkbox" data-shop-rule="1" ${rule?"checked":""}> Brad's rule: small, packable and made here only</label><p class="muted">${left.length} left here · ${(mine.length-left.length)} bought · Private to this phone.</p>${cards}<div class="row" style="margin-top:10px"><button type="button" class="btn mini" data-shop-hide="1">Hide the screen</button></div></div>`;
+      <div class="row" style="flex-wrap:wrap;gap:6px;align-items:center"><button type="button" class="btn mini" data-shop-bought="${it.id}">${b?"✓ Bought (undo)":"Mark bought"}</button>${b?`<label class="muted">Paid EGP <input type="number" data-shop-paid="${it.id}" value="${paid[it.id]||""}" style="width:100px"></label><label class="btn mini" style="cursor:pointer">${rec[it.id]?"Receipt ✓ (replace)":"Add receipt photo"}<input type="file" accept="image/*" data-shop-receipt="${it.id}" hidden></label>`:""}</div>
+      ${rec[it.id]?`<img alt="Receipt" src="${rec[it.id]}" style="max-width:100%;border-radius:8px;margin-top:6px">`:""}</div>`; }).join(""):`<p class="muted">Nothing on your list at ${esc(stop.city)}${rule?" (Brad's rule is hiding the rest)":""}.</p>`;
+  const prf=`<details style="margin:8px 0"><summary>Your profile: budget and notes</summary><div style="padding:6px 0"><label style="display:block;margin:4px 0">Budget for gifts and treats, in USD <input type="number" data-shop-profile="budget" value="${prof.budget||""}" style="width:110px"></label><label style="display:block;margin:4px 0">Notes on who it's for (taste, sizes, what they already have)<textarea data-shop-profile="who" rows="2" style="width:100%">${esc(prof.who||"")}</textarea></label><label style="display:block;margin:4px 0">A name to remember (e.g. Duane's wife) <input data-shop-profile="name" value="${esc(prof.name||"")}" style="width:100%"></label></div></details>`;
+  const all=shopMine().filter(x=>x.items.length).map(x=>{ const ub=x.items.filter(it=>!bought[it.id]).length; return `<li>${esc(x.st.d.slice(5).replace("-","/"))} ${esc(x.st.city)}: ${ub?`${ub} to buy`:"done"}</li>`; }).join("");
+  return `<div class="shop-here"><p class="bs-h">${esc(head)}</p>${banner}<label style="display:block;margin:6px 0"><input type="checkbox" data-shop-rule="1" ${rule?"checked":""}> Brad's rule: small, packable and made here only</label>${bud}${cards}<div class="row" style="margin:8px 0"><button type="button" class="btn mini" data-shop-hide="1">Hide the screen</button></div>${prf}<details><summary>All your stops</summary><ul style="padding-left:18px">${all}</ul></details><p class="muted" style="margin-top:8px">Private to this phone. Nothing here syncs.</p></div>`;
 }
 function shopOpen(){ openSheet("sheetShop", `<div class="qh"><h3>Shop</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetShop')">×</button></div><div id="shopBody">${shopHTML()}</div>`); }
-// launch button under the Extras button
-(function(){ try{ const b=document.createElement("button"); b.id="shopBtn"; b.type="button"; b.textContent="🛍 Shop"; b.setAttribute("aria-label","Shop"); b.style.cssText="position:fixed;top:calc(env(safe-area-inset-top,0px) + 46px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",shopOpen); document.body.appendChild(b); }catch(e){} })();
+(function(){ try{ const b=document.createElement("button"); b.id="shopBtn"; b.type="button"; b.textContent="🛍 Shop"; b.setAttribute("aria-label","Shop"); b.style.cssText="position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",shopOpen); document.body.appendChild(b); }catch(e){} })();
 function shopRefresh(){ const body=document.getElementById("shopBody"); if(body) body.innerHTML=shopHTML(); }
 document.addEventListener("click", e=>{
-  const bt=e.target.closest("[data-shop-bought]"); if(bt){ const st=shopState(); st.bought=st.bought||{}; const id=bt.dataset.shopBought; st.bought[id]=!st.bought[id]; shopSave(st); shopRefresh(); return; }
+  const bt=e.target.closest("[data-shop-bought]"); if(bt){ const st=shopState(); st.bought=st.bought||{}; const id=bt.dataset.shopBought; st.bought[id]=!st.bought[id]; if(!st.bought[id]){ if(st.paid) delete st.paid[id]; if(st.receipts) delete st.receipts[id]; } shopSave(st); shopRefresh(); return; }
   const hd=e.target.closest("[data-shop-hide]"); if(hd){ const body=document.getElementById("shopBody"); if(body) body.innerHTML=`<div style="text-align:center;padding:60px 10px"><button type="button" class="btn" data-shop-reveal="1">Tap to show the list</button></div>`; return; }
   const rv=e.target.closest("[data-shop-reveal]"); if(rv){ shopRefresh(); return; }
 });
 document.addEventListener("change", e=>{
   const rl=e.target.closest("[data-shop-rule]"); if(rl){ const st=shopState(); st.rule=rl.checked; shopSave(st); shopRefresh(); return; }
   const lm=e.target.closest("[data-shop-limit]"); if(lm){ const st=shopState(); st.limit=st.limit||{}; st.limit[lm.dataset.shopLimit]=Number(lm.value)||0; shopSave(st); return; }
+  const pd=e.target.closest("[data-shop-paid]"); if(pd){ const st=shopState(); st.paid=st.paid||{}; st.paid[pd.dataset.shopPaid]=Number(pd.value)||0; shopSave(st); return; }
+  const pf=e.target.closest("[data-shop-profile]"); if(pf){ const st=shopState(); st.profile=st.profile||{}; st.profile[pf.dataset.shopProfile]=pf.dataset.shopProfile==="budget"?(Number(pf.value)||0):pf.value; shopSave(st); return; }
+  const rc=e.target.closest("[data-shop-receipt]"); if(rc && rc.files && rc.files[0]){ const id=rc.dataset.shopReceipt; const f=rc.files[0]; const img=new Image(); const url=URL.createObjectURL(f); img.onload=()=>{ try{ const sc=Math.min(1,480/img.width); const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); const data=c.toDataURL("image/jpeg",0.7); const st=shopState(); st.receipts=st.receipts||{}; st.receipts[id]=data; shopSave(st); shopRefresh(); }catch(x){ try{ toast("Couldn't read that photo."); }catch(y){} } URL.revokeObjectURL(url); }; img.onerror=()=>{ try{ toast("Couldn't read that photo."); }catch(y){} URL.revokeObjectURL(url); }; img.src=url; return; }
 });
 })();
 </script>
