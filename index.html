@@ -1724,7 +1724,7 @@ const DAYS = [
   mission:"Older than Giza by a century and nearly empty: climb inside the Red Pyramid at Dahshur, stand under the Step Pyramid at Saqqara, then the Citadel and the bazaar at dusk.",
   agenda:[
    {t:"02:05",title:"Brad lands CAI → Uber to the Hilton, ≈45 min",map:"Hilton Cairo Grand Nile"},
-   {t:"09:00",title:"Quick breakfast — and kickoff",note:"The Nile Bowl starts at this table: flip the coin of Ra (Games → The Toss); the winner picks tonight's dinner.",approx:true},
+   {t:"09:00",title:"Quick breakfast — and kickoff",note:"The Nile Bowl starts at this table: flip the coin of Ra (Games → The Toss); the winner picks tonight's dinner. Boat: no word from The Orient yet? Ask the front desk to call +20 2 2395 9124 and ask whether we can join at Kom Ombo Wednesday ≈1pm. Decide by tonight.",approx:true},
    {t:"09:30",title:"Guide + car picks us up → south to Dahshur (≈1 h)",map:"Hilton Cairo Grand Nile"},
    {t:"10:30",photo:"The two of you at the Red Pyramid’s entrance with nobody else in the frame; prop the phone on a block and use the timer.",title:"Dahshur — the Red Pyramid, inside",note:"The first true pyramid, 4,600 years old, and you can climb down the 60 m passage into the chambers with nobody else there. The Bent Pyramid next door from outside. ≈$4. Hot and steep inside; take the water.",map:"Red Pyramid Dahshur"},
    {t:"12:00",photo:"The two of you in the jubilee court with the Step Pyramid behind, the classic. Then the serdab eyeholes close up.",title:"Saqqara — Step Pyramid of Djoser, Imhotep Museum, a noble's tomb",note:"The oldest stone building on earth. Ask the guide for the tomb of Ti or Kagemni: the best Old Kingdom reliefs anywhere, daily life carved 4,400 years ago. ≈$15.",map:"Step Pyramid of Djoser Saqqara"},
@@ -4474,13 +4474,15 @@ function boatScore(b){ const m=boatVotes()[b.id]||0, o=(boatOther().votes||{})[b
 const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().votes||{})[b.id]||0)>0);
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
+const BOAT_FOLLOW="Hello — following up on my email about The Orient, departing Aswan Wed 14 Oct. Two adults, twin beds, private en-suite. Could we join the boat at Kom Ombo around 1pm Wednesday, after an early Abu Simbel visit? We need to confirm by Sunday evening. Thank you! — Brad";
+const BOAT_STATUS="The Orient: emailed, waiting · call Sun 9am";
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
   const dl=dateDiffDays(now.date,"2026-10-11"); if(now.date>"2026-10-14") return ""; // the boat has sailed
   const urg = dl>0?`decide by Sunday night`:dl===0?"decide tonight":dl===-1?"book today · boards Wednesday":dl===-2?"boards tomorrow":"boards today";
   const seenOther=lsGet(BOAT_LS.seen,""), curOther=lsGet(BOAT_LS.other,""); const fresh = curOther && curOther!==seenOther && Object.keys((boatOther().votes)||{}).length;
   const top=[...BOATS].sort((x,y)=>x.rank-y.rank)[0]; const line = !t.mine&&!t.theirs ? `Our pick: ${esc(top.name)} · vote 👍 or 👎 on ${BOATS.filter(x=>!x.out).length} options` : `You ${t.mine?`voted on ${t.mine}`:"haven't voted"} · ${esc(o)} ${t.theirs?`voted on ${t.theirs}`:"hasn't voted yet"}${t.both?` · <b>${t.both} you both like</b>`:""}`;
-  return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The Nile boat · ${urg}</span><b>Pick our Nile boat</b><small>${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
+  return `<div class="card boatslot"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The Nile boat · ${urg}</span><b>Pick our Nile boat</b><small>${now.date<="2026-10-11"?`${esc(BOAT_STATUS)}<br>`:""}${line}${fresh?` <i class="bs-new">${esc(o)} voted</i>`:""}</small></div><button type="button" class="btn mini primary" data-boat-open="1">Compare</button></div>`; }
 // undecided and still time to book: it goes above the Now card; once decided (or from Monday) it sits quietly below it
 function renderBoatSlot(){ const el=document.getElementById("boatSlot"); if(!el) return; el.innerHTML=safe(boatSlotHTML)||""; const now=document.getElementById("now"); if(!now) return;
   const c=boatChoice(); const b=c&&BOATS.find(x=>x.id===c.id); const done=!!(b&&BOAT_STEPS(b).every(([k])=>boatSteps()[k])); const top=!done; /* at the top of Today every day until it's chosen and fully booked */ const want=top?now:now.nextElementSibling; if(top ? el.nextElementSibling!==now : el.previousElementSibling!==now) now.parentNode.insertBefore(el, top?now:now.nextSibling); el.classList.toggle("attop", top); }
@@ -4526,6 +4528,16 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
   const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`Both 👍 ${t.both}`]];
   const top3=[...BOATS].sort((x,y)=>x.rank-y.rank).slice(0,3);
   const advice=`<details class="bs-adv" ${c?"":"open"}><summary>Start here — the boat, in plain English</summary><div class="in">
+<div class="bs-now">   <p class="bs-h">Where it stands · Brad emailed The Orient, waiting to hear</p>
+   <p class="bs-note">No reply yet is normal: Friday–Saturday is the weekend in Egypt, so expect an answer Sunday morning.</p>
+   <ol class="bs-todo">
+    <li><b>Saturday, quick nudge:</b> send this follow-up as a message on their Facebook or Instagram (linked on <a href="https://www.nile-dahabiya.com/our-boats/dahabiya-the-orient/" target="_blank" rel="noopener">the boat page ↗</a>). Agencies often answer social messages over the weekend. ${typeof sendBtn==="function"?sendBtn(BOAT_FOLLOW,"Copy / send the follow-up"):""}</li>
+    <li><b>Sunday ≈9:00, at breakfast:</b> ask the Hilton front desk to call the office for you, in Arabic: <a class="ph" href="tel:+20223959124">+20 2 2395 9124</a>. The office is at 33 Abd El Khalek Tharwat St, Downtown, about 10 minutes from the hotel.</li>
+    <li><b>The one question that decides it:</b> can we join at <b>Kom Ombo on Wednesday around 1pm</b>, after Abu Simbel? The boat sails every Wednesday, so the join matters more than availability.</li>
+    <li><b>Hedge today:</b> message Merit or Tour Egypt Club too, so a no (or silence) from The Orient on Sunday doesn't leave us with nothing.</li>
+    <li><b>When one confirms in writing</b> (boat name, twin beds, pickup time, price): tap <i>Choose this one</i>. The rest fold away on both phones. Then book an Aswan hotel for Tuesday (Basma or the Old Cataract) and change the Hilton Luxor to Saturday night only.</li>
+   </ol>
+</div>
    <p class="bs-lead"><b>A proper cabin every night:</b> no nights on deck (the felucca is out), and every message asks for a private en-suite bathroom, bottled water and a cabin fridge.</p><p class="bs-lead"><b>We need a boat for 3 nights, Aswan → Luxor.</b> The good boats all leave Aswan on <b>Wednesday</b> and arrive <b>Saturday morning</b>. When a listing says "4 days / 3 nights", that's what it means: Wed to Sat.</p>
    <p class="bs-h">So our days change like this</p>
    <table class="bs-days"><tr><th></th><th>Before</th><th>Now</th></tr>
@@ -4538,13 +4550,6 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
    <p><b>What it does to Luxor:</b> we arrive Saturday instead of Friday, so we lose about a day there. <b>Merit and Tour Egypt Club</b> end in Luxor and do Karnak, Luxor Temple and the Valley of the Kings for us — we lose almost nothing. <b>The Orient</b> ends at Esna, so Luxor gets squeezed: tombs in the Saturday heat, museum and temple that evening, balloon and Karnak Sunday morning — and the balloon has no spare morning if Sunday is windy. Each card says exactly what changes.</p>
    <p><b>Boat or the Hilton on Friday?</b> The boat. The Friday night comes with the cruise anyway (the Hilton night was $50), and we wake up on the Nile instead of by a pool. We keep the Hilton for Saturday.</p>
    <p class="bs-pick"><b>Our pick for the best overall experience: The Orient</b> — if they'll let us join at Kom Ombo after Abu Simbel. A real sailing boat for 10 guests, every temple we want (Kom Ombo, Silsila, Edfu, El Kab), a night at Silsila and a campfire dinner on an island; ≈€990 each, nearly everything included. The price: Luxor gets squeezed into Saturday afternoon and Sunday morning.<br><b>If they say no — or if we'd rather have calm days: Merit.</b> The surest, most relaxed choice: a top-reviewed boat, no logistics risk, and it does Luxor's big sites for us. It misses Edfu and Silsila.</p>
-   <p class="bs-h">What we each do now</p>
-   <ol class="bs-todo">
-    <li><b>Both:</b> look at The Orient and Merit below — photos, places, price — and tap 👍 or 👎. ${esc(OTHER()||"The other phone")} sees your vote.</li>
-    <li><b>One of us:</b> email The Orient and message Merit today. The message is written for you — dates, twin beds, Abu Simbel, our bags. Every price below links to the page it's on.</li>
-    <li><b>When one confirms in writing</b> (boat name, twin beds, pickup time, price): tap <i>Choose this one</i>. The rest fold away on both phones.</li>
-    <li><b>Then:</b> book an Aswan hotel for Tuesday (Basma or the Old Cataract) and change the Hilton Luxor to Saturday night only.</li>
-   </ol>
    <p class="bs-dl"><b>Deadline: Sunday night.</b> No boat confirmed by then → no boat: two nights in an Aswan hotel, Abu Simbel Wednesday, and a private car to Luxor on Thursday via Kom Ombo and Edfu.</p>
    <details class="bs-more"><summary>More detail — the ranking, Abu Simbel options, bags, money</summary>
     <p><b>The ranking:</b> the overall experience — places, the boat, relaxed days, and how sure we are it works — then price. Tour Egypt Club also goes everywhere, but the boat is assigned and you can only reach them through Tripadvisor — hard to confirm by Sunday.</p>
@@ -4690,6 +4695,9 @@ html.hugetext .boatslot{flex-wrap:wrap}html.hugetext .boatslot .btn{margin-left:
 .bs-adv{border:1px solid var(--line);border-radius:var(--r);background:var(--sand);margin-bottom:12px}.bs-adv>summary{padding:10px 12px;font-weight:700;cursor:pointer}.bs-adv .in{padding:0 12px 10px}.bs-adv p{margin:6px 0;font-size:0.8824rem}
 .bs-lead{font-size:0.9412rem!important}.bs-plan,.bs-todo{margin:6px 0 10px;padding-left:22px;font-size:0.8824rem}.bs-plan li,.bs-todo li{margin:4px 0}.bs-h{font-family:var(--mono);font-size:0.7059rem!important;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 2px!important}.bs-dl{background:var(--dusk-soft);border-radius:10px;padding:8px 10px}.bs-more{margin-top:10px;font-size:0.8235rem}.bs-more>summary{cursor:pointer;color:var(--nile-ink);font-weight:600}
 .bs-days{width:100%;table-layout:fixed;border-collapse:collapse;font-size:0.7941rem;margin:4px 0 10px}.bs-days th,.bs-days td{text-align:left;vertical-align:top;padding:5px 5px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.bs-days th{font-family:var(--mono);font-size:0.6471rem;text-transform:uppercase;color:var(--muted)}.bs-days td:first-child{width:4.2em;font-weight:700;white-space:nowrap}.bs-days td:nth-child(2){color:var(--muted)}.bs-days tr.chg td{background:color-mix(in srgb,var(--dusk) 9%,transparent)}html.bigtext .bs-days,html.bigtext .bs-days tbody,html.bigtext .bs-days tr,html.bigtext .bs-days td{display:block;width:auto!important}html.bigtext .bs-days tr:first-child{display:none}html.bigtext .bs-days tr{padding:6px 4px;border-bottom:1px solid var(--line)}html.bigtext .bs-days td{border:0;padding:1px 0}html.bigtext .bs-days td:nth-child(2){order:3;font-size:0.8rem}html.bigtext .bs-days tr{display:flex;flex-direction:column}html.bigtext .bs-days td:nth-child(2)::before{content:"Before: "}html.bigtext .bs-days td:nth-child(3){order:2}
+.bs-now{border:2px solid color-mix(in srgb,#c9a24a 60%,var(--line));background:color-mix(in srgb,#c9a24a 10%,var(--card));border-radius:12px;padding:10px 12px;margin:0 0 14px}.bs-now .bs-h{margin-top:0}
+.bs-note{font-size:0.8235rem;color:var(--muted);margin:-4px 0 8px}
+.bs-todo .send{margin-top:6px;display:inline-flex}
 .bs-pick{background:var(--card);border:2px solid var(--ok);border-radius:12px;padding:10px 12px}
 .bs-tbl{width:100%;table-layout:fixed;border-collapse:collapse;font-size:0.7941rem;margin:8px 0}.bs-tbl th,.bs-tbl td{overflow-wrap:anywhere;hyphens:auto;text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}.bs-tbl td:first-child{font-weight:600}
 .bs-f{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.bs-f .chip{flex-direction:row;white-space:nowrap}
@@ -8078,5 +8086,51 @@ function start(){
   let lastMin=-1; setInterval(()=>{ renderClock(); renderNow(); const n=cairoNow(); if(n.m!==lastMin){ lastMin=n.m; if(DAYS[sel].date===n.date) renderDay(); } }, 5000);
 }
 start();
+</script>
+<script>
+// ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
+// To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
+const APP_VER="v186";
+const WHATS_NEW=[
+ {v:"v186", d:"Sat Oct 10", items:[
+  ["⛵","The boat: where it stands","The boat sheet now opens on the next steps — Brad emailed The Orient, a weekend nudge with a ready-to-send follow-up, the Sunday 9am call (the Hilton desk can ring for you), and the one question that decides it: joining at Kom Ombo."],
+  ["🆕","This popup","Every update now says what changed, once. Close it and it's gone until the next one."]]},
+ {v:"v185", d:"earlier today", items:[
+  ["🙏","Faiths of the Nile","Islam, Judaism, Buddhism, the Copts, the old gods, Greece and Rome — what you'll see of each, and where."],
+  ["🏞️","Life along the Nile","Twelve chapters in route order; the GEM moves to the 11am–1pm slot."],
+  ["💬","A smarter Mummy","He knows the whole trip, can search the web, checks the weather and the light, knows what's near you, and has a 'Not right? ↻' button."],
+  ["👟","Feet","Sandals or shoes at every stop, and a Feet line on each day."]]}
+];
+(function(){ const K="egypt.seenVer"; const get=()=>{ try{ return localStorage.getItem(K)||""; }catch(e){ return ""; } }; const set=v=>{ try{ localStorage.setItem(K,v); }catch(e){} };
+  const vn=v=>parseInt(String(v).replace(/\D/g,""),10)||0;
+  const isNew=()=>{ let me=""; try{ me=localStorage.getItem("egypt.game.me")||""; }catch(e){} return !me; };
+  function notes(){ const seen=vn(get()); const xs=WHATS_NEW.filter(r=>vn(r.v)>seen); return xs.length?xs:WHATS_NEW.slice(0,1); }
+  function busy(){ return !!document.querySelector(".qs.on, #sheet.show, #whoSheet.on, #review.on, #ppOverlay.on, .lb.on, #wnModal"); }
+  function show(){ const R=notes(); const e=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+    const el=document.createElement("div"); el.id="wnModal"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-labelledby","wnT");
+    el.innerHTML=`<div class="wn-bd" data-wnx></div><div class="wn-box"><div class="wn-top"><span class="wn-k">What's new · ${e(APP_VER)}</span><h3 id="wnT">The app just updated</h3></div><div class="wn-list">${R.map((r,i)=>`${i?`<div class="wn-sub">${e(r.v)} · ${e(r.d)}</div>`:""}${r.items.map(([ic,t,x])=>`<div class="wn-i"><span class="wn-ic">${ic}</span><div><b>${e(t)}</b><p>${e(x)}</p></div></div>`).join("")}`).join("")}</div><button type="button" class="wn-ok" data-wnx>Got it</button></div>`;
+    document.body.appendChild(el); requestAnimationFrame(()=>el.classList.add("on")); const ok=el.querySelector(".wn-ok"); setTimeout(()=>{ try{ ok.focus(); }catch(x){} },60);
+    const close=()=>{ set(APP_VER); el.classList.remove("on"); document.removeEventListener("keydown",esc); setTimeout(()=>el.remove(),220); };
+    const esc=ev=>{ if(ev.key==="Escape") close(); };
+    el.addEventListener("click",ev=>{ if(ev.target.closest("[data-wnx]")) close(); }); document.addEventListener("keydown",esc); }
+  function check(tries){ if(get()===APP_VER) return; if(isNew()){ if(tries<60) return setTimeout(()=>check(tries+1),2000); set(APP_VER); return; } /* first run: no news for a fresh install */
+    if(busy()||document.hidden){ if(tries<90) setTimeout(()=>check(tries+1),2000); return; } show(); }
+  if(get()===""&&isNew()){ /* brand-new phone: start from this version */ }
+  window.addEventListener("load",()=>setTimeout(()=>check(0),2200));
+  const st=document.createElement("style"); st.textContent=`
+#wnModal{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+#wnModal .wn-bd{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .2s}
+#wnModal .wn-box{position:relative;width:100%;max-width:440px;max-height:min(78vh,640px);display:flex;flex-direction:column;background:var(--card,#fff);color:var(--fg,#222);border:1px solid var(--line,#ddd);border-radius:20px;box-shadow:0 24px 60px -16px rgba(0,0,0,.5);transform:translateY(14px) scale(.98);opacity:0;transition:transform .22s,opacity .2s}
+#wnModal.on .wn-bd{opacity:1}#wnModal.on .wn-box{transform:none;opacity:1}
+.wn-top{padding:18px 18px 6px}.wn-k{display:block;font:700 0.6471rem var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#777)}
+.wn-top h3{margin:4px 0 0;font:800 1.25rem/1.2 var(--display,inherit)}
+.wn-list{overflow:auto;padding:6px 18px 4px;-webkit-overflow-scrolling:touch}
+.wn-i{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line,#eee)}.wn-i:last-child{border:0}
+.wn-ic{font-size:1.35rem;line-height:1.2;flex:none;width:28px;text-align:center}.wn-i b{display:block;font-size:0.8824rem}.wn-i p{margin:3px 0 0;font-size:0.8235rem;line-height:1.45;color:var(--muted,#666)}
+.wn-sub{margin:12px 0 2px;font:700 0.5882rem var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#777)}
+.wn-ok{margin:10px 18px 18px;padding:13px;border:0;border-radius:14px;background:var(--nile,#1f6f8b);color:var(--on-accent,#fff);font:700 0.9412rem var(--body,inherit);cursor:pointer}
+@media (prefers-reduced-motion:reduce){#wnModal .wn-box,#wnModal .wn-bd{transition:none}}
+`; document.head.appendChild(st);
+})();
 </script>
 </body></html>
