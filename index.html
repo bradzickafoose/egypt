@@ -5230,15 +5230,41 @@ function mumPokeable(m, line){ let pokes=0; m.addEventListener("click", ev=>{ ev
 async function mumFallApart(m){ if(m.dataset.fall) return; m.dataset.fall="1"; m.getAnimations().forEach(a=>a.pause()); const parts=[...m.querySelectorAll(".mw > i")]; await mumSay(m,"Right. That's it.",900);
   const anims=parts.map((p,i)=>p.animate([{transform:"none"},{transform:`translate(${(i%2?1:-1)*(14+i*6)}px, ${40+i*4}px) rotate(${(i%2?1:-1)*(60+i*20)}deg)`}],{duration:600,easing:"cubic-bezier(.5,0,.8,.6)",fill:"forwards"}));
   await mwait(1500); anims.forEach(a=>a.reverse()); await mwait(700); await mumSay(m,"…I meant to do that.",2200); mumBye(m); }
+// ---------- idle bits: while he's on screen he keeps busy ----------
+const MUM_BITS=[
+ {say:"Reading the bottom of your screen. Nobody ever reads the bottom of anything.",a:"tilt"},
+ {say:"Counting my toes. Nine. I'm sure the tenth is around here somewhere.",a:"tilt"},
+ {say:"Downward cobra. It's a classic. The Egyptians invented yoga, you know. Mostly by accident.",a:"lean"},
+ {say:"Something's itching under my bandages. Please don't look. Don't look.",a:"wiggle"},
+ {say:"I just sent a message to the afterlife. It's on read.",a:"tilt"},
+ {say:"Checking my pockets. I don't have pockets. I have regrets.",a:"wiggle"},
+ {say:"Practising my scary face. Mostly it's just my face.",a:"lean"},
+ {say:"Blowing dust off myself. Dust is three thousand years of me leaving the house.",a:"puff"},
+ {say:"I'm waving at you. You're not waving back. Rude.",a:"wave"},
+ {say:"Standing up straight. It's a process. I'm still in the process.",a:"lean"},
+ {say:"Looking for my ex's name on the screen. Not here. Relieved.",a:"tilt"},
+ {say:"Lying down for a minute. This is my resting pose. Also my everything pose.",a:"flop"},
+ {say:"Tried to whistle. Came out as a sigh from the Old Kingdom.",a:"puff"},
+ {say:"Checking the time. I don't have a watch. I have a sundial in my heart.",a:"tilt"}
+];
+function mumBitAnim(m,w,k){ const o={duration:1400,easing:"ease-in-out"};
+  if(k==="tilt") return w.animate([{transform:"rotate(0)"},{transform:"rotate(-10deg)"},{transform:"rotate(10deg)"},{transform:"rotate(0)"}],o);
+  if(k==="lean") return w.animate([{transform:"rotate(0)"},{transform:"rotate(-16deg)"},{transform:"rotate(0)"}],{duration:1500,easing:"ease-in-out"});
+  if(k==="wiggle") return w.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(3px)"},{transform:"translateX(-3px)"},{transform:"translateX(0)"}],{duration:1000});
+  if(k==="puff") return w.animate([{transform:"scale(1,1)"},{transform:"scale(1.08,.92)"},{transform:"scale(1,1)"}],{duration:1100,easing:"ease-out"});
+  if(k==="flop") return w.animate([{transform:"rotate(0)"},{transform:"rotate(90deg)",offset:.4},{transform:"rotate(90deg)",offset:.7},{transform:"rotate(0)"}],{duration:2200,easing:"ease-in-out"});
+  if(k==="wave"){ const a=m.querySelector(".ma.a1"); if(a) return a.animate([{transform:"rotate(0)"},{transform:"rotate(-40deg)"},{transform:"rotate(0)"}],{duration:900,iterations:2}); return w.animate([{transform:"rotate(0)"}],{duration:100}); }
+  return w.animate([{transform:"rotate(0)"}],{duration:100}); }
+async function mumIdle(m,n){ const w=m.querySelector(".mw"); if(!w) return; for(let i=0;i<n;i++){ if(!m.isConnected) return; const b=MUM_BITS[Math.floor(Math.random()*MUM_BITS.length)]; const an=mumBitAnim(m,w,b.a); await mumSay(m,b.say,2800); await an.finished.catch(()=>{}); await mwait(250); } }
 // ---------- the acts ----------
 async function mumAct(kind, line){ if(document.querySelector(".mummy")) return; const m=mumBuild(); mumPokeable(m, line); try{
-  if(kind==="walk"){ m.style.left="-20%"; await mumMove(m,-20,44,5200); await mumSay(m,line,3800); await mumMove(m,44,115,5200); }
+  if(kind==="walk"){ m.style.left="-20%"; await mumMove(m,-20,44,5200); await mumSay(m,line,3800); await mumIdle(m,2); await mumMove(m,44,115,5200); }
   else if(kind==="peek"){ m.classList.add("peek"); m.style.left="100%"; const a=m.animate([{transform:"translateX(20px) rotate(-18deg)"},{transform:"translateX(-58px) rotate(-18deg)"}],{duration:700,easing:"cubic-bezier(.2,1.3,.4,1)",fill:"forwards"}); await a.finished; m.querySelectorAll(".me").forEach(e=>e.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(2px)"},{transform:"translateX(0)"}],{duration:1400,iterations:2})); m.style.left="84%"; await mumSay(m,line,3600); await m.animate([{transform:"translateX(-58px) rotate(-18deg)"},{transform:"translateX(40px) rotate(-18deg)"}],{duration:500,easing:"ease-in",fill:"forwards"}).finished; }
   else if(kind==="trip"){ m.style.left="-20%"; await mumMove(m,-20,38,4200); const w=m.querySelector(".mw"); await w.animate([{transform:"rotate(0)"},{transform:"rotate(-8deg)",offset:.2},{transform:"rotate(88deg) translateY(10px)"}],{duration:520,easing:"cubic-bezier(.5,0,.9,.5)",fill:"forwards"}).finished; safe(()=>sfx("saf")); await mumSay(m,line,2800); await w.animate([{transform:"rotate(88deg) translateY(10px)"},{transform:"rotate(0)"}],{duration:500,easing:"ease-out",fill:"forwards"}).finished; await mumMove(m,38,115,4600); }
   else if(kind==="dance"){ m.style.left="-20%"; await mumMove(m,-20,42,3600); const w=m.querySelector(".mw"); m.classList.add("arms-up"); const d=w.animate([{transform:"rotate(-12deg) translateY(0)"},{transform:"rotate(12deg) translateY(-10px)"}],{duration:260,iterations:12,direction:"alternate",easing:"ease-in-out"}); await mumSay(m,line,3200); d.cancel(); m.classList.remove("arms-up"); await mumMove(m,42,115,4000); }
   else if(kind==="spin"){ m.style.left="-20%"; await mumMove(m,-20,42,3400); m.classList.add("unravel"); const w=m.querySelector(".mw"); await w.animate([{transform:"rotate(0)"},{transform:"rotate(1080deg)"}],{duration:1300,easing:"cubic-bezier(.3,0,.2,1)"}).finished; await mumSay(m,line,3200); m.classList.remove("unravel"); await mumMove(m,42,115,4000); }
   else if(kind==="sleep"){ m.classList.add("asleep"); m.style.left="24%"; await m.animate([{opacity:0},{opacity:1}],{duration:600,fill:"forwards"}).finished; await mwait(1600); await mumSay(m,line,4200); await mwait(800); }
-  else if(kind==="selfie"){ m.classList.add("selfie"); m.style.left="-20%"; await mumMove(m,-20,60,4000); await mwait(400); const f=document.createElement("div"); f.className="mflash"; document.body.appendChild(f); setTimeout(()=>f.remove(),500); await mumSay(m,line,3200); m.classList.remove("selfie"); await mumMove(m,60,115,3000); }
+  else if(kind==="selfie"){ m.classList.add("selfie"); m.style.left="-20%"; await mumMove(m,-20,60,4000); await mwait(400); const f=document.createElement("div"); f.className="mflash"; document.body.appendChild(f); setTimeout(()=>f.remove(),500); await mumSay(m,line,3200); await mumIdle(m,1); m.classList.remove("selfie"); await mumMove(m,60,115,3000); }
   else if(kind==="flag"){ m.style.left="-20%"; await mumMove(m,-20,40,3800); const fl=document.createElement("i"); fl.className="mflag"; m.appendChild(fl); safe(()=>sfx("whistle")); await mumSay(m,line,3200); await mumMove(m,40,115,4200); }
   }catch(e){ try{ console.warn("mummy act", e&&e.message); }catch(x){} } mumBye(m); }
 // ---------- when he shows up ----------
@@ -8089,8 +8115,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v191";
+const APP_VER="v192";
 const WHATS_NEW=[
+ {v:"v192", d:"Sat Oct 10", items:[
+  ["🧻","The mummy keeps busy","While he is on screen he now reads the bottom of your screen, counts his toes, does a yoga pose, and waves. Every visit has something new."]]},
  {v:"v191", d:"Sat Oct 10", items:[
   ["✉️","Pure Nile email sent","We asked Pure Nile for written quotes on the Sonesta Star Goddess and MS Royal La Terrasse. The boat sheet now shows we are waiting for their reply."]]},
  {v:"v190", d:"Sat Oct 10", items:[
