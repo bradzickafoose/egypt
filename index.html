@@ -1413,22 +1413,36 @@ html.hugetext .bp-on em{grid-column:2}
     <div id="guideCity" class="gtabs" role="tablist"></div>
     <div id="guideBody"></div>
   </section>
-  <div class="gch" id="g-see"><b>What you're looking at</b><span>the story, the people, the writing, the dates</span></div>
-  <section id="arcSec">
-    <h2 class="sec">The story in nine chapters</h2>
-    <div class="card"><div id="arc"></div></div>
+  <div class="gch" id="g-see"><b>What you're looking at</b><span>the story first, then how to read the walls, then the Bible</span></div>
+  <section id="storySec" class="hub" data-hub="story">
+    <h2 class="sec">The story of Egypt</h2>
+    <div class="card hubc">
+      <p class="hub-lede">Three ways into five thousand years. Start with our nine days; the other two hang everything on a frame.</p>
+      <div class="hubtabs" role="tablist" aria-label="The story of Egypt">
+        <button type="button" role="tab" data-hubtab="arc">Our nine days</button>
+        <button type="button" role="tab" data-hubtab="dates">Nine dates</button>
+        <button type="button" role="tab" data-hubtab="eras">The ages</button>
+      </div>
+      <section id="arcSec" class="hubp" data-pane="arc" role="tabpanel"><p class="hub-sub">The trip as one story, a chapter a day — what happened here, and why it's the next thing you see.</p><div id="arc"></div></section>
+      <section id="datesSec" class="hubp" data-pane="dates" role="tabpanel"><p class="hub-sub">Learn these nine and every guide's sentence has somewhere to land.</p><div id="dates"></div></section>
+      <section id="eraSec" class="hubp" data-pane="eras" role="tabpanel"><p class="hub-sub">How old is this? Egypt's ages in order — the ones you're standing in today are lit up.</p><div id="eras"></div></section>
+      <div class="hub-foot" data-drillfoot></div>
+    </div>
   </section>
-  <section id="whoSec">
-    <h2 class="sec">Who's who</h2>
-    <div class="card"><p class="muted" style="margin:0 0 6px">The names you'll hear a hundred times, with the one thing to recognise each by. Read the walls before the guide does.</p><div id="who"></div></div>
-  </section>
-  <section id="signsSec">
-    <h2 class="sec">Hieroglyphs</h2>
-    <div class="card"><p class="muted" style="margin:0 0 6px">The little translation book: what's written on today's walls, the royal names in real glyphs, the alphabet, and your own name in a cartouche.</p><div id="signs"></div></div>
-  </section>
-  <section id="eraSec">
-    <h2 class="sec">How old is this?</h2>
-    <div class="card"><div id="eras"></div></div>
+  <section id="wallsSec" class="hub" data-hub="walls">
+    <h2 class="sec">Reading the walls</h2>
+    <div class="card hubc">
+      <p class="hub-lede">What's carved and painted in front of you: who it is, what it says, and the words the guide will use.</p>
+      <div class="hubtabs" role="tablist" aria-label="Reading the walls">
+        <button type="button" role="tab" data-hubtab="who">Gods &amp; kings</button>
+        <button type="button" role="tab" data-hubtab="signs">Hieroglyphs</button>
+        <button type="button" role="tab" data-hubtab="terms">Guide's words</button>
+      </div>
+      <section id="whoSec" class="hubp" data-pane="who" role="tabpanel"><p class="hub-sub">The names you'll hear a hundred times, with the one thing to recognise each by.</p><div id="who"></div></section>
+      <section id="signsSec" class="hubp" data-pane="signs" role="tabpanel"><p class="hub-sub">What's written on today's walls, the royal names in real glyphs, the alphabet, and your own name in a cartouche.</p><div id="signs"></div></section>
+      <section id="termsSec" class="hubp" data-pane="terms" role="tabpanel"><p class="hub-sub">Underlined wherever they turn up in the app — tap one anywhere for the meaning.</p><div id="terms"></div></section>
+      <div class="hub-foot" data-drillfoot></div>
+    </div>
   </section>
   <section id="bibleSec">
     <h2 class="sec">The Bible in Egypt</h2>
@@ -2605,7 +2619,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v176)";
+const BUILD = "Oct 10, 2026";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6637,7 +6651,6 @@ document.addEventListener("click",e=>{ const b=e.target.closest("[data-bibday]")
   const o=e.target.closest("[data-bibopen]"); if(o){ e.preventDefault(); openBible(o.dataset.bibopen); } });
 function openBible(id){ safe(renderBible); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("bibleSec"); const card=id&&document.getElementById("bib-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
 // the Guide: a tile, and the section renders on first look
-(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-nav="bible"]')) g.insertAdjacentHTML("beforeend",`<button type="button" data-nav="bible"><span class="qi">🕊️</span><span class="nl">The Bible in Egypt<small>where the stories happened</small></span></button>`); }catch(e){} return r; }; })();
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="bible"){ openBible(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderBible), 1500);
 // the day card: a fold that says what biblical ground the day covers
@@ -6757,7 +6770,6 @@ function gemNowHTML(){ try{ const n=document.getElementById("now"); if(!n) retur
 // the + menu suggests it while you're there
 (function(){ if(typeof qcSuggest!=="function") return; const Q=qcSuggest; qcSuggest=function(){ const out=Q.apply(this,arguments); try{ if(gemNowHTML()){ QC_ITEMS.gem={i:"🏛️",l:"GEM guide",a:'data-gemopen="1"'}; out.unshift({k:"gem", why:"twelve stops, ticked as you go"}); out.length=Math.min(out.length,2); } }catch(e){} return out; }; })();
 // a Guide tile next to the Bible one
-(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-gemopen]')){ const S=gemSeen(); const k=GEM_STOPS.filter(s=>S[s.id]).length; g.insertAdjacentHTML("beforeend",`<button type="button" data-gemopen="1"><span class="qi">🏛️</span><span class="nl">The GEM, inside<small>${k?`${k}/${GEM_STOPS.length} seen`:"12 stops and their stories"}</small></span></button>`); } }catch(e){} return r; }; })();
 (function(){ const st=document.createElement("style"); st.textContent=`
 .gem-bar{display:flex;align-items:center;gap:10px;margin:0 0 8px}.gem-bar div{white-space:nowrap;font-size:0.8235rem}.gem-bar i{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.gem-bar u{display:block;height:100%;background:var(--ok);text-decoration:none}
 .gem-intro{font-size:0.7647rem;margin:0 0 6px}
@@ -6819,7 +6831,7 @@ const GLOSS_MAP=new Map(GLOSSARY.map(([t,d])=>[t,d]));
 // ---- tap a word anywhere: the guide just said “hypostyle” and you're nodding ----
 const GL_TERMS=GLOSSARY.flatMap(([t])=>t.split(/\s*[\/·]\s*/).map(x=>[x.trim(),t])).filter(([x])=>x.length>2).sort((a,b)=>b[0].length-a[0].length);
 const GL_RE=new RegExp("\\b("+GL_TERMS.map(([x])=>x.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")).join("|")+")s?\\b","i");
-const GL_SCOPE="#dayCard .agenda, #dayCard .mission, #dayCard .know, #sheet .pn, #sheetQC .qbox, #arc, #who, #eras, #bible";
+const GL_SCOPE="#dayCard .agenda, #dayCard .mission, #dayCard .know, #sheet .pn, #sheetQC .qbox, #arc, #who, #eras, #dates, #bible";
 function glLink(root){ try{ const seen=new Set([...root.querySelectorAll(".gl")].map(x=>x.dataset.gl)); const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(!p||p.closest("button,a,input,textarea,summary,.gl,.qh,code,.bib-q cite,.gem-tick,.learn,.hd,.hd-done,#glPop")) return NodeFilter.FILTER_REJECT; return GL_RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP; }});
   const nodes=[]; while(walk.nextNode()) nodes.push(walk.currentNode);
   const GRE=new RegExp(GL_RE.source,"gi");
@@ -6828,10 +6840,10 @@ function glLink(root){ try{ const seen=new Set([...root.querySelectorAll(".gl")]
     const f=document.createDocumentFragment(); if(a) f.appendChild(document.createTextNode(a)); f.appendChild(span); if(b) f.appendChild(document.createTextNode(b)); n.replaceWith(f); }); }catch(e){} }
 let glT=0; new MutationObserver(()=>{ clearTimeout(glT); glT=setTimeout(()=>document.querySelectorAll(GL_SCOPE).forEach(glLink),250); }).observe(document.body,{childList:true,subtree:true});
 function glPop(key){ let el=document.getElementById("glPop"); if(!el){ el=document.createElement("div"); el.id="glPop"; el.setAttribute("role","dialog"); document.body.appendChild(el); }
-  el.innerHTML=`<b>${esc(key)}</b><p>${esc(GLOSS_MAP.get(key)||"")}</p><div class="row"><button type="button" class="btn mini" data-learn="1">All the words · nine dates · drill</button><button type="button" class="btn mini" data-glx="1">Got it</button></div>`; el.classList.add("on"); }
+  el.innerHTML=`<b>${esc(key)}</b><p>${esc(GLOSS_MAP.get(key)||"")}</p><div class="row"><button type="button" class="btn mini" data-learn="terms">All the guide's words</button><button type="button" class="btn mini" data-glx="1">Got it</button></div>`; el.classList.add("on"); }
 document.addEventListener("click",e=>{ const g=e.target.closest(".gl"); if(g){ e.preventDefault(); e.stopPropagation(); glPop(g.dataset.gl); return; }
   const p=document.getElementById("glPop"); if(p&&p.classList.contains("on")&&(e.target.closest("[data-glx]")||!e.target.closest("#glPop"))){ p.classList.remove("on"); if(e.target.closest("[data-glx]")) return; }
-  if(e.target.closest("[data-learn]")){ e.preventDefault(); if(p) p.classList.remove("on"); openLearn(); } }, true);
+  if(e.target.closest("[data-learn]")){ e.preventDefault(); if(p) p.classList.remove("on"); openLearn((e.target.closest("[data-learn]").dataset.learn)||""); } }, true);
 document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("gl")) glPop(e.target.dataset.gl); });
 // ---- the drill: ten cards a day, the ones you miss come back sooner (a Leitner box) ----
 const HD_K="egypt.histdrill";
@@ -6847,7 +6859,7 @@ function hdDeck(){ const S=hdState(); const now=Date.now(); const C=hdCards(); c
   return due.sort(()=>Math.random()-.5).concat(fresh).slice(0,10); }
 let hd=null;
 function hdHTML(){ if(!hd) return ""; if(hd.i>=hd.deck.length){ const S=hdState(); const C=hdCards(); const known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length;
-    return `<div class="qh"><h3>History drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hd-done"><b>${hd.got} of ${hd.deck.length}</b><p>${hd.got>=9?"The guide is going to struggle to surprise you.":hd.got>=6?"Solid. The misses come back tomorrow.":"The misses come back tomorrow — that's the whole trick."}</p><p class="muted">${known} of ${C.length} cards known well.</p><div class="row"><button type="button" class="btn primary" data-hdgo="1">Ten more</button><button type="button" class="btn" data-learn="1">Nine dates · words</button></div></div>`; }
+    return `<div class="qh"><h3>History drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hd-done"><b>${hd.got} of ${hd.deck.length}</b><p>${hd.got>=9?"The guide is going to struggle to surprise you.":hd.got>=6?"Solid. The misses come back tomorrow.":"The misses come back tomorrow — that's the whole trick."}</p><p class="muted">${known} of ${C.length} cards known well.</p><div class="row"><button type="button" class="btn primary" data-hdgo="1">Ten more</button><button type="button" class="btn" data-learn="dates">The nine dates</button></div></div>`; }
   const c=hd.deck[hd.i]; return `<div class="qh"><h3>History drill</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="hd">
    <div class="hd-dots">${hd.deck.map((_,i)=>`<i class="${i<hd.i?(hd.res[i]?"ok":"no"):i===hd.i?"on":""}"></i>`).join("")}</div>
    <button type="button" class="hd-card ${hd.flip?"flip":""}" data-hdflip="1"><small>${hd.flip?"":"tap to see"}</small><b>${esc(c.f)}</b>${hd.flip?`<span class="hd-b">${esc(c.b)}</span>${c.x?`<span class="hd-x">${esc(c.x)}</span>`:""}`:""}</button>
@@ -6870,8 +6882,6 @@ function learnHTML(){ const S=hdState(); const C=hdCards(); const known=C.filter
   </div>`; }
 function openLearn(){ safe(()=>closeSheet("sheetQC")); setTimeout(()=>openSheet("sheetQC", learnHTML()),40); }
 // entry points: a Guide tile, and the How-old-is-this section gets a button
-(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-learn]')){ const S=hdState(); const n=Object.keys(S).length; g.insertAdjacentHTML("beforeend",`<button type="button" data-learn="1"><span class="qi">🧠</span><span class="nl">Learn Egypt<small>${n?"drill · dates · words":"nine dates, the words, a drill"}</small></span></button>`); } }catch(e){} return r; }; })();
-(function(){ if(typeof renderEras!=="function") return; const R=renderEras; renderEras=function(){ const r=R.apply(this,arguments); try{ const el=document.getElementById("eras"); if(el&&!el.querySelector("[data-learn]")) el.insertAdjacentHTML("beforeend",`<div class="row" style="margin-top:10px"><button type="button" class="btn" data-learn="1">🧠 Nine dates that hold it all · the drill</button></div>`); }catch(e){} return r; }; })();
 (function(){ const st=document.createElement("style"); st.textContent=`
 .gl{border-bottom:1.5px dotted color-mix(in srgb,#c9a24a 80%,transparent);cursor:help;-webkit-tap-highlight-color:transparent}
 #glPop{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:95;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:0 14px 34px -10px rgba(0,0,0,.45);transform:translateY(16px);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:520px;margin:0 auto}
@@ -6886,6 +6896,68 @@ function openLearn(){ safe(()=>closeSheet("sheetQC")); setTimeout(()=>openSheet(
 .hd-card small{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.hd-card b{font:700 1.1rem/1.35 var(--display)}.hd-b{font:800 1.15rem/1.35 var(--display);color:#b07612}.hd-x{font-size:0.8235rem;line-height:1.45;opacity:.8}
 .hd-r{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.hd-tip{text-align:center;font-size:0.7647rem;margin-top:12px}
 .hd-done{text-align:center;padding:10px 0}.hd-done b{font:800 2rem var(--display)}.hd-done .row{display:flex;gap:8px;justify-content:center;margin-top:12px}
+`; document.head.appendChild(st); })();
+
+// ---------- guidehub.js: "What you're looking at" as two hubs — The story of Egypt (our days · nine dates · the ages) and Reading the walls (gods & kings · hieroglyphs · the guide's words) — then the Bible ----------
+// Each hub is one card with three tabs, so the section reads top to bottom as: the story → how to read it → the Bible, with the drill at the foot of both.
+const HUB_K="egypt.hub";
+function hubState(){ try{ return JSON.parse(localStorage.getItem(HUB_K)||"{}"); }catch(e){ return {}; } }
+const HUB_DEF={story:"arc", walls:"who"};
+function hubShow(hub, pane, save){ const sec=document.querySelector(`.hub[data-hub="${hub}"]`); if(!sec) return;
+  if(!sec.querySelector(`.hubp[data-pane="${pane}"]`)) pane=HUB_DEF[hub];
+  sec.querySelectorAll("[data-hubtab]").forEach(b=>{ const on=b.dataset.hubtab===pane; b.classList.toggle("on",on); b.setAttribute("aria-selected",on); b.tabIndex=on?0:-1; });
+  sec.querySelectorAll(".hubp").forEach(p=>{ p.hidden=p.dataset.pane!==pane; });
+  if(pane==="signs") safe(renderSigns); if(pane==="eras") safe(renderEras); if(pane==="arc") safe(storyArc); if(pane==="dates") safe(renderDates); if(pane==="terms") safe(renderTerms);
+  if(save!==false){ const S=hubState(); S[hub]=pane; try{ localStorage.setItem(HUB_K,JSON.stringify(S)); }catch(e){} } }
+function renderDates(){ const el=document.getElementById("dates"); if(!el||el.dataset.done) return; el.dataset.done="1";
+  el.innerHTML=`<ol class="anc">${ANCHORS.map(a=>`<li><b>${esc(a.y)}</b><span class="anc-e">${esc(a.e)}</span><span class="anc-h">${esc(a.hook)}</span><span class="anc-w"><i>Elsewhere:</i> ${esc(a.world)}</span><span class="anc-s"><i>On the trip:</i> ${esc(a.see)}</span></li>`).join("")}</ol>`; }
+function renderTerms(){ const el=document.getElementById("terms"); if(!el||el.dataset.done) return; el.dataset.done="1";
+  const G=[...GLOSSARY].sort((a,b)=>a[0].localeCompare(b[0]));
+  el.innerHTML=`<dl class="gls">${G.map(([t,d])=>`<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join("")}</dl>`; }
+function drillFoot(){ let known=0, total=0; try{ const S=hdState(); const C=hdCards(); total=C.length; known=C.filter(c=>S[c.id]&&S[c.id].b>=3).length; }catch(e){}
+  return `<button type="button" class="hub-drill" data-hdgo="1"><span>🧠</span><span><b>Test yourself · ten cards</b><small>${known?`${known} of ${total} known well · the misses come back sooner`:"dates, gods, kings and words · two minutes"}</small></span><em>›</em></button>`; }
+function hubFeet(){ document.querySelectorAll("[data-drillfoot]").forEach(f=>f.innerHTML=drillFoot()); }
+function hubInit(){ const S=hubState(); Object.keys(HUB_DEF).forEach(h=>hubShow(h, S[h]||HUB_DEF[h], false)); hubFeet(); }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-hubtab]"); if(!b) return; const sec=b.closest(".hub"); hubShow(sec.dataset.hub, b.dataset.hubtab);
+  const r=sec.getBoundingClientRect(); if(r.top<topH()-4) scrollToEl(sec,false); });
+document.addEventListener("keydown",e=>{ const b=e.target.closest&&e.target.closest("[data-hubtab]"); if(!b||!/^Arrow(Left|Right)$/.test(e.key)) return; const all=[...b.parentElement.querySelectorAll("[data-hubtab]")]; const i=all.indexOf(b)+(e.key==="ArrowRight"?1:-1); const n=all[(i+all.length)%all.length]; n.click(); n.focus(); });
+// anything that scrolls to a pane (navGo "who", openPlace links, the glossary) opens that tab first and lands on the hub's tabs
+(function(){ const S0=scrollToEl; scrollToEl=function(el, smooth){ try{ const p=el&&el.closest&&el.closest(".hubp"); if(p){ const hub=p.closest(".hub"); hubShow(hub.dataset.hub, p.dataset.pane); if(el===p) el=hub; } }catch(e){} return S0.call(this, el, smooth); }; })();
+const HUB_OF={arc:"story",dates:"story",eras:"story",who:"walls",signs:"walls",terms:"walls"};
+function hubGo(pane){ safe(()=>closeSheet("sheetQC")); const hub=HUB_OF[pane]; if(!hub) return; hubShow(hub,pane); setTimeout(()=>scrollToEl(document.querySelector(`.hub[data-hub="${hub}"]`)),60); }
+openLearn=function(which){ hubGo(which==="terms"?"terms":"dates"); };
+(function(){ const N=navGo; navGo=function(k){ if(k==="story"){ const p=hubState().story||HUB_DEF.story; hubShow("story",p); return scrollToEl(document.getElementById("storySec")); }
+  if(k==="walls"){ const p=hubState().walls||HUB_DEF.walls; hubShow("walls",p); return scrollToEl(document.getElementById("wallsSec")); }
+  if(k==="histdrill"){ return safe(openHistDrill); }
+  if(HUB_OF[k]){ return hubGo(k); }
+  return N.apply(this,arguments); }; })();
+// the Guide's navigator: one tidy group for this section, in reading order
+(function(){ const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{
+  const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(!g) return r;
+  let known=0; try{ const S=hdState(); known=hdCards().filter(c=>S[c.id]&&S[c.id].b>=3).length; }catch(e){}
+  let gem=""; try{ if(cairoNow().date<="2026-10-12"){ const S=gemSeen(); const k=GEM_STOPS.filter(s=>S[s.id]).length; gem=`<button type="button" class="ng-wide" data-gemopen="1"><span class="qi">🏛️</span><span class="nl">The GEM, inside<small>${k?`${k}/${GEM_STOPS.length} seen · Mon 12`:"12 stops and their stories · Mon 12"}</small></span></button>`; } }catch(e){}
+  const t=(k,i,l,s)=>`<button type="button" data-nav="${k}"><span class="qi">${i}</span><span class="nl">${l}<small>${esc(s)}</small></span></button>`;
+  g.innerHTML=t("story","📖","The story","our days · nine dates · the ages")+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("histdrill","🧠","Test yourself",known?`${known} cards known well`:"ten cards, two minutes")+gem;
+ }catch(e){} return r; }; })();
+// keep the drill counts fresh when the drill sheet closes
+(function(){ if(typeof closeSheet!=="function") return; const C=closeSheet; closeSheet=function(){ const r=C.apply(this,arguments); safe(hubFeet); return r; }; })();
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",hubInit); else hubInit();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.hubc{padding:14px 14px 12px}
+.hub-lede{margin:0 0 12px;font-size:0.8235rem;line-height:1.45}
+.hubtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:12px;background:color-mix(in srgb,var(--fg) 7%,var(--bg));margin:0 0 12px}
+.hubtabs button{border:0;background:none;color:var(--muted);border-radius:9px;padding:9px 4px;font:700 0.7647rem/1.15 var(--body);cursor:pointer;min-height:38px}
+.hubtabs button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px var(--line)}
+.hubp[hidden]{display:none!important}
+.hub-sub{margin:0 0 10px;font-size:0.7647rem;color:var(--muted);line-height:1.4}
+.hub-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.hub-drill{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:var(--sand);color:var(--fg);font:inherit;cursor:pointer}
+.hub-drill>span:first-child{font-size:1.4rem;line-height:1}.hub-drill b{display:block;font-size:0.8235rem}.hub-drill small{display:block;color:var(--muted);font-size:0.7059rem;margin-top:1px}.hub-drill em{margin-left:auto;font-style:normal;color:var(--muted);font-size:1.2rem}
+.hub-drill:active{transform:scale(.98)}
+.navg button.ng-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px;min-height:54px}
+#dates .anc{margin-left:4px}
+.anc span.gl{display:inline!important;font:inherit}
+html.hugetext .hubtabs{grid-template-columns:1fr}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
