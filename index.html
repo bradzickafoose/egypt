@@ -6833,12 +6833,17 @@ const BIBLE = [
 ];
 // where each entry falls on your trip: matched against your own agenda, so it follows any rewrite of the days
 function bibleDays(e){ const out=[]; try{ const w=me(); const re=new RegExp(e.m,"i"); DAYS.forEach(d0=>{ if(w==="Duane"&&d0.who==="brad") return; const d=safe(()=>withMe(d0))||d0; const hit=(d.agenda||[]).some(a=>re.test(String(a.title||"").replace(/^[^A-Za-z]+/,""))); if(hit) out.push(d0); }); }catch(e2){} return e.once?out.slice(0,1):out; }
+// the same place in both lists: Bible entry id -> faith entry id, shown together instead of twice
+const PAIRS={citadel:"saladin", sinai:"tur", bush:"monastery-mosque", nile:"musa", thebes:"haggag", elephantine:"philae", redsea:"berenike"};
+const PAIRS_BACK=Object.fromEntries(Object.entries(PAIRS).map(([b,f])=>[f,b]));
+const faithById=id=>FAITHS.find(x=>x.id===id);
 const bibleMine=()=>BIBLE.filter(e=>e.who!=="brad"||me()==="Brad");
 function bibleCard(e, open){ const ds=e.plan==="on"?bibleDays(e):[]; const dl=ds.map(d=>`<button type="button" class="chip" data-bibday="${d.id}">${d.dow} ${d.num}</button>`).join("");
   const tag=e.plan==="on"?(ds.length?"on your route":"on your route"):e.plan==="detour"?"a short detour":"nearby, if you can";
   return `<details class="fold bib" id="bib-${e.id}" ${open?"open":""}><summary><span class="bib-t"><b>${esc(e.t)}</b><small><i class="bib-tag ${e.plan}">${tag}</i>${ds.length?" · "+ds.map(d=>`${d.dow} ${d.num}`).join(", "):""}</small></span><span class="pill">${e.refs.length}</span></summary><div class="in">
     ${e.refs.map(([r,q])=>`<blockquote class="bib-q"><p>“${esc(q)}”</p><cite>${esc(r)}</cite></blockquote>`).join("")}
     <p>${esc(e.story)}</p>
+    ${(()=>{ const f=faithById(PAIRS[e.id]); return f?`<div class="bib-p"><b>Also here · ${esc(f.t)}</b><p>${esc(f.story)}</p><button type="button" class="btn mini" data-faopen="${f.id}">Open the faith card</button></div>`:""; })()}
     <p class="bib-h"><b>Scripture, history or tradition?</b> ${esc(e.honest)}</p>
     ${e.when?`<p class="bib-w"><b>Making time</b> ${esc(e.when)}</p>`:""}
     <div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div>
@@ -6862,11 +6867,18 @@ function openBible(id){ setLens("bible"); safe(renderBible); safe(()=>closeSheet
 // the Guide: a tile, and the section renders on first look
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="bible"){ openBible(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderBible), 1500);
-// the day card: a fold that says what biblical ground the day covers
-(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".bib-day")) return r;
-  const L=bibleMine().filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)); if(!L.length) return r;
+// the day card: one fold, "On the ground today": the Bible first, then the other faiths on the same ground (places already shown with their Bible entry are not repeated)
+(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".faith-day")) return r;
+  const L=bibleMine().filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id));
+  const paired=new Set(L.map(e=>PAIRS[e.id]).filter(Boolean));
+  const FL=faithMine().filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)&&!paired.has(e.id));
+  if(!L.length&&!FL.length) return r;
   const anchor=c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead"); if(!anchor) return r;
-  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day"><summary><span class="sg-i">🕊️</span><span class="bib-t"><b>Biblical ground today</b><small>${L.map(e=>esc(e.t.split(" — ")[0])).join(" · ")}</small></span><span class="pill">${L.length}</span></summary><div class="in">${L.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`).join("")}</div></details>`);
+  const bibleBits=L.map(e=>{ const f=faithById(PAIRS[e.id]); return `<div class="bib-mini"><b>${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div>${f?`<p class="bib-w"><b>Also here</b> ${esc(f.t)}</p>`:""}<button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`; }).join("");
+  const faithBits=FL.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><span class="fa-ks">${faithChips(e)}</span>${faithQuote(e.src[0])}<div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("");
+  const names=L.map(e=>esc(e.t.split(" — ")[0])).join(" · ");
+  const more=FL.length?` · +${FL.length} other faith${FL.length>1?"s":""}`:"";
+  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day faith-day"><summary><span class="sg-i">🕊️</span><span class="bib-t"><b>On the ground today</b><small>${names}${more}</small></span><span class="pill">${L.length+FL.length}</span></summary><div class="in">${bibleBits}${FL.length?`<p class="bib-g">Also here today</p>${faithBits}`:""}</div></details>`);
 }catch(e){} return r; }; })();
 // the Now card: when you're actually there, a quiet prompt to stop
 function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
@@ -7026,6 +7038,7 @@ const faithChips=e=>e.f.map(k=>{ const K=FAITH_KINDS[k]; return `<i class="fa-k"
 const faithQuote=([r,q])=>{ const para=/≈\s*$/.test(r); return `<blockquote class="bib-q fa-q ${para?"para":""}" ${para?"":""}><p>${para?esc(q):"“"+esc(q)+"”"}</p><cite>${esc(r.replace(/\s*≈\s*$/,""))}${para?" · paraphrase":""}</cite></blockquote>`; };
 function faithCard(e, open){ const ds=e.plan==="on"?faithDays(e):[]; const dl=ds.map(d=>`<button type="button" class="chip" data-bibday="${d.id}">${d.dow} ${d.num}</button>`).join("");
   return `<details class="fold bib fa" id="fa-${e.id}" ${open?"open":""}><summary><span class="bib-t"><b>${esc(e.t)}</b><small><i class="bib-tag ${e.plan}">${FAITH_PLAN[e.plan]}</i>${ds.length?" · "+ds.map(d=>`${d.dow} ${d.num}`).join(", "):""}</small><span class="fa-ks">${faithChips(e)}</span></span></summary><div class="in">
+    ${(()=>{ const b=PAIRS_BACK[e.id]; const be=b&&BIBLE.find(x=>x.id===b); return be?`<p class="bib-w"><b>Also in the Bible</b> <button type="button" class="linkbtn" data-bibopen="${be.id}">${esc(be.t)}</button></p>`:""; })()}
     ${e.src.map(faithQuote).join("")}
     <p>${esc(e.story)}</p>
     <p class="bib-h"><b>Scripture, history, tradition — or a guess?</b> ${esc(e.honest)}</p>
@@ -7046,13 +7059,6 @@ document.addEventListener("click",e=>{ const f=e.target.closest("[data-fafilter]
 function openFaiths(id){ setLens("all"); if(id) faithFilter=""; safe(renderFaiths); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("faithSec"); const card=id&&document.getElementById("fa-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="faiths"){ openFaiths(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderFaiths), 1600);
-// the day card: a fold for the other faiths' ground, right after the Bible's
-(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".fa-day")) return r;
-  const L=faithMine().filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)); if(!L.length) return r;
-  const anchor=c.querySelector(".bib-day")||c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead"); if(!anchor) return r;
-  const icons=[...new Set(L.flatMap(e=>e.f))].map(k=>FAITH_KINDS[k].i).join("");
-  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day fa-day"><summary><span class="sg-i">🪷</span><span class="bib-t"><b>Other faiths here today</b><small>${icons} ${L.map(e=>esc(e.t.split(" — ")[0])).join(" · ")}</small></span><span class="pill">${L.length}</span></summary><div class="in">${L.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><span class="fa-ks">${faithChips(e)}</span>${faithQuote(e.src[0])}<div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("")}</div></details>`);
-}catch(e){} return r; }; })();
 // the Now card: only when the Bible has nothing to say about this stop
 function faithNowHTML(){ try{ if(typeof bibleNowHTML==="function"&&bibleNowHTML()) return ""; const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
   if(!nowLine) return ""; const cur=nowLine.replace(/^\s*Now:\s*/,"").replace(/^[^A-Za-z]+/,""); const e=faithMine().find(x=>x.plan==="on"&&x.m&&new RegExp(x.m,"i").test(cur)&&faithDays(x).some(y=>y.id===d.id)); if(!e) return "";
@@ -8165,7 +8171,7 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v211";
+const APP_VER="v212";
 const WHATS_NEW=[
  {v:"v203", d:"Sat Oct 10", items:[
   ["🛍","Gift shop","Gifts for the stop you're at, with a budget, a walk-away limit and receipts. Each phone keeps its own list, and nothing syncs."]]},
