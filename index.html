@@ -2605,7 +2605,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v173)";
+const BUILD = "Oct 10, 2026 (v174)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5384,6 +5384,7 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   try{ L.push("FLIGHTS (times local to each airport):\n"+allFlights().filter(f=>f.no&&f.from&&f.from.t).map(f=>{ const n=nowUTC(), d0=flightDep(f), d1=flightArr(f)??(d0+3*3600000); return `  ${f.who}: ${f.no} ${f.from.ap} (${f.from.city}) ${f.date} ${f.from.t} → ${f.to.ap} (${f.to.city}) ${f.to.t||"?"} — ${n>=d1?"flown":n>=d0?"IN THE AIR NOW":"not yet"}${f.live&&f.live.status&&f.live.status!=="unknown"?" ["+f.live.status+"]":""}`; }).join("\n")); }catch(e){}
   try{ L.push("FAIR PRICES (EGP, what a reasonable haggler pays): "+FAIR.map(f=>`${f.n} ${f.lo}–${f.hi}`).join("; ")+". Rule: counter at a third of the first ask; deals land at 40–60%."); }catch(e){}
   L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
+  try{ if(typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); L.push("GEM GUIDE (their 12 stops, in order; ✓=seen): "+GEM_STOPS.map(x=>(S[x.id]?"✓":"·")+x.n+" ["+x.where+"]").join(" | ")); } }catch(e){}
   try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (the app's Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")}`).join(" | ")); }catch(e){}
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
@@ -5408,6 +5409,8 @@ const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemera
 function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date; const d0=pre?DAYS[0]:DAYS[di]; const d=safe(()=>withMe(d0))||d0; const R=egpRate(); const w=me()||"Brad";
   const has=(...a)=>a.some(x=>q.includes(x)); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; };
   if(has("police","ambulance","emergency","hospital","help","embassy","stolen","lost my")) return "Tourist police 126 · ambulance 123 · police 122 · US Embassy Cairo +20 2 2797 3300. The hotel desk can call for you. No jokes on this one.";
+  if(has("gem","museum","tutankhamun","tut ","mask","khufu's boat","solar boat")&&typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); const hit=GEM_STOPS.find(x=>q.toLowerCase().includes(x.n.toLowerCase().split(" ").slice(-1)[0].replace(/[^a-z]/g,"")))||GEM_STOPS.find(x=>!S[x.id])||GEM_STOPS[0];
+    return `${hit.n} (${hit.where}). Look for: ${hit.look} ${hit.story} — ${GEM_STOPS.filter(x=>S[x.id]).length}/${GEM_STOPS.length} seen; the GEM guide is in the + menu while you're there.`; }
   if(has("bible","biblical","moses","jesus","joseph","scripture","holy family","israel","exodus","pharaoh's daughter","church","sinai")&&typeof bibleMine==="function"){ const d=todayDay(); const L=bibleMine(); const today=d?L.filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)):[]; const e=today[0]||L.find(e=>e.plan==="on"&&bibleDays(e).some(x=>x.date>=cairoNow().date))||L[0];
     return `${today.length?"Today's biblical ground":"Next on your route"}: ${e.t}. ${e.refs[0][0]} — “${e.refs[0][1]}” ${e.pause} Guide → The Bible in Egypt has every place, and which bits are scripture, history or tradition.`; }
   if(has("taxi","uber","careem","ride","cab")){ return "Uber or Careem — the app sets the price, so there's nothing to haggle and nothing to argue about. Cairo airport to the Hilton ≈$15, allow an hour in evening traffic. A street taxi: agree the price before the door closes, and have small notes."; }
@@ -6662,6 +6665,99 @@ function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) ret
 .bib-mini{padding:4px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}.bib-mini:last-child{border-bottom:0;margin-bottom:0}.bib-mini>b{display:block;font-size:0.8824rem}
 .bib-foot{font-size:0.7059rem;margin:12px 0 0}
 .fband.bib-now{border-color:color-mix(in srgb,#c9a24a 45%,var(--line))}
+`; document.head.appendChild(st); })();
+
+// ---------- gem.js: the Grand Egyptian Museum, in your pocket — a route for your three hours, the stories at each stop, tick as you go ----------
+const GEM_K="egypt.gem";
+const gemSeen=()=>{ try{ return JSON.parse(localStorage.getItem(GEM_K)||"{}")||{}; }catch(e){ return {}; } };
+const GEM_STOPS=[
+ {id:"obelisk", n:"The Hanging Obelisk", where:"Outside, before the entrance", min:5,
+  look:"Walk underneath and look up. The base of the obelisk was carved too, and this is the only way anyone has ever been able to see it.",
+  story:"Ramesses II's obelisk is raised on columns over the plaza so you stand beneath 3,200 years of granite. Egyptian obelisks were cut as a single stone and stood in pairs before temple gates, catching the first sun. This one lay broken at Tanis, in the Delta, for centuries before it was pieced together for the museum."},
+ {id:"colossus", n:"Ramesses II, 11 metres tall", where:"The Grand Hall, straight ahead", min:8,
+  look:"Look at his belt buckle and the cartouche on his shoulder, then at the scale of the visitors around his feet.",
+  story:"Red granite, about 83 tonnes and 3,200 years old. For fifty years he stood in the exhaust fumes of Ramses Square outside Cairo's railway station. In 2006 he was wrapped, laid on a flatbed and driven through the night to Giza while the city lined the streets to watch. He was the first great piece brought to the site, years before the museum opened."},
+ {id:"merenptah", n:"Merenptah's victory column", where:"The Grand Hall, near the colossus", min:4,
+  look:"Find the name ring of Merenptah, Ramesses II's son.",
+  story:"Merenptah is the pharaoh whose victory stele, in the old Egyptian Museum on Tahrir Square, contains the first mention of “Israel” anywhere outside the Bible, around 1208 BC. Here he is in stone, a few metres from his father.", bible:true},
+ {id:"stair", n:"The Grand Staircase", where:"From the Grand Hall, up six storeys", min:30,
+  look:"Climb slowly. The landings run in order: royal portraits, the houses of the gods, gods with kings, and the journey to eternity. Don't look back until the top.",
+  story:"Dozens of statues of kings, queens and gods line the stairs, plus sarcophagi and temple columns. They're arranged so you climb through the ideas Egypt lived by: the king's image, the god's house, the bond between them, and the road to the afterlife. At the top a wall of glass frames the pyramids of Giza, where you were this morning. That view is what the whole building was designed for."},
+ {id:"mask", n:"Tutankhamun's gold mask", where:"Tutankhamun galleries", min:10,
+  look:"The blue stripes are lapis lazuli and glass inlaid into gold. On the back of the shoulders is a spell from the Book of the Dead, protecting each part of the face.",
+  story:"About 10 kg of gold, made to lie directly on the mummy's face. The galleries follow the order Howard Carter found the tomb in 1922: antechamber, burial chamber, treasury. More than 5,000 objects are shown together here for the first time."},
+ {id:"coffin", n:"The solid gold coffin", where:"Tutankhamun galleries, burial chamber section", min:5,
+  look:"The innermost of three nested coffins, the one that held the mummy itself.",
+  story:"Some 110 kg of solid gold. It was so heavy, and so stuck with dried anointing oils, that Carter's team needed months to free it. A teenage king who reigned about ten years was buried with more gold than most nations held."},
+ {id:"dagger", n:"The meteorite dagger", where:"Tutankhamun galleries", min:4,
+  look:"A plain-looking iron blade with a gold hilt. Look for the absence of rust.",
+  story:"Its iron fell from the sky. A 2016 analysis found the nickel and cobalt signature of a meteorite, and the blade has barely rusted in 3,300 years. Egypt hadn't learned to smelt iron, so to them this was metal from the heavens, rarer than gold."},
+ {id:"throne", n:"The golden throne", where:"Tutankhamun galleries", min:5,
+  look:"On the backrest Queen Ankhesenamun rests a hand on her husband's shoulder. Above them shines the Aten sun disc.",
+  story:"The tenderest scene in the tomb. The sun disc gives the throne away: it was made while Egypt still followed his father Akhenaten's one-god religion, which Tutankhamun later abandoned. The names on it were changed, but the disc was left."},
+ {id:"sandals", n:"Sandals and footstool", where:"Tutankhamun galleries", min:3,
+  look:"The bound enemies painted on the soles and the footstool.",
+  story:"Every step the king took, he trod on Egypt's enemies, Nubians and Asiatics, tied and helpless. It was propaganda you wore on your feet."},
+ {id:"anubis", n:"The Anubis shrine", where:"Tutankhamun galleries, treasury", min:4,
+  look:"The black jackal lying on a gilded chest, ears up, eyes inlaid.",
+  story:"He guarded the doorway to the treasury, wrapped in linen when Carter found him. Anubis was the god who weighed the heart and walked the dead into the afterlife."},
+ {id:"daughters", n:"The two small coffins", where:"Tutankhamun galleries, quiet corner of the treasury", min:4,
+  look:"Two tiny coffins, side by side.",
+  story:"They held two stillborn daughters of Tutankhamun and Ankhesenamun, buried with their father. In a tomb full of gold, it's the most human thing in the room. Many visitors walk past it; stop for a moment."},
+ {id:"boat", n:"Khufu's solar boat", where:"Its own hall, the Khufu Boats Museum", min:20,
+  look:"The rope lashings through the planks. There are no nails anywhere.",
+  story:"Forty-three metres of 4,500-year-old cedar, found in 1954 in a sealed pit beside the Great Pyramid in 1,224 pieces. It was built to carry the king across the sky with the sun. Restorer Ahmed Youssef spent years building models to learn the joinery before he dared to assemble it. A second boat from the next pit is being reassembled, and you may see the work in progress."}
+];
+const GEM_PRACTICAL=[
+ ["🎟️","Tickets","Timed entry, booked online only at visit-gem.com (nothing is sold at the door). Have the QR on your phone and bring your passport, since foreign tickets are checked against ID. Foreign adult ≈1,450 EGP (≈$28). Confirm when booking that Tutankhamun and the boat are included."],
+ ["🎧","Audio guide","An optional extra at the entrance, reportedly ≈200 EGP, in English. With your own guide you won't need it; the stories here cover the highlights."],
+ ["🕘","Hours","Galleries open 9am to 6pm, until 9pm on Wednesdays and Saturdays. The quietest times are first thing and after 5pm. The Tutankhamun galleries are busiest from mid-morning to early afternoon, which is exactly when you'll be there, so go to them first."],
+ ["📷","Photos","Reports differ. Phones are generally fine; flash, tripods and selfie sticks are not. Ask at the door, especially for the Tutankhamun rooms."],
+ ["🎒","Bags","Big bags go in lockers. It's air-conditioned, with cafés and a restaurant inside, though you have Khufu's at 1:45."],
+];
+function gemRoute(){ return [["obelisk","colossus","merenptah"],["mask","coffin","dagger","throne","sandals","anubis","daughters"],["stair"],["boat"]]; }
+function gemHTML(){ const S=gemSeen(); const n=GEM_STOPS.filter(s=>S[s.id]).length; const by=Object.fromEntries(GEM_STOPS.map(s=>[s.id,s]));
+  const labels=["Arrive · 15 min","Tutankhamun first, before it fills · 75 min","Then the staircase, to the pyramid window · 30 min","Khufu's boat · 20 min"];
+  const card=s=>`<details class="fold gem-s ${S[s.id]?"seen":""}" id="gem-${s.id}"><summary><button type="button" class="gem-tick" data-gemtick="${s.id}" aria-label="Mark ${escA(s.n)} seen">${S[s.id]?"✓":""}</button><span class="gem-t"><b>${esc(s.n)}${s.bible?" 🕊️":""}</b><small>${esc(s.where)} · ${s.min} min</small></span></summary><div class="in"><p class="gem-look"><b>Look for</b> ${esc(s.look)}</p><p>${esc(s.story)}</p></div></details>`;
+  return `<div class="qh"><h3>At the GEM</h3><button type="button" class="x" aria-label="Close">×</button></div><div class="gem">
+   <div class="gem-bar"><div><b>${n} of ${GEM_STOPS.length}</b> seen</div><i><u style="width:${Math.round(n/GEM_STOPS.length*100)}%"></u></i></div>
+   <p class="muted gem-intro">Your 2¾ hours, in the order that beats the crowds. Tap a stop for what to look for and its story; tick the circle when you've seen it.</p>
+   ${gemRoute().map((ids,i)=>`<div class="gem-g">${labels[i]}</div>${ids.map(id=>card(by[id])).join("")}`).join("")}
+   <details class="fold gem-prac"><summary><span class="gem-t"><b>Before you go in</b><small>tickets, audio guide, hours, photos, bags</small></span></summary><div class="in">${GEM_PRACTICAL.map(([i,h,t])=>`<p><b>${i} ${esc(h)}</b> ${esc(t)}</p>`).join("")}</div></details>
+   <div class="row" style="margin-top:10px"><button type="button" class="btn" data-placeopen="Grand Egyptian Museum">The whole story of the GEM</button><button type="button" class="btn" data-gemsend="1">Send our list ↗</button></div>
+  </div>`; }
+function openGem(){ openSheet("sheetQC", gemHTML()); }
+function gemRender(){ const b=document.querySelector("#sheetQC .qbox"); if(b&&b.querySelector(".gem")){ const open=[...b.querySelectorAll(".gem-s[open]")].map(d=>d.id); const y=b.scrollTop; b.innerHTML=gemHTML(); open.forEach(id=>{ const d=document.getElementById(id); if(d) d.open=true; }); b.scrollTop=y; } }
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-gemtick]"); if(t){ e.preventDefault(); e.stopPropagation(); const S=gemSeen(); const id=t.dataset.gemtick; if(S[id]) delete S[id]; else S[id]=new Date().toISOString(); try{ localStorage.setItem(GEM_K, JSON.stringify(S)); }catch(x){} gemRender(); const n=Object.keys(S).length; if(n===GEM_STOPS.length){ toast("All twelve. The mummy is impressed; he's only seen the inside of one box."); safe(()=>sfx("relic")); } else if(S[id]) safe(()=>sfx("stamp")); safe(()=>renderNow()); return; }
+  if(e.target.closest("[data-gemopen]")){ e.preventDefault(); safe(()=>closeSheet("sheetQC")); setTimeout(openGem,60); return; }
+  if(e.target.closest("[data-gemsend]")){ const S=gemSeen(); const txt="🏛️ The GEM: "+GEM_STOPS.map(s=>(S[s.id]?"✓ ":"· ")+s.n).join("\n"); try{ if(navigator.share) navigator.share({text:txt}); else navigator.clipboard.writeText(txt).then(()=>toast("Copied.")); }catch(x){} return; }
+  const po=e.target.closest("[data-placeopen]"); if(po&&po.closest(".gem")){ safe(()=>closeSheet("sheetQC")); safe(()=>openPlace(po.dataset.placeopen)); return; }
+}, true);
+// Today: when the GEM is now, the guide is one tap away
+function gemNowHTML(){ try{ const n=document.getElementById("now"); if(!n) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||""; const big=[...n.querySelectorAll(".big")].map(x=>x.textContent).join(" ");
+  if(!/grand egyptian museum|\bGEM\b/i.test(nowLine+" "+big)) return ""; const S=gemSeen(); const k=GEM_STOPS.filter(s=>S[s.id]).length; const nx=GEM_STOPS.find(s=>!S[s.id]);
+  return `<div class="fband gem-now"><span class="fb-ic">🏛️</span><div><b>${/grand egyptian museum|\bGEM\b/i.test(nowLine)?"In the GEM":"The GEM is next"} · ${k}/${GEM_STOPS.length} seen</b><span class="prose">${nx?`Next: ${esc(nx.n)} — ${esc(nx.where.toLowerCase())}.`:"All twelve seen."} Tutankhamun first, before it fills.</span></div><button type="button" class="btn mini" data-gemopen="1">Open guide</button></div>`; }catch(e){ return ""; } }
+(function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("gemnow", gemNowHTML(), [".sky",".bclock",".fmode",".flive",".biblenow"]); }catch(e){} return r; }; })();
+// the day card: a fold on the day you go
+(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=safe(()=>withMe(DAYS[sel]))||DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".gem-day")) return r;
+  if(!(d.agenda||[]).some(a=>/grand egyptian museum/i.test(a.title||""))) return r; const anchor=c.querySelector(".bib-day")||c.querySelector(".mission")||c.querySelector(".dayhead"); if(!anchor) return r;
+  anchor.insertAdjacentHTML("afterend",`<div class="fband gem-day"><span class="fb-ic">🏛️</span><div><b>Your guide inside the GEM</b><span class="prose">Twelve stops in the order that beats the crowds, each with what to look for and its story. Works offline.</span></div><button type="button" class="btn mini" data-gemopen="1">Open</button></div>`); }catch(e){} return r; }; })();
+// the + menu suggests it while you're there
+(function(){ if(typeof qcSuggest!=="function") return; const Q=qcSuggest; qcSuggest=function(){ const out=Q.apply(this,arguments); try{ if(gemNowHTML()){ QC_ITEMS.gem={i:"🏛️",l:"GEM guide",a:'data-gemopen="1"'}; out.unshift({k:"gem", why:"twelve stops, ticked as you go"}); out.length=Math.min(out.length,2); } }catch(e){} return out; }; })();
+// a Guide tile next to the Bible one
+(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-gemopen]')){ const S=gemSeen(); const k=GEM_STOPS.filter(s=>S[s.id]).length; g.insertAdjacentHTML("beforeend",`<button type="button" data-gemopen="1"><span class="qi">🏛️</span><span class="nl">The GEM, inside<small>${k?`${k}/${GEM_STOPS.length} seen`:"12 stops and their stories"}</small></span></button>`); } }catch(e){} return r; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.gem-bar{display:flex;align-items:center;gap:10px;margin:0 0 8px}.gem-bar div{white-space:nowrap;font-size:0.8235rem}.gem-bar i{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.gem-bar u{display:block;height:100%;background:var(--ok);text-decoration:none}
+.gem-intro{font-size:0.7647rem;margin:0 0 6px}
+.gem-g{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.gem-s summary{display:flex;align-items:center;gap:10px}
+.gem-tick{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:#fff;font:800 14px/24px var(--body);cursor:pointer;padding:0}
+.gem-s.seen .gem-tick{background:var(--ok);border-color:var(--ok)}.gem-s.seen .gem-t b{opacity:.6}
+.gem-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.gem-t b{font-size:0.8824rem;line-height:1.3}.gem-t small{color:var(--muted);font-size:0.7059rem}
+.gem-s .in p,.gem-prac .in p{font-size:0.8529rem;line-height:1.5;margin:8px 0}
+.gem-look{padding:8px 10px;border-radius:10px;background:var(--sand)}.gem-look b{display:block;font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#b07612;margin-bottom:2px}
+.gem-prac .in p b{display:block;font-size:0.8235rem}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
