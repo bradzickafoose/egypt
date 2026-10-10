@@ -2120,7 +2120,7 @@ function renderDay(){
   const items = d.agenda.map((a,i)=>{
     let cls=""; if(isToday){ if(nextIdx===-1||i<nextIdx) cls="past"; if(i===nextIdx) cls="next"; }
     const pk = (a.p||a.map) && PLACES[a.p||a.map] ? (a.p||a.map) : "";
-    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.lt||a.t)}${a.lt?`<small>${a.ltz||"Cape Town"}</small>`:a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${safe(()=>lookLine(d,a))||""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
+    return `<li class="${cls} ${a.alarm?"isalarm":""}"><div class="t ${a.alarm?"alarm":""}">${fmt12(a.lt||a.t)}${a.lt?`<small>${a.ltz||"Cape Town"}</small>`:a.approx?"<small>approx</small>":""}</div><div class="body"><div class="ttl ${pk?"has":""}" ${pk?`data-place="${esc(pk)}" role="button" tabindex="0"`:""}>${a.alarm?"⏰ ":""}${esc(a.title)}${pk?' <span class="more">›</span>':""}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:""}${safe(()=>feetLine(a))||""}${safe(()=>lookLine(d,a))||""}${a.photo?`<div class="photo">📸 ${esc(a.photo)}</div>`:""}${mapBtns(a.map, a.p, false, safe(()=>calBtn(d,i)))}${safe(()=>calOpts(d,i))}</div></li>`;
   }).join("");
   $("#dayCard").classList.toggle("solo", d.who==="brad");
   $("#dayCard").innerHTML = `
@@ -2131,7 +2131,7 @@ function renderDay(){
       <div class="s alarm"><b>Alarm</b><span>${esc(d.alarm)}${safe(()=>alarmTaunt(d))}</span></div>
       <div class="s"><b>Carry</b><span>${esc(d.bag)}</span></div>
       <div class="s cash"><b>Cash</b><span>${esc(d.cash)}</span></div>
-      <div class="s"><b>Wear</b><span>${esc(d.dress)}</span></div>
+      <div class="s"><b>Wear</b><span>${esc(d.dress)}${(()=>{ const f=safe(()=>feetDayText(d)); return f?`<br><span class="feetday">Feet: ${esc(f)}</span>`:""; })()}</span></div>
     </div>
     <div class="mission"><b>Mission</b>${esc(d.mission)}</div>
     <ul class="agenda">${items}</ul>
@@ -3484,6 +3484,27 @@ const PERSONAL = {
             {t:"13:50",title:"Brad's in the Red Sea about now",note:"He owes you a photo from the water. Heckle accordingly.",approx:true}],
            mission:"Car at 4:35, AA 6609 at 07:25 — at the BA desk by 4:55. Brad's up to say goodbye — coffee, hug, go. Heckle from the couch all week.", chal:"A photo from the layover, to Brad, captioned."} }
 };
+// ---------- feet: what to wear on your feet at each stop — matched by the stop, so it follows any change to the plan ----------
+function feetRules(){ return [
+  [/mount sinai|start the climb|^summit|steps of repentance/i,"🥾","Hiking shoes or trail runners","a rocky path in the dark, three hours up and down"],
+  [/blue hole|snorkel|reef|ras abu galum|lighthouse/i,"🩴","Reef shoes in the water, sandals on land","the reef edge is sharp and the shore is hot"],
+  [/white desert|black desert|crystal mountain|agabat|first light in the white/i,"👟","Closed shoes to walk; sandals round camp","sharp chalk, hot sand, the odd scorpion"],
+  [/balloon/i,"👟","Closed shoes","you land in a field"],
+  [/giza|pyramid|dahshur|saqqara/i,"👟","Closed shoes","sand, a steep crouching passage, camel dung"],
+  [/valley of the kings|hatshepsut|colossi|deir el-medina/i,"👟","Closed shoes","dust, tomb steps, ground that's hot by 10"],
+  [/abu simbel/i,"👟","Closed shoes","cold at dawn and a long walk round the lake"],
+  [/felucca|motorboat|gharb soheil|walk the village|nubian house|board the dahabiya|we join the boat|on board|on deck|deck,|^sail|sail to|we sail|campfire|swim stop|anchor at/i,"🩴","Sandals","boats, decks and sandy village lanes — barefoot on deck"],
+  [/silsila|el kab/i,"👟","Closed shoes","a scramble over quarry rock and desert paths"],
+  [/khan el-khalili|al-muizz|citadel|sultan hassan|tannoura|wikala/i,"👞","Closed slip-ons","crowded, grubby lanes — and shoes come off at every mosque door"],
+  [/grand egyptian museum|luxor museum/i,"👟","Comfortable shoes","hours on hard floors"],
+  [/high tea|old cataract/i,"🩴","Smart sandals are fine","a terrace, not a hike"],
+  [/philae|kom ombo|edfu|temple of horus|karnak|luxor temple/i,"🩴","Strap sandals are fine","paved and mostly flat; closed shoes if you'd rather"],
+  [/^dahab|promenade|masbat/i,"🩴","Sandals","it's a beach town"]
+]; }
+function feetFor(a){ const t=String((a&&a.title)||"").replace(/^[^A-Za-z]+/,"").split(/ — | → |: |, then | \(/)[0]; const r=feetRules().find(x=>x[0].test(t)); if(!r) return null; let lbl=t.split(/\. |, /)[0]; if(lbl.length<6){ const m=t.match(r[0]); lbl=m?m[0].replace(/^./,c=>c.toUpperCase()):lbl; } return {i:r[1],w:r[2],why:r[3],lbl}; }
+function feetLine(a){ const f=feetFor(a); return f?`<div class="feet">${f.i} ${esc(f.w)} <small>— ${esc(f.why)}</small></div>`:""; }
+function feetDayText(d){ const seq=[]; (d.agenda||[]).forEach(a=>{ const f=feetFor(a); if(!f) return; const kind=f.i==="🩴"?"sandals":f.i==="🥾"?"hiking shoes":f.i==="👞"?"slip-ons":"closed shoes"; const where=f.lbl; if(!seq.length||seq[seq.length-1].k!==kind) seq.push({k:kind,i:f.i,w:where}); });
+  if(!seq.length) return ""; const both=new Set(seq.map(x=>x.k==="sandals"?"s":"c")).size>1; return seq.map(x=>`${x.i} ${x.k} for ${x.w}`).join(" → ")+(both?" (bring both)":""); }
 function withMe(d){ const o=PERSONAL[d.id] && PERSONAL[d.id][me()]; if(!o) return d; const r=Object.assign({}, d, o); if(o.agendaPre){ const ts=new Set(o.agendaPre.map(x=>x.t)); r.agenda=o.agendaPre.concat((d.agenda||[]).filter(x=>!ts.has(x.t))).sort((x,y)=>String(x.t||"").localeCompare(String(y.t||""))); } return r; }  /* my own line at a time replaces the shared one */
 function meChip(){ const el=$("#meChip"); if(!el) return; const w=me(); el.innerHTML = `${esc(w||"Whose phone?")}<i class="me-c" aria-hidden="true"></i>`; el.setAttribute("aria-label", w?`This is ${w}’s phone. Tap to change.`:"Whose phone is this?"); el.classList.toggle("unset", !w); }
 function whoSheet(force){
@@ -5416,7 +5437,7 @@ async function claudeStream({system, messages, max_tokens, model, onText, stallM
 // Sent once and cached by the API, so a question costs little and the mummy never has to guess about another day.
 function mumKnowledge(){ const w=me()||"Brad"; const L=[]; const cut=(s,k)=>{ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>k?s.slice(0,k)+"…":s; };
   try{ L.push("THE WHOLE ITINERARY (as "+w+" sees it; times are Cairo time unless a local time is given; days marked BRAD ONLY are Brad's solo week after Duane flies home):\n"+DAYS.filter(d=>w!=="Duane"||d.who!=="brad").map(d0=>{ const x=safe(()=>withMe(d0))||d0;
-    return `== ${x.dow} ${x.num} Oct (${x.date})${x.who==="brad"?" · BRAD ONLY":""} — ${x.title} · ${x.place||""}\n  Sleep: ${x.sleep||"—"} · Alarm: ${x.alarm||"—"} · Wear: ${cut(x.dress,80)} · Bring: ${cut(x.bag,100)} · Cash: ${x.cash||"—"}\n  Mission: ${cut(x.mission,220)}\n`+(x.agenda||[]).map(a=>`  ${a.lt?a.lt+" "+(a.ltz||"local")+" time":a.t}${a.approx?"≈":""} ${cut(a.title,110)}${a.note?" — "+cut(a.note,230):""}`).join("\n")+((x.know||[]).length?`\n  Know: ${(x.know||[]).map(k=>cut(k,140)).join(" | ")}`:"")+(x.planb?`\n  Plan B: ${cut(x.planb,320)}`:""); }).join("\n")); }catch(e){}
+    return `== ${x.dow} ${x.num} Oct (${x.date})${x.who==="brad"?" · BRAD ONLY":""} — ${x.title} · ${x.place||""}\n  Sleep: ${x.sleep||"—"} · Alarm: ${x.alarm||"—"} · Wear: ${cut(x.dress,80)}${(()=>{ const f=safe(()=>feetDayText(x)); return f?" · Feet: "+f:""; })()} · Bring: ${cut(x.bag,100)} · Cash: ${x.cash||"—"}\n  Mission: ${cut(x.mission,220)}\n`+(x.agenda||[]).map(a=>`  ${a.lt?a.lt+" "+(a.ltz||"local")+" time":a.t}${a.approx?"≈":""} ${cut(a.title,110)}${a.note?" — "+cut(a.note,230):""}`).join("\n")+((x.know||[]).length?`\n  Know: ${(x.know||[]).map(k=>cut(k,140)).join(" | ")}`:"")+(x.planb?`\n  Plan B: ${cut(x.planb,320)}`:""); }).join("\n")); }catch(e){}
   try{ L.push("HOTELS:\n"+HOTELS.map(h=>`  ${h.n} · ${h.d||""} · ${h.addr||""}${h.telD?" · tel "+h.telD:""}${h.email?" · "+h.email:""} · check-in ${h.cin||"?"}, out ${h.cout||"?"}${(h.fit||[]).length?" · "+h.fit.map(f=>cut(f,140)).join(" / "):""}`).join("\n")); }catch(e){}
   try{ L.push("EAT & SHOP (the app's picks, by city):\n"+GUIDES.map(g=>`== ${g.city} (${g.when})\n`+["eat","shop","buy"].flatMap(k=>(g[k]||[]).map(x=>`  [${k}] ${x.n} — ${cut(x.where,90)} — ${cut(x.what,170)}${x.fit?" → "+cut(x.fit,80):""}`)).join("\n")).join("\n")); }catch(e){}
   try{ L.push("PLACES (what each stop is, and what to know):\n"+Object.values(PLACES).map(P=>`  ${P.n}: ${cut(P.what,240)}${(P.know||[]).length?" Know: "+(P.know||[]).slice(0,3).map(k=>cut(k,120)).join(" | "):""}`).join("\n")); }catch(e){}
@@ -5479,6 +5500,8 @@ ${mumKnowledge()}`;
 const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemeral"}},{type:"text",text:"RIGHT NOW\n"+mumContext()}];
 
 (function(){ const st=document.createElement("style"); st.textContent=`
+.agenda .feet{margin-top:4px;font-size:0.7647rem;font-weight:600;color:var(--fg)}.agenda .feet small{font-weight:400;color:var(--muted)}
+.feetday{display:inline-block;margin-top:3px;font-size:0.8235rem;color:var(--muted)}
 .am-src{margin-top:6px;font:600 0.6471rem var(--mono);letter-spacing:.04em;color:var(--muted)}.am-src a{color:inherit;text-decoration:underline}
 .am-redo{display:inline-block;margin-top:6px;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:3px 10px;font:600 0.7059rem var(--body);cursor:pointer}.am-redo:active{transform:scale(.97)}
 `; document.head.appendChild(st); })();
@@ -5498,7 +5521,7 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
     if(day){ const x=X(day); const lbl=`${x.dow} ${x.num}`;
       if(meal){ const it=(x.agenda||[]).filter(a=>new RegExp(meal,"i").test(a.title)); return it.length?it.map(a=>`${lbl}, ${tm(a)}: ${a.title}.${a.note?" "+first(a.note):""}`).join(" "):`Nothing called ${meal} on the plan for ${lbl}. The day: ${(x.agenda||[]).slice(0,5).map(a=>tm(a)+" "+short(a.title)).join(" · ")}.`; }
       if(has("alarm","wake","what time do i get up","get up")) return `${lbl}: alarm ${x.alarm||"—"}. First up: ${(x.agenda||[])[0]?tm(x.agenda[0])+" "+short(x.agenda[0].title):"—"}.`;
-      if(has("wear","pack","bring","carry","clothes")) return `${lbl} — wear: ${x.dress||"—"}. Bring: ${x.bag||"—"}. Cash: ${x.cash||"—"}.`;
+      if(has("wear","pack","bring","carry","clothes","shoes","sandals","boots","feet","footwear")) return `${lbl} — wear: ${x.dress||"—"}.${(()=>{ const f=safe(()=>feetDayText(x)); return f?" Feet: "+f+".":""; })()} Bring: ${x.bag||"—"}. Cash: ${x.cash||"—"}.`;
       if(has("sleep","hotel","staying","bed")) return `${lbl}, you sleep at: ${x.sleep||"—"}.`;
       return `${lbl} — ${x.title}. Alarm ${x.alarm||"—"}.\n${(x.agenda||[]).slice(0,8).map(a=>tm(a)+" "+short(a.title)).join("\n")}${(x.agenda||[]).length>8?"\n…and more on the day card":""}\nSleep: ${x.sleep||"—"}.`; }
     if(has("when","what time","which day","what day")){ const stop=new Set("when what time which does do we is are the our for and with day get to at go going there that this have does from".split(" ")); const words=q.replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(x=>x.length>3&&!stop.has(x));
