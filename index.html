@@ -1886,7 +1886,7 @@ const DAYS = [
    {t:"15:30",title:"Taxi to Sharm el-Sheikh airport",note:"≈1h15, ≈$30 private, or the GoBus for ≈$5 if the timing works.",map:"Sharm El Sheikh International Airport"},
    {t:"18:30",title:"Fly Sharm → Cairo",note:"Evening options: Air Cairo ≈18:00 (lands T1 — taxi to the hotel) or EgyptAir 22:30 (lands T3, the footbridge). Nile Air's only Thursday flight is 14:10.",map:"Sharm El Sheikh International Airport",approx:true},
    {t:"20:00",title:"Hotel in Zamalek: check in, then walk to the Nile",note:"Book a Zamalek hotel now (Zamalek is an island of cafes and the Nile). Taxi from the airport ≈30–45 min in traffic. The airport hotel stays for Sat 24, when the desert is over and the flight is early.",map:"Zamalek"},
-   {t:"21:00",title:"Dinner in Zamalek: koshary or Zooba. Pack a desert bag; leave the rest at the hotel.",note:"Zooba is on the Zamalek list. Warm layers again: the White Desert drops to 50°F at night.",map:"Zooba Zamalek",approx:true}],
+   {t:"21:00",title:"Dinner in Zamalek: koshary or Zooba. Pack a desert bag; leave the rest at the hotel.",note:"If you take the 22:30 EgyptAir flight, eat at the airport and skip Zamalek. Zooba is on the Zamalek list. Warm layers again: the White Desert drops to 50°F at night.",map:"Zooba Zamalek",approx:true}],
   know:["The White Desert tour picks up early tomorrow; confirm the time and the pickup point with them tonight","Leave the big bag at the hotel; the camp is a sleeping bag under the stars"],
   planb:"Too wrecked from the mountain → skip Ras Abu Galum, sleep, take the midday flight. Flights full → GoBus Sharm → Cairo is 8 hours; better to fly from Sharm in the morning Friday and start the desert at noon (the tour can adapt). If the desert tour cancels on Friday → Alexandria by train from Ramses station (about 2.5 hours each way): the Bibliotheca, Qaitbay Citadel and the Catacombs."},
  {id:"fri23",who:"brad",sleep:"a camp in the White Desert",sleepq:"",date:"2026-10-23",dow:"Fri",num:23,title:"Into the White Desert",place:"Bahariya → the White Desert",emoji:"🏜️",
@@ -1909,7 +1909,7 @@ const DAYS = [
    {t:"07:30",title:"Breakfast, strike camp, a last walk among the shapes",approx:true},
    {t:"09:00",title:"Drive back: Bahariya, then the highway",note:"Lunch at Bahariya. Dust in everything.",approx:true},
    {t:"16:30",title:"Cairo. Le Méridien Cairo Airport.",note:"Long shower. Repack for the flight: liquids, the USD you didn't use, the receipts.",map:"Le Meridien Cairo Airport",approx:true},
-   {t:"19:00",title:"Last night: Coptic Cairo at dusk, or a last koshary",note:"Option one, 30–40 minutes by taxi from the hotel: the Hanging Church and Ben Ezra Synagogue, then the Khan for a real papyrus. Option two, the Arab Music Festival at the Opera House. The 34th Arab Music Festival runs Oct 20–30 (some nights in Alexandria and Damanhour, and the line-up was reshuffled after withdrawals) — check the Opera House programme for the 24th; if the programme has something, it's a 40-minute Uber and the most Egyptian way to end. Otherwise Abou Tarek for koshary, or the hotel. Back by 10.",map:"Cairo Opera House",approx:true},
+   {t:"19:00",title:"Last night: Coptic Cairo at dusk, or a last koshary",note:"Option one, about an hour by taxi from the airport hotel: the Hanging Church and Ben Ezra Synagogue, then the Khan for a real papyrus. Option two, the Arab Music Festival at the Opera House. The 34th Arab Music Festival runs Oct 20–30 (some nights in Alexandria and Damanhour, and the line-up was reshuffled after withdrawals) — check the Opera House programme for the 24th; if the programme has something, it's a 40-minute Uber and the most Egyptian way to end. Otherwise Abou Tarek for koshary, or the hotel. Back by 10.",map:"Cairo Opera House",approx:true},
    {t:"22:00",title:"Bed. Alarm 6:30. Check in online for the 10:20.",approx:true}],
   know:["Checked bag goes through to Orlando on the single United ticket; confirm at the EgyptAir desk","The Heathrow connection is 1 hour, same terminal — tight; confirm UA 928's time in the United app; the bag is the airline's problem, you just walk"],
   planb:"Tour runs late → dinner at the hotel and nothing else; Sunday is the only thing that matters now."},
@@ -1985,7 +1985,7 @@ const WEEK = [
  {k:"w8",who:"Both",t:"Airalo Egypt eSIM installed on home wifi (Brad 15-day $49, Duane 10-day $35)"},
  {k:"w9",who:"Brad",t:"After Duane: flights CAI→SSH Mon 19 (Air Cairo ≈11:00 or EgyptAir; no Nile Air on Mondays) and SSH→CAI Thu 22 evening"},
  {k:"w10",who:"Brad",t:"Dahab guesthouse Mon 19–Wed 21 · Zamalek hotel Thu 22 (book now) · Le Méridien Cairo Airport Sat 24"},
- {k:"w11",who:"Brad",t:"White Desert 2-day tour from Cairo, Fri 23 pickup at the airport hotel",s:"Western Desert Tours, Badawiya or White Desert Tours Egypt. Mount Sinai and the Blue Hole book in Dahab on arrival."},
+ {k:"w11",who:"Brad",t:"White Desert 2-day tour from Cairo, Fri 23 pickup at your Zamalek hotel, 07:00",s:"Western Desert Tours, Badawiya or White Desert Tours Egypt. Mount Sinai and the Blue Hole book in Dahab on arrival."},
   {k:"w12",who:"Both",t:"Call Khufu's: does the Mon 1:45 lunch booking get you back through the Great Gate after GEM? If not, eat at ≈11 and move the GEM slot",h:"Call Khufu's: does the Mon 1:45 lunch booking get you back through the Great Gate after GEM? If not, eat at ≈11 and move the GEM slot"},
   {k:"w13",who:"Both",t:"Book Old Cataract terrace tea for Tue 13, 4pm (reported as booking-only, ≈$45–60 each)",h:"Book Old Cataract terrace tea for Tue 13, 4pm (reported as booking-only, ≈$45–60 each)"}
 ];
@@ -8140,8 +8140,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v197";
+const APP_VER="v198";
 const WHATS_NEW=[
+ {v:"v198", d:"Sat Oct 10", items:[
+  ["🧭","Brad's itinerary fixes","The Friday desert pickup is now at the Zamalek hotel, the Coptic Cairo travel time is corrected, and the Thursday dinner notes the late flight."]]},
  {v:"v197", d:"Sat Oct 10", items:[
   ["🤿","Brad's solo days","Tuesday has a freediving intro, the Sinai climb has a Bedouin guide option, and Saturday evening has Coptic Cairo as an option."]]},
  {v:"v196", d:"Sat Oct 10", items:[
