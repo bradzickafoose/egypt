@@ -8134,4 +8134,17 @@ const WHATS_NEW=[
 `; document.head.appendChild(st);
 })();
 </script>
+<script>
+// ---------- offline maps: a reminder on the day you need each area, with the exact map to save ----------
+// Maps stop working without signal, so each one is saved on the wifi before you go there. Save from Google Maps: profile → Offline maps → Select your own map.
+(function(){ const OFF=[
+ ["sun11",{t:"08:30",title:"Save offline maps: Cairo & Giza (hotel wifi)",note:"Google Maps → profile → Offline maps → Select your own map → Cairo and Giza. Covers Dahshur, Saqqara and Islamic Cairo, where mobile signal drops inside the monuments. Takes about 10 minutes on wifi.",_off:1}],
+ ["tue13",{t:"09:00",title:"Save offline maps: Aswan and Abu Simbel",note:"Google Maps → Offline maps → Aswan, which also covers Philae and the Nubian village. Add Abu Simbel for Wednesday's 4am drive. Save both on the hotel wifi tonight, not on the road.",_off:1}],
+ ["sat17",{t:"11:30",title:"Save offline maps: Luxor and the West Bank (hotel wifi)",note:"Google Maps → Offline maps → Luxor. Covers Karnak, Luxor Temple, the Valley of the Kings and the West Bank. Do it at the hotel before the West Bank, since the tombs have no signal.",_off:1}],
+ ["mon19",{t:"07:30",title:"Save offline maps: Sinai and Dahab (before you leave Cairo)",note:"Google Maps → Offline maps → Dahab and South Sinai. Covers St Catherine's, Mount Sinai and the Blue Hole. Coverage in the mountains is patchy, so save it while you still have hotel wifi.",_off:1}],
+ ["fri23",{t:"06:00",title:"Save offline maps: Western Desert (the White Desert)",note:"Google Maps → Offline maps → Bahariya and the Western Desert. There is no signal at the White Desert, so this is the last chance until Sunday. Save it on Thursday's hotel wifi if you can.",_off:1}]
+];
+OFF.forEach(([id,item])=>{ const d=(typeof DAYS!=="undefined")&&DAYS.find(x=>x.id===id); if(d){ d.agenda=(d.agenda||[]).concat([item]).sort((a,b)=>String(a.t||"").localeCompare(String(b.t||""))); } });
+})();
+</script>
 </body></html>
