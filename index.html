@@ -8144,7 +8144,7 @@ const WHATS_NEW=[
  ["mon19",{t:"07:30",title:"Save offline maps: Sinai and Dahab (before you leave Cairo)",note:"Google Maps → Offline maps → Dahab and South Sinai. Covers St Catherine's, Mount Sinai and the Blue Hole. Coverage in the mountains is patchy, so save it while you still have hotel wifi.",_off:1}],
  ["fri23",{t:"06:00",title:"Save offline maps: Western Desert (the White Desert)",note:"Google Maps → Offline maps → Bahariya and the Western Desert. There is no signal at the White Desert, so this is the last chance until Sunday. Save it on Thursday's hotel wifi if you can.",_off:1}]
 ];
-OFF.forEach(([id,item])=>{ const d=(typeof DAYS!=="undefined")&&DAYS.find(x=>x.id===id); if(d){ d.agenda=(d.agenda||[]).concat([item]).sort((a,b)=>String(a.t||"").localeCompare(String(b.t||""))); } });
+if(typeof withMe==="function"){ const W=withMe; withMe=function(d){ const r=W.apply(this,arguments); try{ const ex=OFF.filter(([id])=>d&&id===d.id).map(([,i])=>i); if(ex.length&&r&&r.agenda&&!r.agenda.some(x=>x._off)) r.agenda=r.agenda.concat(ex).sort((a,b)=>String(a.t||"").localeCompare(String(b.t||""))); }catch(e){} return r; }; }
 })();
 </script>
 </body></html>
