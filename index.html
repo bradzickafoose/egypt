@@ -1972,7 +1972,11 @@ const HOTEL_HOWTO = [
 const WEEK = [
  {k:"w1",who:"Both",t:"Booking details for the boat: name as printed in your passport, nationality, DOB.",s:"Nothing more unless the company insists; they see the passports at boarding."},
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
- {k:"w3",who:"Either",t:"The boat: vote and choose on the Today screen (Decide the boat), then send the message from its card.",s:"Published prices $899–1,815 each for 3 nights. Get the boat's name, twin beds and the terms in writing."},
+ {k:"w3",who:"Either",t:"The boat: Pure Nile (Merit) needs a ship picked and a written total for two. Email sent; wait for their reply.",s:"Star Goddess and La Terrasse quoted by brochure, $700–1,500 per person. Djed's Orient charter quote is still pending. Decide by Sunday 9pm; get the name, cabin type, pickup and total in writing."},
+ {k:"w14",who:"Brad",t:"Ask Pure Nile about the Tuesday-night boarding option and the Abu Simbel arrangement (reply pending)."},
+ {k:"w15",who:"Duane",t:"Sunday morning: call or visit Djed (Thowiba) and Pure Nile for quotes. Ask the Cairo hotel concierge to help."},
+ {k:"w16",who:"Both",t:"Tuesday 13: hotel in Aswan for the night (needed in every plan except a Tuesday boarding). Book it once the boat decision is made, or now if we want a fallback."},
+ {k:"w17",who:"Both",t:"Luxor: change Friday to Saturday night only once the boat is confirmed in writing. Keep Friday if we're on the no-boat plan."},
  {k:"w4",who:"Brad",t:"Domestic flights are booked: NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Type each booking code into Guide → Flights so it's on your phone offline, then tick this.",s:"The codes stay on this phone only; they're never synced or shared."},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day: Dahshur, Saqqara, Islamic Cairo · Mon)'},
  {k:"w6",who:"Both",t:"e-Visa, or $30 USD cash on arrival, exact bills",h:'<a href="https://visa2egypt.gov.eg" target="_blank" rel="noopener">e-Visa</a>, or $30 USD cash on arrival, exact bills'},
@@ -5348,17 +5352,17 @@ const T_STAGES=[
   Brad:["Who Dey? More like Who Paid Asking Price.","The Bengals have a tiger. Egypt has a sphinx. One of them actually guards something."],
   Duane:["Black and gold? In the Khan that's the colour of the cheap souvenirs.","Six Super Bowls and not one of them taught you to say \"too expensive\" in Arabic."]},
  {id:"aswan", from:"2026-10-13 04:00", to:"2026-10-14 12:00", e:"☀️", n:"Aswan & Abu Simbel", sub:"high tea, high heat, a 3:30 alarm",
-  any:["High tea at the Old Cataract: the only time your pinky will be higher than your score.","It's 40° in the shade and you're still colder than your team's offense.","Philae got moved to a new island to save it. Nobody's moving your season.","3:30 alarm for Abu Simbel. Ramses built four giant statues of himself. You can't even build a lead.","Abu Simbel was moved 65 metres uphill. Your score hasn't moved at all."],
-  Brad:["Abu Simbel faces the sunrise. The Bengals face the facts? Never.","Nubian houses are painted bright so people can find them. Your team should try that with the end zone."],
-  Duane:["Ramses II put his name on everything he touched. Like the Steelers with a 1979 trophy.","Even the Aswan sun takes a break at noon. Your excuses work overtime."]},
+  any:["Old Cataract tea. Pinky out, or the waiter judges you. The waiter judges everyone, but I'm the one who looks good doing it.", "Abu Simbel at dawn: the sun lines up with Ramses's face twice a year. You line up for nothing.", "3:30 alarm. The camel's already awake and judging your shoes.", "Philae got moved stone by stone to save it. Your defense needs the same treatment, plus a new island."],
+  Brad:["Abu Simbel faces the sunrise. Your offense hasn't faced anything since September.", "Pinky out at Old Cataract, Duane. Ramses wore a crown. You're wearing a fanny pack."],
+  Duane:["Ramses put his name on everything he touched. You put your name on losing bets.", "Even the Aswan sun takes a break at noon. Your excuses don't."]},
  {id:"nile", from:"2026-10-14 12:00", to:"2026-10-17 10:00", e:"⛵", n:"On the Nile", sub:"slow boat, fast mouth",
-  any:["The boat goes five miles an hour. Still faster than your two-minute drill.","No signal on the river. Finally, a place where you can't check the score.","The crew learned my name on day one. They call you \"the other one.\"","Edfu is the best-preserved temple in Egypt. Your losing streak is a close second.","I'd push you overboard, but the crocodiles have standards.","We're moored for the night. Your scoring has been moored since Cairo."],
-  Brad:["Sobek the crocodile god has a better bite than your pass rush.","On a boat with a Bengals fan: the Nile has never seen a slower-moving thing."],
-  Duane:["We sailed past the quarry at Silsila. That's where they dug up your playbook.","Steelers fans and the Nile: both very old, both going in one direction. Down."]},
+  any:["The boat goes five miles an hour. Still faster than your two-minute drill.", "No signal on the river. Finally, a place where nobody checks the score but the crocodiles.", "The crew learned my name by day one. You're 'the other one.' The tip is yours to earn.", "Kom Ombo: two temples in one building. Still only one of you has a plan."],
+  Brad:["Sobek the crocodile god has a better bite than your pass rush.", "You're stuck in a Cairo queue and I'm sailing past the temples. Who's really going nowhere?"],
+  Duane:["Steelers fans and the Nile: both old, both slow, both going downstream. Down.", "Sobek has a crocodile's bite. You have a crocodile's sense of direction."]},
  {id:"luxor", from:"2026-10-17 10:00", to:"2026-10-18 19:30", e:"🎈", n:"Luxor", sub:"tombs, a balloon, and the final whistle tonight",
-  any:["Valley of the Kings: 63 tombs and not one trophy of yours either.","The balloon goes up at dawn. First thing on this trip that's gone up for you.","Hatshepsut ruled Egypt in a fake beard. You can't even rule a group chat.","Karnak has 134 columns. Your excuses still outnumber them.","Final whistle tonight. Start practising the words \"I'm buying.\""],
-  Brad:["They buried kings here with everything they'd need in the afterlife. I'll bury you with your Bengals hat.","Tut died at 19 and still has more trophies than Cincinnati."],
-  Duane:["Valley of the Kings. Funny — Pittsburgh hasn't seen one in years.","The mummies here have been wrapped for 3,000 years. Your season's been wrapped since September."]},
+  any:["Valley of the Kings: 63 tombs and not one trophy of yours.", "Hatshepsut ruled in a fake beard. You can't even rule a group chat.", "Karnak has 134 columns. You can't hold up one defensive line.", "The balloon goes up at dawn. First thing on this trip that's gone up for you."],
+  Brad:["They buried kings with everything they'd need in the afterlife. I'll bury you with your Bengals hat.", "Tut died at 19 and still has more trophies than Cincinnati."],
+  Duane:["Valley of the Kings. Pittsburgh hasn't seen one in years.", "The mummies here have been wrapped for 3,000 years. Your season's been wrapped since September."]},
  {id:"final", from:"2026-10-18 19:30", to:"2026-10-19 04:00", e:"🏁", n:"Final whistle", sub:"the board is the board · loser buys dinner",
   any:["Final whistle. Loser buys. I've already picked the expensive Lebanese place.","Check the board, then check your wallet.","Dinner's on you. So's the shame.","Good game. Not you — the game. The game was good."],
   Brad:["Last night together and I'm leaving with the trophy and the leftovers."],
@@ -8115,8 +8119,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v192";
+const APP_VER="v193";
 const WHATS_NEW=[
+ {v:"v193", d:"Sat Oct 10", items:[
+  ["🗣","Sharper trash talk","The Aswan, Nile and Luxor lines are rewritten around the places we're actually visiting, not the same football jokes. The to-do list now covers the boat decision, Sunday calls, and the Luxor and Aswan hotels."]]},
  {v:"v192", d:"Sat Oct 10", items:[
   ["🧻","The mummy keeps busy","While he is on screen he now reads the bottom of your screen, counts his toes, does a yoga pose, and waves. Every visit has something new."]]},
  {v:"v191", d:"Sat Oct 10", items:[
