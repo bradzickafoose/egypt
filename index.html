@@ -8144,8 +8144,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v202";
+const APP_VER="v203";
 const WHATS_NEW=[
+ {v:"v203", d:"Sat Oct 10", items:[
+  ["🛍","Shop: gifts for the stop you're at","A new Shop button shows what to buy at today's stop, with a price estimate, a walk-away limit, a bag tag, and Brad's rule. Each list is private to its phone."]]},
  {v:"v202", d:"Sat Oct 10", items:[
   ["💬","Ask the Mummy, more polish","Shorter key setup, clearer status line, and offline answers for the boat, the Sinai climb and the desert camp."]]},
  {v:"v201", d:"Sat Oct 10", items:[
@@ -8287,6 +8289,59 @@ document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); i
   const c=e.target.closest("[data-xoff]"); if(c){ /* handled on change */ return; }
   const ch=e.target.closest("button"); if(ch && /choose this one/i.test(ch.textContent||"")){ try{ setTimeout(()=>{ if(typeof mumReact==="function") mumReact("tout",{delay:900,line:"A boat! Finally. I'll pack my good wrappings."}); },300); }catch(x){} } });
 document.addEventListener("change", e=>{ const c=e.target.closest("[data-xoff]"); if(!c) return; const st=xtOff(); st[c.dataset.xoff]=c.checked; xtSet("egypt.xt.off",st); });
+})();
+
+// ---------- shop: phase one — the "Here" screen for gifts and treats, private to each phone ----------
+(function(){
+const SHOP_STOPS=[
+ {d:"2026-10-11",city:"Cairo",name:"The Khan el-Khalili",items:[
+  {id:"att1",who:"Duane",name:"Rose or jasmine attar, small bottle",why:"A scent that's a gift in itself. Small and easy to carry.",bag:"checked",local:true,small:true,egp:[200,600]},
+  {id:"cart1",who:"Duane",name:"Silver cartouche pendant with her name",why:"Personal. Check the silver stamp on the back and ask for the hieroglyphs to be checked against her name.",bag:"carry-on",local:true,small:true,egp:[800,2500]},
+  {id:"keyr1",who:"Brad",name:"Cartouche keyring, one for each sibling",why:"Small and local. Buy one per sibling so nobody's left out.",bag:"carry-on",local:true,small:true,egp:[200,500]}]},
+ {d:"2026-10-12",city:"Giza",name:"Grand Egyptian Museum shop",items:[
+  {id:"pap1",who:"Both",name:"Hand-made papyrus bookmark or card",why:"Real papyrus bends without cracking and shows crossed fibres against the light.",bag:"carry-on",local:true,small:true,egp:[100,300]}]},
+ {d:"2026-10-13",city:"Aswan",name:"Aswan spice stalls and Nubian crafts",items:[
+  {id:"box1",who:"Brad",name:"Nubian painted box for your niece",why:"Bright, light and made in Aswan.",bag:"wrap",local:true,small:true,egp:[150,400]},
+  {id:"kark1",who:"Brad",name:"Karkade (hibiscus tea) and dukkah for your parents",why:"Local and flat. Check your home country's food rules before you pack.",bag:"carry-on",local:true,small:true,egp:[100,300]}]},
+ {d:"2026-10-16",city:"Luxor",name:"Luxor alabaster and bazaar",items:[
+  {id:"alab1",who:"Duane",name:"Small alabaster carving: a scarab or a small vessel",why:"Light and made in Luxor. Wrap it well; it chips.",bag:"wrap",local:true,small:true,egp:[150,600]}]},
+ {d:"2026-10-19",city:"Dahab",name:"Dahab Bedouin shops",items:[
+  {id:"bsil1",who:"Brad",name:"Bedouin silver earrings or a beaded pouch",why:"Made by Sinai Bedouin. Light and small.",bag:"carry-on",local:true,small:true,egp:[300,1000]}]},
+ {d:"2026-10-24",city:"Cairo",name:"Cairo last chance: the Khan again",items:[
+  {id:"papr2",who:"Brad",name:"A real papyrus card for your sister or niece",why:"Last chance before the flight home.",bag:"carry-on",local:true,small:true,egp:[100,300]}]}
+];
+const SHOP_KEY=()=>"egypt.shop."+(me()||"me");
+function shopState(){ try{ return JSON.parse(localStorage.getItem(SHOP_KEY()))||{}; }catch(e){ return {}; } }
+function shopSave(st){ try{ localStorage.setItem(SHOP_KEY(), JSON.stringify(st)); }catch(e){} }
+function shopStop(){ const today=(typeof cairoNow==="function"?cairoNow().date:""); const here=SHOP_STOPS.find(x=>x.d===today); if(here) return {s:here,now:true}; const next=SHOP_STOPS.find(x=>x.d>today); return {s:next||SHOP_STOPS[SHOP_STOPS.length-1],now:false}; }
+function shopRate(){ try{ return egpRate(); }catch(e){ return 50; } }
+function shopHTML(){ const st=shopState(); const w=me()||"you"; const r=shopRate(); const hereInfo=shopStop(); const stop=hereInfo.s; const rule=!!st.rule;
+  const mine=(stop.items||[]).filter(it=>it.who===me()||it.who==="Both").filter(it=>!rule||(it.local&&it.small));
+  const left=mine.filter(it=>!(st.bought||{})[it.id]);
+  const head=hereInfo.now?`You're in ${stop.city}: ${stop.name}.`:`Next stop: ${stop.city}, ${stop.name} (${stop.d.slice(5).replace("-","/")}).`;
+  const cards=mine.length?mine.map(it=>{ const b=(st.bought||{})[it.id]; const lim=(st.limit||{})[it.id]||it.egp[1];
+    const usd=[Math.round(it.egp[0]/r),Math.round(it.egp[1]/r)];
+    return `<div class="shop-card" style="border:1px solid var(--line,#ccc);border-radius:12px;padding:10px;margin:8px 0;${b?"opacity:.6":""}">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><b>${esc(it.name)}</b><span class="muted" style="font-size:.75rem;white-space:nowrap">${esc(it.bag==="checked"?"checked bag":it.bag==="wrap"?"wrap carefully":"carry-on")}</span></div>
+      <p class="muted" style="margin:4px 0">${esc(it.why)}</p>
+      <p style="margin:4px 0"><b>EGP ${it.egp[0].toLocaleString()}–${it.egp[1].toLocaleString()}</b> (≈$${usd[0]}–${usd[1]}) <span class="muted">estimate; check the shop</span></p>
+      <p style="margin:4px 0">Start near EGP ${it.egp[0].toLocaleString()}. Walk away above <input type="number" data-shop-limit="${it.id}" value="${lim}" style="width:90px"> EGP.</p>
+      <button type="button" class="btn mini" data-shop-bought="${it.id}">${b?"✓ Bought (undo)":"Mark bought"}</button></div>`; }).join(""):`<p class="muted">Nothing on your list at ${esc(stop.city)} ${rule?"(Brad's rule is hiding the rest)":""}.</p>`;
+  return `<div class="shop-here"><p class="bs-h">${esc(head)}</p><label style="display:block;margin:6px 0"><input type="checkbox" data-shop-rule="1" ${rule?"checked":""}> Brad's rule: small, packable and made here only</label><p class="muted">${left.length} left here · ${(mine.length-left.length)} bought · Private to this phone.</p>${cards}<div class="row" style="margin-top:10px"><button type="button" class="btn mini" data-shop-hide="1">Hide the screen</button></div></div>`;
+}
+function shopOpen(){ openSheet("sheetShop", `<div class="qh"><h3>Shop</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetShop')">×</button></div><div id="shopBody">${shopHTML()}</div>`); }
+// launch button under the Extras button
+(function(){ try{ const b=document.createElement("button"); b.id="shopBtn"; b.type="button"; b.textContent="🛍 Shop"; b.setAttribute("aria-label","Shop"); b.style.cssText="position:fixed;top:calc(env(safe-area-inset-top,0px) + 46px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",shopOpen); document.body.appendChild(b); }catch(e){} })();
+function shopRefresh(){ const body=document.getElementById("shopBody"); if(body) body.innerHTML=shopHTML(); }
+document.addEventListener("click", e=>{
+  const bt=e.target.closest("[data-shop-bought]"); if(bt){ const st=shopState(); st.bought=st.bought||{}; const id=bt.dataset.shopBought; st.bought[id]=!st.bought[id]; shopSave(st); shopRefresh(); return; }
+  const hd=e.target.closest("[data-shop-hide]"); if(hd){ const body=document.getElementById("shopBody"); if(body) body.innerHTML=`<div style="text-align:center;padding:60px 10px"><button type="button" class="btn" data-shop-reveal="1">Tap to show the list</button></div>`; return; }
+  const rv=e.target.closest("[data-shop-reveal]"); if(rv){ shopRefresh(); return; }
+});
+document.addEventListener("change", e=>{
+  const rl=e.target.closest("[data-shop-rule]"); if(rl){ const st=shopState(); st.rule=rl.checked; shopSave(st); shopRefresh(); return; }
+  const lm=e.target.closest("[data-shop-limit]"); if(lm){ const st=shopState(); st.limit=st.limit||{}; st.limit[lm.dataset.shopLimit]=Number(lm.value)||0; shopSave(st); return; }
+});
 })();
 </script>
 </body></html>
