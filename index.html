@@ -668,6 +668,7 @@ html.big .bingo button{font-size:0.7059rem}
 .stars button{background:none;border:0;font-size:1.2941rem;color:var(--line);cursor:pointer;padding:0 2px;line-height:1}
 .stars button.on{color:#e0a100}
 .whome{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:0.8235rem}
+.shop-card{background:var(--card);border-radius:16px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px -12px rgba(0,0,0,.25);transition:opacity .2s}.shop-card.done{opacity:.6}.shop-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.shop-name{font-size:1rem;line-height:1.3}.shop-bag{color:var(--muted,#777);font-size:.75rem;white-space:nowrap;padding-top:2px}.shop-why{color:var(--muted,#777);font-size:.9rem;line-height:1.4;margin:6px 0}.shop-price{font-size:.95rem;font-weight:600;margin:8px 0 4px}.shop-price .muted{font-weight:400;font-size:.8rem}
 .seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--card);padding:7px 14px;font:600 0.7941rem var(--body);color:var(--fg);cursor:pointer}
 .seg button.on{background:var(--nile);color:var(--on-accent)}
@@ -8343,10 +8344,10 @@ function shopHere(){ const st=shopState(); const r=shopRate(); const info=shopSt
   const spent=shopSpent(st); const bud=prof.budget?`Budget ${shopMoney((Number(prof.budget)||0)*r,st,r)} · spent ${shopMoney(spent,st,r)} · left ${shopMoney((Number(prof.budget)||0)*r-spent,st,r)}`:`Budget not set (Plan tab)`;
   const cards=mine.length?mine.map(it=>{ const b=bought[it.id]; const rg=shopRange(it,st); const lim=lim0[it.id]||rg[1]; const est=(st.est||{})[it.id];
     const toIn=v=>cur==="USD"?Math.round(v/r):Math.round(v);
-    return `<div class="shop-card" style="border:1px solid var(--line,#ccc);border-radius:12px;padding:10px;margin:8px 0;${b?"opacity:.75":""}">
-      <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><b>${esc(it.name)}</b><span class="muted" style="font-size:.75rem;text-align:right">${esc(shopBag(it.bag))}</span></div>
-      <p class="muted" style="margin:4px 0">${esc(it.why)}</p>
-      <p style="margin:4px 0">${shopMoney(rg[0],st,r)}–${shopMoney(rg[1],st,r).replace(/^\$|^EGP /,"")} <span class="muted">${est?"your estimate":"estimate, not checked"}</span></p>
+    return `<div class="shop-card${b?" done":""}">
+      <div class="shop-top"><b class="shop-name">${esc(it.name)}</b><span class="shop-bag">${esc(shopBag(it.bag))}</span></div>
+      <p class="shop-why">${esc(it.why)}</p>
+      <p class="shop-price">${shopMoney(rg[0],st,r)}–${shopMoney(rg[1],st,r).replace(/^\$|^EGP /,"")} <span class="muted">${est?"your estimate":"estimate, not checked"}</span></p>
       <p style="margin:4px 0">Walk away above <input type="number" data-shop-limit="${it.id}" value="${toIn(lim)}" style="width:100px"> ${cur}</p>
       <details><summary class="muted">Correct the estimate</summary><label class="muted">Low <input type="number" data-shop-est="${it.id}:0" value="${toIn(rg[0])}" style="width:90px"></label> <label class="muted">High <input type="number" data-shop-est="${it.id}:1" value="${toIn(rg[1])}" style="width:90px"></label><p class="muted" style="margin:4px 0">Numbers are in ${cur}. Enter a real price you've seen and it'll replace ours.</p></details>
       <div class="row" style="flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px"><button type="button" class="btn mini" data-shop-bought="${it.id}">${b?"✓ Bought (undo)":"Mark bought"}</button>${b?`<label class="muted">Paid EGP <input type="number" data-shop-paid="${it.id}" value="${paid[it.id]||""}" style="width:100px"></label><label class="btn mini" style="cursor:pointer">${rec[it.id]?"Receipt ✓ (replace)":"Add receipt photo"}<input type="file" accept="image/*" data-shop-receipt="${it.id}" hidden></label>`:""}</div>
