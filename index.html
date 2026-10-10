@@ -8140,8 +8140,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v199";
+const APP_VER="v200";
 const WHATS_NEW=[
+ {v:"v200", d:"Sat Oct 10", items:[
+  ["✨","Extras","A new Extras button: a phrase of the day, offline checklists for Sinai and the desert, hidden spots to find, a trip wrap-up, and the mummy reacting when you choose a boat."]]},
  {v:"v199", d:"Sat Oct 10", items:[
   ["🧭","Itinerary conflicts fixed","Tuesday is now an Aswan hotel night in the day data too, Thursday's flight time matches the options, and Tuesday's freediving no longer overlaps the snorkel."]]},
  {v:"v198", d:"Sat Oct 10", items:[
@@ -8223,6 +8225,60 @@ const WHATS_NEW=[
  ["fri23",{t:"06:00",title:"Save offline maps: Western Desert (the White Desert)",note:"Google Maps → Offline maps → Bahariya and the Western Desert. There is no signal at the White Desert, so this is the last chance until Sunday. Save it on Thursday's hotel wifi if you can.",_off:1}]
 ];
 if(typeof withMe==="function"){ const W=withMe; withMe=function(d){ const r=W.apply(this,arguments); try{ const ex=OFF.filter(([id])=>d&&id===d.id).map(([,i])=>i); if(ex.length&&r&&r.agenda&&!r.agenda.some(x=>x._off)) r.agenda=r.agenda.concat(ex).sort((a,b)=>String(a.t||"").localeCompare(String(b.t||""))); }catch(e){} return r; }; }
+})();
+
+// ---------- extras: phrase of the day, hidden spots, offline checklists, the trip wrap-up, the mummy on a choice ----------
+(function(){
+const XT_PHRASES=[
+ {ar:"Shukran",en:"Thank you",when:"To the guides, the crew, the tea man."},
+ {ar:"Alf shukr",en:"Thank you very much",when:"After a good meal or a kind favour."},
+ {ar:"Min fadlak",en:"Please",when:"Asking for the bill, the bathroom, or the menu."},
+ {ar:"Kam dah?",en:"How much is this?",when:"Before you buy anything, in any souk."},
+ {ar:"Mish ghali",en:"It's not expensive",when:"Say it with a smile after your first counter-offer."},
+ {ar:"La shukran",en:"No thanks",when:"To the touts. Keep walking and keep smiling."},
+ {ar:"Bukra",en:"Tomorrow",when:"The answer to almost any request. Good luck."},
+ {ar:"Yalla",en:"Let's go",when:"For the driver, the guide, and yourself at 4am."},
+ {ar:"Ma'a salama",en:"Goodbye",when:"When you leave a shop or a boat."},
+ {ar:"Shai, min fadlak",en:"Tea, please",when:"At any café, to sit down and watch the street."}
+];
+const XT_OFF=[
+ {k:"sinai",title:"Sinai, Mon 19 to Wed 21",items:["Save the Google offline map for Dahab and South Sinai","Write down the guesthouse and the Sinai guide's numbers on paper","Screenshot the minibus pickup time for Tuesday night","Tell Duane your route and when you expect to be back","Charge the power bank and the headlamp"]},
+ {k:"desert",title:"White Desert, Fri 23 to Sat 24",items:["Save the Bahariya and Western Desert offline map","Keep the tour company's number on paper: there's no signal after Bahariya","Bring small USD bills for tips and drinks","Warm layer and headlamp in the desert bag","Tell someone the camp name and that you'll be back Saturday"]}
+];
+const XT_SPOTS=[
+ {id:"gayer",city:"Cairo",clue:"In Islamic Cairo, find the carved wooden mashrabiya windows of the Gayer-Anderson House. Look up, not down."},
+ {id:"sabil",city:"Cairo",clue:"On Al-Muizz Street, a sabil fountain with brass cups. Ask the old man if the tea is ready."},
+ {id:"elephantine",city:"Aswan",clue:"Elephantine Island: a Nubian house with a painted door. Count the colours. One is the Nile."},
+ {id:"mummy",city:"Luxor",clue:"The Mummification Museum in Luxor: the case that shows how the wrapping was done. Find the smallest bandage."},
+ {id:"masbat",city:"Dahab",clue:"Masbat Bay at dusk, the one cushion nobody else sits on. Sit there. You've earned it."},
+ {id:"crystal",city:"Desert",clue:"Crystal Mountain on the drive into the desert. Look closely at the quartz. Leave every piece where it is."}
+];
+const XT_PTS=10;
+function xtGet(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+function xtSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function xtFound(){ const f=xtGet("egypt.xt.found",{}); const w=me()||"me"; return f[w]||[]; }
+function xtSaveFound(list){ const f=xtGet("egypt.xt.found",{}); f[me()||"me"]=list; xtSet("egypt.xt.found",f); }
+function xtOff(){ return xtGet("egypt.xt.off",{}); }
+function xtBody(tab){
+  const w=me()||"you";
+  if(tab==="phrase"){ const d=new Date(); const i=(d.getFullYear()*400+d.getMonth()*31+d.getDate())%XT_PHRASES.length; const p=XT_PHRASES[i];
+    return `<p class="bs-h">Phrase of the day</p><p style="font-size:1.4rem;margin:6px 0"><b>${esc(p.ar)}</b> — ${esc(p.en)}</p><p class="muted">${esc(p.when)}</p><p class="muted">New one each day. Say it before you ask for anything.</p>`; }
+  if(tab==="off"){ const st=xtOff(); return `<p class="bs-h">Offline checklists</p>`+XT_OFF.map(g=>`<p><b>${esc(g.title)}</b></p>`+g.items.map((t,j)=>{ const id=g.k+j; return `<label style="display:block;margin:4px 0"><input type="checkbox" data-xoff="${id}" ${st[id]?"checked":""}> ${esc(t)}</label>`; }).join("")).join("")+`<p class="muted">Ticks are saved on this phone. They work with no signal.</p>`; }
+  if(tab==="spots"){ const got=xtFound(); return `<p class="bs-h">Hidden spots · ${got.length*XT_PTS} points</p>`+XT_SPOTS.map(x=>{ const f=got.indexOf(x.id)>=0; return `<div style="margin:8px 0;padding:8px;border:1px solid var(--line,#ccc);border-radius:10px"><b>${esc(x.city)}</b> ${f?"✅ found":""}<p style="margin:4px 0">${esc(f?"Found it. Nice.":x.clue)}</p>${f?"":`<button type="button" class="btn mini" data-xfind="${x.id}">I found it</button>`}</div>`; }).join("")+`<p class="muted">Each spot is worth ${XT_PTS} points. Only you see your own points.</p>`; }
+  if(tab==="wrap"){ let a=0,b=0; try{ a=(nileTotal(me())||{}).pts||0; b=(nileTotal(OTHER())||{}).pts||0; }catch(e){}
+    const verdict=a>b?"I'm impressed. Don't get used to it.":a<b?"Told you. Nobody beats a mummy's patience.":"A tie. Even the Sphinx would call that a draw.";
+    return `<p class="bs-h">Trip wrap-up</p><p>Nile Bowl: <b>${esc(w)} ${a}</b> · <b>${esc(OTHER()||"them")} ${b}</b></p><p>Hidden spots found: <b>${xtFound().length}</b> of ${XT_SPOTS.length}</p><p><i>${esc(verdict)}</i></p><p class="muted">Photo highlights and day-by-day notes are in the diary and the journal.</p>`; }
+  return "";
+}
+function xtOpen(tab){ openSheet("sheetXtra", `<div class="qh"><h3>Extras</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetXtra')">×</button></div><div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0 10px"><button type="button" class="btn mini" data-xt="phrase">Phrase</button><button type="button" class="btn mini" data-xt="off">Offline</button><button type="button" class="btn mini" data-xt="spots">Hidden</button><button type="button" class="btn mini" data-xt="wrap">Wrap-up</button></div><div id="xtBody">${xtBody(tab||"phrase")}</div>`); }
+// the button, top right
+(function(){ try{ const b=document.createElement("button"); b.id="xtraBtn"; b.type="button"; b.textContent="✨ Extras"; b.setAttribute("aria-label","Extras"); b.style.cssText="position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:70;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 11px;font:600 0.8rem var(--body);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer"; b.addEventListener("click",()=>xtOpen("phrase")); document.body.appendChild(b); }catch(e){} })();
+// clicks inside the extras sheet
+document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); if(t){ const body=document.getElementById("xtBody"); if(body){ body.innerHTML=xtBody(t.dataset.xt); } return; }
+  const f=e.target.closest("[data-xfind]"); if(f){ const id=f.dataset.xfind; const l=xtFound(); if(l.indexOf(id)<0){ l.push(id); xtSaveFound(l); } const body=document.getElementById("xtBody"); if(body) body.innerHTML=xtBody("spots"); return; }
+  const c=e.target.closest("[data-xoff]"); if(c){ /* handled on change */ return; }
+  const ch=e.target.closest("button"); if(ch && /choose this one/i.test(ch.textContent||"")){ try{ setTimeout(()=>{ if(typeof mumReact==="function") mumReact("tout",{delay:900,line:"A boat! Finally. I'll pack my good wrappings."}); },300); }catch(x){} } });
+document.addEventListener("change", e=>{ const c=e.target.closest("[data-xoff]"); if(!c) return; const st=xtOff(); st[c.dataset.xoff]=c.checked; xtSet("egypt.xt.off",st); });
 })();
 </script>
 </body></html>
