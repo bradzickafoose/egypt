@@ -2605,7 +2605,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v175)";
+const BUILD = "Oct 10, 2026 (v176)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -6665,6 +6665,17 @@ function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) ret
 .bib-mini{padding:4px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}.bib-mini:last-child{border-bottom:0;margin-bottom:0}.bib-mini>b{display:block;font-size:0.8824rem}
 .bib-foot{font-size:0.7059rem;margin:12px 0 0}
 .fband.bib-now{border-color:color-mix(in srgb,#c9a24a 45%,var(--line))}
+`; document.head.appendChild(st); })();
+// place pages: the biblical link sits right in the place's own story
+const BIBLE_PLACE={"Karnak Temple":"karnak","Great Pyramid of Giza":"giza","Step Pyramid of Djoser Saqqara":"memphis","Red Pyramid Dahshur":"memphis","Citadel of Saladin Cairo":"citadel","Abu Simbel Temples":"ramesses","Valley of the Kings":"thebes","Temple of Hatshepsut":"thebes","Luxor Temple":"thebes","Colossi of Memnon":"thebes","Philae Temple Aswan":"elephantine","Mount Sinai":"sinai","Saint Catherine's Monastery":"bush","Dahab":"redsea","Blue Hole Dahab":"redsea","Waldorf Astoria Cairo Heliopolis":"on"};
+(function(){ if(typeof openPlace!=="function") return; const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const b=document.getElementById("shBody"); if(!b) return r; const id=BIBLE_PLACE[k]; const e=id&&bibleMine().find(x=>x.id===id);
+  let add=""; if(e) add+=`<div class="bib-place"><b>🕊️ ${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><p>${esc(e.pause)}</p><button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`;
+  if(k==="Grand Egyptian Museum") add+=`<div class="bib-place gem-place"><b>🏛️ Your guide inside</b><p>Twelve stops in the order that beats the Tutankhamun crowds, with what to look for at each, ticked as you go.</p><button type="button" class="btn mini" data-gemopen="1">Open the GEM guide</button></div>`;
+  if(add){ const p=b.querySelector("p"); if(p) p.insertAdjacentHTML("afterend",add); else b.insertAdjacentHTML("afterbegin",add); } }catch(e){} return r; }; })();
+document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-bibopen],#shBody [data-gemopen]")) safe(closePlace); }, true);
+(function(){ const st=document.createElement("style"); st.textContent=`
+.bib-place{margin:12px 0;padding:12px;border-radius:14px;border:1px solid color-mix(in srgb,#c9a24a 40%,var(--line));background:color-mix(in srgb,#c9a24a 6%,var(--card))}.bib-place>b{display:block;font-size:0.9412rem}.bib-place>p{margin:6px 0 8px;font-size:0.8529rem;line-height:1.45}
+.navg button[data-learn]{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px;min-height:54px}
 `; document.head.appendChild(st); })();
 
 // ---------- gem.js: the Grand Egyptian Museum, in your pocket — a route for your three hours, the stories at each stop, tick as you go ----------
