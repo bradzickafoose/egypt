@@ -1430,6 +1430,10 @@ html.hugetext .bp-on em{grid-column:2}
     <h2 class="sec">How old is this?</h2>
     <div class="card"><div id="eras"></div></div>
   </section>
+  <section id="bibleSec">
+    <h2 class="sec">The Bible in Egypt</h2>
+    <div class="card"><div id="bible"></div></div>
+  </section>
   <div class="gch" id="g-admin"><b>Trip admin</b><span>flights, lists, notes, the fine print</span></div>
   <section id="lists">
     <h2 class="sec">Lists</h2>
@@ -2601,7 +2605,7 @@ const ONBOARD = {
 };
 function onboardHTML(f){ const o=ONBOARD[f.id]; if(!o) return ""; let by=""; if(o.bag&&f.from&&f.from.t){ const m=hm(f.from.t)-o.bag; by=mmhh(m); }
   return `<div class="bp-on"><div><span>📶</span><b>Wi-Fi</b><em>${esc(o.wifi)}</em></div><div><span>🍽️</span><b>Food</b><em>${esc(o.food)}</em></div><div><span>🧳</span><b>Bags</b><em>${by?`Check in by <strong>${by}</strong> (${o.bag} min before) · `:""}${esc(o.bagNote)}</em></div></div>`; }
-const BUILD = "Oct 10, 2026 (v172)";
+const BUILD = "Oct 10, 2026 (v173)";
 // ---------- ready for tomorrow: four things that decide whether the app works on the plane and in the desert
 function readyCheck(){ const sa=(navigator.standalone===true)||matchMedia("(display-mode: standalone)").matches; const off=!!(navigator.serviceWorker&&navigator.serviceWorker.controller); const who=me(); const bk=(()=>{ try{ return localStorage.getItem("egypt.memAt"); }catch(e){ return ""; } })();
   const items=[
@@ -5380,6 +5384,7 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   try{ L.push("FLIGHTS (times local to each airport):\n"+allFlights().filter(f=>f.no&&f.from&&f.from.t).map(f=>{ const n=nowUTC(), d0=flightDep(f), d1=flightArr(f)??(d0+3*3600000); return `  ${f.who}: ${f.no} ${f.from.ap} (${f.from.city}) ${f.date} ${f.from.t} → ${f.to.ap} (${f.to.city}) ${f.to.t||"?"} — ${n>=d1?"flown":n>=d0?"IN THE AIR NOW":"not yet"}${f.live&&f.live.status&&f.live.status!=="unknown"?" ["+f.live.status+"]":""}`; }).join("\n")); }catch(e){}
   try{ L.push("FAIR PRICES (EGP, what a reasonable haggler pays): "+FAIR.map(f=>`${f.n} ${f.lo}–${f.hi}`).join("; ")+". Rule: counter at a third of the first ask; deals land at 40–60%."); }catch(e){}
   L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
+  try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (the app's Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")}`).join(" | ")); }catch(e){}
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
   try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's pick is The Orient (dahabiya, Wed–Sat), then Merit"}.`); }catch(e){}
@@ -5403,6 +5408,8 @@ const MUM_SYS=()=>[{type:"text",text:MUM_SYS_TXT(),cache_control:{type:"ephemera
 function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); const di=dayIndexFor(n.date); const pre=n.date<DAYS[0].date; const d0=pre?DAYS[0]:DAYS[di]; const d=safe(()=>withMe(d0))||d0; const R=egpRate(); const w=me()||"Brad";
   const has=(...a)=>a.some(x=>q.includes(x)); const f12=t=>{ const [h,m]=String(t).split(":").map(Number); return `${((h+11)%12)+1}:${String(m||0).padStart(2,"0")}${h<12?"am":"pm"}`; };
   if(has("police","ambulance","emergency","hospital","help","embassy","stolen","lost my")) return "Tourist police 126 · ambulance 123 · police 122 · US Embassy Cairo +20 2 2797 3300. The hotel desk can call for you. No jokes on this one.";
+  if(has("bible","biblical","moses","jesus","joseph","scripture","holy family","israel","exodus","pharaoh's daughter","church","sinai")&&typeof bibleMine==="function"){ const d=todayDay(); const L=bibleMine(); const today=d?L.filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)):[]; const e=today[0]||L.find(e=>e.plan==="on"&&bibleDays(e).some(x=>x.date>=cairoNow().date))||L[0];
+    return `${today.length?"Today's biblical ground":"Next on your route"}: ${e.t}. ${e.refs[0][0]} — “${e.refs[0][1]}” ${e.pause} Guide → The Bible in Egypt has every place, and which bits are scripture, history or tradition.`; }
   if(has("taxi","uber","careem","ride","cab")){ return "Uber or Careem — the app sets the price, so there's nothing to haggle and nothing to argue about. Cairo airport to the Hilton ≈$15, allow an hour in evening traffic. A street taxi: agree the price before the door closes, and have small notes."; }
   if(has("cost","price","how much","pay","fair","haggle")){ const f=fairFor(q); if(f) return `${f.n}: a fair price is ${fmtE(f.lo)}–${fmtE(f.hi)} EGP (≈$${Math.round(f.lo/R)}–${Math.round(f.hi/R)}). Open at a third of whatever they ask; walk at ${fmtE(f.hi)}+.`; return "Tell me the thing — lantern, scarf, papyrus, cartouche, spices — and I'll tell you the fair price. Rule of the dead: open at a third of the first ask."; }
   { const k=Object.keys(PLACES||{}).find(k=>{ const n=(PLACES[k].n||k).toLowerCase().split(/[—(,]/)[0].trim(); return n.length>4&&q.includes(n.replace(/^the /,"")); }); if(k){ const P=PLACES[k]; return `${P.n}: ${String(P.what||"").split(/(?<=\.)\s/).slice(0,2).join(" ")}${P.know&&P.know[0]?" Know: "+P.know[0]:""} Full page: tap About on that stop.`; } }
@@ -6516,6 +6523,145 @@ qcHome=function(){ const d=todayDay()||DAYS[sel]; const inTrip=!!todayDay(); con
 .qc-t.qc-taunt{border-color:color-mix(in srgb,var(--dusk) 55%,var(--line));background:color-mix(in srgb,var(--dusk) 10%,var(--bg))}
 .qc-n{position:absolute;top:4px;right:5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--dusk);color:#fff;font:700 10px/16px var(--mono);font-style:normal}.qc-n.ok{background:var(--ok)}
 html.bigtext .qc-g{grid-template-columns:repeat(3,1fr)!important}html.hugetext .qc-g{grid-template-columns:repeat(2,1fr)!important}html.bigtext .qc-sug{grid-template-columns:1fr}
+`; document.head.appendChild(st); })();
+
+// ---------- bible.js: the Bible in Egypt — where the stories happened, what's scripture, what's tradition, and where to stop and take it in ----------
+// Quotations are from the King James Version (public domain). Each place says plainly whether the link is scripture, archaeology or tradition.
+const BIBLE_INTRO = {
+  ref: "Isaiah 19:25",
+  q: "Blessed be Egypt my people, and Assyria the work of my hands, and Israel mine inheritance.",
+  p: "Few countries matter more to the Bible than Egypt. Abraham came here in a famine, Joseph rose to run it, Jacob's family settled here, Moses was born on the Nile and led the Exodus out of it, Jeremiah was carried here and, by tradition, died here, and Matthew says the infant Jesus was carried here to escape Herod. Below are the places on your route where that history touches the ground, which ones are scripture, which are archaeology, and which are tradition, and where to stop for a few minutes and take it in."
+};
+const BIBLE = [
+ { id:"memphis", t:"Memphis — the city the prophets called Noph", m:"^saqqara|^dahshur", who:"both", plan:"on",
+   refs:[["Hosea 9:6","Egypt shall gather them up, Memphis shall bury them."],["Jeremiah 46:19","Noph shall be waste and desolate without an inhabitant."]],
+   story:"Saqqara and Dahshur are the cemeteries of Memphis, Egypt's first capital, the city Isaiah, Jeremiah, Ezekiel and Hosea call Noph or Moph. Jeremiah names Jews living here after Jerusalem fell (Jeremiah 44:1). Hosea's line is startlingly literal: you will be walking through the very ground where Memphis buried its dead.",
+   honest:"Scripture names the city; the site is certain. The ruins of Memphis itself are at Mit Rahina, between Dahshur and Saqqara — the fallen colossus of Ramesses II lies there if your driver can stop for 20 minutes.",
+   pause:"At the Step Pyramid, look out over the necropolis and read Hosea 9:6. The prophets spoke of this place as the very image of worldly power, and of its end." },
+ { id:"citadel", t:"Joseph's Well at the Citadel", m:"^citadel", who:"both", plan:"on",
+   refs:[["Genesis 41:41","And Pharaoh said unto Joseph, See, I have set thee over all the land of Egypt."]],
+   story:"Inside the Citadel is Bir Yusuf — Joseph's Well — a shaft cut 87 metres down through the rock to reach Nile water, with a spiral ramp oxen once walked to haul it up.",
+   honest:"It was cut in the 1180s under Saladin, whose own name was Yusuf; Cairo legend later credited it to the biblical Joseph. Enjoy the story, but it's a medieval well.",
+   pause:"Stand at the rail and remember the real Joseph's story: sold by his brothers, then made governor of Egypt (Genesis 37–50). The one line to carry all trip: “Ye thought evil against me; but God meant it unto good” (Genesis 50:20)." },
+ { id:"giza", t:"The pyramids — already ancient when Abraham came", m:"^giza", who:"both", plan:"on",
+   refs:[["Genesis 12:10","And there was a famine in the land: and Abram went down into Egypt to sojourn there."]],
+   story:"The Great Pyramid was built around 2560 BC. Whatever dates you give the patriarchs — Abraham, Joseph, Jacob — they came to an Egypt in which these were already very old, and Moses was born into a country whose monuments were older to him than the Romans are to us. Medieval Christians called them “Joseph's granaries”, and a 13th-century mosaic in St Mark's in Venice shows him filling them with grain.",
+   honest:"The granaries idea is legend (they're tombs). The scale of time is real: nobody in Genesis or Exodus saw these new.",
+   pause:"At the panorama point, look at all three and remember that every biblical figure who came to Egypt looked at these same stones." },
+ { id:"coptic", t:"Coptic Cairo — where the Holy Family is said to have sheltered", m:"coptic|abu serga|hanging church|old cairo", who:"both", plan:"detour",
+   when:"10–15 min by Uber from the Hilton. Best fit: Sunday, between lunch and the Citadel (it's on the drive back from Saqqara — ask the guide for 45 minutes), or Monday at 3:30 in place of the pool and nap. Most of it closes around 4–5pm.",
+   q:"Church of Abu Serga, Coptic Cairo",
+   refs:[["Matthew 2:13–15","Arise, and take the young child and his mother, and flee into Egypt, and be thou there until I bring thee word… that it might be fulfilled which was spoken of the Lord by the prophet, saying, Out of Egypt have I called my son."]],
+   story:"Inside the old Roman fortress of Babylon in Cairo stand the oldest churches in the city. Under the Church of Sts Sergius and Bacchus (Abu Serga) is a crypt where, by Coptic tradition, Mary, Joseph and the child Jesus sheltered during their flight from Herod. Next door is the Hanging Church, built over the fortress gate, and a few steps on is the Ben Ezra Synagogue, which local tradition places beside the spot where Pharaoh's daughter found the baby Moses. A thousand years of Jewish documents — the Cairo Geniza — were found in its storeroom in the 1890s.",
+   honest:"Matthew says the family went to Egypt; he names no places. The route through Egypt comes from Coptic tradition, written down centuries later. The churches here date from roughly the 7th–9th centuries onward, rebuilt since. The crypt is often closed or flooded; you may only look down into it.",
+   pause:"This is the nearest you'll come on this trip to “Jesus was here” — by tradition. Sit at the back of Abu Serga and read Matthew 2:13–15. Then walk the lane to Ben Ezra and read Exodus 2:1–10." },
+ { id:"nile", t:"The Nile — Moses in the bulrushes", m:"^felucca", who:"both", plan:"on", once:true,
+   refs:[["Exodus 2:3","She took for him an ark of bulrushes, and daubed it with slime and with pitch, and put the child therein; and she laid it in the flags by the river's brink."],["Genesis 41:1–2","Pharaoh dreamed: and, behold, he stood by the river. And, behold, there came up out of the river seven well favoured kine and fatfleshed."]],
+   story:"The river is in half the great stories: Pharaoh's dream of seven fat and seven lean cows rising out of it, the baby Moses hidden in the papyrus at its edge, the first plague turning it to blood (Exodus 7:20). The “bulrushes” are papyrus — once thick along these banks.",
+   honest:"Scripture doesn't say where along the Nile; wild papyrus is now rare here, but you'll see it planted at temples and in gardens.",
+   pause:"On the felucca at sunset, or on the boat's deck: read Exodus 2:1–10 with the water going by." },
+ { id:"elephantine", t:"Elephantine — a Jewish temple at the edge of Egypt", m:"^philae", who:"both", plan:"detour",
+   when:"Elephantine Island is a 5-minute public ferry from the Aswan corniche (≈5 EGP); the site and its small museum are ≈100 EGP. Fits Tuesday's hot hours after lunch, while the boat is moored in Aswan.",
+   q:"Elephantine Island archaeological site, Aswan",
+   refs:[["Ezekiel 29:10","I will make the land of Egypt utterly waste and desolate, from the tower of Syene even unto the border of Ethiopia."],["Isaiah 19:19","In that day shall there be an altar to the LORD in the midst of the land of Egypt."]],
+   story:"Aswan is the Bible's Syene — “from Migdol to Syene” meant from one end of Egypt to the other. On Elephantine Island, in the 5th century BC, a garrison of Jewish soldiers kept their own temple to the God of Israel. Their Aramaic letters survive: a note about keeping the Passover (419 BC) and a petition to the governor of Judah to rebuild their temple after it was destroyed (407 BC).",
+   honest:"This is archaeology, not tradition: the papyri are real, and the temple stood beside the Temple of Khnum. Little of it remains above ground, so it's a place to stand rather than to see.",
+   pause:"Among the ruins, read Isaiah 19:19 — and remember a community of believers kept faith here, at the far end of the known world, 2,400 years ago." },
+ { id:"ramesses", t:"Abu Simbel — the pharaoh people picture in Exodus", m:"^abu simbel", who:"both", plan:"on",
+   refs:[["Exodus 1:11","And they built for Pharaoh treasure cities, Pithom and Raamses."]],
+   story:"Exodus names a store-city “Raamses”, built by Hebrew forced labour. The real city of Pi-Ramesses, in the Delta, was Ramesses II's capital — which is why he is the pharaoh most people picture in the Exodus story, and the one Hollywood cast. These four colossi are him.",
+   honest:"The Bible never names the pharaoh of the Exodus, and historians don't agree on the date or the king. Ramesses II is the popular candidate, not a settled fact.",
+   pause:"Face the four seated colossi and read Exodus 5:1–2: “Let my people go…” — “Who is the LORD, that I should obey his voice?” Whoever that pharaoh was, this is what royal power looked like." },
+ { id:"thebes", t:"Luxor — “No”, the city of Amun", m:"^valley of the kings|^hatshepsut|luxor temple", who:"both", plan:"on", once:true,
+   refs:[["Nahum 3:8","Art thou better than populous No, that was situate among the rivers, that had the waters round about it?"],["Jeremiah 46:25","Behold, I will punish the multitude of No, and Pharaoh, and Egypt."]],
+   story:"Thebes — today's Luxor — is the Bible's No, or No-Amon. When the Assyrians sacked it in 663 BC the fall shook the whole ancient world, and the prophet Nahum used it as his warning to Nineveh: if mighty Thebes on its river could fall, so could you.",
+   honest:"Scripture names the city; the identification is certain.",
+   pause:"Somewhere quiet on the West Bank, read Nahum 3:8–10. You're standing in the city the prophet held up as the greatest that ever fell." },
+ { id:"karnak", t:"Karnak — Shishak's list of Judah's towns", m:"^karnak", who:"both", plan:"on",
+   q:"Bubastite Portal, Karnak Temple",
+   refs:[["1 Kings 14:25–26","In the fifth year of king Rehoboam, Shishak king of Egypt came up against Jerusalem: And he took away the treasures of the house of the LORD."]],
+   story:"This is the strongest link between the Bible and anything you'll see in Egypt. Pharaoh Shoshenq I — the Bible's Shishak — carved his victory over Canaan at Karnak, about 925 BC: the king striking captives, and rows of oval name-rings for the towns he took, among them Megiddo, Gibeon, Beth-Shean and Arad. One ring has been read “the Field of Abram”.",
+   honest:"Archaeology. It's on the Bubastite Portal, between the Temple of Ramesses III and the Second Pylon, on the south-east side of the great forecourt. It's easy to miss — ask your guide for “the Bubastite Portal, Shoshenq's list.” Scholars debate how much of the list matches the biblical account, but the campaign itself is recorded on both sides.",
+   pause:"Find the rows of name-rings and read 1 Kings 14:25–26 standing in front of them. This is an Egyptian king's own record of the campaign the Bible describes." },
+ { id:"on", t:"Heliopolis — On, Joseph's father-in-law's city", m:"heliopolis|waldorf", who:"both", plan:"aside",
+   when:"You sleep in Heliopolis on Sunday the 18th. The ancient city is in Matariya, ≈8 km west of the Waldorf: the obelisk at Al-Masalla, and the Virgin Mary's Tree (daily 9–5, ≈120 EGP). Sunday's 4:50pm landing is too late for the tree; if you're ever back in Cairo with a free morning, it's 20 minutes from the airport hotels.",
+   q:"Mary's Tree, Matariya, Cairo",
+   refs:[["Genesis 41:45","And Pharaoh… gave him to wife Asenath the daughter of Potipherah priest of On."],["Jeremiah 43:13","He shall break also the images of Bethshemesh, that is in the land of Egypt."]],
+   story:"Heliopolis is the Bible's On, the great city of the sun god, where Joseph married the daughter of its priest. Jeremiah's Beth-shemesh, “House of the Sun”, is the same place, and its “images” are its obelisks. One still stands: Senusret I raised it around 1950 BC. In Matariya is the Virgin Mary's Tree, where Coptic tradition says the Holy Family rested. The present tree grew from cuttings of the one that fell in 1656.",
+   honest:"On is scripture and certain. The obelisk is real and standing. The tree is tradition. Josephus also says a Jewish priest, Onias, built a temple near here in the 2nd century BC, believing he was fulfilling Isaiah 19:19.",
+   pause:"Even from the hotel: read Genesis 41:37–45 on Sunday night. You're sleeping in the district named for the city where Joseph was given a wife and a new Egyptian name." },
+ { id:"sinai", t:"Mount Sinai — the mountain of the Law", m:"start the climb|steps of repentance|pickup in dahab for mount sinai", who:"brad", plan:"on",
+   refs:[["Exodus 19:18","And mount Sinai was altogether on a smoke, because the LORD descended upon it in fire."],["Exodus 20:2–3","I am the LORD thy God, which have brought thee out of the land of Egypt, out of the house of bondage. Thou shalt have no other gods before me."],["1 Kings 19:11–12","The LORD was not in the wind… not in the earthquake… not in the fire: and after the fire a still small voice."]],
+   story:"Jebel Musa, “Moses' Mountain”, is where Christian, Jewish and Muslim tradition places the giving of the Ten Commandments. Elijah fled to the mountain of God, here called Horeb, and heard the still small voice. Below the summit, on the Steps of Repentance, is Elijah's Hollow: a small plain with a great cypress and a chapel to the prophet.",
+   honest:"Pilgrims have identified this peak as Sinai since at least the 4th century. A woman named Egeria climbed it in the 380s and wrote it down. Scholars debate where the biblical mountain really was. What's certain is that it has been prayed on as Sinai for about 1,650 years.",
+   pause:"At the top, before the sun comes up, read Exodus 19:16–20, then the Ten Commandments (Exodus 20:1–17). On the way down by the Steps, stop at Elijah's Hollow and read 1 Kings 19:9–13 by the cypress. Then put the phone away for the sunrise." },
+ { id:"bush", t:"St Catherine's — the Burning Bush", m:"^st catherine", who:"brad", plan:"on",
+   refs:[["Exodus 3:5","Put off thy shoes from off thy feet, for the place whereon thou standest is holy ground."],["Exodus 2:16","Now the priest of Midian had seven daughters: and they came and drew water."]],
+   story:"The emperor Justinian built the monastery in the 550s around a shrine already kept at the Burning Bush. Monks have lived here without a break ever since. Inside are the bush, the Well of Moses, where tradition says he met his wife Zipporah at the well (Exodus 2:15–21), and a library that held the Codex Sinaiticus, the oldest complete New Testament, until 1859. Most of the codex is in the British Library now.",
+   honest:"The monastery and codex are history. The bush and the well are tradition, kept unbroken for about 1,500 years.",
+   pause:"By the bush wall, read Exodus 3:1–6, where God speaks Moses' name from the fire. Closed Fridays and Sundays." },
+ { id:"redsea", t:"The Red Sea — the sea of the Exodus", m:"^dahab|blue hole|sunset on the promenade", who:"brad", plan:"on", once:true,
+   refs:[["Exodus 15:21","Sing ye to the LORD, for he hath triumphed gloriously; the horse and his rider hath he thrown into the sea."]],
+   story:"The sea Israel crossed is called Yam Suph, “Sea of Reeds”, translated “Red Sea”. At Dahab you are on its eastern arm, the Gulf of Aqaba, with the mountains of Saudi Arabia, ancient Midian where Moses fled, across the water.",
+   honest:"Nobody knows where the crossing happened. Proposals include the Bitter Lakes, the Gulf of Suez and the Gulf of Aqaba. A popular claim puts it at Nuweiba, about 70 km up the coast from you; most scholars don't accept it.",
+   pause:"On the promenade at sunrise, look across at Midian and read Miriam's song, Exodus 15:19–21." },
+ { id:"merneptah", t:"The first “Israel” outside the Bible", m:"^egyptian museum", who:"both", plan:"aside",
+   when:"In the Egyptian Museum on Tahrir Square, a 15-minute walk from the Hilton Grand Nile. It's not on the plan; check before going that it hasn't moved to the GEM.",
+   q:"Egyptian Museum, Tahrir Square, Cairo",
+   refs:[["Merneptah Stele, c. 1208 BC","Israel is laid waste; his seed is not."]],
+   story:"Pharaoh Merneptah, Ramesses II's son, carved a victory hymn on a black granite slab, now catalogued JE 31408. Near the end is the earliest mention of Israel anywhere outside the Bible: a people in Canaan, around 1208 BC.",
+   honest:"Archaeology. It's one line, but it's the first time the name appears in history.",
+   pause:"If you go, find the line near the bottom and remember the pharaoh meant it as an epitaph, and it wasn't." }
+];
+// where each entry falls on your trip: matched against your own agenda, so it follows any rewrite of the days
+function bibleDays(e){ const out=[]; try{ const w=me(); const re=new RegExp(e.m,"i"); DAYS.forEach(d0=>{ if(w==="Duane"&&d0.who==="brad") return; const d=safe(()=>withMe(d0))||d0; const hit=(d.agenda||[]).some(a=>re.test(String(a.title||"").replace(/^[^A-Za-z]+/,""))); if(hit) out.push(d0); }); }catch(e2){} return e.once?out.slice(0,1):out; }
+const bibleMine=()=>BIBLE.filter(e=>e.who!=="brad"||me()==="Brad");
+function bibleCard(e, open){ const ds=e.plan==="on"?bibleDays(e):[]; const dl=ds.map(d=>`<button type="button" class="chip" data-bibday="${d.id}">${d.dow} ${d.num}</button>`).join("");
+  const tag=e.plan==="on"?(ds.length?"on your route":"on your route"):e.plan==="detour"?"a short detour":"nearby, if you can";
+  return `<details class="fold bib" id="bib-${e.id}" ${open?"open":""}><summary><span class="bib-t"><b>${esc(e.t)}</b><small><i class="bib-tag ${e.plan}">${tag}</i>${ds.length?" · "+ds.map(d=>`${d.dow} ${d.num}`).join(", "):""}</small></span><span class="pill">${e.refs.length}</span></summary><div class="in">
+    ${e.refs.map(([r,q])=>`<blockquote class="bib-q"><p>“${esc(q)}”</p><cite>${esc(r)}</cite></blockquote>`).join("")}
+    <p>${esc(e.story)}</p>
+    <p class="bib-h"><b>Scripture, history or tradition?</b> ${esc(e.honest)}</p>
+    ${e.when?`<p class="bib-w"><b>Making time</b> ${esc(e.when)}</p>`:""}
+    <div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div>
+    <div class="row">${dl}${e.q?`<a class="btn mini" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(e.q)}">Directions</a>`:""}</div>
+  </div></details>`; }
+function renderBible(){ const el=document.getElementById("bible"); if(!el) return; const L=bibleMine(); const grp=(p,h)=>{ const x=L.filter(e=>e.plan===p); return x.length?`<div class="bib-g">${h}</div>${x.map(e=>bibleCard(e)).join("")}`:""; };
+  el.innerHTML=`<blockquote class="bib-q big"><p>“${esc(BIBLE_INTRO.q)}”</p><cite>${esc(BIBLE_INTRO.ref)}</cite></blockquote><p class="muted" style="margin:0 0 10px">${esc(BIBLE_INTRO.p)}</p>
+    ${grp("on","On your route")}${grp("detour","Worth a short detour")}${grp("aside","Nearby, if you can")}
+    <p class="muted bib-foot">Quotations: King James Version. Each place says plainly what's scripture, what's archaeology and what's tradition.</p>`; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-bibday]"); if(b){ const i=DAYS.findIndex(d=>d.id===b.dataset.bibday); if(i>=0){ goDay(i,true); } return; }
+  const o=e.target.closest("[data-bibopen]"); if(o){ e.preventDefault(); openBible(o.dataset.bibopen); } });
+function openBible(id){ safe(renderBible); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("bibleSec"); const card=id&&document.getElementById("bib-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
+// the Guide: a tile, and the section renders on first look
+(function(){ if(typeof renderNavigator!=="function") return; const R=renderNavigator; renderNavigator=function(){ const r=R.apply(this,arguments); try{ const gs=[...document.querySelectorAll("#navigator .ng-h")].find(h=>/looking at/i.test(h.textContent)); const g=gs&&gs.nextElementSibling; if(g&&!g.querySelector('[data-nav="bible"]')) g.insertAdjacentHTML("beforeend",`<button type="button" data-nav="bible"><span class="qi">🕊️</span><span class="nl">The Bible in Egypt<small>where the stories happened</small></span></button>`); }catch(e){} return r; }; })();
+(function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="bible"){ openBible(""); return; } return N.apply(this,arguments); }; })();
+setTimeout(()=>safe(renderBible), 1500);
+// the day card: a fold that says what biblical ground the day covers
+(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".bib-day")) return r;
+  const L=bibleMine().filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)); if(!L.length) return r;
+  const anchor=c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead"); if(!anchor) return r;
+  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day"><summary><span class="sg-i">🕊️</span><span class="bib-t"><b>Biblical ground today</b><small>${L.map(e=>esc(e.t.split(" — ")[0])).join(" · ")}</small></span><span class="pill">${L.length}</span></summary><div class="in">${L.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`).join("")}</div></details>`);
+}catch(e){} return r; }; })();
+// the Now card: when you're actually there, a quiet prompt to stop
+function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
+  if(!nowLine) return ""; const cur=nowLine.replace(/^\s*Now:\s*/,"").replace(/^[^A-Za-z]+/,""); const e=bibleMine().find(x=>x.plan==="on"&&new RegExp(x.m,"i").test(cur)&&bibleDays(x).some(y=>y.id===d.id)); if(!e) return "";
+  return `<div class="fband bib-now"><span class="fb-ic">🕊️</span><div><b>${esc(e.t)}</b><span class="prose">${esc(e.pause)}</span></div><button type="button" class="btn mini" data-bibopen="${e.id}">Read</button></div>`; }catch(e){ return ""; } }
+(function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("biblenow", bibleNowHTML(), [".sky",".bclock",".fmode",".flive"]); }catch(e){} return r; }; })();
+(function(){ const st=document.createElement("style"); st.textContent=`
+.bib-q{margin:10px 0;padding:8px 12px;border-left:3px solid #c9a24a;background:color-mix(in srgb,#c9a24a 8%,transparent);border-radius:0 10px 10px 0}
+.bib-q p{margin:0;font:italic 500 0.9412rem/1.45 Georgia,"Times New Roman",serif}.bib-q cite{display:block;margin-top:4px;font:700 0.6471rem var(--mono);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:var(--muted)}
+.bib-q.big p{font-size:1.06rem}
+.bib-g{font:700 0.6471rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.bib .bib-t,.bib-day .bib-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.bib .bib-t b,.bib-day .bib-t b{font-size:0.8824rem;line-height:1.3}.bib .bib-t small,.bib-day .bib-t small{color:var(--muted);font-size:0.7059rem}
+.bib-tag{font-style:normal;font-weight:700}.bib-tag.on{color:var(--ok)}.bib-tag.detour{color:#b07612}.bib-tag.aside{color:var(--muted)}
+.bib .in p{font-size:0.8824rem;line-height:1.5;margin:8px 0}
+.bib-h{color:var(--fg);opacity:.85}.bib-h b,.bib-w b{display:block;font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+.bib-p{margin:10px 0;padding:10px 12px;border-radius:12px;background:var(--sand)}.bib-p b{display:block;font:700 0.6471rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#b07612;margin-bottom:3px}.bib-p p{margin:0!important}
+.bib .row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bib-mini{padding:4px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}.bib-mini:last-child{border-bottom:0;margin-bottom:0}.bib-mini>b{display:block;font-size:0.8824rem}
+.bib-foot{font-size:0.7059rem;margin:12px 0 0}
+.fband.bib-now{border-color:color-mix(in srgb,#c9a24a 45%,var(--line))}
 `; document.head.appendChild(st); })();
 
 // ---------- prepared for what you'll see: look-for lines, who's who, the eras, the night-before briefing ----------
