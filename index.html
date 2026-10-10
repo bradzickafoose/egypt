@@ -669,6 +669,7 @@ html.big .bingo button{font-size:0.7059rem}
 .stars button.on{color:#e0a100}
 .whome{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:0.8235rem}
 .shop-sec{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#777);margin:14px 4px 6px}.shop-group{background:var(--card);border-radius:14px;padding:4px 14px;box-shadow:0 1px 2px rgba(0,0,0,.06)}.shop-row{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid rgba(120,120,128,.18);font-size:.95rem}.shop-row:last-child{border-bottom:0}.shop-hint{font-size:.8rem}.shop-in{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line,#ccc);background:var(--bg);color:var(--fg)}.shop-stops{list-style:none;padding:8px 0;margin:0}.shop-stops li{padding:6px 0;border-bottom:1px solid rgba(120,120,128,.18);font-size:.95rem}.shop-stops li:last-child{border-bottom:0}
+.tg-row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}.tg{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:999px;border:1px solid var(--line,#ccc)}.tg.s{background:color-mix(in srgb,#c9a24a 20%,var(--card))}.tg.h{background:color-mix(in srgb,#3a6f9f 16%,var(--card))}.tg.t{background:color-mix(in srgb,#4f8a5b 16%,var(--card))}.tg.g{background:rgba(120,120,128,.12)}.lens{margin:0 0 10px}.lens button span{opacity:.7;font-weight:400}
 .shop-card{background:var(--card);border-radius:16px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px -12px rgba(0,0,0,.25);transition:opacity .2s}.shop-card.done{opacity:.6}.shop-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.shop-name{font-size:1rem;line-height:1.3}.shop-bag{color:var(--muted,#777);font-size:.75rem;white-space:nowrap;padding-top:2px}.shop-why{color:var(--muted,#777);font-size:.9rem;line-height:1.4;margin:6px 0}.shop-price{font-size:.95rem;font-weight:600;margin:8px 0 4px}.shop-price .muted{font-weight:400;font-size:.8rem}
 .seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--card);padding:7px 14px;font:600 0.7941rem var(--body);color:var(--fg);cursor:pointer}
@@ -1451,13 +1452,14 @@ html.hugetext .bp-on em{grid-column:2}
       <div class="hub-foot" data-drillfoot></div>
     </div>
   </section>
-  <section id="bibleSec">
-    <h2 class="sec">The Bible in Egypt</h2>
-    <div class="card"><div id="bible"></div></div>
-  </section>
   <section id="faithSec">
-    <h2 class="sec">Faiths of the Nile</h2>
-    <div class="card"><div id="faiths"></div></div>
+    <h2 class="sec">Faith on the Nile</h2>
+    <div class="card">
+      <div class="seg lens" role="group" aria-label="Which list"><button type="button" data-lens="bible" aria-pressed="true">Bible <span id="lensBibleN"></span></button><button type="button" data-lens="all" aria-pressed="false">All faiths <span id="lensAllN"></span></button></div>
+      <p class="tg-row"><span class="tg s">Scripture</span><span class="tg h">History</span><span class="tg t">Tradition</span><span class="tg g">A guess</span></p>
+      <div id="bible"></div>
+      <div id="faiths" hidden></div>
+    </div>
   </section>
   <section id="nileSec">
     <h2 class="sec">Life along the Nile</h2>
@@ -6843,12 +6845,20 @@ function bibleCard(e, open){ const ds=e.plan==="on"?bibleDays(e):[]; const dl=ds
     <div class="row">${dl}${e.q?`<a class="btn mini" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(e.q)}">Directions</a>`:""}</div>
   </div></details>`; }
 function renderBible(){ const el=document.getElementById("bible"); if(!el) return; const L=bibleMine(); const grp=(p,h)=>{ const x=L.filter(e=>e.plan===p); return x.length?`<div class="bib-g">${h}</div>${x.map(e=>bibleCard(e)).join("")}`:""; };
-  el.innerHTML=`<blockquote class="bib-q big"><p>“${esc(BIBLE_INTRO.q)}”</p><cite>${esc(BIBLE_INTRO.ref)}</cite></blockquote><p class="muted" style="margin:0 0 10px">${esc(BIBLE_INTRO.p)}</p>
+  el.innerHTML=`
     ${grp("on","On your route")}${grp("detour","Worth a short detour")}${grp("aside","Nearby, if you can")}
     <p class="muted bib-foot">Quotations: King James Version. Each place says plainly what's scripture, what's archaeology and what's tradition.</p>`; }
 document.addEventListener("click",e=>{ const b=e.target.closest("[data-bibday]"); if(b){ const i=DAYS.findIndex(d=>d.id===b.dataset.bibday); if(i>=0){ goDay(i,true); } return; }
   const o=e.target.closest("[data-bibopen]"); if(o){ e.preventDefault(); openBible(o.dataset.bibopen); } });
-function openBible(id){ safe(renderBible); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("bibleSec"); const card=id&&document.getElementById("bib-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
+
+// one section, two lists: the Bible, or all faiths. Each entry point picks its list; the choice is remembered on this phone.
+let faithLens="bible";
+function applyLens(){ const b=document.getElementById("bible"), f=document.getElementById("faiths"); if(!b||!f) return; b.hidden=faithLens!=="bible"; f.hidden=faithLens!=="all"; document.querySelectorAll("[data-lens]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.lens===faithLens))); const bn=document.getElementById("lensBibleN"), an=document.getElementById("lensAllN"); if(bn) bn.textContent="("+bibleMine().length+")"; if(an) an.textContent="("+faithMine().length+")"; }
+function setLens(k){ faithLens=k==="all"?"all":"bible"; try{ localStorage.setItem("egypt.faithLens",faithLens); }catch(e){} applyLens(); }
+try{ faithLens=localStorage.getItem("egypt.faithLens")==="all"?"all":"bible"; }catch(e){}
+document.addEventListener("click",e=>{ const l=e.target.closest("[data-lens]"); if(l) setLens(l.dataset.lens); });
+setTimeout(()=>safe(applyLens),1650);
+function openBible(id){ setLens("bible"); safe(renderBible); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("faithSec"); const card=id&&document.getElementById("bib-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
 // the Guide: a tile, and the section renders on first look
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="bible"){ openBible(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderBible), 1500);
@@ -7028,12 +7038,12 @@ function renderFaiths(){ const el=document.getElementById("faiths"); if(!el) ret
   const bar=`<div class="fa-bar"><button type="button" class="chip ${faithFilter?"":"on"}" data-fafilter="">All ${all.length}</button>${used.map(k=>{ const K=FAITH_KINDS[k]; const n=all.filter(e=>e.f.includes(k)).length; return `<button type="button" class="chip ${faithFilter===k?"on":""}" data-fafilter="${k}" style="--fk:${K.c}">${K.i} ${esc(K.n)} ${n}</button>`; }).join("")}</div>`;
   const first=e=>{ const d=faithDays(e)[0]; return d?d.date||d.id:"9"; };
   const grp=(p,h)=>{ let x=L.filter(e=>e.plan===p); if(p==="on") x=x.slice().sort((a,b)=>String(first(a)).localeCompare(String(first(b)))); return x.length?`<div class="bib-g">${h}</div>${x.map(e=>faithCard(e)).join("")}`:""; };
-  el.innerHTML=`<p class="muted" style="margin:0 0 10px">${esc(FAITH_INTRO.p)}</p>${bar}
+  el.innerHTML=`${bar}
     ${grp("on","On your route")}${grp("thread","Across the whole trip")}${grp("detour","Worth a short detour")}${grp("aside","Nearby, if you can")}
     <p class="muted bib-foot">Qur'an: Pickthall's 1930 translation. Lines marked “paraphrase” are summaries, not quotations. Each place says plainly what's scripture, history, tradition, or a guess. For the Bible, see <button type="button" class="linkbtn" data-bibopen="">The Bible in Egypt</button>.</p>`; }
 document.addEventListener("click",e=>{ const f=e.target.closest("[data-fafilter]"); if(f){ faithFilter=f.dataset.fafilter; safe(renderFaiths); return; }
   const o=e.target.closest("[data-faopen]"); if(o){ e.preventDefault(); openFaiths(o.dataset.faopen); } });
-function openFaiths(id){ if(id) faithFilter=""; safe(renderFaiths); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("faithSec"); const card=id&&document.getElementById("fa-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
+function openFaiths(id){ setLens("all"); if(id) faithFilter=""; safe(renderFaiths); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("faithSec"); const card=id&&document.getElementById("fa-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="faiths"){ openFaiths(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderFaiths), 1600);
 // the day card: a fold for the other faiths' ground, right after the Bible's
@@ -8155,7 +8165,7 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v210";
+const APP_VER="v211";
 const WHATS_NEW=[
  {v:"v203", d:"Sat Oct 10", items:[
   ["🛍","Gift shop","Gifts for the stop you're at, with a budget, a walk-away limit and receipts. Each phone keeps its own list, and nothing syncs."]]},
