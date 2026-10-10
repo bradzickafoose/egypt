@@ -1724,7 +1724,7 @@ const DAYS = [
   mission:"Older than Giza by a century and nearly empty: climb inside the Red Pyramid at Dahshur, stand under the Step Pyramid at Saqqara, then the Citadel and the bazaar at dusk.",
   agenda:[
    {t:"02:05",title:"Brad lands CAI → Uber to the Hilton, ≈45 min",map:"Hilton Cairo Grand Nile"},
-   {t:"09:00",title:"Quick breakfast — and kickoff",note:"The Nile Bowl starts at this table: flip the coin of Ra (Games → The Toss); the winner picks tonight's dinner. Boat: no word from The Orient yet? Ask the front desk to call +20 2 2395 9124 and ask whether we can join at Kom Ombo Wednesday ≈1pm. Decide by tonight.",approx:true},
+   {t:"09:00",title:"Quick breakfast — and kickoff",note:"The Nile Bowl starts at this table: flip the coin of Ra (Games → The Toss); the winner picks tonight's dinner. Boat: check the Thowiba (Djed) and Merit replies. Limit $3,000 for two. Decide by 9pm; no quote under budget means the no-boat plan.",approx:true},
    {t:"09:30",title:"Guide + car picks us up → south to Dahshur (≈1 h)",map:"Hilton Cairo Grand Nile"},
    {t:"10:30",photo:"The two of you at the Red Pyramid’s entrance with nobody else in the frame; prop the phone on a block and use the timer.",title:"Dahshur — the Red Pyramid, inside",note:"The first true pyramid, 4,600 years old, and you can climb down the 60 m passage into the chambers with nobody else there. The Bent Pyramid next door from outside. ≈$4. Hot and steep inside; take the water.",map:"Red Pyramid Dahshur"},
    {t:"12:00",photo:"The two of you in the jubilee court with the Step Pyramid behind, the classic. Then the serdab eyeholes close up.",title:"Saqqara — Step Pyramid of Djoser, Imhotep Museum, a noble's tomb",note:"The oldest stone building on earth. Ask the guide for the tomb of Ti or Kagemni: the best Old Kingdom reliefs anywhere, daily life carved 4,400 years ago. ≈$15.",map:"Step Pyramid of Djoser Saqqara"},
@@ -4475,7 +4475,7 @@ const boatBothUp=()=>BOATS.filter(b=>(boatVotes()[b.id]||0)>0&&((boatOther().vot
 function boatTally(){ const mv=boatVotes(), ov=boatOther().votes||{}; return { mine:Object.values(mv).filter(Boolean).length, theirs:Object.values(ov).filter(Boolean).length, both:boatBothUp().length }; }
 // ---------- the slot on Today: one line of status, one button
 const BOAT_FOLLOW="Hello — following up on my email about The Orient, departing Aswan Wed 14 Oct. Two adults, twin beds, private en-suite. Could we join the boat at Kom Ombo around 1pm Wednesday, after an early Abu Simbel visit? We need to confirm by Sunday evening. Thank you! — Brad";
-const BOAT_STATUS="The Orient: emailed, waiting · call Sun 9am";
+const BOAT_STATUS="Two quotes asked · limit $3,000 for two · decide Sun 9pm";
 function boatSlotHTML(){ const now=cairoNow(); if(now.date>"2026-10-15") return ""; const c=boatChoice(); const o=OTHER()||"the other phone"; const t=boatTally();
   if(c){ const b=BOATS.find(x=>x.id===c.id); return `<div class="card boatslot chosen"><div class="bs-ic">⛵</div><div class="bs-b"><span class="k">The boat · decided</span><b>${esc(b.name)}</b><small>${esc(b.when.split(" · ")[0])} · chosen by ${esc(c.by||"?")} · booking ${BOAT_STEPS(b).filter(([k])=>boatSteps()[k]).length}/${BOAT_STEPS(b).length} done</small></div><button type="button" class="btn mini" data-boat-open="1">${BOAT_STEPS(b).every(([k])=>boatSteps()[k])?"All set ✓":b.book==="ahead"?"Book it":"Plan it"}</button></div>`; }
   const dl=dateDiffDays(now.date,"2026-10-11"); if(now.date>"2026-10-14") return ""; // the boat has sailed
@@ -4528,14 +4528,13 @@ function boatSheetHTML(){ const c=boatChoice(); const o=OTHER()||"the other phon
   const filters=[["all",`All ${BOATS.length}`],["ahead","Book now"],["onsite","On site"],["both",`Both 👍 ${t.both}`]];
   const top3=[...BOATS].sort((x,y)=>x.rank-y.rank).slice(0,3);
   const advice=`<details class="bs-adv" ${c?"":"open"}><summary>Start here — the boat, in plain English</summary><div class="in">
-<div class="bs-now">   <p class="bs-h">Where it stands · Brad emailed The Orient, waiting to hear</p>
-   <p class="bs-note">No reply yet is normal: Friday–Saturday is the weekend in Egypt, so expect an answer Sunday morning.</p>
+<div class="bs-now">   <p class="bs-h">Where it stands · Saturday 10 Oct</p>
    <ol class="bs-todo">
-    <li><b>Saturday, quick nudge:</b> send this follow-up as a message on their Facebook or Instagram (linked on <a href="https://www.nile-dahabiya.com/our-boats/dahabiya-the-orient/" target="_blank" rel="noopener">the boat page ↗</a>). Agencies often answer social messages over the weekend. ${typeof sendBtn==="function"?sendBtn(BOAT_FOLLOW,"Copy / send the follow-up"):""}</li>
-    <li><b>Sunday ≈9:00, at breakfast:</b> ask the Hilton front desk to call the office for you, in Arabic: <a class="ph" href="tel:+20223959124">+20 2 2395 9124</a>. The office is at 33 Abd El Khalek Tharwat St, Downtown, about 10 minutes from the hotel.</li>
-    <li><b>The one question that decides it:</b> can we join at <b>Kom Ombo on Wednesday around 1pm</b>, after Abu Simbel? The boat sails every Wednesday, so the join matters more than availability.</li>
-    <li><b>Hedge today:</b> message Merit or Tour Egypt Club too, so a no (or silence) from The Orient on Sunday doesn't leave us with nothing.</li>
-    <li><b>When one confirms in writing</b> (boat name, twin beds, pickup time, price): tap <i>Choose this one</i>. The rest fold away on both phones. Then book an Aswan hotel for Tuesday (Basma or the Old Cataract) and change the Hilton Luxor to Saturday night only.</li>
+    <li><b>Done:</b> The Orient's shared cabins are sold out for Wed 14. We asked Thowiba (Djed) for a private charter of the whole boat, and messaged Merit for a shared Wed 14 departure.</li>
+    <li><b>Our limit:</b> $1,500 per person, $3,000 total for two. Anything over that, we don't book.</li>
+    <li><b>Waiting:</b> both replies, most likely Sunday morning. Check the Merit price is for both of us, not each.</li>
+    <li><b>Sunday ≈6pm Cairo:</b> nothing under budget yet? Take the no-boat plan: Aswan hotel Tuesday, Abu Simbel early Wednesday, a car to Luxor via Kom Ombo and Edfu Thursday.</li>
+    <li><b>Sunday 9pm at the latest:</b> pick one. When a quote is confirmed in writing (boat name, twin beds, pickup, price), tap <i>Choose this one</i>.</li>
    </ol>
 </div>
    <p class="bs-lead"><b>A proper cabin every night:</b> no nights on deck (the felucca is out), and every message asks for a private en-suite bathroom, bottled water and a cabin fridge.</p><p class="bs-lead"><b>We need a boat for 3 nights, Aswan → Luxor.</b> The good boats all leave Aswan on <b>Wednesday</b> and arrive <b>Saturday morning</b>. When a listing says "4 days / 3 nights", that's what it means: Wed to Sat.</p>
@@ -8090,8 +8089,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v186";
+const APP_VER="v187";
 const WHATS_NEW=[
+ {v:"v187", d:"Sat Oct 10", items:[
+  ["⛵","Boat: two quotes out","The Orient is sold out for Wed 14, so we asked Djed for a private charter and messaged Merit for a shared departure. The boat sheet shows where each stands, our $3,000 limit for two, and the Sunday 9pm decision."]]},
  {v:"v186", d:"Sat Oct 10", items:[
   ["⛵","The boat: where it stands","The boat sheet now opens on the next steps — Brad emailed The Orient, a weekend nudge with a ready-to-send follow-up, the Sunday 9am call (the Hilton desk can ring for you), and the one question that decides it: joining at Kom Ombo."],
   ["🆕","This popup","Every update now says what changed, once. Close it and it's gone until the next one."]]},
