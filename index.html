@@ -1362,7 +1362,7 @@ html.hugetext .bp-on em{grid-column:2}
   <section id="now" class="now" aria-live="polite"><div class="eyebrow">Egypt</div><div class="big">Loading today…</div></section>
   <div class="hint" id="hint"><span id="hintText">Add this to your home screen and it opens like an app, signal or not.</span><button id="hintX" aria-label="Dismiss">✕</button></div>
   <section id="boatSlot" aria-live="polite"></section>
-  <section id="today"><div class="card tt-card" id="ttCard"><button type="button" class="tt-open" id="ttOpen"><span class="tt-ico">🧭</span><span class="tt-txt"><b>Trip tools</b><small>Gift shop, phrases, offline checklists, hidden spots</small></span><span class="tt-go">›</span></button></div><div class="card" id="dayCard"></div></section>
+  <section id="today"><div class="card" id="dayCard"></div></section>
 
   <section id="guide" class="group">
     <h2 class="sec">Guide</h2>
@@ -1379,6 +1379,8 @@ html.hugetext .bp-on em{grid-column:2}
       <div style="font-size:0.7059rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Early alarms, the whole trip</div>
       <div class="alarms" id="alarms"></div>
     </div>
+    <details class="fold" id="giftFold"><summary>Gifts &amp; treats</summary><div class="in" id="giftBody"></div></details>
+  <details class="fold" id="phraseFold"><summary>Phrases &amp; offline lists</summary><div class="in" id="phraseBody"></div></details>
     <details class="fold" id="cashFold" open><summary>Cash, tips, getting around</summary><div class="in">
       <p><b>≈50 EGP = $1.</b> Pull 3,000–5,000 EGP per ATM run (airport, hotels). Keep 10s, 20s, 50s loose in a pocket for tips. Carry $150+ in small clean USD bills for the visa, the boat crew and guides.</p>
       <h4>Tips</h4>
@@ -1612,6 +1614,7 @@ html.hugetext .bp-on em{grid-column:2}
     <h2 class="sec">The Nile Bowl</h2>
     <div id="live"></div>
     <div id="gameBody"></div>
+    <details class="fold" id="spotFold"><summary>Hidden spots &amp; Trip wrap-up</summary><div class="in" id="spotBody"></div></details>
   </section>
 
   <section id="foot"><p class="foot" style="margin-top:0"><button class="pill aa" id="aa" type="button" aria-pressed="false">Aa · larger text</button></p><p class="foot" style="margin-top:8px" id="build"></p><p class="foot" style="margin-top:6px"><button class="pill" id="updChk" type="button">Check for a newer version</button></p></section>
@@ -8151,58 +8154,20 @@ start();
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
 const APP_VER="v209";
 const WHATS_NEW=[
- {v:"v208", d:"Sat Oct 10", items:[
-  ["🧭","Simpler Trip tools","Four sections in one row: Here, Plan, Guides (phrases and offline lists) and Game (hidden spots and wrap-up)."]]},
- {v:"v207", d:"Sat Oct 10", items:[
-  ["🧭","Trip tools moved to Today","The floating Trip tools button is gone. It is now one card at the top of Today, so the bottom of the screen stays clean."]]},
- {v:"v206", d:"Sat Oct 10", items:[
-  ["🧭","One place for trip tools","Extras and Shop are now one Trip tools button. The Here screen has an EGP/USD switch, a single budget line, a hide button, and a way to correct the price estimates. Planning is under Plan."]]},
- {v:"v205", d:"Sat Oct 10", items:[
-  ["📍","Buttons moved","Extras and Shop now sit in the bottom-right corner, so they no longer cover the header."]]},
- {v:"v204", d:"Sat Oct 10", items:[
-  ["🧾","Shop: profiles, receipts, last chance","Each person has a budget and notes. Bought items can take a price and a receipt photo, and the screen shows what's left. A banner flags the last chance in each city."]]},
  {v:"v203", d:"Sat Oct 10", items:[
-  ["🛍","Shop: gifts for the stop you're at","A new Shop button shows what to buy at today's stop, with a price estimate, a walk-away limit, a bag tag, and Brad's rule. Each list is private to its phone."]]},
- {v:"v202", d:"Sat Oct 10", items:[
-  ["💬","Ask the Mummy, more polish","Shorter key setup, clearer status line, and offline answers for the boat, the Sinai climb and the desert camp."]]},
+  ["🛍","Gift shop","Gifts for the stop you're at, with a budget, a walk-away limit and receipts. Each phone keeps its own list, and nothing syncs."]]},
  {v:"v201", d:"Sat Oct 10", items:[
-  ["💬","Ask the Mummy, polished","He now greets you with where you are today, and the offline chips suggest questions for that day's place."]]},
- {v:"v200", d:"Sat Oct 10", items:[
-  ["✨","Extras","A new Extras button: a phrase of the day, offline checklists for Sinai and the desert, hidden spots to find, a trip wrap-up, and the mummy reacting when you choose a boat."]]},
- {v:"v199", d:"Sat Oct 10", items:[
-  ["🧭","Itinerary conflicts fixed","Tuesday is now an Aswan hotel night in the day data too, Thursday's flight time matches the options, and Tuesday's freediving no longer overlaps the snorkel."]]},
- {v:"v198", d:"Sat Oct 10", items:[
-  ["🧭","Brad's itinerary fixes","The Friday desert pickup is now at the Zamalek hotel, the Coptic Cairo travel time is corrected, and the Thursday dinner notes the late flight."]]},
+  ["💬","Ask the Mummy","He greets you with where you are today, and he works offline for the boat, Sinai and the desert."]]},
  {v:"v197", d:"Sat Oct 10", items:[
-  ["🤿","Brad's solo days","Tuesday has a freediving intro, the Sinai climb has a Bedouin guide option, and Saturday evening has Coptic Cairo as an option."]]},
- {v:"v196", d:"Sat Oct 10", items:[
-  ["🗺️","Thursday in Cairo, not the airport","Brad now sleeps in Zamalek on Thu 22 for a walkable evening in Cairo. The airport hotel is kept for Sat 24. Alexandria is the fallback if the desert tour cancels."]]},
+  ["🤿","Brad's solo days","A freediving intro on Tuesday, a Bedouin guide option for the Sinai climb, Coptic Cairo as a Saturday evening option, and Thursday night in Zamalek."]]},
  {v:"v195", d:"Sat Oct 10", items:[
-  ["⏰","Sunday reminders","Sunday has three reminders on its agenda: calls at 9am, the 6pm budget check, and the 9pm decision. The boat sheet has the full order."]]},
- {v:"v194", d:"Sat Oct 10", items:[
-  ["📞","A Sunday plan for the boat","The boat sheet now has a Sunday call order, a bookings table with deadlines (Aswan, Luxor, the car), and the Abu Simbel options."]]},
- {v:"v193", d:"Sat Oct 10", items:[
-  ["🗣","Sharper trash talk","The Aswan, Nile and Luxor lines are rewritten around the places we're actually visiting, not the same football jokes. The to-do list now covers the boat decision, Sunday calls, and the Luxor and Aswan hotels."]]},
- {v:"v192", d:"Sat Oct 10", items:[
-  ["🧻","The mummy keeps busy","While he is on screen he now reads the bottom of your screen, counts his toes, does a yoga pose, and waves. Every visit has something new."]]},
+  ["📞","Sunday plan and reminders","The boat sheet has the Sunday call order and the booking deadlines. Sunday's agenda reminds you at 9am, 6pm and 9pm."]]},
  {v:"v191", d:"Sat Oct 10", items:[
-  ["✉️","Pure Nile email sent","We asked Pure Nile for written quotes on the Sonesta Star Goddess and MS Royal La Terrasse. The boat sheet now shows we are waiting for their reply."]]},
- {v:"v190", d:"Sat Oct 10", items:[
-  ["⛵","Merit replied: pick a ship","Pure Nile needs a ship from their list (Wed–Sat, full board, $700–$1,500 pp) before they check availability. The boat sheet now shows the next step, and Merit still needs our pick today."]]},
- {v:"v189", d:"Sat Oct 10", items:[
-  ["✉️","Follow-up email matches the charter ask","The ready-to-send note to The Orient now asks for a private charter quote for two, with price, inclusions and pickup point, since the shared cabins are sold out."]]},
- {v:"v188", d:"Sat Oct 10", items:[
-  ["🧭","Plan text matches the boat status","Every mention of The Orient now reflects that its shared cabins are sold out for Wed 14. The boat is pending two quotes, and the no-boat fallback stays in the plan."]]},
- {v:"v187", d:"Sat Oct 10", items:[
-  ["⛵","Boat: two quotes out","The Orient is sold out for Wed 14, so we asked Djed for a private charter and messaged Merit for a shared departure. The boat sheet shows where each stands, our $3,000 limit for two, and the Sunday 9pm decision."]]},
- {v:"v186", d:"Sat Oct 10", items:[
-  ["⛵","The boat: where it stands","The boat sheet now opens on the next steps — Brad emailed The Orient, a weekend nudge with a ready-to-send follow-up, the Sunday 9am call (the Hilton desk can ring for you), and the one question that decides it: joining at Kom Ombo."],
-  ["🆕","This popup","Every update now says what changed, once. Close it and it's gone until the next one."]]},
- {v:"v185", d:"earlier today", items:[
-  ["🙏","Faiths of the Nile","Islam, Judaism, Buddhism, the Copts, the old gods, Greece and Rome — what you'll see of each, and where."],
-  ["🏞️","Life along the Nile","Twelve chapters in route order; the GEM moves to the 11am–1pm slot."],
-  ["💬","A smarter Mummy","He knows the whole trip, can search the web, checks the weather and the light, knows what's near you, and has a 'Not right? ↻' button."],
-  ["👟","Feet","Sandals or shoes at every stop, and a Feet line on each day."]]}
+  ["⛵","Boat: waiting on quotes","Pure Nile needs a ship pick, and Djed has been asked for a private charter for two. Decide by Sunday 9pm."]]},
+ {v:"v185", d:"earlier", items:[
+  ["🙏","Faiths of the Nile","Islam, Judaism, Buddhism, the Copts, the old gods, Greece and Rome, and where you'll see each."],
+  ["🏞️","Life along the Nile","Twelve chapters, in route order."],
+  ["💬","A smarter Mummy","He knows the whole trip, the weather and what's near you."]]}
 ];
 (function(){ const K="egypt.seenVer"; const get=()=>{ try{ return localStorage.getItem(K)||""; }catch(e){ return ""; } }; const set=v=>{ try{ localStorage.setItem(K,v); }catch(e){} };
   const vn=v=>parseInt(String(v).replace(/\D/g,""),10)||0;
@@ -8296,13 +8261,12 @@ function xtBody(tab){
     return `<p class="bs-h">Trip wrap-up</p><p>Nile Bowl: <b>${esc(w)} ${a}</b> · <b>${esc(OTHER()||"them")} ${b}</b></p><p>Hidden spots found: <b>${xtFound().length}</b> of ${XT_SPOTS.length}</p><p><i>${esc(verdict)}</i></p><p class="muted">Photo highlights and day-by-day notes are in the diary and the journal.</p>`; }
   return "";
 }
-function xtOpen(tab){ openSheet("sheetXtra", `<div class="qh"><h3>Extras</h3><button type="button" class="x" aria-label="Close" onclick="closeSheet('sheetXtra')">×</button></div><div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0 10px"><button type="button" class="btn mini" data-xt="phrase">Phrase</button><button type="button" class="btn mini" data-xt="off">Offline</button><button type="button" class="btn mini" data-xt="spots">Hidden</button><button type="button" class="btn mini" data-xt="wrap">Wrap-up</button></div><div id="xtBody">${xtBody(tab||"phrase")}</div>`); }
-window.xtBody=xtBody; window.xtOpen=xtOpen;
-document.getElementById("ttOpen").addEventListener("click",function(){ window.toolsOpen("shop"); });
-// clicks inside the extras sheet
-document.addEventListener("click", e=>{ const t=e.target.closest("[data-xt]"); if(t){ const body=document.getElementById("xtBody"); if(body){ body.innerHTML=xtBody(t.dataset.xt); } return; }
-  const f=e.target.closest("[data-xfind]"); if(f){ const id=f.dataset.xfind; const l=xtFound(); if(l.indexOf(id)<0){ l.push(id); xtSaveFound(l); } const body=document.getElementById("xtBody"); if(body) body.innerHTML=xtBody("spots"); return; }
-  const c=e.target.closest("[data-xoff]"); if(c){ /* handled on change */ return; }
+function xtRedraw(){ const a=document.getElementById("phraseBody"); if(a) a.innerHTML=xtBody("phrase")+xtBody("off"); const b=document.getElementById("spotBody"); if(b) b.innerHTML=xtBody("spots")+xtBody("wrap"); }
+xtRedraw();
+
+// checklist and spot clicks
+document.addEventListener("click", e=>{
+  const f=e.target.closest("[data-xfind]"); if(f){ const id=f.dataset.xfind; const l=xtFound(); if(l.indexOf(id)<0){ l.push(id); xtSaveFound(l); } xtRedraw(); return; }
   const ch=e.target.closest("button"); if(ch && /choose this one/i.test(ch.textContent||"")){ try{ setTimeout(()=>{ if(typeof mumReact==="function") mumReact("tout",{delay:900,line:"A boat! Finally. I'll pack my good wrappings."}); },300); }catch(x){} } });
 document.addEventListener("change", e=>{ const c=e.target.closest("[data-xoff]"); if(!c) return; const st=xtOff(); st[c.dataset.xoff]=c.checked; xtSet("egypt.xt.off",st); });
 })();
@@ -8354,25 +8318,23 @@ function shopHere(){ const st=shopState(); const r=shopRate(); const info=shopSt
       <details><summary class="muted">Correct the estimate</summary><label class="muted">Low <input type="number" data-shop-est="${it.id}:0" value="${toIn(rg[0])}" style="width:90px"></label> <label class="muted">High <input type="number" data-shop-est="${it.id}:1" value="${toIn(rg[1])}" style="width:90px"></label><p class="muted" style="margin:4px 0">Numbers are in ${cur}. Enter a real price you've seen and it'll replace ours.</p></details>
       <div class="row" style="flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px"><button type="button" class="btn mini" data-shop-bought="${it.id}">${b?"✓ Bought (undo)":"Mark bought"}</button>${b?`<label class="muted">Paid EGP <input type="number" data-shop-paid="${it.id}" value="${paid[it.id]||""}" style="width:100px"></label><label class="btn mini" style="cursor:pointer">${rec[it.id]?"Receipt ✓ (replace)":"Add receipt photo"}<input type="file" accept="image/*" data-shop-receipt="${it.id}" hidden></label>`:""}</div>
       ${rec[it.id]?`<img alt="Receipt" src="${rec[it.id]}" style="max-width:100%;border-radius:8px;margin-top:6px">`:""}</div>`; }).join(""):`<p class="muted">Nothing on your list at ${esc(stop.city)}${rule?" (Brad's rule is hiding the rest)":""}.</p>`;
-  return `<div class="shop-here"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><p class="bs-h" style="margin:4px 0">${esc(head)}</p></div>${banner}<div class="row" style="gap:6px;margin:4px 0"><button type="button" class="chip ${cur==="EGP"?"on":""}" data-shop-cur="EGP">EGP</button><button type="button" class="chip ${cur==="USD"?"on":""}" data-shop-cur="USD">USD</button></div><p class="muted" style="margin:4px 0">${esc(bud)}</p><label style="display:block;margin:6px 0"><input type="checkbox" data-shop-rule="1" ${rule?"checked":""}> Brad's rule: small, packable and made here only</label>${cards}<p class="muted" style="margin-top:8px">Private to this phone. Nothing here syncs.</p></div>`;
+  return `<div class="shop-here"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><p class="bs-h" style="margin:4px 0">${esc(head)}</p><button type="button" class="btn mini" data-shop-hide="1">👁 Hide</button></div>${banner}<div class="row" style="gap:6px;margin:4px 0"><button type="button" class="chip ${cur==="EGP"?"on":""}" data-shop-cur="EGP">EGP</button><button type="button" class="chip ${cur==="USD"?"on":""}" data-shop-cur="USD">USD</button></div><p class="muted" style="margin:4px 0">${esc(bud)}</p><label style="display:block;margin:6px 0"><input type="checkbox" data-shop-rule="1" ${rule?"checked":""}> Brad's rule: small, packable and made here only</label>${cards}<p class="muted" style="margin-top:8px">Private to this phone. Nothing here syncs.</p></div>`;
 }
 function shopPlan(){ const st=shopState(); const prof=st.profile||{}; const bought=st.bought||{};
   const all=SHOP_STOPS.map(x=>{ const ub=(x.items||[]).filter(it=>(it.who===me()||it.who==="Both")&&!bought[it.id]).length; const n=(x.items||[]).filter(it=>it.who===me()||it.who==="Both").length; return n?`<li>${esc(x.d.slice(5).replace("-","/"))} ${esc(x.city)}: ${ub?ub+" to buy":"done"}</li>`:""; }).join("");
   return `<div class="shop-plan"><p class="shop-sec">Your profile</p><div class="shop-group"><label class="shop-row">Budget for gifts and treats (USD)<input type="number" data-shop-profile="budget" value="${prof.budget||""}" class="shop-in"></label><label class="shop-row">Notes on who it's for<span class="muted shop-hint">Taste, sizes, what they already have</span><textarea data-shop-profile="who" rows="2" class="shop-in" style="width:100%">${esc(prof.who||"")}</textarea></label><label class="shop-row">A name to remember<input data-shop-profile="name" value="${esc(prof.name||"")}" class="shop-in" style="width:100%"></label></div><p class="shop-sec">Your stops</p><div class="shop-group"><ul class="shop-stops">${all}</ul></div></div>`;
 }
-let shopTab="shop", shopIdle=null;
+let shopIdle=null;
 function shopClear(){ if(shopIdle){ clearTimeout(shopIdle); shopIdle=null; } }
-function shopArm(){ shopClear(); shopIdle=setTimeout(()=>{ const body=document.getElementById("toolBody"); if(body&&shopTab==="shop"&&document.getElementById("sheetTools")?.classList.contains("on")){ body.innerHTML=`<div style="text-align:center;padding:60px 10px"><button type="button" class="btn" data-shop-reveal="1">Tap to show the list</button></div>`; } },30000); }
-function toolsBody(){ if(shopTab==="shop") return shopHere(); if(shopTab==="plan") return shopPlan(); if(shopTab==="guides"||shopTab==="game"){ const parts=shopTab==="guides"?["phrase","off"]:["spots","wrap"]; return `<div id="xtBody">${parts.map(t=>(typeof window.xtBody==="function")?window.xtBody(t):"").join("")}</div>`; } const x=(typeof window.xtBody==="function")?window.xtBody(shopTab):""; return `<div id="xtBody">${x}</div>`; }
-function toolsRender(){ const body=document.getElementById("toolBody"); if(!body) return; delete body.dataset.hidden; body.innerHTML=toolsBody(); document.querySelectorAll("#sheetTools [data-tool]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===shopTab?"true":"false")); shopArm(); }
-window.toolsOpen=function toolsOpen(tab){ shopTab=tab||"shop"; openSheet("sheetTools", `<div class="qh"><h3>Trip tools</h3><div style="display:flex;gap:8px;align-items:center"><button type="button" class="x" data-shop-hide="1" aria-label="Hide or show the list" title="Hide or show the list" style="font-size:1rem">👁</button><button type="button" class="x" aria-label="Close" onclick="shopClear();closeSheet('sheetTools')">×</button></div></div><div class="seg" role="group" aria-label="Trip tools sections"><button type="button" data-tool="shop">Here</button><button type="button" data-tool="plan">Plan</button><button type="button" data-tool="guides">Guides</button><button type="button" data-tool="game">Game</button></div><div id="toolBody"></div>`); setTimeout(toolsRender,0); };
+function shopArm(){ shopClear(); shopIdle=setTimeout(()=>{ const body=document.getElementById("giftBody"); if(body){ body.dataset.hidden="1"; body.innerHTML='<div style="text-align:center;padding:24px 10px"><button type="button" class="btn" data-shop-reveal="1">Show the list</button></div>'; } },30000); }
+function toolsRender(){ const body=document.getElementById("giftBody"); if(!body) return; delete body.dataset.hidden; body.innerHTML=shopHere()+shopPlan(); shopArm(); } window.toolsRender=toolsRender;
+
 document.addEventListener("click", e=>{
-  const tl=e.target.closest("[data-tool]"); if(tl){ shopTab=tl.dataset.tool; toolsRender(); return; }
   const bt=e.target.closest("[data-shop-bought]"); if(bt){ const st=shopState(); st.bought=st.bought||{}; const id=bt.dataset.shopBought; st.bought[id]=!st.bought[id]; if(!st.bought[id]){ if(st.paid) delete st.paid[id]; if(st.receipts) delete st.receipts[id]; } shopSave(st); toolsRender(); return; }
   const cu=e.target.closest("[data-shop-cur]"); if(cu){ const st=shopState(); st.cur=cu.dataset.shopCur; shopSave(st); toolsRender(); return; }
-  const hd=e.target.closest("[data-shop-hide]"); if(hd){ const body=document.getElementById("toolBody"); if(body&&body.dataset.hidden==="1"){ toolsRender(); return; } shopClear(); if(body){ body.dataset.hidden="1"; body.innerHTML=`<p class="muted" style="text-align:center;padding:60px 10px">Hidden. Tap 👁 to show the list.</p>`; } return; }
+  const hd=e.target.closest("[data-shop-hide]"); if(hd){ const body=document.getElementById("giftBody"); if(body&&body.dataset.hidden==="1"){ toolsRender(); return; } shopClear(); if(body){ body.dataset.hidden="1"; body.innerHTML='<div style="text-align:center;padding:24px 10px"><button type="button" class="btn" data-shop-reveal="1">Show the list</button></div>'; } return; }
   const rv=e.target.closest("[data-shop-reveal]"); if(rv){ toolsRender(); return; }
-  const sh=document.getElementById("sheetTools"); if(sh&&sh.contains(e.target)) shopArm();
+  const gb=document.getElementById("giftBody"); if(gb&&gb.contains(e.target)) shopArm();
 });
 document.addEventListener("change", e=>{
   const rl=e.target.closest("[data-shop-rule]"); if(rl){ const st=shopState(); st.rule=rl.checked; shopSave(st); toolsRender(); return; }
@@ -8383,5 +8345,6 @@ document.addEventListener("change", e=>{
   const rc=e.target.closest("[data-shop-receipt]"); if(rc && rc.files && rc.files[0]){ const id=rc.dataset.shopReceipt; const f=rc.files[0]; const img=new Image(); const url=URL.createObjectURL(f); img.onload=()=>{ try{ const sc=Math.min(1,900/img.width); const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); const data=c.toDataURL("image/jpeg",0.8); const st=shopState(); st.receipts=st.receipts||{}; st.receipts[id]=data; shopSave(st); toolsRender(); }catch(x){ try{ toast("Couldn't read that photo."); }catch(y){} } URL.revokeObjectURL(url); }; img.onerror=()=>{ try{ toast("Couldn't read that photo."); }catch(y){} URL.revokeObjectURL(url); }; img.src=url; return; }
 });
 })();
+if(window.toolsRender) window.toolsRender();
 </script>
 </body></html>
