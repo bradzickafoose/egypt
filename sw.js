@@ -1,6 +1,6 @@
 // Egypt companion — offline cache. The page opens from cache instantly and refreshes in the background;
 // a new build bumps V, the new worker fetches a fresh page on install, and the page reloads itself onto it.
-const V = "egypt-v198";
+const V = "egypt-v199";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 self.addEventListener("message", e => { if (e.data && e.data.type === "SKIP") self.skipWaiting(); });
 const prefetch = async () => { const c = await caches.open(V); for (const u of CORE) { try { const ctrl = new AbortController(); const tm = setTimeout(() => ctrl.abort(), 20000); const r = await fetch(u, { cache: "reload", signal: ctrl.signal }); clearTimeout(tm); if (r && r.ok) await c.put(u, r); } catch (e) {} } };
