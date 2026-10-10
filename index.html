@@ -8149,7 +8149,7 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v208";
+const APP_VER="v209";
 const WHATS_NEW=[
  {v:"v208", d:"Sat Oct 10", items:[
   ["🧭","Simpler Trip tools","Four sections in one row: Here, Plan, Guides (phrases and offline lists) and Game (hidden spots and wrap-up)."]]},
@@ -8217,6 +8217,7 @@ const WHATS_NEW=[
     const esc=ev=>{ if(ev.key==="Escape") close(); };
     el.addEventListener("click",ev=>{ if(ev.target.closest("[data-wnx]")) close(); }); document.addEventListener("keydown",esc); }
   function check(tries){ if(get()===APP_VER) return; if(isNew()){ if(tries<60) return setTimeout(()=>check(tries+1),2000); set(APP_VER); return; } /* first run: no news for a fresh install */
+    if(!WHATS_NEW.some(r=>vn(r.v)>vn(get()))){ set(APP_VER); return; } /* silent update: no new notes */
     if(busy()||document.hidden){ if(tries<90) setTimeout(()=>check(tries+1),2000); return; } show(); }
   if(get()===""&&isNew()){ /* brand-new phone: start from this version */ }
   window.addEventListener("load",()=>setTimeout(()=>check(0),2200));
