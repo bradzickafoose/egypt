@@ -4478,7 +4478,7 @@ const BOAT_STEPS = b => [
   ["cabin","Cabin: en-suite bathroom, bottled water and a cabin fridge — confirmed"],
   ["paid","Deposit paid (card) — the rest in cash on board"],
   ["hotel","Aswan hotel NOT booked yet for Tue 13 (Basma or the Old Cataract)"],
-  ["abu","Abu Simbel car booked for Wed 4am — bags in the trunk, drop at the boat"],
+  ["abu","Abu Simbel car NOT booked yet for Wed 4am — bags in the trunk, drop at the boat"],
   ["hilton","Hilton Luxor changed to Saturday night only"] ];
 const boatSteps=()=>bJSON(BOAT_LS.steps,{});
 async function boatPushStep(k,v){ if(!liveOK()) return false; try{ const r=await fetch(boatURL("steps/"+k),v?{method:"PUT",body:JSON.stringify(v)}:{method:"DELETE"}); return r.ok; }catch(e){ return false; } }
