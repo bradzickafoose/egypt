@@ -1876,7 +1876,7 @@ const DAYS = [
    {t:"19:00",title:"Easy dinner, early night",approx:true}],
   know:["Egypt requires a Bedouin guide on the mountain; the agency provides one","Summit temperature in October is 40–45°F with wind; people who come in a t-shirt have a bad night","The monastery is closed Fridays and Sundays, which is why this is Wednesday"],
   planb:"Can't face the night climb → the monastery alone is worth the day trip (leave Dahab 7am, back by 3). Weather closes the mountain (rare) → same. Want the mountain without the crowd → the Steps route up, starting 2am, with the guide; fewer people, steeper, the same sunrise."},
- {id:"thu22",who:"brad",sleep:"Cairo, near the airport",sleepq:"Le Meridien Cairo Airport",date:"2026-10-22",dow:"Thu",num:22,title:"A last Red Sea day, then north",place:"Dahab → Cairo",emoji:"🐪",
+ {id:"thu22",who:"brad",sleep:"Cairo, Zamalek (walkable to the Nile)",sleepq:"Zamalek Cairo hotel",date:"2026-10-22",dow:"Thu",num:22,title:"A last Red Sea day, then north",place:"Dahab → Cairo",emoji:"🐪",
   alarm:"8:00",bag:"everything (checkout)",dress:"swim gear in the daypack",cash:"≈$80 + transfers",
   mission:"One more reef, by camel or boat, where there's no road. Then back to Cairo for the desert.",
   agenda:[
@@ -1884,10 +1884,10 @@ const DAYS = [
    {t:"14:30",title:"Back in Dahab. Collect bags.",approx:true},
    {t:"15:30",title:"Taxi to Sharm el-Sheikh airport",note:"≈1h15, ≈$30 private, or the GoBus for ≈$5 if the timing works.",map:"Sharm El Sheikh International Airport"},
    {t:"18:30",title:"Fly Sharm → Cairo",note:"Evening options: Air Cairo ≈18:00 (lands T1 — taxi to the hotel) or EgyptAir 22:30 (lands T3, the footbridge). Nile Air's only Thursday flight is 14:10.",map:"Sharm El Sheikh International Airport",approx:true},
-   {t:"20:00",title:"Le Méridien Cairo Airport",note:"Connected to Terminal 3 by a walkway: no traffic tonight, none Sunday morning. ≈$120.",map:"Le Meridien Cairo Airport"},
-   {t:"21:00",title:"Dinner at the hotel. Pack a desert bag; leave the rest at the hotel.",note:"Warm layers again: the White Desert drops to 50°F at night.",approx:true}],
+   {t:"20:00",title:"Hotel in Zamalek: check in, then walk to the Nile",note:"Book a Zamalek hotel now (Zamalek is an island of cafes and the Nile). Taxi from the airport ≈30–45 min in traffic. The airport hotel stays for Sat 24, when the desert is over and the flight is early.",map:"Zamalek"},
+   {t:"21:00",title:"Dinner in Zamalek: koshary or Zooba. Pack a desert bag; leave the rest at the hotel.",note:"Zooba is on the Zamalek list. Warm layers again: the White Desert drops to 50°F at night.",map:"Zooba Zamalek",approx:true}],
   know:["The White Desert tour picks up early tomorrow; confirm the time and the pickup point with them tonight","Leave the big bag at the hotel; the camp is a sleeping bag under the stars"],
-  planb:"Too wrecked from the mountain → skip Ras Abu Galum, sleep, take the midday flight. Flights full → GoBus Sharm → Cairo is 8 hours; better to fly from Sharm in the morning Friday and start the desert at noon (the tour can adapt)."},
+  planb:"Too wrecked from the mountain → skip Ras Abu Galum, sleep, take the midday flight. Flights full → GoBus Sharm → Cairo is 8 hours; better to fly from Sharm in the morning Friday and start the desert at noon (the tour can adapt). If the desert tour cancels on Friday → Alexandria by train from Ramses station (about 2.5 hours each way): the Bibliotheca, Qaitbay Citadel and the Catacombs."},
  {id:"fri23",who:"brad",sleep:"a camp in the White Desert",sleepq:"",date:"2026-10-23",dow:"Fri",num:23,title:"Into the White Desert",place:"Bahariya → the White Desert",emoji:"🏜️",
   alarm:"6:00",bag:"desert bag: warm layers, headlamp, sunglasses, scarf for dust, wet wipes, power bank, a book",dress:"long sleeves and trousers; it's sun then cold",cash:"tour prepaid; ≈$30 for tips and drinks",
   mission:"Five hours west into the Sahara, then a 4x4 through black volcanic hills and a field of quartz to a white chalk seabed sculpted into mushrooms and animals, where the jeep stops, the driver cooks over a fire, and the fox comes to the camp after dark.",
@@ -1983,7 +1983,7 @@ const WEEK = [
  {k:"w7",who:"Both",t:"USD small bills, $300+ each. Get them before you fly."},
  {k:"w8",who:"Both",t:"Airalo Egypt eSIM installed on home wifi (Brad 15-day $49, Duane 10-day $35)"},
  {k:"w9",who:"Brad",t:"After Duane: flights CAI→SSH Mon 19 (Air Cairo ≈11:00 or EgyptAir; no Nile Air on Mondays) and SSH→CAI Thu 22 evening"},
- {k:"w10",who:"Brad",t:"Dahab guesthouse Mon 19–Wed 21 · Le Méridien Cairo Airport Thu 22 and Sat 24"},
+ {k:"w10",who:"Brad",t:"Dahab guesthouse Mon 19–Wed 21 · Zamalek hotel Thu 22 (book now) · Le Méridien Cairo Airport Sat 24"},
  {k:"w11",who:"Brad",t:"White Desert 2-day tour from Cairo, Fri 23 pickup at the airport hotel",s:"Western Desert Tours, Badawiya or White Desert Tours Egypt. Mount Sinai and the Blue Hole book in Dahab on arrival."},
   {k:"w12",who:"Both",t:"Call Khufu's: does the Mon 1:45 lunch booking get you back through the Great Gate after GEM? If not, eat at ≈11 and move the GEM slot",h:"Call Khufu's: does the Mon 1:45 lunch booking get you back through the Great Gate after GEM? If not, eat at ≈11 and move the GEM slot"},
   {k:"w13",who:"Both",t:"Book Old Cataract terrace tea for Tue 13, 4pm (reported as booking-only, ≈$45–60 each)",h:"Book Old Cataract terrace tea for Tue 13, 4pm (reported as booking-only, ≈$45–60 each)"}
@@ -8139,8 +8139,10 @@ start();
 <script>
 // ---------- what's new: one popup per release; dismiss it and it stays gone until the next one ----------
 // To ship a release: bump APP_VER, put its notes first in WHATS_NEW (same version string as sw.js's cache name).
-const APP_VER="v195";
+const APP_VER="v196";
 const WHATS_NEW=[
+ {v:"v196", d:"Sat Oct 10", items:[
+  ["🗺️","Thursday in Cairo, not the airport","Brad now sleeps in Zamalek on Thu 22 for a walkable evening in Cairo. The airport hotel is kept for Sat 24. Alexandria is the fallback if the desert tour cancels."]]},
  {v:"v195", d:"Sat Oct 10", items:[
   ["⏰","Sunday reminders","Sunday has three reminders on its agenda: calls at 9am, the 6pm budget check, and the 9pm decision. The boat sheet has the full order."]]},
  {v:"v194", d:"Sat Oct 10", items:[
