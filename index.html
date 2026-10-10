@@ -1448,6 +1448,10 @@ html.hugetext .bp-on em{grid-column:2}
     <h2 class="sec">The Bible in Egypt</h2>
     <div class="card"><div id="bible"></div></div>
   </section>
+  <section id="faithSec">
+    <h2 class="sec">Faiths of the Nile</h2>
+    <div class="card"><div id="faiths"></div></div>
+  </section>
   <div class="gch" id="g-admin"><b>Trip admin</b><span>flights, lists, notes, the fine print</span></div>
   <section id="lists">
     <h2 class="sec">Lists</h2>
@@ -5421,6 +5425,7 @@ function mumContext(){ const w=me()||"Brad", o=OTHER_OF(w)||"Duane"; const n=cai
   L.push("TIPS (EGP): bathroom 10, porter/carriage 50, felucca captain 100, driver 200/day, guide $20/day, boat crew envelope $60 each. Emergencies: tourist police 126, ambulance 123, police 122, US Embassy Cairo +20 2 2797 3300.");
   try{ if(typeof GEM_STOPS!=="undefined"){ const S=gemSeen(); L.push("GEM GUIDE (their 12 stops, in order; ✓=seen): "+GEM_STOPS.map(x=>(S[x.id]?"✓":"·")+x.n+" ["+x.where+"]").join(" | ")); } }catch(e){}
   try{ if(typeof BIBLE!=="undefined") L.push("BIBLICAL SITES (the app's Guide → The Bible in Egypt; be careful to say what is scripture, archaeology or tradition): "+bibleMine().map(e=>`${e.t} [${e.plan==="on"?(bibleDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}] ${e.refs.map(r=>r[0]).join("; ")}`).join(" | ")); }catch(e){}
+  try{ if(typeof FAITHS!=="undefined") L.push("OTHER FAITHS ON THE ROUTE (Guide → Faiths of the Nile: Islam, Judaism, Buddhism, the old gods, Greece & Rome, the Copts; say plainly what is scripture, history, tradition or speculation): "+faithMine().map(e=>`${e.t} [${e.f.join("/")}; ${e.plan==="on"?(faithDays(e).map(d=>d.dow+" "+d.num).join("/")||"on route"):e.plan}]`).join(" | ")); }catch(e){}
   try{ const t=tabNet(w); L.push(`THE TAB: ${Math.abs(t)<1?"all square":t>0?`${o} owes ${w} ${Math.round(t)} EGP`:`${w} owes ${o} ${Math.round(-t)} EGP`}.`); }catch(e){}
   try{ const a=nileTotal(w), b=nileTotal(o); if(a&&b) L.push(`NILE BOWL SCORE (a trip-long game, Steelers vs Bengals): ${w} ${a.pts}, ${o} ${b.pts}.`); }catch(e){}
   try{ const c=boatRec&&boatRec(); const b=c&&c.id&&BOATS.find(x=>x.id===c.id); L.push(`NILE BOAT: ${b?"chosen — "+b.name+" ("+b.when+")":"not chosen yet; app's pick is The Orient (dahabiya, Wed–Sat), then Merit"}.`); }catch(e){}
@@ -5448,6 +5453,8 @@ function ghostAnswer(q){ q=String(q||"").toLowerCase(); const n=cairoNow(); cons
     return `${hit.n} (${hit.where}). Look for: ${hit.look} ${hit.story} — ${GEM_STOPS.filter(x=>S[x.id]).length}/${GEM_STOPS.length} seen; the GEM guide is in the + menu while you're there.`; }
   if(has("bible","biblical","moses","jesus","joseph","scripture","holy family","israel","exodus","pharaoh's daughter","church","sinai")&&typeof bibleMine==="function"){ const d=todayDay(); const L=bibleMine(); const today=d?L.filter(e=>e.plan==="on"&&bibleDays(e).some(x=>x.id===d.id)):[]; const e=today[0]||L.find(e=>e.plan==="on"&&bibleDays(e).some(x=>x.date>=cairoNow().date))||L[0];
     return `${today.length?"Today's biblical ground":"Next on your route"}: ${e.t}. ${e.refs[0][0]} — “${e.refs[0][1]}” ${e.pause} Guide → The Bible in Egypt has every place, and which bits are scripture, history or tradition.`; }
+  if(has("islam","muslim","mosque","quran","qur'an","sufi","dervish","prayer","adhan","jewish","judaism","synagogue","maimonides","buddh","ashoka","akhenaten","aten","isis","coptic","copt","faith","religion")&&typeof faithMine==="function"){ const d=todayDay(); const L=faithMine(); const today=d?L.filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)):[]; const k=Object.keys(FAITH_KINDS).find(k=>q.includes(k==="old"?"isis":k.slice(0,5)))||""; const e=today.find(e=>!k||e.f.includes(k))||L.find(e=>k&&e.f.includes(k))||today[0]||L[0];
+    return `${today.length?"Today":"On the trip"}: ${e.t}. ${String(e.story).split(/(?<=\.)\s/).slice(0,2).join(" ")} ${e.pause} Guide → Faiths of the Nile has all ${L.length}, each marked scripture, history, tradition or guess.`; }
   if(has("taxi","uber","careem","ride","cab")){ return "Uber or Careem — the app sets the price, so there's nothing to haggle and nothing to argue about. Cairo airport to the Hilton ≈$15, allow an hour in evening traffic. A street taxi: agree the price before the door closes, and have small notes."; }
   if(has("cost","price","how much","pay","fair","haggle")){ const f=fairFor(q); if(f) return `${f.n}: a fair price is ${fmtE(f.lo)}–${fmtE(f.hi)} EGP (≈$${Math.round(f.lo/R)}–${Math.round(f.hi/R)}). Open at a third of whatever they ask; walk at ${fmtE(f.hi)}+.`; return "Tell me the thing — lantern, scarf, papyrus, cartouche, spices — and I'll tell you the fair price. Rule of the dead: open at a third of the first ask."; }
   { const k=Object.keys(PLACES||{}).find(k=>{ const n=(PLACES[k].n||k).toLowerCase().split(/[—(,]/)[0].trim(); return n.length>4&&q.includes(n.replace(/^the /,"")); }); if(k){ const P=PLACES[k]; return `${P.n}: ${String(P.what||"").split(/(?<=\.)\s/).slice(0,2).join(" ")}${P.know&&P.know[0]?" Know: "+P.know[0]:""} Full page: tap About on that stop.`; } }
@@ -6711,6 +6718,183 @@ document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-bibope
 .bib-place{margin:12px 0;padding:12px;border-radius:14px;border:1px solid color-mix(in srgb,#c9a24a 40%,var(--line));background:color-mix(in srgb,#c9a24a 6%,var(--card))}.bib-place>b{display:block;font-size:0.9412rem}.bib-place>p{margin:6px 0 8px;font-size:0.8529rem;line-height:1.45}
 `; document.head.appendChild(st); })();
 
+// ---------- faiths.js: Faiths of the Nile — Islam, Judaism after the Bible, Buddhism, the old gods, Greece and Rome, the Copts — the other stories on your route, each honest about what's scripture, history, tradition or guesswork ----------
+// Qur'an lines are from Marmaduke Pickthall's 1930 translation (public domain). Lines marked ≈ are paraphrased, not quoted.
+const FAITH_KINDS = {
+  islam:   { n:"Islam",                 i:"🕌", c:"#2f8f6b" },
+  judaism: { n:"Judaism",               i:"✡️", c:"#3d6fb4" },
+  buddhism:{ n:"Buddhism",              i:"☸️", c:"#c07a1c" },
+  old:     { n:"The old gods",          i:"🌞", c:"#a8823a" },
+  greek:   { n:"Greece & Rome",         i:"🏛️", c:"#7b6aa8" },
+  coptic:  { n:"The Copts",             i:"✝️", c:"#a2483c" }
+};
+const FAITH_INTRO = {
+  p: "The Bible is one thread through Egypt; it isn't the only one. Egypt has been Muslim for most of the last thousand years, kept the old gods for three thousand before that, was ruled by Greek kings who prayed in Egyptian temples, sheltered Jewish scholars when Europe expelled them, invented Christian monasticism, and even traded with the Buddhist world. Below are the places on your route where those stories touch the ground. Like the Bible cards, each says plainly what's scripture, what's history, what's tradition, and what's only a good guess."
+};
+const FAITHS = [
+ // —— across the whole trip
+ { id:"adhan", f:["islam"], t:"The call to prayer — five times a day, everywhere you go", m:"", who:"both", plan:"thread",
+   src:[["The adhan","Allāhu akbar — God is greatest… Ḥayya ʿala ṣ-ṣalāh — come to prayer… Ḥayya ʿala l-falāḥ — come to flourishing."],["Qur'an 2:115","Unto Allah belong the East and the West, and whithersoever ye turn, there is Allah's Countenance."]],
+   story:"You'll hear it from your first night: from the minarets of Garden City, from Luxor Temple's own mosque, carried across the river to the boat at dawn. Five prayers a day set Egypt's clock: dawn (fajr), midday, afternoon, sunset and night. The dawn call adds one line the others don't: aṣ-ṣalātu khayrun min an-nawm, “prayer is better than sleep”, which you'll appreciate at 3:30am before Abu Simbel. Fridays at noon the men's congregational prayer fills the mosques and spills into the streets; shops shut for an hour.",
+   honest:"Living practice, not history. Etiquette: there's no need to stop what you're doing, but lower your voice if you're near a mosque, don't walk in front of anyone praying, and don't photograph people at prayer without asking.",
+   pause:"Some evening on deck, when the sunset call comes across the water, just stop and listen to all of it. Count how many mosques you can hear answering each other — a dozen voices, a few seconds apart." },
+ { id:"hagar", f:["islam","judaism"], t:"Hagar and Maria — the two Egyptian women in Abraham's and Muhammad's houses", m:"", who:"both", plan:"thread",
+   src:[["Genesis 16:1","Now Sarai Abram's wife bare him no children: and she had an handmaid, an Egyptian, whose name was Hagar."]],
+   story:"The mother of Ishmael was Egyptian. Genesis names her Hagar; in Islam she is Hājar, honoured as the mother of the Arabs through Ishmael, and every pilgrim on the Hajj re-enacts her running seven times between two hills looking for water for her son. Some two and a half thousand years later, Egypt sent another woman into the story: around 628 the Byzantine governor of Egypt sent the Prophet Muhammad gifts, among them a Coptic Christian woman from Upper Egypt, Māriya al-Qibṭiyya. She bore him a son, Ibrahim, who died as a baby. A saying recorded in Sahih Muslim has the Prophet telling his followers that when they took Egypt they should treat its people well, because of the bond of kinship (≈).",
+   honest:"Hagar is scripture in both traditions. Maria is in the early Islamic histories and widely accepted; her home village is traditionally placed near Minya, between Cairo and Luxor. The kinship saying is in the hadith collections, quoted here in paraphrase.",
+   pause:"You'll fly over Middle Egypt twice. Somewhere under the plane is the village Maria came from. Both the Bible and the Qur'an pass through an Egyptian woman's life — worth remembering at Sunday's last dinner." },
+ { id:"coptic-tongue", f:["coptic","old"], t:"Coptic — the pharaohs' language, still sung in church", m:"", who:"both", plan:"thread",
+   src:[["Coptic, the name of Egypt ≈","Kēme — “the black land”, the old Egyptian Kemet, named for the dark Nile silt."]],
+   story:"Coptic is the last stage of the ancient Egyptian language, written in Greek letters plus seven signs borrowed from demotic. Egyptians spoke it until Arabic replaced it around the 12th–17th centuries, and the Coptic Church still chants its liturgy in it. That survival is how hieroglyphs were cracked: Champollion learned Coptic as a teenager, and it let him hear the language behind the signs. About one Egyptian in ten is a Coptic Christian today; the word “Copt” itself comes from the Greek Aigyptios, simply “Egyptian”.",
+   honest:"History and living practice. Spoken Coptic is effectively gone; the liturgy keeps it.",
+   pause:"If you pass a Coptic church on a Sunday morning, stand at the door for a minute. The chant is the closest thing left to the sound of the language the tomb-builders spoke." },
+ { id:"buddha-greek", f:["buddhism","greek"], t:"Ashoka's letter to the king of Egypt", m:"^temple of kom ombo|^kom ombo", who:"both", plan:"on",
+   src:[["Ashoka, Rock Edict XIII, c. 256 BC ≈","The Buddhist emperor of India says his “conquest by dharma” has reached even the Greek kings: Antiochus, Ptolemy, Antigonus, Magas and Alexander."],["Dhammapada 1 (Max Müller, 1881)","All that we are is the result of what we have thought: it is founded on our thoughts, it is made up of our thoughts."]],
+   story:"Around 256 BC Ashoka, the Indian emperor who turned to Buddhism after a war so bloody it sickened him, had an edict carved in rock saying he had sent envoys of the dharma west to five Greek kings. One of them, “Turamaya”, is Ptolemy II of Egypt. Ptolemy's dynasty built the temples you'll see from the boat: Kom Ombo, Edfu, most of Philae. Indian merchants were a familiar sight in Alexandria by the Roman period, and around AD 200 Clement of Alexandria became the first writer in Greek to name the Buddha, noting that some Indians honour him as a god for his holiness (≈).",
+   honest:"The edict is real and names Ptolemy. Whether the envoys arrived, or made any impression, nobody knows; no Egyptian record mentions them. Clement's line is real. Buddhism never took root in Egypt.",
+   pause:"Kom Ombo was built by those same Greek kings. Standing in it, remember there was a moment when a Buddhist emperor thought it worth writing to them." },
+ { id:"berenike", f:["buddhism","greek"], t:"The Buddha of Berenike — on the Red Sea", m:"^dahab\\. check in", who:"brad", plan:"on",
+   src:[["Berenike excavation, 2022 ≈","A marble standing Buddha, about 70 cm tall, found in the courtyard of the temple of Isis at Berenike, Egypt's Roman port on the Red Sea."]],
+   story:"In 2022 a Polish–American dig at Berenike, far down the same Red Sea coast you'll be swimming in, found a standing Buddha with a halo of sun rays, made in the 1st or 2nd century AD from marble probably quarried near Istanbul — and set up in a temple of Isis. Berenike was where the monsoon ships from India landed with pepper, pearls and cotton; the same dig has found Sanskrit and Tamil inscriptions. It's among the westernmost Buddhas ever found from the ancient world.",
+   honest:"Archaeology, and recent. Probably made for Indian merchants living in the port. It's not on display anywhere you'll be.",
+   pause:"Floating over the reef at Dahab, look south. Two thousand years ago ships came up this sea from India, and someone carried a Buddha with them and put him in Isis's temple." },
+ // —— Cairo
+ { id:"saladin", f:["islam","judaism"], t:"The Citadel — Saladin, and the Jewish doctor next door", m:"^citadel", who:"both", plan:"on",
+   src:[["Qur'an 12:3","We narrate unto thee (Muhammad) the best of narratives in that We have inspired in thee this Qur'an."],["Maimonides, letter to Samuel ibn Tibbon, 1199 ≈","I ride to Cairo every morning to the court; I come home to Fustat in the afternoon, starving, and find the antechamber full of patients — Jews and gentiles, nobles and common people."]],
+   story:"Salah al-Din Yusuf — Saladin — began this fortress in 1176, the sultan who retook Jerusalem from the Crusaders. His name, Yusuf, is Joseph, and the twelfth chapter of the Qur'an, Sūrat Yūsuf, tells the whole of Joseph's story in one sitting, calling it the best of narratives. Down the hill in Fustat lived Moses Maimonides, the greatest Jewish thinker of the Middle Ages, who had fled persecution in Spain and Morocco. He became physician to Saladin's vizier and head of Egypt's Jews, and wrote the Guide for the Perplexed here, in Arabic. His letter about his working day reads like a modern doctor's.",
+   honest:"History. The well inside (Bir Yusuf) is Saladin's, not the biblical Joseph's — see the Bible card. The Mohammed Ali Mosque on top is much later, 1830–48, built by the Ottoman-era ruler who modernised Egypt.",
+   pause:"From the Citadel terrace, find Fustat to the south-west, by the river. Saladin's fortress above, Maimonides' house below: a Muslim sultan and a Jewish philosopher, a mile apart, both working for the same court." },
+ { id:"hassan", f:["islam"], t:"Sultan Hassan — built in the years of the Black Death", m:"^sultan hassan", who:"both", plan:"on",
+   src:[["The qibla iwan ≈","A band of Qur'an verses in Kufic letters, each taller than a man, runs the length of the hall facing Mecca."]],
+   story:"Sultan Hassan's mosque was raised in 1356–63, in the years right after the Black Death had killed perhaps a third of Cairo. The estates of the dead helped pay for it. It is four schools in one: each of the four great iwans (vaulted halls) round the courtyard housed one of the four Sunni schools of law, and students lived in the cells stacked behind them. One minaret fell during building and killed several hundred people; the sultan himself was murdered before it was finished, and his tomb behind the prayer wall is empty.",
+   honest:"History; the dates are certain. Knees and shoulders covered; shoes off at the door.",
+   pause:"Stand in the middle of the courtyard by the fountain and turn slowly through the four iwans. Then stand quietly in the one facing Mecca: the stone is built to carry a single voice to the whole court." },
+ { id:"fatimid", f:["islam","judaism"], t:"Al-Muizz and the Khan — the city the Fatimids built", m:"^al-muizz|^khan el-khalili", who:"both", plan:"on", once:true,
+   q:"Al-Hussein Mosque, Cairo",
+   src:[["Al-Azhar, 970–72 ≈","Al-Azhar means “the most radiant”, after Fatima al-Zahra, the Prophet's daughter, from whom the Fatimids claimed descent."]],
+   story:"Cairo — al-Qāhira, “the Victorious” — was founded in 969 by the Fatimids, a Shi'a dynasty from North Africa, as a walled palace city. Al-Muizz Street was its spine and is named for that first caliph. A few hundred metres off it is Al-Azhar, begun in 970, one of the oldest continuously running universities in the world and still the leading seat of Sunni learning. Beside the Khan stands the Mosque of al-Hussein, which by tradition holds the head of Husayn, the Prophet's grandson killed at Karbala in 680, brought here in 1153. And at the Khan's edge is Harat al-Yahud, the old Jewish quarter, with the restored synagogue named for Maimonides.",
+   honest:"The Fatimid city and Al-Azhar are history. The relic of Husayn is tradition, and other cities claim it too; Sunni and Shi'a Egyptians alike come to pray there. Non-Muslims can enter Al-Azhar outside prayer times but not usually the shrine at al-Hussein.",
+   pause:"At dusk on Al-Muizz, when the lights come up on the minarets, stop at the Qalawun complex and look down the street. Every era of Islamic Cairo is in one view — and the call to prayer usually comes while you're standing there." },
+ { id:"tannoura", f:["islam"], t:"Tannoura — the Sufi whirl", m:"^tannoura", who:"both", plan:"on",
+   src:[["Sufi dhikr ≈","Lā ilāha illā Allāh — there is no god but God — repeated until the words and the breath become one."]],
+   story:"Sufism is Islam's mystical tradition: remembrance of God (dhikr) through repeated words, breath, music and movement, aiming at the dissolving of the self. The turning dance is best known from the Mevlevi order of Turkey, founded by the followers of the poet Rumi. Egypt's tannoura is its own form: the dancer spins for long minutes in layered, colourful skirts, peeling them off and lifting them above his head as he turns — the skirts are said to stand for the layers of the world. Wikala al-Ghuri, where you'll see it, was a merchants' inn built in 1505 by the last great Mamluk sultan.",
+   honest:"What you'll see is a stage performance by a heritage troupe, rooted in Sufi practice rather than a prayer ceremony itself. In Cairo's real moulids (saints' festivals) dhikr circles still go on through the night.",
+   pause:"When the dancer has been turning for ten minutes, stop watching him and watch the still point at the centre of the skirt. That's the idea." },
+ { id:"conquest", f:["islam","coptic"], t:"Fustat — the Arab conquest and Egypt's oldest mosque", m:"amr ibn al|fustat", who:"both", plan:"detour",
+   when:"The Mosque of Amr ibn al-As is in Old Cairo, a few minutes' walk from the Coptic churches and Souq al-Fustat. Pair it with the Coptic Cairo detour on the Bible card: Sunday between lunch and the Citadel, or Monday at 3:30.",
+   q:"Mosque of Amr ibn al-As, Cairo",
+   src:[["Qur'an 2:256","There is no compulsion in religion."]],
+   story:"In 640–41 an Arab army under ʿAmr ibn al-ʿĀṣ took Egypt from the Byzantines, besieging the Roman fortress of Babylon — the same walls that now hold the Coptic churches. ʿAmr camped beside it, and his camp became Fustat, the first Arab capital of Egypt, with the first mosque in Africa. The Copts, persecuted by Byzantium for their theology, largely stayed Christian for centuries under Muslim rule; Egypt only became majority Muslim slowly, over three or four hundred years.",
+   honest:"History. The mosque has been rebuilt so often that almost nothing of 642 survives, but the site is the original. How tolerant the early centuries were is debated; the slowness of conversion is not.",
+   pause:"Walk from the Hanging Church to Amr's mosque. It takes five minutes and crosses thirteen centuries of Egypt's two faiths living side by side." },
+ // —— Giza / GEM / the river
+ { id:"musa", f:["islam"], t:"Musa in the Qur'an — the river and the basket", m:"^felucca", who:"both", plan:"on", once:true,
+   src:[["Qur'an 28:7","And We inspired the mother of Moses, saying: Suckle him and, when thou fearest for him, then cast him into the river and fear not nor grieve."]],
+   story:"Moses — Mūsā — is the prophet named most often in the Qur'an, more than 130 times, and Egypt is the setting of much of it. The Qur'an tells the same story as Exodus with its own details: here it is Pharaoh's wife, Āsiya, who draws the child from the river and persuades her husband to keep him, and she is honoured in Islam as one of the four best women who ever lived.",
+   honest:"Scripture in both traditions, told differently. As with the Bible, no place along the Nile is named.",
+   pause:"On the felucca, read Qur'an 28:7–13 after Exodus 2 on the Bible card. Same river, same baby, two tellings — notice what each remembers." },
+ // —— Aswan, the river, Nubia
+ { id:"philae", f:["old","greek","coptic"], t:"Philae — the last temple of the old gods", m:"^philae temple", who:"both", plan:"on",
+   src:[["Esmet-Akhom's inscription, Philae, AD 394 ≈","A priest of Isis carves a figure of the god Mandulis and a line of hieroglyphs: words spoken by Mandulis, for all time and eternity."]],
+   story:"On 24 August 394, a priest named Esmet-Akhom carved the last hieroglyphic inscription anyone ever wrote, here on the Gate of Hadrian. Philae was the last place in Egypt where the old gods were worshipped, long after the emperors had made Christianity the state religion, because the southern peoples of Nubia still came to honour Isis. The last demotic scribble is dated 452. Around 537, under Justinian, the temple was closed, the priests arrested and the statues taken away. Christians then carved crosses into the walls and turned the hall into a church — look for them. Meanwhile Isis herself had gone global: her temples stood in Rome, Pompeii, Athens and London.",
+   honest:"History, with exact dates. The defacing of figures you'll see is mostly by early Christians, though some damage is later.",
+   pause:"Find a Coptic cross cut into a relief of Isis. One faith literally carved on top of another — that's the whole story of this island in a square foot of stone." },
+ { id:"nubia", f:["coptic","islam"], t:"Gharb Soheil — when Nubia was Christian", m:"^motorboat to gharb soheil|^walk the village", who:"both", plan:"on", once:true,
+   src:[["The Baqt, AD 652 ≈","A treaty between the Muslim rulers of Egypt and the Christian kingdom of Makuria: peace, trade, and a yearly exchange of goods — slaves from the south, grain, cloth and wine from the north."]],
+   story:"South of Aswan, the Nubian kingdoms became Christian in the 6th century and stayed Christian for nearly a thousand years. In 652 the Arab army that had just taken Egypt was stopped by Nubian archers, and the two sides signed the Baqt, a treaty that kept the peace, more or less, for some six hundred years — one of the longest-lasting in history. Nubia turned Muslim slowly in the 14th–16th centuries. Today's Nubians are Muslim, speak their own language, and were moved from their villages when the High Dam flooded Lower Nubia in the 1960s; Gharb Soheil is one of the communities that rebuilt.",
+   honest:"History. The ruined monastery of St Simeon stands on the west bank at Aswan, a sign of the Christian centuries. The flooding of Nubia is recent and still felt.",
+   pause:"Ask your host where their family's village was before the dam. Most will tell you; it's not a ruined past for them, it's their grandparents'." },
+ // —— Luxor
+ { id:"haggag", f:["islam","old"], t:"Abu el-Haggag — the mosque on top of Luxor Temple", m:"^luxor temple", who:"both", plan:"on", once:true,
+   src:[["Moulid of Abu el-Haggag ≈","Once a year, in the month before Ramadan, a boat is carried through Luxor's streets in the saint's procession."]],
+   story:"When the medieval town was built over the half-buried temple, a Sufi holy man from Baghdad, Yusuf Abu al-Hajjaj, who died here around 1243, was buried on top of it, and a mosque was raised over his tomb. When archaeologists dug the temple out in the 1880s, the townspeople refused to let the mosque be moved, so it still stands, its old door hanging high on the wall at the level the ground used to be. He is Luxor's patron saint. At his yearly moulid a boat is paraded through town — which looks a great deal like the Opet festival, when Amun's sacred boat was carried from Karnak to this very temple.",
+   honest:"The mosque, the saint and the moulid are real. Whether the boat procession is a memory of Opet is a popular and attractive idea; scholars are divided, and Muslims in Luxor see it as their own tradition.",
+   pause:"From the temple's courtyard at night, look up at the mosque's door hanging in mid-air. Three thousand years of worship on one spot, and the ground level moving up the wall." },
+ { id:"aten", f:["old","judaism"], t:"Akhenaten — the pharaoh who worshipped one god", m:"^luxor museum", who:"both", plan:"on",
+   src:[["The Great Hymn to the Aten (after J. H. Breasted, 1909)","How manifold are thy works! They are hidden from before us, O sole god, whose powers no other possesseth."]],
+   story:"Around 1350 BC Amenhotep IV renamed himself Akhenaten, closed the temples of Amun, and made Egypt worship the Aten, the disc of the sun, alone. Luxor Museum has a whole reconstructed wall of his temple at Karnak, built of small blocks the next pharaohs pulled down and used as rubble — scenes of the king and Nefertiti under the sun's rays, each ray ending in a little hand. His hymn to the Aten reads remarkably like Psalm 104. After he died his name was hacked out and his city abandoned; Tutankhamun, probably his son, restored the old gods.",
+   honest:"History. Whether Akhenaten's religion influenced Moses or the Psalms is a famous idea (Freud wrote a book on it) but remains speculation; the Psalm resemblance is real but could be shared imagery.",
+   pause:"At the talatat wall, find the sun's rays ending in hands. Then read Psalm 104:24 on your phone and decide for yourself." },
+ { id:"maat", f:["old","coptic","islam"], t:"The weighing of the heart", m:"^valley of the kings", who:"both", plan:"on",
+   src:[["Book of the Dead, spell 125 ≈","I have not stolen. I have not killed. I have not made anyone weep. I have not cheated in the measure. I am pure, I am pure, I am pure."],["Qur'an 10:92","But this day We save thee in thy body that thou mayst be a portent for those after thee."]],
+   story:"The tombs here were built for one moment: the dead king standing before Osiris while his heart is weighed against the feather of Ma'at — truth and right order — and reciting the long list of sins he never committed. If the heart was heavy, a monster ate it. Coptic churches later painted the Archangel Michael holding the scales of souls, and the Qur'an too speaks of scales on the Day of Judgement. And the Qur'an says of the Pharaoh who pursued Moses that God would preserve his body as a sign to those after him — a line many Egyptians think of when they look at the royal mummies.",
+   honest:"The Book of the Dead is history (quoted in paraphrase). Whether the Egyptian scales shaped later Christian or Islamic images is debated. Claims that the Qur'an verse points to one particular mummy are popular but not established; the Qur'an names no pharaoh.",
+   pause:"In the tombs, look for the dead king before Osiris and the scales. Ask yourself which of the 42 denials you could say honestly." },
+ // —— Brad's week
+ { id:"tur", f:["islam","judaism"], t:"Mount Sinai — sworn by in the Qur'an", m:"^summit|^start the climb", who:"brad", plan:"on", once:true,
+   src:[["Qur'an 95:1–3","By the fig and the olive, By Mount Sinai, And by this land made safe."]],
+   story:"The mountain belongs to all three Abrahamic faiths. In the Qur'an, Ṭūr Sīnā is where God spoke to Musa, and a short chapter opens by swearing by it. The Jabaliya Bedouin who guide you up are Muslims, and by their own tradition descend from soldiers Justinian sent to guard the monastery in the 6th century. Jewish tradition remembers the giving of the Torah here, though most rabbis never fixed the location — Judaism has always treated Sinai as an event more than a place.",
+   honest:"Scripture in all three traditions; the identification of this peak is Christian tradition from the 4th century. The Jabaliya descent story is their own oral history, and DNA and records neither prove nor disprove it.",
+   pause:"Your Bedouin guide will likely pray at the top at dawn. Give him space, then ask him what the mountain means to him." },
+ { id:"monastery-mosque", f:["islam","coptic"], t:"The mosque inside St Catherine's", m:"^st catherine", who:"brad", plan:"on",
+   src:[["Qur'an 20:12","Lo! I, even I, am thy Lord, So take off thy shoes, for lo! thou art in the holy valley of Tuwa."],["The Achtiname ≈","A letter of protection, attributed to the Prophet Muhammad, promising the monks safety and freedom of worship."]],
+   story:"Inside one of the oldest working monasteries on earth stands a small mosque, built in 1106 under the Fatimids, its minaret beside the Byzantine bell tower. The monks also keep the Achtiname, a letter of protection that tradition says the Prophet Muhammad granted them; the original was taken to Istanbul by the Ottomans in 1517, and the monastery displays a copy. Muslim rulers of Egypt honoured it for centuries. And the Qur'an's account of the Burning Bush includes the same command as Exodus: take off your shoes, this is holy ground.",
+   honest:"The mosque is history (Fatimid, 1106). The Achtiname's link to the Prophet is tradition; historians debate whether the original was genuine. The monastery's survival through fourteen centuries of Muslim rule is fact.",
+   pause:"Find the minaret and the bell tower in one frame. Then read Qur'an 20:9–14 and Exodus 3:1–6 side by side." },
+ { id:"anthony", f:["coptic"], t:"The desert fathers — monasticism was born in Egypt", m:"^the white desert|^first light in the white desert", who:"brad", plan:"on", once:true,
+   src:[["Sayings of the Desert Fathers ≈","Abba Moses told a brother: go, sit in your cell, and your cell will teach you everything."]],
+   story:"Around 270 a young Egyptian named Anthony sold everything and walked into the desert to pray alone. Thousands followed him into the wastes of Egypt, and from them came the whole Christian tradition of monks and nuns, East and West. Their sayings — short, sharp, often funny — were collected as the Sayings of the Desert Fathers. The great Egyptian monasteries of St Anthony and St Paul still stand by the Red Sea, and four survive at Wadi Natrun, west of the Delta.",
+   honest:"History. The monasteries aren't on your route; the desert is.",
+   pause:"After the fire's out in the White Desert, walk fifty metres from camp and sit for ten minutes in the silence. That was the whole method." }
+];
+const FAITH_PLAN = { on:"on your route", detour:"a short detour", aside:"nearby, if you can", thread:"across the whole trip" };
+let faithFilter = "";
+function faithDays(e){ if(!e.m) return []; const out=[]; try{ const w=me(); const re=new RegExp(e.m,"i"); DAYS.forEach(d0=>{ if(w==="Duane"&&d0.who==="brad") return; const d=safe(()=>withMe(d0))||d0; const hit=(d.agenda||[]).some(a=>re.test(String(a.title||"").replace(/^[^A-Za-z]+/,""))); if(hit) out.push(d0); }); }catch(e2){} return e.once?out.slice(0,1):out; }
+const faithMine=()=>FAITHS.filter(e=>e.who!=="brad"||me()==="Brad");
+const faithChips=e=>e.f.map(k=>{ const K=FAITH_KINDS[k]; return `<i class="fa-k" style="--fk:${K.c}">${K.i} ${esc(K.n)}</i>`; }).join("");
+const faithQuote=([r,q])=>{ const para=/≈\s*$/.test(r); return `<blockquote class="bib-q fa-q ${para?"para":""}" ${para?"":""}><p>${para?esc(q):"“"+esc(q)+"”"}</p><cite>${esc(r.replace(/\s*≈\s*$/,""))}${para?" · paraphrase":""}</cite></blockquote>`; };
+function faithCard(e, open){ const ds=e.plan==="on"?faithDays(e):[]; const dl=ds.map(d=>`<button type="button" class="chip" data-bibday="${d.id}">${d.dow} ${d.num}</button>`).join("");
+  return `<details class="fold bib fa" id="fa-${e.id}" ${open?"open":""}><summary><span class="bib-t"><b>${esc(e.t)}</b><small><i class="bib-tag ${e.plan}">${FAITH_PLAN[e.plan]}</i>${ds.length?" · "+ds.map(d=>`${d.dow} ${d.num}`).join(", "):""}</small><span class="fa-ks">${faithChips(e)}</span></span></summary><div class="in">
+    ${e.src.map(faithQuote).join("")}
+    <p>${esc(e.story)}</p>
+    <p class="bib-h"><b>Scripture, history, tradition — or a guess?</b> ${esc(e.honest)}</p>
+    ${e.when?`<p class="bib-w"><b>Making time</b> ${esc(e.when)}</p>`:""}
+    <div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div>
+    <div class="row">${dl}${e.q?`<a class="btn mini" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(e.q)}">Directions</a>`:""}</div>
+  </div></details>`; }
+function renderFaiths(){ const el=document.getElementById("faiths"); if(!el) return; const all=faithMine(); const L=faithFilter?all.filter(e=>e.f.includes(faithFilter)):all;
+  const used=Object.keys(FAITH_KINDS).filter(k=>all.some(e=>e.f.includes(k)));
+  const bar=`<div class="fa-bar"><button type="button" class="chip ${faithFilter?"":"on"}" data-fafilter="">All ${all.length}</button>${used.map(k=>{ const K=FAITH_KINDS[k]; const n=all.filter(e=>e.f.includes(k)).length; return `<button type="button" class="chip ${faithFilter===k?"on":""}" data-fafilter="${k}" style="--fk:${K.c}">${K.i} ${esc(K.n)} ${n}</button>`; }).join("")}</div>`;
+  const first=e=>{ const d=faithDays(e)[0]; return d?d.date||d.id:"9"; };
+  const grp=(p,h)=>{ let x=L.filter(e=>e.plan===p); if(p==="on") x=x.slice().sort((a,b)=>String(first(a)).localeCompare(String(first(b)))); return x.length?`<div class="bib-g">${h}</div>${x.map(e=>faithCard(e)).join("")}`:""; };
+  el.innerHTML=`<p class="muted" style="margin:0 0 10px">${esc(FAITH_INTRO.p)}</p>${bar}
+    ${grp("on","On your route")}${grp("thread","Across the whole trip")}${grp("detour","Worth a short detour")}${grp("aside","Nearby, if you can")}
+    <p class="muted bib-foot">Qur'an: Pickthall's 1930 translation. Lines marked “paraphrase” are summaries, not quotations. Each place says plainly what's scripture, history, tradition, or a guess. For the Bible, see <button type="button" class="linkbtn" data-bibopen="">The Bible in Egypt</button>.</p>`; }
+document.addEventListener("click",e=>{ const f=e.target.closest("[data-fafilter]"); if(f){ faithFilter=f.dataset.fafilter; safe(renderFaiths); return; }
+  const o=e.target.closest("[data-faopen]"); if(o){ e.preventDefault(); openFaiths(o.dataset.faopen); } });
+function openFaiths(id){ if(id) faithFilter=""; safe(renderFaiths); safe(()=>closeSheet("sheetQC")); const sec=document.getElementById("faithSec"); const card=id&&document.getElementById("fa-"+id); if(card) card.open=true; const go=card||sec; if(go) scrollToEl(go); }
+(function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="faiths"){ openFaiths(""); return; } return N.apply(this,arguments); }; })();
+setTimeout(()=>safe(renderFaiths), 1600);
+// the day card: a fold for the other faiths' ground, right after the Bible's
+(function(){ if(typeof renderDay!=="function") return; const R=renderDay; renderDay=function(){ const r=R.apply(this,arguments); try{ if(preMode) return r; const d=DAYS[sel]; const c=document.getElementById("dayCard"); if(!d||!c||c.querySelector(".fa-day")) return r;
+  const L=faithMine().filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)); if(!L.length) return r;
+  const anchor=c.querySelector(".bib-day")||c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead"); if(!anchor) return r;
+  const icons=[...new Set(L.flatMap(e=>e.f))].map(k=>FAITH_KINDS[k].i).join("");
+  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day fa-day"><summary><span class="sg-i">🪷</span><span class="bib-t"><b>Other faiths here today</b><small>${icons} ${L.map(e=>esc(e.t.split(" — ")[0])).join(" · ")}</small></span><span class="pill">${L.length}</span></summary><div class="in">${L.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><span class="fa-ks">${faithChips(e)}</span>${faithQuote(e.src[0])}<div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("")}</div></details>`);
+}catch(e){} return r; }; })();
+// the Now card: only when the Bible has nothing to say about this stop
+function faithNowHTML(){ try{ if(typeof bibleNowHTML==="function"&&bibleNowHTML()) return ""; const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
+  if(!nowLine) return ""; const cur=nowLine.replace(/^\s*Now:\s*/,"").replace(/^[^A-Za-z]+/,""); const e=faithMine().find(x=>x.plan==="on"&&x.m&&new RegExp(x.m,"i").test(cur)&&faithDays(x).some(y=>y.id===d.id)); if(!e) return "";
+  return `<div class="fband bib-now fa-now"><span class="fb-ic">${FAITH_KINDS[e.f[0]].i}</span><div><b>${esc(e.t)}</b><span class="prose">${esc(e.pause)}</span></div><button type="button" class="btn mini" data-faopen="${e.id}">Read</button></div>`; }catch(e){ return ""; } }
+(function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("faithnow", faithNowHTML(), [".sky",".bclock",".fmode",".flive"]); }catch(e){} return r; }; })();
+// place pages
+const FAITH_PLACE={"Citadel of Saladin Cairo":["saladin"],"Sultan Hassan Mosque Cairo":["hassan"],"Khan el-Khalili Cairo":["fatimid"],"Al-Muizz Street Cairo":["fatimid"],"Wikala al-Ghuri Cairo":["tannoura"],"Philae Temple Aswan":["philae"],"Gharb Soheil Nubian Village Aswan":["nubia"],"Kato Dool Nubian Village Aswan":["nubia"],"Temple of Kom Ombo":["buddha-greek"],"Temple of Edfu":["buddha-greek"],"Luxor Temple":["haggag"],"Luxor Museum":["aten"],"Karnak Temple":["aten"],"Valley of the Kings":["maat"],"Mount Sinai":["tur"],"Saint Catherine's Monastery":["monastery-mosque"],"Dahab":["berenike"],"Masbat Bay Dahab":["berenike"],"White Desert National Park":["anthony"]};
+(function(){ if(typeof openPlace!=="function") return; const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const b=document.getElementById("shBody"); if(!b||b.querySelector(".fa-place")) return r; const ids=FAITH_PLACE[k]||[]; const L=ids.map(id=>faithMine().find(x=>x.id===id)).filter(Boolean); if(!L.length) return r;
+  const add=L.map(e=>`<div class="bib-place fa-place"><b>${FAITH_KINDS[e.f[0]].i} ${esc(e.t)}</b>${faithQuote(e.src[0])}<p>${esc(e.pause)}</p><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("");
+  const last=[...b.querySelectorAll(".bib-place")].pop(); if(last) last.insertAdjacentHTML("afterend",add); else { const p=b.querySelector("p"); if(p) p.insertAdjacentHTML("afterend",add); else b.insertAdjacentHTML("afterbegin",add); } }catch(e){} return r; }; })();
+document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-faopen]")) safe(closePlace); }, true);
+(function(){ const st=document.createElement("style"); st.textContent=`
+.fa-ks{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.fa-k{font:700 0.5882rem var(--mono);letter-spacing:.06em;text-transform:uppercase;font-style:normal;padding:2px 6px;border-radius:999px;color:var(--fk);border:1px solid color-mix(in srgb,var(--fk) 45%,var(--line));background:color-mix(in srgb,var(--fk) 9%,transparent)}
+.fa-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.fa-bar .chip{color:var(--fg)}.fa-bar .chip.on{color:var(--fg);background:color-mix(in srgb,var(--fk,#c9a24a) 22%,var(--card));border-color:color-mix(in srgb,var(--fk,#c9a24a) 70%,var(--line));font-weight:800}
+.fa-q.para p{font-style:normal;font-family:inherit;opacity:.92}
+.bib-tag.thread{color:#7b6aa8}
+.fa-day .bib-mini .fa-ks{margin:2px 0 0}
+.fband.fa-now{border-color:color-mix(in srgb,#7b6aa8 45%,var(--line))}
+.linkbtn{border:0;background:none;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
+`; document.head.appendChild(st); })();
+
 // ---------- gem.js: the Grand Egyptian Museum, in your pocket — a route for your three hours, the stories at each stop, tick as you go ----------
 const GEM_K="egypt.gem";
 const gemSeen=()=>{ try{ return JSON.parse(localStorage.getItem(GEM_K)||"{}")||{}; }catch(e){ return {}; } };
@@ -6851,7 +7035,7 @@ const GLOSS_MAP=new Map(GLOSSARY.map(([t,d])=>[t,d]));
 // ---- tap a word anywhere: the guide just said “hypostyle” and you're nodding ----
 const GL_TERMS=GLOSSARY.flatMap(([t])=>t.split(/\s*[\/·]\s*/).map(x=>[x.trim(),t])).filter(([x])=>x.length>2).sort((a,b)=>b[0].length-a[0].length);
 const GL_RE=new RegExp("\\b("+GL_TERMS.map(([x])=>x.replace(/[.*+?^${}()|[\]\\']/g,"\\$&")).join("|")+")s?\\b","i");
-const GL_SCOPE="#dayCard .agenda, #dayCard .mission, #dayCard .know, #sheet .pn, #sheetQC .qbox, #arc, #who, #eras, #dates, #bible";
+const GL_SCOPE="#dayCard .agenda, #dayCard .mission, #dayCard .know, #sheet .pn, #sheetQC .qbox, #arc, #who, #eras, #dates, #bible, #faiths";
 function glLink(root){ try{ const seen=new Set([...root.querySelectorAll(".gl")].map(x=>x.dataset.gl)); const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(!p||p.closest("button,a,input,textarea,summary,.gl,.qh,code,.bib-q cite,.gem-tick,.learn,.hd,.hd-done,#glPop")) return NodeFilter.FILTER_REJECT; return GL_RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP; }});
   const nodes=[]; while(walk.nextNode()) nodes.push(walk.currentNode);
   const GRE=new RegExp(GL_RE.source,"gi");
@@ -6972,7 +7156,7 @@ function fgHero(){ try{ const p=fgPick(); if(!p) return ""; const P=PLACES[p.s.k
   const hero=fgHero(); g.classList.add("ng-look"); let top=false; try{ const p=fgPick(); top=!!(p&&(p.when==="now"||p.when==="first")&&cairoNow().h>=6); }catch(e){}
   const card=el0(); const old=card&&card.querySelector(".ng-top"); if(old) old.remove();
   if(top&&hero&&card){ const first=card.querySelector(".ng-h"); if(first) first.insertAdjacentHTML("beforebegin",`<div class="navg ng-top">${hero}</div>`); }
-  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened");
+  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("faiths","🪷","Faiths of the Nile","Islam, Judaism, Buddhism, the old gods");
  }catch(e){} return r; }; })();
 // keep the drill counts fresh when the drill sheet closes
 (function(){ if(typeof closeSheet!=="function") return; const C=closeSheet; closeSheet=function(){ const r=C.apply(this,arguments); safe(hubFeet); return r; }; })();
@@ -6991,7 +7175,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
 .hub-drill>span:first-child{font-size:1.15rem;line-height:1;opacity:.85}.hub-drill b{display:block;font-size:0.8235rem}.hub-drill small{display:block;color:var(--muted);font-size:0.7059rem;margin-top:1px}.hub-drill em{margin-left:auto;font-style:normal;color:var(--muted);font-size:1.2rem}
 .hub-drill:active{transform:scale(.98)}
 .navg button.ng-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px;min-height:54px}
-.navg.ng-look>button[data-nav="bible"]{grid-column:1/-1;flex-direction:row}
+.navg.ng-look>button[data-nav="bible"],.navg.ng-look>button[data-nav="faiths"]{grid-column:1/-1;flex-direction:row}
 .navg.ng-top{margin:4px 0 2px}
 .navg button.ng-here{grid-column:1/-1;display:grid!important;grid-template-columns:1fr auto;align-items:center;text-align:left;gap:2px 10px;padding:13px 14px;min-height:0;border-color:color-mix(in srgb,#c9a24a 60%,var(--line));background:color-mix(in srgb,#c9a24a 13%,var(--card))}
 .ng-here .nh-k{grid-column:1;font:700 0.5882rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
