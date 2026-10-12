@@ -6947,6 +6947,8 @@ const PAIRS={citadel:"saladin", sinai:"tur", bush:"monastery-mosque", nile:"musa
 const PAIRS_BACK=Object.fromEntries(Object.entries(PAIRS).map(([b,f])=>[f,b]));
 const faithById=id=>FAITHS.find(x=>x.id===id);
 const bibleMine=()=>BIBLE.filter(e=>e.who!=="brad"||me()==="Brad");
+// Duane: the Bible and faith notes stay in the Guide, but never lead — no Now-card prompts, the day fold sits last, place pages get a one-line link
+const faithLow=()=>{ try{ return me()==="Duane"; }catch(e){ return false; } };
 function bibleCard(e, open){ const ds=e.plan==="on"?bibleDays(e):[]; const dl=ds.map(d=>`<button type="button" class="chip" data-bibday="${d.id}">${d.dow} ${d.num}</button>`).join("");
   const tag=e.plan==="on"?(ds.length?"on your route":"on your route"):e.plan==="detour"?"a short detour":"nearby, if you can";
   return `<details class="fold bib" id="bib-${e.id}" ${open?"open":""}><summary><span class="bib-t"><b>${esc(e.t)}</b><small><i class="bib-tag ${e.plan}">${tag}</i>${ds.length?" · "+ds.map(d=>`${d.dow} ${d.num}`).join(", "):""}</small></span><span class="pill">${e.refs.length}</span></summary><div class="in">
@@ -6982,15 +6984,15 @@ setTimeout(()=>safe(renderBible), 1500);
   const paired=new Set(L.map(e=>PAIRS[e.id]).filter(Boolean));
   const FL=faithMine().filter(e=>e.plan==="on"&&faithDays(e).some(x=>x.id===d.id)&&!paired.has(e.id));
   if(!L.length&&!FL.length) return r;
-  const anchor=c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead"); if(!anchor) return r;
+  const low=faithLow(); const anchor=low?c:(c.querySelector(".mission")||c.querySelector(".status")||c.querySelector(".dayhead")); if(!anchor) return r;
   const bibleBits=L.map(e=>{ const f=faithById(PAIRS[e.id]); return `<div class="bib-mini"><b>${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div>${f?`<p class="bib-w"><b>Also here</b> ${esc(f.t)}</p>`:""}<button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`; }).join("");
   const faithBits=FL.map(e=>`<div class="bib-mini"><b>${esc(e.t)}</b><span class="fa-ks">${faithChips(e)}</span>${faithQuote(e.src[0])}<div class="bib-p"><b>Take it in</b><p>${esc(e.pause)}</p></div><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("");
   const names=L.map(e=>esc(e.t.split(" — ")[0])).join(" · ");
   const more=FL.length?` · +${FL.length} other faith${FL.length>1?"s":""}`:"";
-  anchor.insertAdjacentHTML("afterend",`<details class="fold bib-day faith-day"><summary><span class="sg-i">🕊️</span><span class="bib-t"><b>On the ground today</b><small>${names}${more}</small></span><span class="pill">${L.length+FL.length}</span></summary><div class="in">${bibleBits}${FL.length?`<p class="bib-g">Also here today</p>${faithBits}`:""}</div></details>`);
+  anchor.insertAdjacentHTML(low?"beforeend":"afterend",`<details class="fold bib-day faith-day"><summary><span class="sg-i">🕊️</span><span class="bib-t"><b>${low?"Faith on the ground (optional)":"On the ground today"}</b><small>${names}${more}</small></span><span class="pill">${L.length+FL.length}</span></summary><div class="in">${bibleBits}${FL.length?`<p class="bib-g">Also here today</p>${faithBits}`:""}</div></details>`);
 }catch(e){} return r; }; })();
 // the Now card: when you're actually there, a quiet prompt to stop
-function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
+function bibleNowHTML(){ try{ if(faithLow()) return ""; const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
   if(!nowLine) return ""; const cur=nowLine.replace(/^\s*Now:\s*/,"").replace(/^[^A-Za-z]+/,""); const e=bibleMine().find(x=>x.plan==="on"&&new RegExp(x.m,"i").test(cur)&&bibleDays(x).some(y=>y.id===d.id)); if(!e) return "";
   return `<div class="fband bib-now"><span class="fb-ic">🕊️</span><div><b>${esc(e.t)}</b><span class="prose">${esc(e.pause)}</span></div><button type="button" class="btn mini" data-bibopen="${e.id}">Read</button></div>`; }catch(e){ return ""; } }
 (function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("biblenow", bibleNowHTML(), [".sky",".bclock",".fmode",".flive"]); }catch(e){} return r; }; })();
@@ -7012,7 +7014,7 @@ function bibleNowHTML(){ try{ const n=document.getElementById("now"); if(!n) ret
 // place pages: the biblical link sits right in the place's own story
 const BIBLE_PLACE={"Karnak Temple":"karnak","Great Pyramid of Giza":"giza","Step Pyramid of Djoser Saqqara":"memphis","Red Pyramid Dahshur":"memphis","Citadel of Saladin Cairo":"citadel","Abu Simbel Temples":"ramesses","Valley of the Kings":"thebes","Temple of Hatshepsut":"thebes","Luxor Temple":"thebes","Colossi of Memnon":"thebes","Philae Temple Aswan":"elephantine","Mount Sinai":"sinai","Saint Catherine's Monastery":"bush","Dahab":"redsea","Blue Hole Dahab":"redsea","Waldorf Astoria Cairo Heliopolis":"on"};
 (function(){ if(typeof openPlace!=="function") return; const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const b=document.getElementById("shBody"); if(!b) return r; const id=BIBLE_PLACE[k]; const e=id&&bibleMine().find(x=>x.id===id);
-  let add=""; if(e) add+=`<div class="bib-place"><b>🕊️ ${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><p>${esc(e.pause)}</p><button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`;
+  let add=""; if(e&&faithLow()) add+=`<p class="bib-low"><button type="button" class="linkbtn" data-bibopen="${e.id}">🕊️ Bible note for this place ›</button></p>`; else if(e) add+=`<div class="bib-place"><b>🕊️ ${esc(e.t)}</b><blockquote class="bib-q"><p>“${esc(e.refs[0][1])}”</p><cite>${esc(e.refs[0][0])}</cite></blockquote><p>${esc(e.pause)}</p><button type="button" class="btn mini" data-bibopen="${e.id}">The whole story</button></div>`;
   if(k==="Grand Egyptian Museum") add+=`<div class="bib-place gem-place"><b>🏛️ Your guide inside</b><p>Twelve stops in the order that beats the Tutankhamun crowds, with what to look for at each, ticked as you go.</p><button type="button" class="btn mini" data-gemopen="1">Open the GEM guide</button></div>`;
   if(add){ const p=b.querySelector("p"); if(p) p.insertAdjacentHTML("afterend",add); else b.insertAdjacentHTML("afterbegin",add); } }catch(e){} return r; }; })();
 document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-bibopen],#shBody [data-gemopen]")) safe(closePlace); }, true);
@@ -7169,13 +7171,13 @@ function openFaiths(id){ setLens("all"); if(id) faithFilter=""; safe(renderFaith
 (function(){ if(typeof navGo!=="function") return; const N=navGo; navGo=function(k){ if(k==="faiths"){ openFaiths(""); return; } return N.apply(this,arguments); }; })();
 setTimeout(()=>safe(renderFaiths), 1600);
 // the Now card: only when the Bible has nothing to say about this stop
-function faithNowHTML(){ try{ if(typeof bibleNowHTML==="function"&&bibleNowHTML()) return ""; const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
+function faithNowHTML(){ try{ if(faithLow()) return ""; if(typeof bibleNowHTML==="function"&&bibleNowHTML()) return ""; const n=document.getElementById("now"); if(!n) return ""; const d=todayDay(); if(!d) return ""; const nowLine=([...n.querySelectorAll("div,p,span")].find(x=>/^\s*Now:/.test(x.textContent)&&x.children.length<3)||{}).textContent||"";
   if(!nowLine) return ""; const cur=nowLine.replace(/^\s*Now:\s*/,"").replace(/^[^A-Za-z]+/,""); const e=faithMine().find(x=>x.plan==="on"&&x.m&&new RegExp(x.m,"i").test(cur)&&faithDays(x).some(y=>y.id===d.id)); if(!e) return "";
   return `<div class="fband bib-now fa-now"><span class="fb-ic">${FAITH_KINDS[e.f[0]].i}</span><div><b>${esc(e.t)}</b><span class="prose">${esc(e.pause)}</span></div><button type="button" class="btn mini" data-faopen="${e.id}">Read</button></div>`; }catch(e){ return ""; } }
 (function(){ if(typeof renderNow!=="function") return; const R=renderNow; renderNow=function(){ const r=R.apply(this,arguments); try{ nowSlot("faithnow", faithNowHTML(), [".sky",".bclock",".fmode",".flive"]); }catch(e){} return r; }; })();
 // place pages
 const FAITH_PLACE={"Citadel of Saladin Cairo":["saladin"],"Sultan Hassan Mosque Cairo":["hassan"],"Khan el-Khalili Cairo":["fatimid"],"Al-Muizz Street Cairo":["fatimid"],"Wikala al-Ghuri Cairo":["tannoura"],"Philae Temple Aswan":["philae"],"Gharb Soheil Nubian Village Aswan":["nubia"],"Kato Dool Nubian Village Aswan":["nubia"],"Temple of Kom Ombo":["buddha-greek"],"Temple of Edfu":["buddha-greek"],"Luxor Temple":["haggag"],"Luxor Museum":["aten"],"Karnak Temple":["aten"],"Valley of the Kings":["maat"],"Mount Sinai":["tur"],"Saint Catherine's Monastery":["monastery-mosque"],"Dahab":["berenike"],"Masbat Bay Dahab":["berenike"],"White Desert National Park":["anthony"]};
-(function(){ if(typeof openPlace!=="function") return; const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const b=document.getElementById("shBody"); if(!b||b.querySelector(".fa-place")) return r; const ids=FAITH_PLACE[k]||[]; const L=ids.map(id=>faithMine().find(x=>x.id===id)).filter(Boolean); if(!L.length) return r;
+(function(){ if(typeof openPlace!=="function") return; const O=openPlace; openPlace=function(k){ const r=O.apply(this,arguments); try{ const b=document.getElementById("shBody"); if(!b||b.querySelector(".fa-place")) return r; const ids=FAITH_PLACE[k]||[]; const L=ids.map(id=>faithMine().find(x=>x.id===id)).filter(Boolean); if(!L.length||faithLow()) return r;
   const add=L.map(e=>`<div class="bib-place fa-place"><b>${FAITH_KINDS[e.f[0]].i} ${esc(e.t)}</b>${faithQuote(e.src[0])}<p>${esc(e.pause)}</p><button type="button" class="btn mini" data-faopen="${e.id}">The whole story</button></div>`).join("");
   const last=[...b.querySelectorAll(".bib-place")].pop(); if(last) last.insertAdjacentHTML("afterend",add); else { const p=b.querySelector("p"); if(p) p.insertAdjacentHTML("afterend",add); else b.insertAdjacentHTML("afterbegin",add); } }catch(e){} return r; }; })();
 document.addEventListener("click",e=>{ if(e.target.closest("#shBody [data-faopen]")) safe(closePlace); }, true);
@@ -7547,7 +7549,7 @@ function fgHero(){ try{ const p=fgPick(); if(!p) return ""; const P=PLACES[p.s.k
   const hero=fgHero(); g.classList.add("ng-look"); let top=false; try{ const p=fgPick(); top=!!(p&&(p.when==="now"||p.when==="first")&&cairoNow().h>=6); }catch(e){}
   const card=el0(); const old=card&&card.querySelector(".ng-top"); if(old) old.remove();
   if(top&&hero&&card){ const first=card.querySelector(".ng-h"); if(first) first.insertAdjacentHTML("beforebegin",`<div class="navg ng-top">${hero}</div>`); }
-  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+t("bible","🕊️","The Bible in Egypt","where the stories happened")+t("nile","⛵","Life along the Nile","12 chapters, in the order you travel")+t("faiths","🪷","All faiths on the Nile","Islam, Judaism, Buddhism, the old gods");
+  g.innerHTML=(top?"":hero)+t("walls","🏺","Reading the walls","gods, kings, glyphs, words")+t("story","📖","The story","our days · nine dates · the ages")+gem+(faithLow()?"":t("bible","🕊️","The Bible in Egypt","where the stories happened"))+t("nile","⛵","Life along the Nile","12 chapters, in the order you travel")+(faithLow()?t("bible","🕊️","The Bible in Egypt","where the stories happened"):"")+t("faiths","🪷","All faiths on the Nile","Islam, Judaism, Buddhism, the old gods");
  }catch(e){} return r; }; })();
 // keep the drill counts fresh when the drill sheet closes
 (function(){ if(typeof closeSheet!=="function") return; const C=closeSheet; closeSheet=function(){ const r=C.apply(this,arguments); safe(hubFeet); return r; }; })();
@@ -7620,7 +7622,7 @@ function fgHTML(d,k,when){ const P=PLACES[k]; const S=fgSites(d); const F=fgFoun
    ${w?`<div class="fg-h"><b>${/Museum/.test(k)?"Written on the objects":"On the walls"}</b><button type="button" class="fg-more" data-nav="signs">glyph guide ›</button></div><p class="fg-wall">${hieroWrap(esc(w[1]))}</p>`:""}
    ${who.length?`<div class="fg-h"><b>Who you'll meet</b><button type="button" class="fg-more" data-nav="who">all of them ›</button></div><ul class="fg-who">${who.map(([n,c])=>`<li><b>${esc(n)}</b> <span>${esc(c)}</span></li>`).join("")}</ul>`:""}
    ${terms.length?`<div class="fg-h"><b>Words you'll hear</b><span>tap one</span></div><div class="tt-chips">${terms.map(t=>`<button type="button" class="tt-chip" data-fgterm="${escA(t)}">${esc(t)}</button>`).join("")}</div>`:""}
-   ${bib?`<button type="button" class="fg-bib" data-bibopen="${escA(bib)}">🕊️ Biblical ground here — the passage and a moment to pause ›</button>`:""}
+   ${bib&&!faithLow()?`<button type="button" class="fg-bib" data-bibopen="${escA(bib)}">🕊️ Biblical ground here — the passage and a moment to pause ›</button>`:""}
    <div class="fg-foot"><button type="button" class="btn" data-fgstory="${escA(k)}">The full story ›</button><button type="button" class="btn primary" data-fgclose="1">Back to exploring</button></div>
   </div>`; }
 function openField(k, dayId, when){ let d, w=when; if(k){ d=DAYS.find(x=>x.id===dayId)||DAYS[sel]||DAYS[0]; } else { const p=fgPick(); if(!p) return; d=p.d; k=p.s.k; w=p.when; }
