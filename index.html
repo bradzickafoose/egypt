@@ -1984,8 +1984,8 @@ const WEEK = [
  {k:"w2",who:"Duane",t:"Tell the Cairo Hilton Brad arrives ≈3:30am Sunday; add him to the room."},
  {k:"w20",who:"Brad",t:"Nile Serenity booked with Memphis Tours, deposit $638 paid. Watch for the voucher: ship, one twin cabin, Aswan pickup, Hilton drop-off.",s:"Nayera Hassan · +20 1129 398398 · nayera.hassan.eg@memphistours.com · ref hOL5U8"},
  {k:"w21",who:"Brad",t:"Pay the $1,912 balance when Memphis sends the payment link.",s:"Not cash. Inside 14 days the booking is non-refundable."},
- {k:"w22",who:"Brad",t:"Aswan Plaza Hotel booked for Tue 13 ✓. Send Nayera the name for Wednesday's pickup.",s:"Corniche el-Nil, beside CIB Bank. Check-in 2pm, check-out 1pm."},
- {k:"w23",who:"Both",t:"Hilton Luxor: Saturday 17 night only. We're on the ship Friday."},
+ {k:"w22",who:"Brad",t:"Aswan Plaza Hotel booked for Tue 13 ✓ — Nayera has the name for Wednesday's pickup ✓. Ask her the pickup time.",s:"Corniche el-Nil, beside CIB Bank. Check-in 2pm, check-out 1pm."},
+ {k:"w23",who:"Both",t:"Hilton Luxor changed to Saturday 17 night only ✓."},
  {k:"w24",who:"Both",t:"Abu Simbel driver: meets NP 81 at 9:25 Tuesday; if the flight's late, Wednesday at 4am from the Aswan hotel."},
  {k:"w4",who:"Brad",t:"Domestic flights are booked: NP 81 Tue 8:00am, MS 275 Sun 3:40pm. Type each booking code into Guide → Flights so it's on your phone offline, then tick this.",s:"The codes stay on this phone only; they're never synced or shared."},
  {k:"w5",who:"Brad",t:"GEM timed tickets (Mon) · Khufu's lunch (Mon 1:45) · Cairo guide + car (Sun full day + Mon) — NOT BOOKED YET",h:'<a href="https://visit-gem.com" target="_blank" rel="noopener">GEM tickets</a> (Mon) · Khufu\'s lunch (Mon 1:45) · Cairo guide + car (Sun full day + Mon) — NOT BOOKED YET'},
@@ -4504,7 +4504,7 @@ const BOAT_STEPS = b => b&&b.id==="serenity" ? [
   ["hotel","Aswan hotel NOT booked yet for Tue 13 (Basma or the Old Cataract)"],
   ["abu","Abu Simbel car NOT booked yet for Wed 4am — bags in the trunk, drop at the boat"],
   ["hilton","Hilton Luxor changed to Saturday night only"] ];
-const BOAT_STEP_DONE={ sent:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, paid:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, abu:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, hotel:{by:"Brad",at:"2026-10-13T08:00:00+03:00"} };
+const BOAT_STEP_DONE={ sent:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, paid:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, abu:{by:"Brad",at:"2026-10-12T20:00:00+03:00"}, hotel:{by:"Brad",at:"2026-10-13T08:00:00+03:00"}, hotelsent:{by:"Brad",at:"2026-10-13T09:00:00+03:00"}, hilton:{by:"Brad",at:"2026-10-13T09:00:00+03:00"} };
 const boatSteps=()=>({...BOAT_STEP_DONE, ...bJSON(BOAT_LS.steps,{})});
 async function boatPushStep(k,v){ if(!liveOK()) return false; try{ const r=await fetch(boatURL("steps/"+k),v?{method:"PUT",body:JSON.stringify(v)}:{method:"DELETE"}); return r.ok; }catch(e){ return false; } }
 async function boatPushVotes(){ lsSet("egypt.boat.at", new Date().toISOString()); if(!liveOK()) return false; try{ const r=await fetch(boatURL(me()),{method:"PUT",body:JSON.stringify({votes:boatVotes(), at:new Date().toISOString()})}); return r.ok; }catch(e){ return false; } }
@@ -4657,7 +4657,7 @@ function boatSerenityDays(O, pick, at, sunTail, I){ const {ko, edfu, vk, hat, co
        {t:"14:45",title:"Drive back to Aswan",note:"3 hours. Water, a nap.",approx:true},
        {t:"18:00",title:"Hotel: check in, shower",map:"Aswan Plaza Hotel Aswan",approx:true},
        {t:"19:30",title:"Dinner on the Corniche, early night",note:"Ask the hotel for their favourite, or Makka for a grill. The Nubian village and the Old Cataract tea move to tomorrow afternoon.",approx:true} ].filter(Boolean),
-     know:["Abu Simbel at midday is hot: hats, water, the shade inside the temples","No 3:30am alarm this week if today works","Send Nayera the hotel's name (Aswan Plaza Hotel, on the Corniche) if you haven't, for tomorrow's pickup"],
+     know:["Abu Simbel at midday is hot: hats, water, the shade inside the temples","No 3:30am alarm this week if today works","Nayera has the hotel's name; check she's sent tomorrow's pickup time"],
      planb:"NP 81 late → Abu Simbel moves to Wednesday at 4am (the driver knows). This afternoon instead: check in, Philae on our own (≈$11, card, motorboat from the dock) and high tea at the Old Cataract at 4. Then Memphis's $30-each Thursday Philae add-on isn't needed." },
    wed14:{ title:"Philae, aboard, then tea and the Nubian village", place:"Aswan → the Nile Serenity", emoji:"⛵", alarm:"7:30", bag:"everything (checkout)", dress:"temple clothes; smart-casual for tea", cash:"≈$110 for tea, the motorboat, a Nubian dinner",
      sleep:"the Nile Serenity, moored in Aswan", sleepq:"",
